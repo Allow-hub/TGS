@@ -15,5 +15,5 @@ MonoBehaviour:
   Name: V1
   Hp: 100
   GardPower: 100
-  MoveSpeed: 100
+  MoveSpeed: 10
   JumpPower: 100

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +9,16 @@ namespace TechC.Player
         [Header("Reference")]
         [SerializeField] private PlayerInputManager playerInputManager;
         [SerializeField] private WeakAttackBase weakAttackBase;
+
+
+        private void Start()
+        {
+        }
+
+        private void Update()
+        {
+        }
+
         private void OnEnable()
         {
             playerInputManager.weakAttackAction += WeakAttack;
@@ -16,17 +26,12 @@ namespace TechC.Player
 
         private void OnDisable()
         {
-            playerInputManager.weakAttackAction -= WeakAttack;  
+            playerInputManager.weakAttackAction -= WeakAttack;
         }
+
 
         private void WeakAttack(WeakAttackMode attackMode)
         {
-            weakAttackBase.NeutraAttack();
-        }
-
-        private void StrongAttack()
-        {
-
         }
     }
 }

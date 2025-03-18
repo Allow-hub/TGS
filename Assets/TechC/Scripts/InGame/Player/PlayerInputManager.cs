@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TechC.Player;
@@ -16,7 +16,7 @@ namespace TechC.Player
         public Action strongAttackAction;
 
 
-        public Vector2 MoveInput() => moveInput;
+        public Vector2 MoveInput => moveInput;
         public bool IsCrouching => isCrouching;
         public bool IsGarding => isGarding;
         private Vector2 moveInput;

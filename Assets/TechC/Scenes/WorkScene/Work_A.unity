@@ -438,7 +438,7 @@ GameObject:
   - component: {fileID: 1375315958}
   - component: {fileID: 1375315957}
   - component: {fileID: 1375315956}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -543,8 +543,9 @@ GameObject:
   - component: {fileID: 1389670157}
   - component: {fileID: 1389670156}
   - component: {fileID: 1389670155}
-  - component: {fileID: 1389670160}
   - component: {fileID: 1389670159}
+  - component: {fileID: 1389670161}
+  - component: {fileID: 1389670162}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -746,7 +747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60a1e068350407c4d898b3848fa08617, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1389670160
+--- !u!114 &1389670161
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -755,11 +756,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 1389670154}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4af0f20915ea8774b8271f4a7a3bf32e, type: 3}
+  m_Script: {fileID: 11500000, guid: ceb1bec790ed1244997932dd03fc48c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1389670156}
-  weakAttackBase: {fileID: 1389670159}
+  playerData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
+  anim: {fileID: 1389670162}
+  rayLength: 1.5
+--- !u!95 &1389670162
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389670154}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1502187750
 GameObject:
   m_ObjectHideFlags: 0

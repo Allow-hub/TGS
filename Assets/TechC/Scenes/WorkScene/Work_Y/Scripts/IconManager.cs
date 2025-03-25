@@ -8,7 +8,7 @@ namespace TechC
     {
         /* アイコンの詳細設定 */
         [Header("アイコンの詳細設定")]
-        [SerializeField] private float rorationSpeed = 30f; /* 回転する速度 */
+        [SerializeField] private float rorationSpeed = 10f; /* 回転する速度 */
         [SerializeField] private float targetAngle = 30f; /* 左右に折り返すための目標の角度 */
 
         /* フラグの設定 */

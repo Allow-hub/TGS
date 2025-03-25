@@ -23,6 +23,7 @@ namespace TechC
             RotationIcons(); /* アイコンを回転する */
         }
 
+        /* アイコンを回転させる処理 */
         private void RotationIcons()
         {
             float currentAngle = transform.rotation.eulerAngles.y; /* 現在の角度を取得する */

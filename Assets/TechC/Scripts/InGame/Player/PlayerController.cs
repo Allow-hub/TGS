@@ -8,30 +8,56 @@ namespace TechC.Player
     {
         [Header("Reference")]
         [SerializeField] private PlayerInputManager playerInputManager;
-        [SerializeField] private WeakAttackBase weakAttackBase;
+        [SerializeField] private PlayerData playerData;
 
+
+        [SerializeField] private float maxGage = 100;
+
+        [SerializeField] private float rayLength = 0.1f;
+        [SerializeField] private bool isDrawingRay;
+        private Rigidbody rb;
+        private float currentHp;
 
         private void Start()
         {
+            rb =GetComponent<Rigidbody>();
+            currentHp = playerData.Hp;
         }
 
         private void Update()
         {
         }
 
-        private void OnEnable()
+        public void AddForcePlayer(Vector3 dir, float force, ForceMode forceMode)
+            => rb.AddForce(dir * force, forceMode);
+        private void AddHp(float value)=> currentHp -= value;
+
+        public float GetHp() => currentHp;
+
+
+
+
+        public bool IsGrounded()
         {
-            playerInputManager.weakAttackAction += WeakAttack;
+            Vector3 rayOrigin = transform.position + Vector3.up;
+            RaycastHit hit;
+
+            return Physics.Raycast(rayOrigin, Vector3.down, out hit, rayLength, LayerMask.GetMask("Ground"));
         }
-
-        private void OnDisable()
+        private void OnDrawGizmos()
         {
-            playerInputManager.weakAttackAction -= WeakAttack;
-        }
+            if (!isDrawingRay) return;
+            // レイの発射位置
+            Vector3 rayOrigin = transform.position + Vector3.up;
 
+            // 地面に当たるときは緑、そうでないときは赤
+            Gizmos.color = IsGrounded() ? Color.green : Color.red;
 
-        private void WeakAttack(WeakAttackMode attackMode)
-        {
+            // レイの描画
+            Gizmos.DrawLine(rayOrigin, rayOrigin + Vector3.down * rayLength);
+
+            // レイの終端に球を表示
+            Gizmos.DrawSphere(rayOrigin + Vector3.down * rayLength, 0.05f);
         }
     }
 }

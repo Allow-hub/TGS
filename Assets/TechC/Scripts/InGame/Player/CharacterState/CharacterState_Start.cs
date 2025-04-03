@@ -13,7 +13,7 @@ namespace TechC
         /// </summary>
         private class StartState : ImtStateMachine<CharacterState>.State
         {
-            private float duration = 1f;
+            private float duration = 0.1f;
             private float elapsedTime = 0f; 
             protected internal override void Enter()
             {

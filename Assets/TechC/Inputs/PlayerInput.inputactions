@@ -33,6 +33,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Crouch",
+                    "type": "Button",
+                    "id": "0cce1426-106a-4d4f-bc3b-83ce140e196c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "WeakAttack",
                     "type": "Button",
                     "id": "65027900-14e6-40d0-805e-d452f4f7c9f7",
@@ -135,6 +144,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Gard",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ea0d8fa-8c73-4d6b-85ec-4d9504316a99",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Crouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

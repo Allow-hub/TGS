@@ -1,16 +1,26 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TechC.Player;
 using UnityEngine;
 
 namespace TechC
 {
-    public class WeakAttack : WeakAttackBase
+    public class WeakAttack : MonoBehaviour, IWeakAttackBase 
     {
-        public override void NeutraAttack()
+        public void NeutraAttack()
         {
-            base.NeutraAttack();
-            Debug.Log("AAa");
+        }
+        public void RightAttack()
+        {
+        }
+        public void LeftAttack()
+        {
+        }
+        public void DownAttack()
+        {
+        }
+        public void UpAttack()
+        {
         }
     }
 }

@@ -16,9 +16,9 @@ namespace TechC
             private GameObject playerObj;
             protected internal override void Enter()
             {
-                if (playerObj == null) 
-                    playerObj = Context.gameObject.transform.GetChild(0).gameObject;
-                playerObj.transform.localRotation = Quaternion.identity;
+                // if (playerObj == null) 
+                //     playerObj = Context.gameObject.transform.GetChild(0).gameObject;
+                // playerObj.transform.localRotation = Quaternion.identity;
 
             }
             protected internal override void Update()
@@ -39,9 +39,9 @@ namespace TechC
                     Context.stateMachine.SendEvent((int)StateEventId.Appeal);
 
                 if (Context.playerInputManager.IsWeakAttacking && Context.playerController.IsGrounded())
-                    Context.stateMachine.SendEvent((int)StateEventId.WeakAttack);
+                    Context.stateMachine.SendEvent((int)StateEventId.Attack);
                 if (Context.playerInputManager.IsStrongAttacking && Context.playerController.IsGrounded())
-                    Context.stateMachine.SendEvent((int)StateEventId.StrongAttack);
+                    Context.stateMachine.SendEvent((int)StateEventId.Attack);
             }
 
             protected internal override void Exit()

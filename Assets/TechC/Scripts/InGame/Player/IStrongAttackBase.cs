@@ -9,16 +9,7 @@ namespace TechC.Player
     /// </summary>
     public interface IStrongAttackBase
     {
-        public enum StrongAttackType
-        {
-            Normal,//他に入力がないとき
-            Right,
-            Left,
-            Down,
-            Up,
-        }
-
-        public void NeutraAttack();
+        public void NeutralAttack();
         public void RightAttack();
         public void LeftAttack();
         public void DownAttack();

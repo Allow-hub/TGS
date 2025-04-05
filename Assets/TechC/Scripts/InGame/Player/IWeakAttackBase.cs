@@ -10,16 +10,7 @@ namespace TechC.Player
     /// </summary>
     public interface IWeakAttackBase
     {
-        public enum WeakAttackType
-        {
-            Normal,//他に入力がないとき
-            Right,
-            Left,
-            Down,
-            Up, 
-        }
-
-        public  void NeutraAttack();
+        public  void NeutralAttack();
         public void RightAttack();
         public void LeftAttack();
         public void DownAttack();

@@ -876,10 +876,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1389670158}
-  - component: {fileID: 1389670165}
+  - component: {fileID: 1389670155}
   - component: {fileID: 1389670157}
   - component: {fileID: 1389670156}
-  - component: {fileID: 1389670155}
+  - component: {fileID: 1389670165}
+  - component: {fileID: 1389670166}
   - component: {fileID: 1389670161}
   - component: {fileID: 1389670164}
   m_Layer: 0
@@ -1079,14 +1080,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1389670154}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -1.615, z: -5.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1232335032}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &1389670161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1111,7 +1112,6 @@ MonoBehaviour:
   groundFriction: 80
   airFriction: 5
   turnSpeed: 35
-  weakAttack: {fileID: 1389670165}
 --- !u!114 &1389670164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1126,6 +1126,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1389670156}
   playerData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
+  characterState: {fileID: 1389670161}
+  weakAttack: {fileID: 1389670165}
+  strongAttack: {fileID: 1389670166}
+  attackSet: {fileID: 11400000, guid: 39a29be2c52e6e04d81ad15576cb5513, type: 2}
   maxGage: 100
   rayLength: 1.1
   isDrawingRay: 1
@@ -1139,6 +1143,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60a1e068350407c4d898b3848fa08617, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1389670166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389670154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaeedb7e3addc21498e1c8f41cd82ce8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1519539025
@@ -1312,7 +1328,7 @@ PrefabInstance:
     - target: {fileID: 6859270617850623366, guid: e118c56b6c2f0c64cb26f52db018648e,
         type: 3}
       propertyPath: m_ApplyRootMotion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1680,7 +1696,6 @@ MonoBehaviour:
   groundFriction: 80
   airFriction: 5
   turnSpeed: 35
-  weakAttack: {fileID: 1919128623}
 --- !u!114 &1919128619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1707,6 +1722,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1919128619}
   playerData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
+  characterState: {fileID: 0}
+  weakAttack: {fileID: 0}
+  strongAttack: {fileID: 0}
+  attackSet: {fileID: 0}
   maxGage: 100
   rayLength: 1.1
   isDrawingRay: 1

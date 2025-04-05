@@ -23,6 +23,7 @@ namespace TechC
             Guard,
             Dead,
             Appeal,
+            Attack,
             WeakAttack,
             StrongAttack,
         }
@@ -33,6 +34,8 @@ namespace TechC
         [SerializeField] private PlayerController playerController;
         [SerializeField] private Animator anim;
 
+        [Header("攻撃設定")]
+        [SerializeField] private AttackManager attackManager;
        
         private Vector3 velocity = Vector3.zero;                    // 現在の速度
         private bool isGrounded;                                    // 地面判定
@@ -55,23 +58,18 @@ namespace TechC
             stateMachine.AddTransition<GuardState, IdleState>((int)StateEventId.Idle);
             stateMachine.AddTransition<AppealState, IdleState>((int)StateEventId.Idle);
             stateMachine.AddTransition<CrouchState, IdleState>((int)StateEventId.Idle);
-            stateMachine.AddTransition<WeakAttackState, IdleState>((int)StateEventId.Idle);
-            stateMachine.AddTransition<StrongAttackState, IdleState>((int)StateEventId.Idle);
-
+            stateMachine.AddTransition<AttackState, IdleState>((int)StateEventId.Idle);
+            
             //Idleからの遷移
             stateMachine.AddTransition<IdleState, MoveState>((int)StateEventId.Move);
             stateMachine.AddTransition<IdleState, GuardState>((int)StateEventId.Guard);
             stateMachine.AddTransition<IdleState, AppealState>((int)StateEventId.Appeal);
             stateMachine.AddTransition<IdleState, CrouchState>((int)StateEventId.Crouch);
             stateMachine.AddTransition<IdleState, JumpState>((int)StateEventId.Jump);
-            stateMachine.AddTransition<IdleState, WeakAttackState>((int)StateEventId.WeakAttack);
-            stateMachine.AddTransition<IdleState, StrongAttackState>((int)StateEventId.StrongAttack);
+            stateMachine.AddTransition<IdleState, AttackState>((int)StateEventId.Attack);
 
-            stateMachine.AddTransition<MoveState, WeakAttackState>((int)StateEventId.WeakAttack);
-            stateMachine.AddTransition<CrouchState, WeakAttackState>((int)StateEventId.WeakAttack);
-
-            stateMachine.AddTransition<MoveState, StrongAttackState>((int)StateEventId.StrongAttack);
-            stateMachine.AddTransition<CrouchState, StrongAttackState>((int)StateEventId.StrongAttack);
+            stateMachine.AddTransition<MoveState, AttackState>((int)StateEventId.Attack);
+            stateMachine.AddTransition<CrouchState, AttackState>((int)StateEventId.Attack);
 
 
             //ダメージステートはどのステートからでも移行できる

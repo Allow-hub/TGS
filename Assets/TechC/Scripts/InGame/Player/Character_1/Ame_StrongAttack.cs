@@ -4,10 +4,9 @@ using UnityEngine;
 
 namespace TechC
 {
-    public class Ame_WeakAttack : WeakAttack
+    public class Ame_StrongAttack : StrongAttack
     {
-
-        public override void NeutralAttack()
+         public override void NeutralAttack()
         {
             base.NeutralAttack();  
             
@@ -38,6 +37,5 @@ namespace TechC
         {
             Debug.Log("オーバーライド,"+attackData.damage);
         }
-
     }
 }

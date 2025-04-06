@@ -879,8 +879,8 @@ GameObject:
   - component: {fileID: 1389670155}
   - component: {fileID: 1389670157}
   - component: {fileID: 1389670156}
-  - component: {fileID: 1389670165}
-  - component: {fileID: 1389670166}
+  - component: {fileID: 1389670167}
+  - component: {fileID: 1389670168}
   - component: {fileID: 1389670161}
   - component: {fileID: 1389670164}
   m_Layer: 0
@@ -1127,13 +1127,13 @@ MonoBehaviour:
   playerInputManager: {fileID: 1389670156}
   playerData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
   characterState: {fileID: 1389670161}
-  weakAttack: {fileID: 1389670165}
-  strongAttack: {fileID: 1389670166}
+  weakAttack: {fileID: 1389670167}
+  strongAttack: {fileID: 1389670168}
   attackSet: {fileID: 11400000, guid: 39a29be2c52e6e04d81ad15576cb5513, type: 2}
   maxGage: 100
   rayLength: 1.1
   isDrawingRay: 1
---- !u!114 &1389670165
+--- !u!114 &1389670167
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1142,10 +1142,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1389670154}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60a1e068350407c4d898b3848fa08617, type: 3}
+  m_Script: {fileID: 11500000, guid: bab1836b44199fe46b454706216e4957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1389670166
+--- !u!114 &1389670168
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1154,7 +1154,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1389670154}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aaeedb7e3addc21498e1c8f41cd82ce8, type: 3}
+  m_Script: {fileID: 11500000, guid: 52a12867bcfa7014a9c30e46585e8159, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1519539025
@@ -1791,6 +1791,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60a1e068350407c4d898b3848fa08617, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  neutralAttackData: {fileID: 0}
+  leftAttackData: {fileID: 0}
+  rightAttackData: {fileID: 0}
+  downAttackData: {fileID: 0}
+  upAttackData: {fileID: 0}
+  attackOrigin: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!95 &1919128628 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6859270617850623366, guid: e118c56b6c2f0c64cb26f52db018648e,

@@ -32,7 +32,7 @@ namespace TechC
                 }
                 else
                 {
-                    Context.MoveCharacter(
+                    Context.playerController.MoveCharacter(
                             Context.playerInputManager.MoveInput,
                             Context.isGrounded,
                             Context.groundAcceleration,
@@ -44,7 +44,7 @@ namespace TechC
                             );
                 }
                 if (Context.playerInputManager.IsWeakAttacking && Context.playerController.IsGrounded())
-                    Context.stateMachine.SendEvent((int)StateEventId.WeakAttack);
+                    Context.stateMachine.SendEvent((int)StateEventId.Attack);
                 if (Context.playerInputManager.IsJumping && Context.playerController.IsGrounded())
                     Context.stateMachine.SendEvent((int)StateEventId.Jump);
             }

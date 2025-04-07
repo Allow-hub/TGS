@@ -7,7 +7,6 @@ namespace TechC
 {
     public partial class CharacterState
     {
-        private bool isHitting = false;
 
         /// <summary>
         /// ダメージを喰らったときのステート

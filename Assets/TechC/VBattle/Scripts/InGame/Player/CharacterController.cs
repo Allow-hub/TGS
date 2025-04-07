@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace TechC.Player
 {
-    public class PlayerController : MonoBehaviour, IDamageable
+    public class CharacterController : MonoBehaviour, IDamageable
     {
         [Header("Reference")]
         [SerializeField] private PlayerInputManager playerInputManager;
-        [SerializeField] private PlayerData playerData;
+        [SerializeField] private CharacterData playerData;
         [SerializeField] private CharacterState characterState;
         [Header("攻撃コンポーネント")]
         [SerializeField] private WeakAttack weakAttack;
@@ -24,6 +24,7 @@ namespace TechC.Player
         private float currentHp;
 
 
+        private Vector3 velocity = Vector3.zero;                    // 現在の速度
         private void Awake()
         {
             // Reflectionを使ってprivateフィールドにアクセスする
@@ -123,6 +124,57 @@ namespace TechC.Player
 
             return Physics.Raycast(rayOrigin, Vector3.down, out hit, rayLength, LayerMask.GetMask("Ground"));
         }
+
+        public void MoveCharacter(
+                        Vector2 moveInput,
+                        bool isGrounded,
+                        float groundAccel,
+                        float airAccel,
+                        float maxSpd,
+                        float groundFrict,
+                        float airFrict,
+                        float turnSpd
+                    )
+        {
+            float acceleration = isGrounded ? groundAccel : airAccel;
+            float friction = isGrounded ? groundFrict : airFrict;
+
+            // 移動方向
+            Vector3 moveDir = new Vector3(moveInput.x, 0, 0);
+
+            if (moveDir != Vector3.zero)
+            {
+                // 方向転換時は素早く減速
+                if (Vector3.Dot(velocity, moveDir) < 0)
+                {
+                    velocity.x = Mathf.MoveTowards(velocity.x, 0, turnSpd * Time.deltaTime);
+                }
+
+                // 加速処理
+                velocity += moveDir * acceleration * Time.deltaTime;
+
+                // 最大速度制限
+                velocity.x = Mathf.Clamp(velocity.x, -maxSpd, maxSpd);
+            }
+            else
+            {
+                // 慣性で滑る
+                velocity.x = Mathf.MoveTowards(velocity.x, 0, friction * Time.deltaTime);
+            }
+
+            // 実際に移動
+            rb.velocity = new Vector3(velocity.x, rb.velocity.y, rb.velocity.z);
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                if (characterState.IsHitting) return;
+                characterState.StateMachine.SendEvent((int)CharacterState.StateEventId.Damage);
+            }
+        }
+
         private void OnDrawGizmos()
         {
             if (!isDrawingRay) return;

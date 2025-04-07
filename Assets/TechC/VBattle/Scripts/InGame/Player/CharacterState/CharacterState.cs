@@ -24,23 +24,26 @@ namespace TechC
             Dead,
             Appeal,
             Attack,
-            WeakAttack,
-            StrongAttack,
         }
 
         [Header("Reference")]
         [SerializeField] private PlayerInputManager playerInputManager;
-        [SerializeField] private PlayerData playerData;
-        [SerializeField] private PlayerController playerController;
+        [SerializeField] private CharacterData playerData;
+        [SerializeField] private Player.CharacterController playerController;
         [SerializeField] private Animator anim;
 
         [Header("攻撃設定")]
         [SerializeField] private AttackManager attackManager;
-       
-        private Vector3 velocity = Vector3.zero;                    // 現在の速度
+
         private bool isGrounded;                                    // 地面判定
 
+        public ImtStateMachine<CharacterState> StateMachine => stateMachine;
+
         private ImtStateMachine<CharacterState> stateMachine;
+
+        public bool IsHitting => isHitting;
+        private bool isHitting = false;
+
         Rigidbody rb;
 
 
@@ -59,7 +62,7 @@ namespace TechC
             stateMachine.AddTransition<AppealState, IdleState>((int)StateEventId.Idle);
             stateMachine.AddTransition<CrouchState, IdleState>((int)StateEventId.Idle);
             stateMachine.AddTransition<AttackState, IdleState>((int)StateEventId.Idle);
-            
+
             //Idleからの遷移
             stateMachine.AddTransition<IdleState, MoveState>((int)StateEventId.Move);
             stateMachine.AddTransition<IdleState, GuardState>((int)StateEventId.Guard);
@@ -84,61 +87,13 @@ namespace TechC
             stateMachine.Update();
             Debug.Log(stateMachine.CurrentStateName);
 
-            isGrounded =playerController.IsGrounded();
+            isGrounded = playerController.IsGrounded();
 
             //Hpが0になったとき
             if (playerController.GetHp() <= 0)
                 stateMachine.SendEvent((int)StateEventId.Dead);
         }
-        public void MoveCharacter(
-                Vector2 moveInput,
-                bool isGrounded,
-                float groundAccel,
-                float airAccel,
-                float maxSpd,
-                float groundFrict,
-                float airFrict,
-                float turnSpd
-            )
-        {
-            float acceleration = isGrounded ? groundAccel : airAccel;
-            float friction = isGrounded ? groundFrict : airFrict;
 
-            // 移動方向
-            Vector3 moveDir = new Vector3(moveInput.x, 0, 0);
-
-            if (moveDir != Vector3.zero)
-            {
-                // 方向転換時は素早く減速
-                if (Vector3.Dot(velocity, moveDir) < 0)
-                {
-                    velocity.x = Mathf.MoveTowards(velocity.x, 0, turnSpd * Time.deltaTime);
-                }
-
-                // 加速処理
-                velocity += moveDir * acceleration * Time.deltaTime;
-
-                // 最大速度制限
-                velocity.x = Mathf.Clamp(velocity.x, -maxSpd, maxSpd);
-            }
-            else
-            {
-                // 慣性で滑る
-                velocity.x = Mathf.MoveTowards(velocity.x, 0, friction * Time.deltaTime);
-            }
-
-            // 実際に移動
-            rb.velocity = new Vector3(velocity.x, rb.velocity.y, rb.velocity.z);
-        }
-
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("Enemy"))
-            {
-                if (isHitting) return;
-                stateMachine.SendEvent((int)StateEventId.Damage);
-            }
-        }
     }
 }
 

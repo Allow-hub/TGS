@@ -24,7 +24,7 @@ namespace TechC
                 if(!Context.playerInputManager.IsCrouching)
                     Context.stateMachine.SendEvent((int)StateEventId.Idle);
                 if (Context.playerInputManager.IsWeakAttacking && Context.playerController.IsGrounded())
-                    Context.stateMachine.SendEvent((int)StateEventId.WeakAttack);
+                    Context.stateMachine.SendEvent((int)StateEventId.Attack);
             }
             protected internal override void Exit()
             {

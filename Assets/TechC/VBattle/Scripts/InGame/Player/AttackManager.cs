@@ -10,7 +10,7 @@ namespace TechC
     public class AttackManager
     {
         private PlayerInputManager playerInputManager;
-        private PlayerController playerController;
+        private Player.CharacterController playerController;
         
         // 他の攻撃タイプも追加可能
         private IAttackBase weakAttack;
@@ -23,7 +23,7 @@ namespace TechC
         /// </summary>
         /// <param name="WeakAttack"></param>
         /// <param name="StrongAttack"></param>
-        public void Initialize(IAttackBase WeakAttack,IAttackBase StrongAttack,PlayerInputManager PlayerInputManager,PlayerController PlayerController  )
+        public void Initialize(IAttackBase WeakAttack,IAttackBase StrongAttack,PlayerInputManager PlayerInputManager, Player.CharacterController PlayerController  )
         {
             weakAttack = WeakAttack;
             strongAttack =StrongAttack;

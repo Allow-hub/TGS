@@ -1,11 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC.Player
 {
     [CreateAssetMenu]
-    public class PlayerData : ScriptableObject
+    public class CharacterData : ScriptableObject
     {
         public string Name;
 

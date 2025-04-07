@@ -33,7 +33,7 @@ namespace TechC
                         Context.stateMachine.SendEvent((int)StateEventId.Idle);
                 }
 
-                Context.MoveCharacter(
+                Context.playerController.MoveCharacter(
                             Context.playerInputManager.MoveInput,
                             Context.isGrounded,
                             Context.groundAcceleration,

@@ -19,8 +19,8 @@ namespace TechC
             protected internal override void Update()
             {
                 base.Update();
-                if (!Context.playerInputManager.IsGarding)
-                    Context.stateMachine.SendEvent((int)StateEventId.Idle);
+                //if (!Context.playerInputManager.IsGarding)
+                //    Context.stateMachine.SendEvent((int)StateEventId.Idle);
             }
 
             protected internal override void Exit()

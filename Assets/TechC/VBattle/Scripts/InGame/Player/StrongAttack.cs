@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TechC
 {
-    public abstract class StrongAttack : MonoBehaviour, IAttackBase
+    public  class StrongAttack : MonoBehaviour , IAttackBase
     {
         protected AttackData neutralAttackData;
         protected AttackData leftAttackData;

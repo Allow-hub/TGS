@@ -1,16 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TechC.Player;
+﻿using System;
 using UnityEngine;
 
 namespace TechC
 {
-    public abstract  class WeakAttack : MonoBehaviour, IAttackBase
+    [Serializable]
+    public  class WeakAttack : MonoBehaviour, IAttackBase
     {
+        [SerializeField]
         protected AttackData neutralAttackData;
+        [SerializeField]
         protected AttackData leftAttackData;
+        [SerializeField]
         protected AttackData rightAttackData;
+        [SerializeField]
         protected AttackData downAttackData;
+        [SerializeField]
         protected AttackData upAttackData;
 
 

@@ -451,10 +451,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3038602571585218795, guid: e118c56b6c2f0c64cb26f52db018648e,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1919128618}
-    - targetCorrespondingSourceObject: {fileID: 3038602571585218795, guid: e118c56b6c2f0c64cb26f52db018648e,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1919128617}
   m_SourcePrefab: {fileID: 100100000, guid: e118c56b6c2f0c64cb26f52db018648e, type: 3}
 --- !u!1 &857033811
@@ -879,10 +875,9 @@ GameObject:
   - component: {fileID: 1389670155}
   - component: {fileID: 1389670157}
   - component: {fileID: 1389670156}
-  - component: {fileID: 1389670167}
-  - component: {fileID: 1389670168}
-  - component: {fileID: 1389670161}
   - component: {fileID: 1389670164}
+  - component: {fileID: 1389670166}
+  - component: {fileID: 1389670165}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -929,6 +924,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306094bde86e85343ae44ddac3588188, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterController: {fileID: 1389670164}
+  weakAttack: {fileID: 1389670166}
 --- !u!114 &1389670157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1088,30 +1085,6 @@ Transform:
   - {fileID: 1232335032}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &1389670161
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1389670154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb1bec790ed1244997932dd03fc48c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerInputManager: {fileID: 1389670156}
-  playerData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
-  playerController: {fileID: 1389670164}
-  anim: {fileID: 1232335037}
-  duration: 3
-  jumpForce: 4
-  groundAcceleration: 10
-  airAcceleration: 10
-  maxSpeed: 5
-  groundFriction: 80
-  airFriction: 5
-  turnSpeed: 35
 --- !u!114 &1389670164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1126,26 +1099,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1389670156}
   playerData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
-  characterState: {fileID: 1389670161}
-  weakAttack: {fileID: 1389670167}
-  strongAttack: {fileID: 1389670168}
+  anim: {fileID: 1232335037}
+  weakAttack: {fileID: 1389670166}
+  strongAttack: {fileID: 1389670165}
   attackSet: {fileID: 11400000, guid: 39a29be2c52e6e04d81ad15576cb5513, type: 2}
   maxGage: 100
+  jumpInputThreshold: 0.7
   rayLength: 1.1
   isDrawingRay: 1
---- !u!114 &1389670167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1389670154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bab1836b44199fe46b454706216e4957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1389670168
+--- !u!114 &1389670165
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1157,6 +1119,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52a12867bcfa7014a9c30e46585e8159, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1389670166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389670154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bab1836b44199fe46b454706216e4957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  neutralAttackData: {fileID: 0}
+  leftAttackData: {fileID: 0}
+  rightAttackData: {fileID: 0}
+  downAttackData: {fileID: 0}
+  upAttackData: {fileID: 0}
 --- !u!1001 &1519539025
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1672,30 +1651,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &1919128618
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1919128616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb1bec790ed1244997932dd03fc48c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerInputManager: {fileID: 1919128619}
-  playerData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
-  playerController: {fileID: 1919128620}
-  anim: {fileID: 1919128628}
-  duration: 3
-  jumpForce: 4
-  groundAcceleration: 30
-  airAcceleration: 20
-  maxSpeed: 30
-  groundFriction: 80
-  airFriction: 5
-  turnSpeed: 35
 --- !u!114 &1919128619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1708,6 +1663,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306094bde86e85343ae44ddac3588188, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterController: {fileID: 0}
+  weakAttack: {fileID: 0}
 --- !u!114 &1919128620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1722,11 +1679,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1919128619}
   playerData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
-  characterState: {fileID: 0}
+  anim: {fileID: 0}
   weakAttack: {fileID: 0}
   strongAttack: {fileID: 0}
   attackSet: {fileID: 0}
   maxGage: 100
+  jumpInputThreshold: 0.7
   rayLength: 1.1
   isDrawingRay: 1
 --- !u!136 &1919128621
@@ -1796,14 +1754,6 @@ MonoBehaviour:
   rightAttackData: {fileID: 0}
   downAttackData: {fileID: 0}
   upAttackData: {fileID: 0}
-  attackOrigin: {fileID: 0}
-  animator: {fileID: 0}
---- !u!95 &1919128628 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 6859270617850623366, guid: e118c56b6c2f0c64cb26f52db018648e,
-    type: 3}
-  m_PrefabInstance: {fileID: 299774912}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

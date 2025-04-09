@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
 {
-    [Serializable]
-    public class Ame_WeakAttack : WeakAttack
+    public class Terami_WeakAttack : WeakAttack
     {
         public override void NeutralAttack()
         {
-            base.NeutralAttack();  
-            
+            base.NeutralAttack();
+
         }
 
         public override void LeftAttack()
@@ -34,10 +32,11 @@ namespace TechC
             base.UpAttack();
         }
 
+        // ExecuteAttackメソッドもオーバーライド
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
-            Debug.Log("オーバーライド,"+attackData.damage);
+            Debug.Log("オーバーライド," + attackData.damage);
         }
 
     }

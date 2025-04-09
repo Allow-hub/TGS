@@ -10,7 +10,7 @@ namespace TechC
         /// <summary>
         /// HPが０になったときのステート
         /// </summary>
-       private class DeadState : ImtStateMachine<CharacterState>.State
+        private class DeadState : ImtStateMachine<CharacterState>.State
         {
             protected internal override void Enter()
             {

@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: NormalComment
   m_EditorClassIdentifier: 
   comment:
-  - a
-  - b
+  - first
+  - second
+  - third

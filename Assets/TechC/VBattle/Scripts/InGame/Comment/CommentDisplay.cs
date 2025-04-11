@@ -21,17 +21,35 @@ namespace TechC
         [SerializeField] private float spawnInterval = 1.5f;
         [SerializeField] private float speed = 100.0f;
 
+        [Header("コメントが出現する場所")]
+        /* コメントが出現する場所 */
+        public GameObject topRightSpawn;
+        public GameObject bottomRightSpawn;
+        private float topRightSpawnPosY;
+        private float bottomRightSpawnPosY;
+        private float spawnPosX;
+        [Header("コメントの位置を取得するオブジェクト(右側)")]
+
+        /* コメントが消滅する場所 */
+        [Header("コメントが消滅する場所")]
+        public GameObject topLeftDespawn;
+        public GameObject buttonLeftDespawn;
+        private float topLeftDespawnPosY;
+        private float buttonLeftDespawnPosY;
+        private float despawnPosX;
+
+
         void Start()
         {
-            StartCoroutine(FlowComments());
+            StartCoroutine(FlowComments()); /* コメント流す処理を開始 */
         }
 
         IEnumerator FlowComments()
         {
-            while(true)
+            while (true)
             {
                 SpawnComment();
-                yield return new WaitForSeconds(spawnInterval);
+                yield return new WaitForSeconds(spawnInterval); /* spawnIntervalの時間待機 */
             }
         }
 
@@ -43,29 +61,54 @@ namespace TechC
                 return;
             }
 
+            /* コメントデータの中からランダムに一つ選択 */
             int index = Random.Range(0, commentData.comment.Length);
             string commentText = commentData.comment[index];
+            // Debug.Log("表示するコメント：" + commentText);
 
+            /* Prefabから新しいコメントオブジェクトを生成 */
             TMP_Text comment = Instantiate(commentPrefab, commentLayer);
             comment.text = commentText;
+            // Debug.Log("実際に設定されたコメント：" + comment.text);
 
             RectTransform rect = comment.GetComponent<RectTransform>();
 
-            /* 初期位置を右端にする */
-            rect.anchoredPosition = new Vector2(commentLayer.rect.width, Random.Range(-commentLayer.rect.height / 2, commentLayer.rect.height / 2));
+            /* コメントを発生させる座標を取得する */
+            topRightSpawnPosY = topRightSpawn.transform.position.y;
+            bottomRightSpawnPosY = bottomRightSpawn.transform.position.y;
+
+            spawnPosX = topRightSpawn.transform.position.x;
+
+            // Debug.Log("コメントを発生させる上のy座標は：" + topRightSpawnPosY);
+            // Debug.Log("コメントを発生させる下のy座標は：" + bottomRightSpawnPosY);
+            // Debug.Log("spawnPosX座標は" + spawnPosX);
+
+            float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
+            rect.anchoredPosition = new Vector2(spawnPosX, randomY);
+
+            /* コメントを非表示にする座標を取得する */
+            topLeftDespawnPosY = topLeftDespawn.transform.position.y;
+            buttonLeftDespawnPosY = buttonLeftDespawn.transform.position.y;
+
+            despawnPosX = topLeftDespawn.transform.position.x;
+
+            
+            Debug.Log("コメントを非表示にさせる上のy座標は：" + topRightSpawnPosY);
+            Debug.Log("コメントを非表示にさせる下のy座標は：" + bottomRightSpawnPosY);
+            Debug.Log("despawnPosX座標は" + spawnPosX);
+
             
             StartCoroutine(MoveComment(rect));
         }
 
         IEnumerator MoveComment(RectTransform rect)
         {
-            while(rect.anchoredPosition.x > -commentLayer.rect.width)
+            while (rect.anchoredPosition.x > -commentLayer.rect.width) /* 左端まで */
             {
                 rect.anchoredPosition += Vector2.left * speed * Time.deltaTime;
-                yield return null;
+                yield return null; /* 次のフレームまで待機 */
             }
-
-            Destroy(rect.gameObject); /* 画面外で削除 */
+            rect.gameObject.SetActive(false); /* 画面外に行くと非表示 */
         }
     }
 }

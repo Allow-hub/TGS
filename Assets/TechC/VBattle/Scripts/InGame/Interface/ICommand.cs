@@ -10,6 +10,8 @@ namespace TechC
         void Execute();
         void Undo();
         bool IsFinished { get; }
+        void ForceFinish();//コマンド割り込み時に強制的に終了させるメソッド
+
 
     }
 }

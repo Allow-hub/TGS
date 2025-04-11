@@ -18,13 +18,7 @@ namespace TechC
             private float elapsedTime = 0;
             private ICommand currentCommand = null;
 
-            // コマンドの優先順位を定義（数値が大きいほど優先度が高い）
-            private readonly Dictionary<System.Type, int> commandPriority = new Dictionary<System.Type, int>
-            {
-                { typeof(MoveCommand), 1 },      // 移動は優先度低め
-                { typeof(CrouchCommand), 2 },    // しゃがみは移動より優先
-                { typeof(JumpCommand), 3 }       // ジャンプは最優先
-            };
+      
 
             protected internal override void Enter()
             {
@@ -52,6 +46,7 @@ namespace TechC
                     {
                         // 現在のコマンドを中断（必要に応じて中断処理を追加）
                         Debug.Log($"[NeutralState] コマンド {currentCommand.GetType().Name} を中断し、{highPriorityCommand.GetType().Name} を実行");
+                        currentCommand.ForceFinish();
                         currentCommand = highPriorityCommand;
                         currentCommand.Execute(); // 最初の1回
                     }
@@ -121,7 +116,7 @@ namespace TechC
             // コマンドの優先度を取得
             private int GetCommandPriority(System.Type commandType)
             {
-                if (commandPriority.TryGetValue(commandType, out int priority))
+                if (Context.commandPriority.TryGetValue(commandType, out int priority))
                 {
                     return priority;
                 }

@@ -29,7 +29,7 @@ namespace TechC
                 }
 
                 //プレイヤーのインプットによってステートを変更する
-                if (Context.playerInputManager.IsGarding)
+                if (Context.playerInputManager.IsGuarding)
                     Context.stateMachine.SendEvent((int)StateEventId.Guard);
                 //if (Context.playerInputManager.IsCrouching)
                 //    Context.stateMachine.SendEvent((int)StateEventId.Crouch);

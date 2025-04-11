@@ -12,7 +12,6 @@ namespace TechC.Player
         public int Hp;
         public float GardPower;
         public float MoveSpeed;
-        public float JumpPower;
         public float Acceleration = 10f;      // 加速度
         public float Deceleration = 8f;       // 減速度
         public float JumpForce = 10f;         // ジャンプ力

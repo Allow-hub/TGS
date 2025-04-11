@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06e5952216fdb6f40b12b62048d26560, type: 3}
+  m_Name: AttackSet_BaseCharacter
+  m_EditorClassIdentifier: 
+  characterName: Base_Character
+  weakNeutral: {fileID: 11400000, guid: 1177b74adfb8c274fb3d7a6f684de930, type: 2}
+  weakUp: {fileID: 11400000, guid: 5dccbb77c623467498465bb8b2f1a3fd, type: 2}
+  weakDown: {fileID: 11400000, guid: a15eb21c80d84594ca0db08ece37afce, type: 2}
+  weakLeft: {fileID: 11400000, guid: 0887aa2ca1096ce4a8a665a4574d63fc, type: 2}
+  weakRight: {fileID: 11400000, guid: ab6836e8cfce6a14dbb0a8183535e7d2, type: 2}
+  strongNeutral: {fileID: 11400000, guid: 8d2104333482b54429548c7136d5d182, type: 2}
+  strongUp: {fileID: 11400000, guid: 9babdb7dcadae81489b1460971521193, type: 2}
+  strongDown: {fileID: 11400000, guid: ebed5bf1f02784f4ea26b13f7cbaf5ba, type: 2}
+  strongLeft: {fileID: 11400000, guid: c8335dd7c6c33ea46b1f54962334acf2, type: 2}
+  strongRight: {fileID: 11400000, guid: 77b8573078c4dfc40addcd780f1e2e2a, type: 2}
+  appealNeutral: {fileID: 11400000, guid: 3fcedbbd66127104681bb1377676723b, type: 2}
+  appealUp: {fileID: 11400000, guid: 017c8e2e8638cef49ab16133bc650355, type: 2}
+  appealDown: {fileID: 11400000, guid: 5ee8e9dc7d9c5eb4e8f6884ed748c6fb, type: 2}
+  appealLeft: {fileID: 11400000, guid: 308936b8f368b0f469e9c32b656dfa79, type: 2}
+  appealRight: {fileID: 11400000, guid: 44fd3f1e079315745b6039883adc7d85, type: 2}

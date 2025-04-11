@@ -6,10 +6,10 @@ namespace TechC
 {
     public class Ame_StrongAttack : StrongAttack
     {
-         public override void NeutralAttack()
+        public override void NeutralAttack()
         {
-            base.NeutralAttack();  
-            
+            base.NeutralAttack();
+
         }
 
         public override void LeftAttack()
@@ -35,7 +35,7 @@ namespace TechC
         // ExecuteAttackメソッドもオーバーライド
         protected override void ExecuteAttack(AttackData attackData)
         {
-            Debug.Log("オーバーライド,"+attackData.damage);
+            Debug.Log("オーバーライド," + attackData.damage);
         }
     }
 }

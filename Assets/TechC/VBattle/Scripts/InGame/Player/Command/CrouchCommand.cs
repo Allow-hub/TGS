@@ -10,8 +10,9 @@ namespace TechC
         private PlayerInputManager playerInputManager;
         private Player.CharacterController characterController;
         private int crouchAnim = Animator.StringToHash("IsCrouching");
-        public bool IsFinished => !playerInputManager.IsCrouching;
+        private bool isForceFinished = false;
 
+        public bool IsFinished => isForceFinished || !playerInputManager.IsCrouching;
         public CrouchCommand(Player.CharacterController characterController, PlayerInputManager playerInputManager)
         {
             this.characterController = characterController;
@@ -20,6 +21,7 @@ namespace TechC
 
         public void Execute()
         {
+            isForceFinished = false;
             characterController.SetAnim(crouchAnim, true);
             if(IsFinished) 
                 characterController.SetAnim(crouchAnim,false);
@@ -27,6 +29,12 @@ namespace TechC
 
         public void Undo()
         {
+        }
+
+        public void ForceFinish()
+        {
+            isForceFinished = true;
+            characterController.SetAnim(crouchAnim, false);
         }
     }
 }

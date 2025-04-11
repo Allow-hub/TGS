@@ -6,31 +6,37 @@ namespace TechC
 {
     // 攻撃コマンド基底クラス
 
-    public abstract class AttackCommand : INeutralUsableCommand
+    public  class AttackCommand : INeutralUsableCommand
     {
-        protected IAttackBase attackImplementation;
-        protected Player.CharacterController character;
+        private CharacterState characterState;
         protected float duration;
         protected float elapsedTime = 0;
+        protected bool isForceFinished = false;
+        public bool IsFinished =>isForceFinished || elapsedTime >= duration;
 
-        public bool IsFinished => elapsedTime >= duration;
-
-        public AttackCommand(IAttackBase attackImplementation, Player.CharacterController character)
+        public AttackCommand(CharacterState characterState)
         {
-            this.attackImplementation = attackImplementation;
-            this.character = character;
+            this.characterState = characterState;
         }
 
-        public abstract void Execute();
+        public  void Execute()
+        {
+            characterState.ChangeAttackState();
+        }
 
         public virtual void Undo()
         {
             // 基本的に攻撃のキャンセルはないが、必要に応じて実装
         }
 
-        public virtual void Update(float deltaTime)
+        //public virtual void Update(float deltaTime)
+        //{
+        //    elapsedTime += deltaTime;
+        //}
+
+        public virtual void ForceFinish()
         {
-            elapsedTime += deltaTime;
+            elapsedTime = 0;
         }
     }
 }

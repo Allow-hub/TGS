@@ -10,7 +10,7 @@ namespace TechC
     /// プレイヤーの行動状態を管理する
     /// またpartialで分離してそれぞれのStateの中身を実装している
     /// </summary>
-    
+
 
     public partial class CharacterState
     {
@@ -20,6 +20,7 @@ namespace TechC
             Neutral,      // 通常状態（立ち/移動/しゃがみなど通常操作を受け付ける状態）
             Air,          // 空中状態
             Attack,       // 攻撃中状態
+            Appeal,       // アピール状態
             Damage,       // 被ダメージ状態
             Guard,        // ガード状態
             Dead          // 死亡状態
@@ -42,6 +43,15 @@ namespace TechC
         private int doubleJumpAnim = Animator.StringToHash("IsDoubleJumping");
         private int crouchAnim = Animator.StringToHash("IsCrouching");
 
+        // コマンドの優先順位を定義（数値が大きいほど優先度が高い）
+        private readonly Dictionary<System.Type, int> commandPriority = new Dictionary<System.Type, int>
+        {
+            { typeof(MoveCommand), 1 },      // 移動は優先度低め
+            { typeof(CrouchCommand), 2 },    // しゃがみは移動より優先
+            { typeof(JumpCommand), 3 } ,      // ジャンプ
+            { typeof(GuardCommand), 4 },       // ガードは最優先
+            {typeof(AttackCommand), 5 }
+        };
         public ImtStateMachine<CharacterState> StateMachine => stateMachine;
 
         private ImtStateMachine<CharacterState> stateMachine;
@@ -101,7 +111,7 @@ namespace TechC
             var newQueue = new Queue<ICommand>();
             foreach (var cmd in commandQueue)
             {
-                if (!(cmd is MoveCommand))
+                if (!(cmd is MoveCommand)&&!(cmd is JumpCommand))
                 {
                     newQueue.Enqueue(cmd);
                 }

@@ -18,7 +18,7 @@ namespace TechC.Player
         public bool IsMoving => isMoving;
         public bool IsCrouching => isCrouching;
         public bool IsJumping => isJumping;
-        public bool IsGarding => isGarding;
+        public bool IsGuarding => isGuarding;
         public bool IsAppealing => isAppealing;
         public bool IsWeakAttacking => isWeakAttacking;
         public bool IsStrongAttacking => isStrongAttacking;
@@ -28,7 +28,7 @@ namespace TechC.Player
         private bool isMoving;
         private bool lastIsMoving;  // 前回の移動状態を保持する変数
         private bool isCrouching;
-        private bool isGarding;
+        private bool isGuarding;
         private bool isJumping;
         private bool isAppealing;
         private bool isWeakAttacking;
@@ -39,6 +39,7 @@ namespace TechC.Player
         private string jumpCommand = "Jump";
         private string attackCommand = "Attack";
         private string crouchCommand = "Crouch";
+        private string guardCommand = "Guard";
 
         private float lastMoveEndTime = 0f; // 前回の移動が終了した時間
         private float dashTimeWindow = 0.3f; // ダッシュ判定の有効時間（秒）
@@ -49,8 +50,9 @@ namespace TechC.Player
             // コマンドを登録
             commands[moveCommand] = new MoveCommand(characterController, this);
             commands[jumpCommand] = new JumpCommand(characterController);
-            commands[attackCommand] = new WeakAttackCommand(weakAttack, characterController);
+            commands[attackCommand] = new AttackCommand(characterState);
             commands[crouchCommand] = new CrouchCommand(characterController, this);
+            commands[guardCommand] =new GuardCommand(characterController,this);
         }
 
 
@@ -126,12 +128,15 @@ namespace TechC.Player
                 isAppealing = false;
         }
 
-        public void OnGard(InputAction.CallbackContext context)
+        public void OnGuard(InputAction.CallbackContext context)
         {
             if (context.started)
-                isGarding = true;
+            {
+                isGuarding = true;
+                characterState.EnqueueCommand(commands[guardCommand]);
+            }
             else if (context.canceled)
-                isGarding = false;
+                isGuarding = false;
         }
 
         public void OnCrouch(InputAction.CallbackContext context)
@@ -148,11 +153,22 @@ namespace TechC.Player
         public void OnWeakAttack(InputAction.CallbackContext context)
         {
             if (context.started)
+            {
                 characterState.EnqueueCommand(commands[attackCommand]);
+                isWeakAttacking = true;
+            }else if (context.canceled)
+                isWeakAttacking = false;
         }
 
         public void OnStrongAttack(InputAction.CallbackContext context)
         {
+            if (context.started)
+            {
+                characterState.EnqueueCommand(commands[attackCommand]);
+                isStrongAttacking = true;
+            }
+            else if (context.canceled)
+                isStrongAttacking = false;
         }
     }
 

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +15,7 @@ namespace TechC
         [Header("アニメーション")]
         public string animationTrigger;
         public float animationSpeed = 1f;
+        public float attackDuration;
         
         [Header("攻撃特性")]
         public int damage;

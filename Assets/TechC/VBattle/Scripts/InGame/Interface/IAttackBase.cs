@@ -14,5 +14,7 @@ namespace TechC
         void RightAttack();
         void DownAttack();
         void UpAttack();
+        float GetDuration(CharacterState.AttackType attackType);
+        void ForceFinish();
     }
 }

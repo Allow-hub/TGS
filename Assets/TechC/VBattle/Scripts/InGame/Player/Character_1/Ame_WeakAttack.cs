@@ -11,7 +11,6 @@ namespace TechC
         public override void NeutralAttack()
         {
             base.NeutralAttack();  
-            
         }
 
         public override void LeftAttack()
@@ -40,5 +39,10 @@ namespace TechC
             Debug.Log("オーバーライド,"+attackData.damage);
         }
 
+        public override void ForceFinish()
+        {
+            base.ForceFinish();
+            Debug.Log("強制終了時");
+        }
     }
 }

@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 
   animationTrigger: IsNormalWeakAttack_1
   animationSpeed: 1
+  attackDuration: 3
   damage: 1000
   knockback: 0
   attackRange: 0

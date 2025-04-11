@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using TechC.Player;
 using UnityEngine;
+using static TechC.CharacterState;
 
 namespace TechC
 {
@@ -40,28 +42,30 @@ namespace TechC
             // if (airAttack == null) Debug.LogError("AirAttack実装が IAttackBase を実装していません");
         }
 
-        // コマンドを作成して返すファクトリメソッド
-        public ICommand CreateAttackCommand(CharacterState.AttackType attackType, bool isWeak, float duration)
-        {
-            IAttackBase attackImpl = isWeak ? weakAttack : strongAttack;
-            switch (attackType)
-            {
-                case CharacterState.AttackType.Neutral:
-                    return isWeak
-                        ? new WeakAttackCommand(attackImpl, characterController)
-                        : new WeakAttackCommand(attackImpl, characterController);
-                case CharacterState.AttackType.Left:
-                    return isWeak
-                        ? new WeakAttackCommand(attackImpl, characterController)
-                        : new WeakAttackCommand(attackImpl, characterController);
-                // 他の方向も同様に
-                default:
-                    Debug.LogWarning("未定義のAttackTypeが指定されました");
-                    return isWeak
-                        ? new WeakAttackCommand(attackImpl, characterController)
-                        : new WeakAttackCommand(attackImpl, characterController);
-            }
-        }
+        //// コマンドを作成して返すファクトリメソッド
+        //public ICommand CreateAttackCommand(CharacterState.AttackType attackType, bool isWeak, float duration)
+        //{
+        //    Debug.Log("CreateCommand");
+        //    IAttackBase attackImpl = isWeak ? weakAttack : strongAttack;
+        //    switch (attackType)
+        //    {
+        //        case CharacterState.AttackType.Neutral:
+        //            return isWeak
+        //                ? new WeakNeutralAttackCommand(attackImpl, characterController, 1)
+        //                : new WeakNeutralAttackCommand(attackImpl, characterController, 1);
+        //        case CharacterState.AttackType.Left:
+        //            return isWeak
+        //                ? new WeakNeutralAttackCommand(attackImpl, characterController, 1)
+        //                : new WeakNeutralAttackCommand(attackImpl, characterController, 1);
+        //        // 他の方向も同様に
+        //        default:
+        //            Debug.LogWarning("未定義のAttackTypeが指定されました");
+        //            return isWeak
+        //                ? new WeakNeutralAttackCommand(attackImpl, characterController, 1)
+        //                : new WeakNeutralAttackCommand(attackImpl, characterController, 1);
+        //    }
+        //    return null;
+        //}
 
 
 
@@ -70,25 +74,28 @@ namespace TechC
         /// </summary>
         /// <param name="attackType"></param>
         /// <param name="context"></param>
-        public void ExecuteAttack(CharacterState.AttackType attackType, CharacterState context)
+        public void ExecuteAttack(AttackType attackType, CharacterState context)
         {
+
             // 空中攻撃はまだ
 
-            float attackDuration = 1.0f; // デフォルト持続時間
+            //float attackDuration = 1.0f; // デフォルト持続時間
 
             // 強攻撃
             if (playerInputManager.IsStrongAttacking && strongAttack != null)
             {
-                var command = CreateAttackCommand(attackType, false, attackDuration);
-                command?.Execute();
+                //var command = CreateAttackCommand(attackType, false, attackDuration);
+                //command?.Execute();
+                ExecuteSpecificAttack(strongAttack, attackType);
                 return;
             }
 
             // 弱攻撃
             if (playerInputManager.IsWeakAttacking && weakAttack != null)
             {
-                var command = CreateAttackCommand(attackType, true, attackDuration);
-                command?.Execute();
+                //var command = CreateAttackCommand(attackType, true, attackDuration);
+                //command?.Execute();
+                ExecuteSpecificAttack(weakAttack, attackType);
                 return;
             }
 
@@ -96,34 +103,40 @@ namespace TechC
         }
 
 
-        ///// <summary>
-        ///// 向きによって攻撃種を変更
-        ///// </summary>
-        ///// <param name="attack"></param>
-        ///// <param name="attackType"></param>
-        //private void ExecuteSpecificAttack(IAttackBase attack, CharacterState.AttackType attackType)
-        //{
-        //    switch (attackType)
-        //    {
-        //        case CharacterState.AttackType.Neutral:
-        //            attack.NeutralAttack();
-        //            break;
-        //        case CharacterState.AttackType.Left:
-        //            attack.LeftAttack();
-        //            break;
-        //        case CharacterState.AttackType.Right:
-        //            attack.RightAttack();
-        //            break;
-        //        case CharacterState.AttackType.Down:
-        //            attack.DownAttack();
-        //            break;
-        //        case CharacterState.AttackType.Up:
-        //            attack.UpAttack();
-        //            break;
-        //        default:
-        //            Debug.LogWarning("未定義のAttackTypeが指定されました");
-        //            break;
-        //    }
-        //}
+        /// <summary>
+        /// 向きによって攻撃種を変更
+        /// </summary>
+        /// <param name="attack"></param>
+        /// <param name="attackType"></param>
+        private void ExecuteSpecificAttack(IAttackBase attack, AttackType attackType)
+        {
+            switch (attackType)
+            {
+                case AttackType.Neutral:
+                    attack.NeutralAttack();
+                    break;
+                case AttackType.Left:
+                    attack.LeftAttack();
+                    break;
+                case AttackType.Right:
+                    attack.RightAttack();
+                    break;
+                case AttackType.Down:
+                    attack.DownAttack();
+                    break;
+                case AttackType.Up:
+                    attack.UpAttack();
+                    break;
+                default:
+                    Debug.LogWarning("未定義のAttackTypeが指定されました");
+                    break;
+            }
+        }
+
+        public float GetDuration(AttackType attackType, bool isWeak)
+        {
+            IAttackBase attackImpl = isWeak ? weakAttack : strongAttack;
+            return attackImpl.GetDuration(attackType);
+        }
     }
 }

@@ -32,5 +32,10 @@ namespace TechC
         public void Undo()
         {
         }
+
+        public void ForceFinish()
+        {
+
+        }
     }
 }

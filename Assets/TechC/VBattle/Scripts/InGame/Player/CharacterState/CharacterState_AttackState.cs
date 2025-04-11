@@ -17,10 +17,8 @@ namespace TechC
         }
         private class AttackState : ImtStateMachine<CharacterState>.State
         {
-            private Queue<ICommand> commandQueue = new Queue<ICommand>();
-            private ICommand currentCommand = null;
             private AttackType attackType;
-            private float duration = 1;
+            private float duration;
             private float elapsedTime = 0;
 
             protected internal override void Enter()
@@ -32,69 +30,25 @@ namespace TechC
                     return;
                 }
                 //CreateAndEnqueueAttackCommand();
-
                 attackType = CheckAttackType();
                 Context.attackManager.ExecuteAttack(attackType, Context);
+                duration = Context.attackManager.GetDuration(attackType, Context.playerInputManager.IsWeakAttacking);
             }
 
             protected internal override void Update()
             {
                 elapsedTime += Time.deltaTime;
-                Debug.Log(commandQueue);
-                //if (elapsedTime >= duration)
-                //    Context.stateMachine.SendEvent((int)StateEventId.Idle);
-
+                if(elapsedTime > duration)
+                {
+                    Context.ChangeNeutralState();
+                }
             }
 
             protected internal override void Exit()
             {
                 elapsedTime = 0;
-                commandQueue.Clear();
-                currentCommand = null;
             }
-            public void EnqueueCommand(ICommand command)
-            {
-                commandQueue.Enqueue(command);
-            }  
-            //// 入力に基づいて攻撃コマンドを作成
-            //private void CreateAndEnqueueAttackCommand()
-            //{
-            //    AttackType attackType = CheckAttackType();
-            //    float attackDuration = 1.0f; // 攻撃の持続時間
-
-            //    if (Context.playerInputManager.IsWeakAttacking)
-            //    {
-            //        ICommand attackCommand = CreateWeakAttackCommand(attackType, attackDuration);
-            //        EnqueueCommand(attackCommand);
-            //    }
-            //    else if (Context.playerInputManager.IsStrongAttacking)
-            //    {
-            //        ICommand attackCommand = CreateStrongAttackCommand(attackType, attackDuration);
-            //        EnqueueCommand(attackCommand);
-            //    }
-            //}
-
-            //// 弱攻撃コマンドの作成
-            //private ICommand CreateWeakAttackCommand(AttackType attackType, float duration)
-            //{
-            //    switch (attackType)
-            //    {
-            //        case AttackType.Neutral:
-            //            return new WeakAttackCommand(Context.attackManager.WeakAttack, Context.characterController, duration);
-            //        case AttackType.Left:
-            //            //return new WeakLeftAttackCommand(Context.attackManager.WeakAttack, Context.characterController, duration);
-            //        // 他の方向も同様に
-            //        default:
-            //            return new WeakAttackCommand(Context.attackManager.WeakAttack, Context.characterController, duration);
-            //    }
-            //}
-
-            //// 強攻撃コマンドの作成（同様に実装）
-            //private ICommand CreateStrongAttackCommand(AttackType attackType, float duration)
-            //{
-            //    // 弱攻撃と同様に実装
-            //    return null; // 仮の戻り値
-            //}
+        
             /// <summary>
             /// 攻撃種方向の確認
             /// </summary>

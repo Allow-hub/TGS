@@ -7,10 +7,11 @@ namespace TechC.Player
     public class CharacterController : MonoBehaviour, IDamageable
     {
         [Header("Reference")]
-        [SerializeField] private PlayerInputManager playerInputManager;
+        [SerializeField] private BaseInputManager playerInputManager;
         [SerializeField] private CharacterData playerData;
         [SerializeField] private CharacterState characterState;
         [SerializeField] private Animator anim;
+        [SerializeField] private CommandHistory commandHistory;
         [Header("攻撃コンポーネント")]
         [SerializeField] private WeakAttack weakAttack;
         [SerializeField] private StrongAttack strongAttack;
@@ -21,6 +22,10 @@ namespace TechC.Player
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
+
+
+        private HitData lastHitData;
+        private float speedMultiplier=1.0f;//スピードバフを受け取るための変数
         private Rigidbody rb;
         private float currentHp;
 
@@ -30,7 +35,7 @@ namespace TechC.Player
         private void Awake()
         {
             var attackManager = new AttackManager();
-            characterState = new CharacterState(playerInputManager, this, attackManager, anim);
+            characterState = new CharacterState(playerInputManager, this, attackManager, anim, commandHistory);
             attackManager?.Initialize(weakAttack, strongAttack, playerInputManager, this);
 
 
@@ -43,17 +48,17 @@ namespace TechC.Player
 
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             characterState.OnUpdate();
-            if(IsGrounded()&&
-                characterState.StateMachine.CurrentStateName != "DamageState"&&
-                characterState.StateMachine.CurrentStateName != "NeutralState"&&
+            if (IsGrounded() &&
+                characterState.StateMachine.CurrentStateName != "DamageState" &&
+                characterState.StateMachine.CurrentStateName != "NeutralState" &&
                 characterState.StateMachine.CurrentStateName != "AttackState")
             {
                 characterState.ChangeNeutralState();
             }
-            else if(!IsGrounded() && characterState.StateMachine.CurrentStateName != "DamageState")
+            else if (!IsGrounded() && characterState.StateMachine.CurrentStateName != "DamageState")
             {
                 characterState.ChangeAirState();
 
@@ -77,54 +82,11 @@ namespace TechC.Player
         {
 
         }
-        //private void SetupAttackData()
-        //{
-        //    if (attackSet == null) return;
 
-        //    // 弱攻撃のデータを設定
-        //    if (weakAttack != null)
-        //    {
-        //        typeof(WeakAttack).GetField("neutralAttackData",
-        //            System.Reflection.BindingFlags.Instance |
-        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakNeutral);
-
-        //        typeof(WeakAttack).GetField("leftAttackData",
-        //            System.Reflection.BindingFlags.Instance |
-        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakLeft);
-        //        typeof(WeakAttack).GetField("rightAttackData",
-        //            System.Reflection.BindingFlags.Instance |
-        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakRight);
-
-        //        typeof(WeakAttack).GetField("downAttackData",
-        //            System.Reflection.BindingFlags.Instance |
-        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakDown);
-        //        typeof(WeakAttack).GetField("upAttackData",
-        //            System.Reflection.BindingFlags.Instance |
-        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakUp);
-        //    }
-
-        //    // 強攻撃のデータを設定
-        //    if (strongAttack != null)
-        //    {
-        //        typeof(StrongAttack).GetField("neutralAttackData",
-        //            System.Reflection.BindingFlags.Instance |
-        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongNeutral);
-
-        //        typeof(StrongAttack).GetField("leftAttackData",
-        //            System.Reflection.BindingFlags.Instance |
-        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongLeft);
-        //        typeof(StrongAttack).GetField("rightAttackData",
-        //            System.Reflection.BindingFlags.Instance |
-        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongRight);
-
-        //        typeof(StrongAttack).GetField("downAttackData",
-        //            System.Reflection.BindingFlags.Instance |
-        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongDown);
-        //        typeof(StrongAttack).GetField("upAttackData",
-        //            System.Reflection.BindingFlags.Instance |
-        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongUp);
-        //    }
-        //}
+        /// <summary>
+        /// 地上にいるかどうか
+        /// </summary>
+        /// <returns></returns>
         public bool IsGrounded()
         {
             Vector3 rayOrigin = transform.position + Vector3.up;
@@ -136,7 +98,7 @@ namespace TechC.Player
         /// <summary>
         /// ステート側で読み込む移動処理
         /// </summary>
-        public void MoveCharacter(float speedMultiplier)
+        public void MoveCharacter(float controlMultiplier)
         {
             // X軸のみの移動方向を取得（Z軸は無視）
             float horizontalInput = playerInputManager.MoveInput.x;
@@ -152,7 +114,7 @@ namespace TechC.Player
                 }
 
                 // 地上での移動
-                GroundMovement(moveDirection, horizontalInput, speedMultiplier);
+                GroundMovement(moveDirection, horizontalInput, controlMultiplier);
             }
             else
             {
@@ -162,10 +124,10 @@ namespace TechC.Player
 
         }
 
-        private void GroundMovement(Vector3 moveDirection, float horizontalInput,float speedMultiplier)
+        private void GroundMovement(Vector3 moveDirection, float horizontalInput, float controlMultiplier)
         {
             // 地上での移動速度
-            float groundSpeed = playerData.MoveSpeed* speedMultiplier;
+            float groundSpeed = playerData.MoveSpeed* controlMultiplier * speedMultiplier;
 
             // 入力があれば移動方向に速度を設定
             if (Mathf.Abs(horizontalInput) > 0.1f)
@@ -189,7 +151,7 @@ namespace TechC.Player
         private void AirMovement(Vector3 moveDirection, float horizontalInput)
         {
             // 空中での移動速度（地上より制限される）
-            float airSpeed = playerData.MoveSpeed * playerData.AirControlMultiplier;
+            float airSpeed = playerData.MoveSpeed *speedMultiplier* playerData.AirControlMultiplier;
 
             // 空中での水平移動（制限付き）
             if (Mathf.Abs(horizontalInput) > 0.1f)
@@ -223,7 +185,7 @@ namespace TechC.Player
         public void DoubleJump()
         {
             // 空中での二段ジャンプ 
-            if (CanDoubleJump() && !IsGrounded() )
+            if (CanDoubleJump() && !IsGrounded())
             {
                 rb.velocity = new Vector3(rb.velocity.x, 0, 0); // 上方向の速度をリセット
                 rb.AddForce(Vector3.up * playerData.DoubleJumpForce, ForceMode.Impulse);
@@ -244,15 +206,36 @@ namespace TechC.Player
         // 二段ジャンプを使用
         private void UseDoubleJump() => hasDoubleJumped = true;
 
+        public void SetLastHitData(HitData hitData) => lastHitData = hitData;
+
+
+        public HitData GetLastHitData() => lastHitData;
+
+
 
         public void SetAnim(int hashName, bool value) => anim.SetBool(hashName, value);
         public CharacterState GetCharacterState() => characterState;
+
+
+        /// <summary>
+        /// スピードバフを適用
+        /// </summary>
+        /// <param name="multiplier"></param>
+        public void AddSpeedMultiplier(float multiplier) => speedMultiplier *= multiplier;
+
+        /// <summary>
+        /// スピードバフを除外
+        /// </summary>
+        /// <param name="multiplier"></param>
+        public void RemoveSpeedMultiplier(float multiplier) => speedMultiplier /= multiplier;
+
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.CompareTag("Enemy"))
+            if (collision.gameObject.CompareTag("Player"))
             {
-                if (characterState.IsHitting) return;
-                characterState.StateMachine.SendEvent((int)CharacterState.StateEventId.Damage);
+                if (collision.gameObject.TryGetComponent<CharacterController>(out CharacterController controller))
+                {
+                }
             }
 
             // 地面に着地した時の処理

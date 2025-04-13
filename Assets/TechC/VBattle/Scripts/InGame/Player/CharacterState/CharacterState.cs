@@ -1,4 +1,5 @@
 ﻿using IceMilkTea.StateMachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TechC.Player;
@@ -11,7 +12,7 @@ namespace TechC
     /// またpartialで分離してそれぞれのStateの中身を実装している
     /// </summary>
 
-
+    [Serializable]
     public partial class CharacterState
     {
         public enum StateEventId
@@ -28,8 +29,12 @@ namespace TechC
         }
 
         [Header("Reference")]
-        private PlayerInputManager playerInputManager;
+        private BaseInputManager playerInputManager;
         private Player.CharacterController characterController;
+        private CommandHistory commandHistory;
+
+        [SerializeField] private bool canDebugLog;
+
         private Animator anim;
 
         private Queue<ICommand> commandQueue = new Queue<ICommand>();
@@ -59,16 +64,18 @@ namespace TechC
         public bool IsHitting => isHitting;
         private bool isHitting = false;
 
-        public CharacterState(PlayerInputManager playerInputManager,
+        public CharacterState(BaseInputManager playerInputManager,
                               Player.CharacterController characterController,
                               AttackManager attackManager,
-                              Animator anim)
+                              Animator anim,
+                              CommandHistory commandHistory)
         {
             this.playerInputManager = playerInputManager;
             this.characterController = characterController;
             this.attackManager = attackManager;
             this.anim = anim;
             Init();
+            this.commandHistory = commandHistory;
         }
 
         private void Init()
@@ -105,13 +112,14 @@ namespace TechC
         public void OnUpdate()
         {
             stateMachine.Update();
-            Debug.Log(stateMachine.CurrentStateName);
+            if (canDebugLog)
+                Debug.Log(stateMachine.CurrentStateName);
 
             // MoveCommand だけ残さないようにフィルタリング
             var newQueue = new Queue<ICommand>();
             foreach (var cmd in commandQueue)
             {
-                if (!(cmd is MoveCommand)&&!(cmd is JumpCommand))
+                if (!(cmd is MoveCommand) && !(cmd is JumpCommand))
                 {
                     newQueue.Enqueue(cmd);
                 }
@@ -135,7 +143,7 @@ namespace TechC
         public void ChangeDamageState() => stateMachine.SendEvent((int)StateEventId.Damage);
         public void ChangeDeadState() => stateMachine.SendEvent((int)StateEventId.Dead);
 
-
+        public bool IsAttackState() => stateMachine.CurrentStateName == "AttackState";
     }
 }
 

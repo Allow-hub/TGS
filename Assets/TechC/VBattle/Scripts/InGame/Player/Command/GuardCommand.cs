@@ -8,13 +8,13 @@ namespace TechC
     public class GuardCommand : INeutralUsableCommand
     {
         private Player.CharacterController characterController;
-        private PlayerInputManager playerInputManager;
+        private BaseInputManager playerInputManager;
         private int guardAnim = Animator.StringToHash("IsGuarding");
         private bool isForceFinished;
 
         public bool IsFinished => isForceFinished || !playerInputManager.IsGuarding;
 
-        public GuardCommand(Player.CharacterController characterController,PlayerInputManager playerInputManager)
+        public GuardCommand(Player.CharacterController characterController,BaseInputManager playerInputManager)
         {
             this.characterController = characterController;
             this.playerInputManager = playerInputManager;

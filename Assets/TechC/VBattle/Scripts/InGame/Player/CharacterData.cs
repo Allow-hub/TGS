@@ -10,7 +10,9 @@ namespace TechC.Player
         public string Name;
 
         public int Hp;
-        public float GardPower;
+        public float GuardPower;              //ガードの耐久値
+        public float GuardRecoverySpeed;      //ガードの回復スピード
+        public float GuardRecoveryInterval;   //ガードの回復までのインターバル
         public float MoveSpeed;
         public float Acceleration = 10f;      // 加速度
         public float Deceleration = 8f;       // 減速度

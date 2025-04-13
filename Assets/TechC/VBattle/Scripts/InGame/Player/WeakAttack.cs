@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using TechC.Player;
 using UnityEngine;
 using static TechC.CharacterState;
 
@@ -7,6 +9,7 @@ namespace TechC
     [Serializable]
     public  class WeakAttack : MonoBehaviour, IAttackBase
     {
+        [SerializeField] protected Player.CharacterController characterController;
         [SerializeField]
         private AttackSet attackSet;
         [SerializeField]
@@ -56,13 +59,21 @@ namespace TechC
             ExecuteAttack(upAttackData);
         }
 
-        // privateからprotectedに変更して子クラスからアクセス可能にする
         protected virtual void ExecuteAttack(AttackData attackData)
         {
-            // ダメージ処理
-            //Debug.Log($"弱攻撃を実行: {attackData.attackName}, ダメージ: {attackData.damage}");
+            StartCoroutine(EndAttack(attackData));
         }
 
+        /// <summary>
+        /// アニメーションの秒数分経過したら自動でfalseに
+        /// </summary>
+        /// <param name="attackData"></param>
+        /// <returns></returns>
+        private IEnumerator EndAttack(AttackData attackData)
+        {
+            yield return new WaitForSeconds(attackData.attackDuration);
+            characterController.SetAnim(attackData.animHash, false);
+        }
         /// <summary>
         /// 強制終了時
         /// </summary>

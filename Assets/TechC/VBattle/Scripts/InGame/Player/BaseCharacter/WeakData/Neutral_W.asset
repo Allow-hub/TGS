@@ -18,7 +18,7 @@ MonoBehaviour:
   animationSpeed: 1
   attackDuration: 1
   damage: 10
-  knockback: 0
+  knockback: 5
   range: 0
   radius: 1
   targetLayers:
@@ -28,10 +28,14 @@ MonoBehaviour:
   hitTiming: 0.5
   hitStopDuration: 0.01
   hitStopTimeScale: 0.2
+  knockbackDirection: {x: 0, y: 1, z: -1}
+  useCustomKnockbackDirection: 1
   soundEffect: {fileID: 0}
   effectPrefab: {fileID: 0}
   effectOffset: {x: 0, y: 0, z: 0}
-  causeStun: 0
-  stunDuration: 0
-  statusEffect: 0
-  statusEffectDuration: 0
+  hitStunDuration: 0.5
+  hitStunLevel: 0
+  isLaunchAttack: 0
+  canTech: 1
+  canDI: 1
+  diInfluence: 0.3

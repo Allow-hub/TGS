@@ -963,6 +963,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 629549810}
   playerData: {fileID: 11400000, guid: 2f8f9795b85e3e64babbdd0fcfc65a02, type: 2}
+  characterState:
+    canDebugLog: 0
   anim: {fileID: 1797276121}
   commandHistory: {fileID: 629549803}
   weakAttack: {fileID: 629549806}
@@ -1605,6 +1607,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1389670156}
   playerData: {fileID: 11400000, guid: 2f8f9795b85e3e64babbdd0fcfc65a02, type: 2}
+  characterState:
+    canDebugLog: 0
   anim: {fileID: 1232335037}
   commandHistory: {fileID: 1389670168}
   weakAttack: {fileID: 1389670167}
@@ -2164,6 +2168,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1919128619}
   playerData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
+  characterState:
+    canDebugLog: 0
   anim: {fileID: 0}
   commandHistory: {fileID: 0}
   weakAttack: {fileID: 0}

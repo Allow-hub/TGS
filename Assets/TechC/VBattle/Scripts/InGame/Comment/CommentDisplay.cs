@@ -28,10 +28,9 @@ namespace TechC
         private float topRightSpawnPosY;
         private float bottomRightSpawnPosY;
         private float spawnPosX;
-        [Header("コメントの位置を取得するオブジェクト(右側)")]
 
         /* コメントが消滅する場所 */
-        [Header("コメントが消滅する場所")]
+        [Header("コメントを非表示にする場所")]
         public GameObject topLeftDespawn;
         public GameObject buttonLeftDespawn;
         private float topLeftDespawnPosY;

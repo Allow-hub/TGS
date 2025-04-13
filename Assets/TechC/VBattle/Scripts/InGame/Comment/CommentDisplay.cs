@@ -41,6 +41,7 @@ namespace TechC
 
         void Start()
         {
+            InitSetPositions(); /* コメントを表示 / 非表示にするメソッドを呼ぶ */
             StartCoroutine(FlowComments()); /* コメント流す処理を開始 */
         }
 
@@ -73,42 +74,52 @@ namespace TechC
 
             RectTransform rect = comment.GetComponent<RectTransform>();
 
-            /* コメントを発生させる座標を取得する */
-            topRightSpawnPosY = topRightSpawn.transform.position.y;
-            bottomRightSpawnPosY = bottomRightSpawn.transform.position.y;
-
-            spawnPosX = topRightSpawn.transform.position.x;
-
-            // Debug.Log("コメントを発生させる上のy座標は：" + topRightSpawnPosY);
-            // Debug.Log("コメントを発生させる下のy座標は：" + bottomRightSpawnPosY);
-            // Debug.Log("spawnPosX座標は" + spawnPosX);
 
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
             rect.anchoredPosition = new Vector2(spawnPosX, randomY);
 
-            /* コメントを非表示にする座標を取得する */
-            topLeftDespawnPosY = topLeftDespawn.transform.position.y;
-            buttonLeftDespawnPosY = buttonLeftDespawn.transform.position.y;
-
-            despawnPosX = topLeftDespawn.transform.position.x;
-
-            
-            Debug.Log("コメントを非表示にさせる上のy座標は：" + topRightSpawnPosY);
-            Debug.Log("コメントを非表示にさせる下のy座標は：" + bottomRightSpawnPosY);
-            Debug.Log("despawnPosX座標は" + spawnPosX);
-
-            
             StartCoroutine(MoveComment(rect));
         }
 
         IEnumerator MoveComment(RectTransform rect)
         {
-            while (rect.anchoredPosition.x > -commentLayer.rect.width) /* 左端まで */
+            while (rect.anchoredPosition.x > despawnPosX) /* 左端まで */
             {
                 rect.anchoredPosition += Vector2.left * speed * Time.deltaTime;
                 yield return null; /* 次のフレームまで待機 */
             }
-            rect.gameObject.SetActive(false); /* 画面外に行くと非表示 */
+            rect.gameObject.SetActive(false); /* どっちを使用しよう */
+        }
+
+        /* 最初にコメントを表示 / 非表示にする座標を取得する */
+        private void InitSetPositions()
+        {
+
+            /* コメントを発生させる座標を取得する */
+            topRightSpawnPosY = topRightSpawn.transform.position.y;
+            bottomRightSpawnPosY = bottomRightSpawn.transform.position.y;
+            spawnPosX = topRightSpawn.transform.position.x;
+
+            /* コメントを非表示にする座標を取得する */
+            topLeftDespawnPosY = topLeftDespawn.transform.position.y;
+            buttonLeftDespawnPosY = buttonLeftDespawn.transform.position.y;
+            despawnPosX = topLeftDespawn.transform.position.x;
+
+            // Debug.Log("コメントを発生させる上のy座標は：" + topRightSpawnPosY);
+            // Debug.Log("コメントを発生させる下のy座標は：" + bottomRightSpawnPosY);
+            // Debug.Log("spawnPosX座標は" + spawnPosX);
+
+            // Debug.Log("コメントを非表示にさせる上のy座標は：" + topRightSpawnPosY);
+            // Debug.Log("コメントを非表示にさせる下のy座標は：" + bottomRightSpawnPosY);
+            // Debug.Log("despawnPosX座標は" + spawnPosX);
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if(other.gameObject.CompareTag("Player"))
+            {
+                Debug.Log("Playerがコメントにぶつかった。");
+            }
         }
     }
 }

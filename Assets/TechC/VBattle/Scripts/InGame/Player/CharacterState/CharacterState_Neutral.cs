@@ -18,7 +18,7 @@ namespace TechC
             private float elapsedTime = 0;
             private ICommand currentCommand = null;
 
-      
+
 
             protected internal override void Enter()
             {
@@ -35,6 +35,17 @@ namespace TechC
                 if (currentCommand == null)
                 {
                     GetNextCommand();
+                    // コマンド履歴に記録
+                    if (Context.commandHistory != null)
+                    {
+                        Context.commandHistory.RecordCommand(
+                            currentCommand,
+                            GetType().Name,
+                            !(currentCommand is INeutralUsableCommand usableCommand) || !usableCommand.IsFinished,
+                            Context.characterController.transform.position
+                        );
+                        //Debug.Log(Context.commandHistory.GetFullHistory());
+                    }
                 }
                 // 現在のコマンドを実行中かつ割り込みコマンドがキューにあるかチェック
                 else
@@ -44,11 +55,23 @@ namespace TechC
 
                     if (highPriorityCommand != null)
                     {
-                        // 現在のコマンドを中断（必要に応じて中断処理を追加）
-                        Debug.Log($"[NeutralState] コマンド {currentCommand.GetType().Name} を中断し、{highPriorityCommand.GetType().Name} を実行");
+                        if (Context.canDebugLog)
+                            // 現在のコマンドを中断（必要に応じて中断処理を追加）
+                            Debug.Log($"[NeutralState] コマンド {currentCommand.GetType().Name} を中断し、{highPriorityCommand.GetType().Name} を実行");
                         currentCommand.ForceFinish();
                         currentCommand = highPriorityCommand;
                         currentCommand.Execute(); // 最初の1回
+                                                  // コマンド履歴に記録
+                        if (Context.commandHistory != null)
+                        {
+                            Context.commandHistory.RecordCommand(
+                                currentCommand,
+                                GetType().Name,
+                                !(currentCommand is INeutralUsableCommand usableCommand) || !usableCommand.IsFinished,
+                                Context.characterController.transform.position
+                            );
+                            //Debug.Log(Context.commandHistory.GetFullHistory());
+                        }
                     }
                     else
                     {
@@ -63,6 +86,7 @@ namespace TechC
                         }
                     }
                 }
+
             }
 
             // 次のコマンドを取得する
@@ -73,6 +97,7 @@ namespace TechC
                     var command = Context.commandQueue.Dequeue();
                     if (command is INeutralUsableCommand usable)
                     {
+                        if(Context.canDebugLog)
                         Debug.Log($"[NeutralState] 対応コマンド: {command.GetType().Name}");
                         currentCommand = usable;
                         currentCommand.Execute(); // 最初の1回

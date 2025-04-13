@@ -8,168 +8,153 @@ using UnityEngine.TextCore.Text;
 
 namespace TechC.Player
 {
-    public class PlayerInputManager : MonoBehaviour
+    public class PlayerInputManager : BaseInputManager
     {
-        [SerializeField] private Player.CharacterController characterController;
-        private CharacterState characterState;
-        [SerializeField] private WeakAttack weakAttack;
-        private Dictionary<string, ICommand> commands = new Dictionary<string, ICommand>();
-        public Vector2 MoveInput => moveInput;
-        public bool IsMoving => isMoving;
-        public bool IsCrouching => isCrouching;
-        public bool IsJumping => isJumping;
-        public bool IsGuarding => isGuarding;
-        public bool IsAppealing => isAppealing;
-        public bool IsWeakAttacking => isWeakAttacking;
-        public bool IsStrongAttacking => isStrongAttacking;
-        public bool IsDashing => isDashing;
-        private Vector2 moveInput;
-
-        private bool isMoving;
-        private bool lastIsMoving;  // 前回の移動状態を保持する変数
-        private bool isCrouching;
-        private bool isGuarding;
-        private bool isJumping;
-        private bool isAppealing;
-        private bool isWeakAttacking;
-        private bool isStrongAttacking;
-        private bool isDashing;
-
-        private string moveCommand = "Move";
-        private string jumpCommand = "Jump";
-        private string attackCommand = "Attack";
-        private string crouchCommand = "Crouch";
-        private string guardCommand = "Guard";
-
-        private float lastMoveEndTime = 0f; // 前回の移動が終了した時間
-        private float dashTimeWindow = 0.3f; // ダッシュ判定の有効時間（秒）
-
-        private void Start()
-        {
-            characterState = characterController.GetCharacterState();
-            // コマンドを登録
-            commands[moveCommand] = new MoveCommand(characterController, this);
-            commands[jumpCommand] = new JumpCommand(characterController);
-            commands[attackCommand] = new AttackCommand(characterState);
-            commands[crouchCommand] = new CrouchCommand(characterController, this);
-            commands[guardCommand] =new GuardCommand(characterController,this);
-        }
-
-
-        private bool hasMoved = false; // 一度でも移動したかどうかのフラグ
-
-        private int lastMoveDirection = 0; // 前回の移動方向 (-1: 左, 0: なし, 1: 右)
-
-        private void Update()
-        {
-            CheckDash();
-        }
-        private void CheckDash()
-        {
-                // 移動入力がある場合
-            if (moveInput.x != 0)
-            {
-                characterState.EnqueueCommand(commands[moveCommand]);
-
-                // 現在の移動方向を取得
-                int currentDirection = moveInput.x > 0 ? 1 : -1;
-
-                // 以前に移動したことがあり、かつ前回の移動終了から一定時間内、かつ同じ方向であればダッシュ
-                if (hasMoved &&
-                    Time.time - lastMoveEndTime <= dashTimeWindow &&
-                    currentDirection == lastMoveDirection)
-                {
-                    isDashing = true;
-                    hasMoved = false; // ダッシュ後はフラグをリセット
-                }
-
-                // 現在の方向を保存
-                lastMoveDirection = currentDirection;
-            }
-            // 移動入力がない場合
-            else
-            {
-                if (lastIsMoving && !isMoving) // 移動が終了した瞬間
-                {
-                    lastMoveEndTime = Time.time; // 移動終了時間を記録
-                    hasMoved = true; // 移動履歴フラグを立てる
-                                     // lastMoveDirection はリセットせず保持する（方向の記憶）
-                }
-
-                isDashing = false; // 移動していない場合はダッシュ解除
-            }
-
-            lastIsMoving = isMoving; // 現在の移動状態を保存
-        }
-
         public void OnMove(InputAction.CallbackContext context)
         {
             moveInput = context.ReadValue<Vector2>();
-            if (context.started)
+            bool started = context.started;
+            bool canceled = context.canceled;
+
+            if (started)
                 isMoving = true;
-            else if (context.canceled)
+            else if (canceled)
             {
                 isMoving = false;
-                isDashing = false ;
+                isDashing = false;
             }
+
+            // 基底クラスメソッドに転送
+            OnMove(moveInput, started, canceled);
         }
 
         public void OnJump(InputAction.CallbackContext context)
         {
-            if (context.started)
-                characterState.EnqueueCommand(commands[jumpCommand]);
-        }
+            bool started = context.started;
+            bool canceled = context.canceled;
 
-        public void OnAppeal(InputAction.CallbackContext context)
-        {
-            if (context.started)
-                isAppealing = true;
-            else if (context.canceled)
-                isAppealing = false;
-        }
+            if (started)
+                isJumping = true;
+            else if (canceled)
+                isJumping = false;
 
-        public void OnGuard(InputAction.CallbackContext context)
-        {
-            if (context.started)
-            {
-                isGuarding = true;
-                characterState.EnqueueCommand(commands[guardCommand]);
-            }
-            else if (context.canceled)
-                isGuarding = false;
+            OnJump(started, canceled);
         }
 
         public void OnCrouch(InputAction.CallbackContext context)
         {
-            if (context.started)
-            {
-                characterState.EnqueueCommand(commands[crouchCommand]);
+            bool started = context.started;
+            bool canceled = context.canceled;
+
+            if (started)
                 isCrouching = true;
-            }
-            else if (context.canceled)
+            else if (canceled)
                 isCrouching = false;
+
+            OnCrouch(started, canceled);
+        }
+
+        public void OnGuard(InputAction.CallbackContext context)
+        {
+            bool started = context.started;
+            bool canceled = context.canceled;
+
+            if (started)
+                isGuarding = true;
+            else if (canceled)
+                isGuarding = false;
+
+            OnGuard(started, canceled);
         }
 
         public void OnWeakAttack(InputAction.CallbackContext context)
         {
-            if (context.started)
-            {
-                characterState.EnqueueCommand(commands[attackCommand]);
+            bool started = context.started;
+            bool canceled = context.canceled;
+
+            if (started)
                 isWeakAttacking = true;
-            }else if (context.canceled)
+            else if (canceled)
                 isWeakAttacking = false;
+
+            OnWeakAttack(started, canceled);
         }
 
         public void OnStrongAttack(InputAction.CallbackContext context)
         {
-            if (context.started)
+            bool started = context.started;
+            bool canceled = context.canceled;
+
+            if (started)
+                isStrongAttacking = true;
+            else if (canceled)
+                isStrongAttacking = false;
+
+            OnStrongAttack(started, canceled);
+        }
+
+        public void OnAppeal(InputAction.CallbackContext context)
+        {
+            bool started = context.started;
+            bool canceled = context.canceled;
+
+            if (started)
+                isAppealing = true;
+            else if (canceled)
+                isAppealing = false;
+
+            OnAppeal(started, canceled);
+        }
+
+        // 基底クラスの抽象メソッド実装
+        public override void OnMove(Vector2 inputValue, bool started, bool canceled)
+        {
+            // 移動コマンドは CheckDash 内で発行されるため、ここでは何もしない
+        }
+
+        public override void OnJump(bool started, bool canceled)
+        {
+            if (started && commands.ContainsKey(jumpCommand))
+            {
+                characterState.EnqueueCommand(commands[jumpCommand]);
+            }
+        }
+
+        public override void OnCrouch(bool started, bool canceled)
+        {
+            if (started && commands.ContainsKey(crouchCommand))
+            {
+                characterState.EnqueueCommand(commands[crouchCommand]);
+            }
+        }
+
+        public override void OnGuard(bool started, bool canceled)
+        {
+            if (started && commands.ContainsKey(guardCommand))
+            {
+                characterState.EnqueueCommand(commands[guardCommand]);
+            }
+        }
+
+        public override void OnWeakAttack(bool started, bool canceled)
+        {
+            if (started && commands.ContainsKey(attackCommand))
             {
                 characterState.EnqueueCommand(commands[attackCommand]);
-                isStrongAttacking = true;
             }
-            else if (context.canceled)
-                isStrongAttacking = false;
+        }
+
+        public override void OnStrongAttack(bool started, bool canceled)
+        {
+            if (started && commands.ContainsKey(attackCommand))
+            {
+                characterState.EnqueueCommand(commands[attackCommand]);
+            }
+        }
+
+        public override void OnAppeal(bool started, bool canceled)
+        {
+            // アピールのコマンドがあれば実行
         }
     }
-
 }

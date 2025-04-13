@@ -16,13 +16,18 @@ MonoBehaviour:
   description: 
   animationTrigger: IsNormalWeakAttack_1
   animationSpeed: 1
-  attackDuration: 5
-  damage: 50000
+  attackDuration: 1
+  damage: 10
   knockback: 0
-  attackRange: 0
+  range: 0
+  radius: 1
   targetLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
+  hitboxOffset: {x: 0, y: 1, z: 1}
+  hitTiming: 0.5
+  hitStopDuration: 0.01
+  hitStopTimeScale: 0.2
   soundEffect: {fileID: 0}
   effectPrefab: {fileID: 0}
   effectOffset: {x: 0, y: 0, z: 0}

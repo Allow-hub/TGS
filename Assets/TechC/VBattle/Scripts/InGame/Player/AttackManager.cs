@@ -11,7 +11,7 @@ namespace TechC
     [System.Serializable]
     public class AttackManager
     {
-        private PlayerInputManager playerInputManager;
+        private BaseInputManager playerInputManager;
         private Player.CharacterController characterController;
         public IAttackBase WeakAttack => weakAttack;
         public IAttackBase StrongAttack => strongAttack;
@@ -26,13 +26,12 @@ namespace TechC
         /// </summary>
         /// <param name="WeakAttack"></param>
         /// <param name="StrongAttack"></param>
-        public void Initialize(IAttackBase WeakAttack,IAttackBase StrongAttack,PlayerInputManager PlayerInputManager, Player.CharacterController CharacterController)
+        public void Initialize(IAttackBase WeakAttack,IAttackBase StrongAttack,BaseInputManager PlayerInputManager, Player.CharacterController CharacterController)
         {
             weakAttack = WeakAttack;
             strongAttack =StrongAttack;
             playerInputManager =PlayerInputManager;
             characterController = CharacterController;
-
             // airAttack = airAttackImplementation as IAttackBase;
             
             if (playerInputManager == null) Debug.LogError("playerInputManagerが空です");

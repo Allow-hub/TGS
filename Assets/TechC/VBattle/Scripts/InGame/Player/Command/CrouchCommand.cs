@@ -7,13 +7,13 @@ namespace TechC
 {
     public class CrouchCommand : INeutralUsableCommand
     {
-        private PlayerInputManager playerInputManager;
+        private BaseInputManager playerInputManager;
         private Player.CharacterController characterController;
         private int crouchAnim = Animator.StringToHash("IsCrouching");
         private bool isForceFinished = false;
 
         public bool IsFinished => isForceFinished || !playerInputManager.IsCrouching;
-        public CrouchCommand(Player.CharacterController characterController, PlayerInputManager playerInputManager)
+        public CrouchCommand(Player.CharacterController characterController, BaseInputManager playerInputManager)
         {
             this.characterController = characterController;
             this.playerInputManager = playerInputManager;

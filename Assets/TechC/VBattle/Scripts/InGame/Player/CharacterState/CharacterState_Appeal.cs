@@ -7,11 +7,11 @@ namespace TechC
 {
     public partial class CharacterState
     {
-        [Header("アピール設定")]
-        [SerializeField] private float duration;
 
         private class AppealState : ImtStateMachine<CharacterState>.State
         {
+            [Header("アピール設定")]
+            private float duration;
             private float elapsedTime;
             protected internal override void Enter()
             {
@@ -22,9 +22,9 @@ namespace TechC
             {
                 base.Update();
                 elapsedTime += Time.deltaTime;
-                if(elapsedTime>Context.duration)
+                if(elapsedTime>duration)
                 {
-                    Context.stateMachine.SendEvent((int)StateEventId.Idle);
+                    //Context.stateMachine.SendEvent((int)StateEventId.Idle);
                     elapsedTime = 0;
                 }
             }

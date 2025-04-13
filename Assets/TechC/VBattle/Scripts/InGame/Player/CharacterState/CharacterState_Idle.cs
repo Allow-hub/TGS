@@ -25,23 +25,23 @@ namespace TechC
             {
                 if (Context.playerInputManager.MoveInput.x != 0)
                 {
-                    Context.stateMachine.SendEvent((int)StateEventId.Move);
+                    //Context.stateMachine.SendEvent((int)StateEventId.Move);
                 }
 
                 //プレイヤーのインプットによってステートを変更する
-                if (Context.playerInputManager.IsGarding)
+                if (Context.playerInputManager.IsGuarding)
                     Context.stateMachine.SendEvent((int)StateEventId.Guard);
-                if (Context.playerInputManager.IsCrouching)
-                    Context.stateMachine.SendEvent((int)StateEventId.Crouch);
-                if (Context.playerInputManager.IsJumping && Context.playerController.IsGrounded())
-                    Context.stateMachine.SendEvent((int)StateEventId.Jump);
-                if (Context.playerInputManager.IsAppealing && Context.playerController.IsGrounded())
-                    Context.stateMachine.SendEvent((int)StateEventId.Appeal);
+                //if (Context.playerInputManager.IsCrouching)
+                //    Context.stateMachine.SendEvent((int)StateEventId.Crouch);
+                //if (Context.playerInputManager.IsJumping && Context.playerController.IsGrounded())
+                //    Context.stateMachine.SendEvent((int)StateEventId.Jump);
+                //if (Context.playerInputManager.IsAppealing && Context.playerController.IsGrounded())
+                //    Context.stateMachine.SendEvent((int)StateEventId.Appeal);
 
-                if (Context.playerInputManager.IsWeakAttacking && Context.playerController.IsGrounded())
-                    Context.stateMachine.SendEvent((int)StateEventId.Attack);
-                if (Context.playerInputManager.IsStrongAttacking && Context.playerController.IsGrounded())
-                    Context.stateMachine.SendEvent((int)StateEventId.Attack);
+                //if (Context.playerInputManager.IsWeakAttacking && Context.playerController.IsGrounded())
+                //    Context.stateMachine.SendEvent((int)StateEventId.Attack);
+                //if (Context.playerInputManager.IsStrongAttacking && Context.playerController.IsGrounded())
+                //    Context.stateMachine.SendEvent((int)StateEventId.Attack);
             }
 
             protected internal override void Exit()

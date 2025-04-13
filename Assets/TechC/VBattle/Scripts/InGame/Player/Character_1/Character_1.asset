@@ -15,5 +15,13 @@ MonoBehaviour:
   Name: V1
   Hp: 100
   GardPower: 100
-  MoveSpeed: 1
+  MoveSpeed: 3
   JumpPower: 100
+  Acceleration: 15
+  Deceleration: 8
+  JumpForce: 5
+  DoubleJumpForce: 6
+  AirControlMultiplier: 0.7
+  AirAcceleration: 5
+  FastFallSpeed: 15
+  RotationSpeed: 10

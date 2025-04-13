@@ -1,4 +1,4 @@
-using IceMilkTea.StateMachine;
+﻿using IceMilkTea.StateMachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,7 +18,7 @@ namespace TechC
         private class AttackState : ImtStateMachine<CharacterState>.State
         {
             private AttackType attackType;
-            private float duration = 1;
+            private float duration;
             private float elapsedTime = 0;
 
             protected internal override void Enter()
@@ -29,24 +29,26 @@ namespace TechC
                     Debug.LogError("AttackManagerが設定されていません");
                     return;
                 }
-
+                //CreateAndEnqueueAttackCommand();
                 attackType = CheckAttackType();
                 Context.attackManager.ExecuteAttack(attackType, Context);
+                duration = Context.attackManager.GetDuration(attackType, Context.playerInputManager.IsWeakAttacking);
             }
 
             protected internal override void Update()
             {
                 elapsedTime += Time.deltaTime;
-                if (elapsedTime >= duration)
-                    Context.stateMachine.SendEvent((int)StateEventId.Idle);
-
+                if(elapsedTime > duration)
+                {
+                    Context.ChangeNeutralState();
+                }
             }
 
             protected internal override void Exit()
             {
                 elapsedTime = 0;
             }
-
+        
             /// <summary>
             /// 攻撃種方向の確認
             /// </summary>

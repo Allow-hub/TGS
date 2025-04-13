@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d62277a4cf745c43bcaa0408b92a2f2, type: 3}
+  m_Name: Up_W
+  m_EditorClassIdentifier: 
+  attackName: Up_W
+  description: 
+  animationTrigger: IsUpWeakAttack
+  animationSpeed: 1
+  attackDuration: 0
+  damage: 0
+  knockback: 0
+  attackRange: 0
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  soundEffect: {fileID: 0}
+  effectPrefab: {fileID: 0}
+  effectOffset: {x: 0, y: 0, z: 0}
+  causeStun: 0
+  stunDuration: 0
+  statusEffect: 0
+  statusEffectDuration: 0

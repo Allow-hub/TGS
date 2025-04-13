@@ -29,7 +29,7 @@ namespace TechC
                 elapsedTime += Time.deltaTime;
                 if (elapsedTime > duration)
                 {
-                    Context.stateMachine.SendEvent((int)StateEventId.Idle);
+                    //Context.stateMachine.SendEvent((int)StateEventId.Idle);
                 }
             }
 

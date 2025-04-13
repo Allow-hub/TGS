@@ -10,34 +10,31 @@ namespace TechC.Player
         [SerializeField] private PlayerInputManager playerInputManager;
         [SerializeField] private CharacterData playerData;
         [SerializeField] private CharacterState characterState;
+        [SerializeField] private Animator anim;
         [Header("攻撃コンポーネント")]
         [SerializeField] private WeakAttack weakAttack;
         [SerializeField] private StrongAttack strongAttack;
-        [SerializeField] private AttackSet attackSet;
+        //[SerializeField] private AttackSet attackSet; 
 
 
         [SerializeField] private float maxGage = 100;
-
+        [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
         private Rigidbody rb;
         private float currentHp;
 
+        private bool hasDoubleJumped = false;
 
         private Vector3 velocity = Vector3.zero;                    // 現在の速度
         private void Awake()
         {
-            // Reflectionを使ってprivateフィールドにアクセスする
-            var attackManagerField = typeof(CharacterState).GetField("attackManager",
-                System.Reflection.BindingFlags.Instance |
-                System.Reflection.BindingFlags.NonPublic);
+            var attackManager = new AttackManager();
+            characterState = new CharacterState(playerInputManager, this, attackManager, anim);
+            attackManager?.Initialize(weakAttack, strongAttack, playerInputManager, this);
 
-            if (attackManagerField != null)
-            {
-                var attackManager = attackManagerField.GetValue(characterState) as AttackManager;
-                attackManager?.Initialize(weakAttack, strongAttack, playerInputManager, this);
-            }
-            SetupAttackData();
+
+            //SetupAttackData();
         }
         private void Start()
         {
@@ -48,6 +45,19 @@ namespace TechC.Player
 
         private void Update()
         {
+            characterState.OnUpdate();
+            if(IsGrounded()&&
+                characterState.StateMachine.CurrentStateName != "DamageState"&&
+                characterState.StateMachine.CurrentStateName != "NeutralState"&&
+                characterState.StateMachine.CurrentStateName != "AttackState")
+            {
+                characterState.ChangeNeutralState();
+            }
+            else if(!IsGrounded() && characterState.StateMachine.CurrentStateName != "DamageState")
+            {
+                characterState.ChangeAirState();
+
+            }
         }
 
         public void AddForcePlayer(Vector3 dir, float force, ForceMode forceMode)
@@ -67,56 +77,54 @@ namespace TechC.Player
         {
 
         }
-        private void SetupAttackData()
-        {
-            if (attackSet == null) return;
+        //private void SetupAttackData()
+        //{
+        //    if (attackSet == null) return;
 
-            // 弱攻撃のデータを設定
-            if (weakAttack != null)
-            {
-                typeof(WeakAttack).GetField("neutralAttackData",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakNeutral);
+        //    // 弱攻撃のデータを設定
+        //    if (weakAttack != null)
+        //    {
+        //        typeof(WeakAttack).GetField("neutralAttackData",
+        //            System.Reflection.BindingFlags.Instance |
+        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakNeutral);
 
-                typeof(WeakAttack).GetField("leftAttackData",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakLeft);
-                typeof(WeakAttack).GetField("rightAttackData",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakRight);
+        //        typeof(WeakAttack).GetField("leftAttackData",
+        //            System.Reflection.BindingFlags.Instance |
+        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakLeft);
+        //        typeof(WeakAttack).GetField("rightAttackData",
+        //            System.Reflection.BindingFlags.Instance |
+        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakRight);
 
-                typeof(WeakAttack).GetField("downAttackData",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakDown);
-                typeof(WeakAttack).GetField("upAttackData",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakUp);
-            }
+        //        typeof(WeakAttack).GetField("downAttackData",
+        //            System.Reflection.BindingFlags.Instance |
+        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakDown);
+        //        typeof(WeakAttack).GetField("upAttackData",
+        //            System.Reflection.BindingFlags.Instance |
+        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(weakAttack, attackSet.weakUp);
+        //    }
 
-            // 強攻撃のデータを設定
-            if (strongAttack != null)
-            {
-                typeof(StrongAttack).GetField("neutralAttackData",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongNeutral);
+        //    // 強攻撃のデータを設定
+        //    if (strongAttack != null)
+        //    {
+        //        typeof(StrongAttack).GetField("neutralAttackData",
+        //            System.Reflection.BindingFlags.Instance |
+        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongNeutral);
 
-                typeof(StrongAttack).GetField("leftAttackData",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongLeft);
-                typeof(StrongAttack).GetField("rightAttackData",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongRight);
+        //        typeof(StrongAttack).GetField("leftAttackData",
+        //            System.Reflection.BindingFlags.Instance |
+        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongLeft);
+        //        typeof(StrongAttack).GetField("rightAttackData",
+        //            System.Reflection.BindingFlags.Instance |
+        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongRight);
 
-                typeof(StrongAttack).GetField("downAttackData",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongDown);
-                typeof(StrongAttack).GetField("upAttackData",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongUp);
-            }
-
-
-        }
+        //        typeof(StrongAttack).GetField("downAttackData",
+        //            System.Reflection.BindingFlags.Instance |
+        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongDown);
+        //        typeof(StrongAttack).GetField("upAttackData",
+        //            System.Reflection.BindingFlags.Instance |
+        //            System.Reflection.BindingFlags.NonPublic)?.SetValue(strongAttack, attackSet.strongUp);
+        //    }
+        //}
         public bool IsGrounded()
         {
             Vector3 rayOrigin = transform.position + Vector3.up;
@@ -125,53 +133,132 @@ namespace TechC.Player
             return Physics.Raycast(rayOrigin, Vector3.down, out hit, rayLength, LayerMask.GetMask("Ground"));
         }
 
-        public void MoveCharacter(
-                        Vector2 moveInput,
-                        bool isGrounded,
-                        float groundAccel,
-                        float airAccel,
-                        float maxSpd,
-                        float groundFrict,
-                        float airFrict,
-                        float turnSpd
-                    )
+        /// <summary>
+        /// ステート側で読み込む移動処理
+        /// </summary>
+        public void MoveCharacter(float speedMultiplier)
         {
-            float acceleration = isGrounded ? groundAccel : airAccel;
-            float friction = isGrounded ? groundFrict : airFrict;
+            // X軸のみの移動方向を取得（Z軸は無視）
+            float horizontalInput = playerInputManager.MoveInput.x;
+            Vector3 moveDirection = new Vector3(horizontalInput, 0, 0).normalized;
 
-            // 移動方向
-            Vector3 moveDir = new Vector3(moveInput.x, 0, 0);
-
-            if (moveDir != Vector3.zero)
+            // 接地判定に基づいて異なる挙動を適用
+            if (IsGrounded())
             {
-                // 方向転換時は素早く減速
-                if (Vector3.Dot(velocity, moveDir) < 0)
+                // 着地したらジャンプ状態をリセット
+                if (hasDoubleJumped)
                 {
-                    velocity.x = Mathf.MoveTowards(velocity.x, 0, turnSpd * Time.deltaTime);
+                    ResetJump();
                 }
 
-                // 加速処理
-                velocity += moveDir * acceleration * Time.deltaTime;
-
-                // 最大速度制限
-                velocity.x = Mathf.Clamp(velocity.x, -maxSpd, maxSpd);
+                // 地上での移動
+                GroundMovement(moveDirection, horizontalInput, speedMultiplier);
             }
             else
             {
-                // 慣性で滑る
-                velocity.x = Mathf.MoveTowards(velocity.x, 0, friction * Time.deltaTime);
+                // 空中での移動
+                AirMovement(moveDirection, horizontalInput);
             }
 
-            // 実際に移動
-            rb.velocity = new Vector3(velocity.x, rb.velocity.y, rb.velocity.z);
         }
 
+        private void GroundMovement(Vector3 moveDirection, float horizontalInput,float speedMultiplier)
+        {
+            // 地上での移動速度
+            float groundSpeed = playerData.MoveSpeed* speedMultiplier;
+
+            // 入力があれば移動方向に速度を設定
+            if (Mathf.Abs(horizontalInput) > 0.1f)
+            {
+                // X軸方向の向きを設定（キャラクターの向き）
+                transform.forward = new Vector3(Mathf.Sign(horizontalInput), 0, 0);
+
+                // 新しい速度を計算（スムーズに変化するためのLerp）
+                velocity = Vector3.Lerp(velocity, moveDirection * groundSpeed, playerData.Acceleration * Time.deltaTime);
+            }
+            else
+            {
+                // 入力がない場合は減速
+                velocity = Vector3.Lerp(velocity, Vector3.zero, playerData.Deceleration * Time.deltaTime);
+            }
+
+            // 移動適用（Z軸の速度は常に0）
+            rb.velocity = new Vector3(velocity.x, rb.velocity.y, 0);
+        }
+
+        private void AirMovement(Vector3 moveDirection, float horizontalInput)
+        {
+            // 空中での移動速度（地上より制限される）
+            float airSpeed = playerData.MoveSpeed * playerData.AirControlMultiplier;
+
+            // 空中での水平移動（制限付き）
+            if (Mathf.Abs(horizontalInput) > 0.1f)
+            {
+                // キャラクターの向きを変更
+                transform.forward = new Vector3(Mathf.Sign(horizontalInput), 0, 0);
+
+                // 空中でも方向転換可能だが、地上より制限される
+                float targetVelocityX = horizontalInput * airSpeed;
+                float newVelocityX = Mathf.Lerp(rb.velocity.x, targetVelocityX, playerData.AirAcceleration * Time.deltaTime);
+
+                rb.velocity = new Vector3(newVelocityX, rb.velocity.y, 0);
+            }
+
+            // 空中でのファストフォール（急降下）- スマブラの特徴的な動き
+            // 垂直入力が十分に下向きの場合のみ発動
+            if (playerInputManager.MoveInput.y < -jumpInputThreshold && rb.velocity.y < 0)
+            {
+                rb.AddForce(Vector3.down * playerData.FastFallSpeed, ForceMode.Acceleration);
+            }
+        }
+
+        public void Jump()
+        {
+            if (IsGrounded())
+            {
+                rb.AddForce(Vector3.up * playerData.JumpForce, ForceMode.Impulse);
+            }
+        }
+
+        public void DoubleJump()
+        {
+            // 空中での二段ジャンプ 
+            if (CanDoubleJump() && !IsGrounded() )
+            {
+                rb.velocity = new Vector3(rb.velocity.x, 0, 0); // 上方向の速度をリセット
+                rb.AddForce(Vector3.up * playerData.DoubleJumpForce, ForceMode.Impulse);
+                UseDoubleJump();
+            }
+        }
+
+
+        // ジャンプ状態をリセット（着地時に呼び出す）
+        private void ResetJump()
+        {
+            hasDoubleJumped = false;
+        }
+
+        // 二段ジャンプが可能かどうか
+        private bool CanDoubleJump() => !hasDoubleJumped;
+
+        // 二段ジャンプを使用
+        private void UseDoubleJump() => hasDoubleJumped = true;
+
+
+        public void SetAnim(int hashName, bool value) => anim.SetBool(hashName, value);
+        public CharacterState GetCharacterState() => characterState;
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.CompareTag("Enemy"))
             {
                 if (characterState.IsHitting) return;
                 characterState.StateMachine.SendEvent((int)CharacterState.StateEventId.Damage);
+            }
+
+            // 地面に着地した時の処理
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                ResetJump();
             }
         }
 

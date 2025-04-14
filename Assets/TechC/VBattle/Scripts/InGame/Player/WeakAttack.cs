@@ -165,6 +165,18 @@ namespace TechC
                 if (hitCollider.gameObject.GetMostParentComponent<Transform>() == characterController.transform)
                     continue;
 
+                if (characterController.GetCharacterState().IsGuardState())
+                {
+                    IGuardable guardable = hitCollider.gameObject.transform.parent.GetComponent<IGuardable>();
+                    if (guardable != null)
+                    {
+                        guardable.GuardDamage(attackData.damage);
+                        Debug.Log("対象がガード中です");
+                        return true;
+                    }
+                }
+
+
                 // ヒットしたオブジェクトにダメージを与える
                 IDamageable target = hitCollider.gameObject.transform.parent.GetComponent<IDamageable>();
                 if (target != null)

@@ -4,18 +4,18 @@ using UnityEngine;
 
 namespace TechC.Player
 {
-    public class CharacterController : MonoBehaviour, IDamageable
+    public class CharacterController : MonoBehaviour, IDamageable ,IGuardable
     {
         [Header("Reference")]
         [SerializeField] private BaseInputManager playerInputManager;
-        [SerializeField] private CharacterData playerData;
+        [SerializeField] private CharacterData characterData;
         [SerializeField] private CharacterState characterState;
         [SerializeField] private Animator anim;
         [SerializeField] private CommandHistory commandHistory;
         [Header("攻撃コンポーネント")]
         [SerializeField] private WeakAttack weakAttack;
         [SerializeField] private StrongAttack strongAttack;
-        //[SerializeField] private AttackSet attackSet; 
+
 
         [SerializeField] private float defaultAnimSpeed = 1.0f;
         public float DefaultAnimSpeed => defaultAnimSpeed;
@@ -29,6 +29,7 @@ namespace TechC.Player
         private float speedMultiplier=1.0f;//スピードバフを受け取るための変数
         private Rigidbody rb;
         private float currentHp;
+        private float currentGuardPower;
 
         private bool hasDoubleJumped = false;
 
@@ -41,12 +42,14 @@ namespace TechC.Player
 
             anim.speed = defaultAnimSpeed;
 
+            currentHp = characterData.Hp;
+            currentGuardPower =characterData.GuardPower;
             //SetupAttackData();
         }
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
-            currentHp = playerData.Hp;
+            currentHp = characterData.Hp;
 
         }
 
@@ -71,8 +74,20 @@ namespace TechC.Player
             => rb.AddForce(dir * force, forceMode);
 
         public float GetHp() => currentHp;
+        public float GetGuardPower() => currentGuardPower;
 
 
+        public void GuardDamage(float damage)
+        {
+            currentGuardPower -= damage;
+            if (currentGuardPower > 0) return;
+            currentGuardPower = 0;
+            GuardBreak();
+        }
+
+        public void GuardBreak()
+        {
+        }
         public void TakeDamage(float damage)
         {
             currentHp -= damage;
@@ -129,7 +144,7 @@ namespace TechC.Player
         private void GroundMovement(Vector3 moveDirection, float horizontalInput, float controlMultiplier)
         {
             // 地上での移動速度
-            float groundSpeed = playerData.MoveSpeed* controlMultiplier * speedMultiplier;
+            float groundSpeed = characterData.MoveSpeed* controlMultiplier * speedMultiplier;
 
             // 入力があれば移動方向に速度を設定
             if (Mathf.Abs(horizontalInput) > 0.1f)
@@ -138,12 +153,12 @@ namespace TechC.Player
                 transform.forward = new Vector3(Mathf.Sign(horizontalInput), 0, 0);
 
                 // 新しい速度を計算（スムーズに変化するためのLerp）
-                velocity = Vector3.Lerp(velocity, moveDirection * groundSpeed, playerData.Acceleration * Time.deltaTime);
+                velocity = Vector3.Lerp(velocity, moveDirection * groundSpeed, characterData.Acceleration * Time.deltaTime);
             }
             else
             {
                 // 入力がない場合は減速
-                velocity = Vector3.Lerp(velocity, Vector3.zero, playerData.Deceleration * Time.deltaTime);
+                velocity = Vector3.Lerp(velocity, Vector3.zero, characterData.Deceleration * Time.deltaTime);
             }
 
             // 移動適用（Z軸の速度は常に0）
@@ -153,7 +168,7 @@ namespace TechC.Player
         private void AirMovement(Vector3 moveDirection, float horizontalInput)
         {
             // 空中での移動速度（地上より制限される）
-            float airSpeed = playerData.MoveSpeed *speedMultiplier* playerData.AirControlMultiplier;
+            float airSpeed = characterData.MoveSpeed *speedMultiplier* characterData.AirControlMultiplier;
 
             // 空中での水平移動（制限付き）
             if (Mathf.Abs(horizontalInput) > 0.1f)
@@ -163,7 +178,7 @@ namespace TechC.Player
 
                 // 空中でも方向転換可能だが、地上より制限される
                 float targetVelocityX = horizontalInput * airSpeed;
-                float newVelocityX = Mathf.Lerp(rb.velocity.x, targetVelocityX, playerData.AirAcceleration * Time.deltaTime);
+                float newVelocityX = Mathf.Lerp(rb.velocity.x, targetVelocityX, characterData.AirAcceleration * Time.deltaTime);
 
                 rb.velocity = new Vector3(newVelocityX, rb.velocity.y, 0);
             }
@@ -172,7 +187,7 @@ namespace TechC.Player
             // 垂直入力が十分に下向きの場合のみ発動
             if (playerInputManager.MoveInput.y < -jumpInputThreshold && rb.velocity.y < 0)
             {
-                rb.AddForce(Vector3.down * playerData.FastFallSpeed, ForceMode.Acceleration);
+                rb.AddForce(Vector3.down * characterData.FastFallSpeed, ForceMode.Acceleration);
             }
         }
 
@@ -180,7 +195,7 @@ namespace TechC.Player
         {
             if (IsGrounded())
             {
-                rb.AddForce(Vector3.up * playerData.JumpForce, ForceMode.Impulse);
+                rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
             }
         }
 
@@ -190,7 +205,7 @@ namespace TechC.Player
             if (CanDoubleJump() && !IsGrounded())
             {
                 rb.velocity = new Vector3(rb.velocity.x, 0, 0); // 上方向の速度をリセット
-                rb.AddForce(Vector3.up * playerData.DoubleJumpForce, ForceMode.Impulse);
+                rb.AddForce(Vector3.up * characterData.DoubleJumpForce, ForceMode.Impulse);
                 UseDoubleJump();
             }
         }
@@ -217,7 +232,11 @@ namespace TechC.Player
         public Animator GetAnim() => anim;
         public void SetAnim(int hashName, bool value) => anim.SetBool(hashName, value);
         public CharacterState GetCharacterState() => characterState;
+        public CharacterData GetCharacterData() => characterData;
 
+
+
+        //----------バフ処理--------------//
 
         /// <summary>
         /// スピードバフを適用
@@ -262,5 +281,6 @@ namespace TechC.Player
             // レイの終端に球を表示
             Gizmos.DrawSphere(rayOrigin + Vector3.down * rayLength, 0.05f);
         }
+
     }
 }

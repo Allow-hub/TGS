@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Base_Character
   Hp: 500
-  GardPower: 100
+  GuardPower: 100
+  GuardRecoverySpeed: 5
+  GuardRecoveryInterval: 1
   MoveSpeed: 2
   Acceleration: 10
   Deceleration: 8

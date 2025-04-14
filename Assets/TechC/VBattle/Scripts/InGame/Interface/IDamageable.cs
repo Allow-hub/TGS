@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +10,15 @@ namespace TechC
     /// </summary>
     public interface IDamageable 
     {
-        public void TakeDamage(float damage);//ダメージを受ける処理
-        public void Des();//破壊されたとき
+        /// <summary>
+        /// ダメージを受ける処理
+        /// </summary>
+        /// <param name="damage"></param>
+        public void TakeDamage(float damage);
+
+        /// <summary>
+        /// 破壊されたとき
+        /// </summary>
+        public void Des();
     }
 }

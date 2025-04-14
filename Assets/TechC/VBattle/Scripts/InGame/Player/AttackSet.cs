@@ -12,7 +12,9 @@ namespace TechC
         public string characterName;
         
         [Header("弱攻撃セット")]
-        public AttackData weakNeutral;
+        public AttackData weakNeutral_1;
+        public AttackData weakNeutral_2;
+        public AttackData weakNeutral_3;
         public AttackData weakUp;
         public AttackData weakDown;
         public AttackData weakLeft;

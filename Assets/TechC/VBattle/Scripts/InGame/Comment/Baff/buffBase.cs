@@ -34,7 +34,7 @@ namespace TechC
         }
         
         /// <summary>
-        /// 
+        /// バフの残り時間を計算する処理
         /// </summary>
         /// <param name="deltaTime"></param>
         /// <param name="target"></param>

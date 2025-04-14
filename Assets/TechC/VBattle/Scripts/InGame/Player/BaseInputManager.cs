@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TechC.Player;
 using UnityEngine;
 
 namespace TechC
@@ -14,6 +15,9 @@ namespace TechC
         protected CommandHistory commandHistory;
 
         protected Dictionary<string, ICommand> commands = new Dictionary<string, ICommand>();
+
+        [Header("Guard")]
+        [SerializeField] private GameObject guardObj;
 
         // 入力状態
         protected Vector2 moveInput;
@@ -81,7 +85,7 @@ namespace TechC
             commands[jumpCommand] = new JumpCommand(characterController);
             commands[attackCommand] = new AttackCommand(characterState);
             commands[crouchCommand] = new CrouchCommand(characterController, this);
-            commands[guardCommand] = new GuardCommand(characterController, this);
+            commands[guardCommand] = new GuardCommand(characterController, this,characterController.GetCharacterData(),guardObj);
         }
 
         protected virtual void Update()

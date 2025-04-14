@@ -86,16 +86,14 @@ namespace TechC
         {
             string typeName = typeof(T).Name;
             float currentTime = Time.time;
-
             for (int i = commandHistory.Count - 1; i >= 0; i--)
             {
                 if (currentTime - commandHistory[i].executionTime > timeWindow)
                     break; // 時間範囲を超えたら終了
-
                 if (commandHistory[i].commandName == typeName && commandHistory[i].wasSuccessful)
                     return true;
-            }
 
+            }
             return false;
         }
 

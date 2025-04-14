@@ -64,6 +64,14 @@ namespace TechC
         public bool IsHitting => isHitting;
         private bool isHitting = false;
 
+        /// <summary>
+        /// キャラクターのステートのコンストラクタ
+        /// </summary>
+        /// <param name="playerInputManager"></param>
+        /// <param name="characterController"></param>
+        /// <param name="attackManager"></param>
+        /// <param name="anim"></param>
+        /// <param name="commandHistory"></param>
         public CharacterState(BaseInputManager playerInputManager,
                               Player.CharacterController characterController,
                               AttackManager attackManager,
@@ -144,6 +152,7 @@ namespace TechC
         public void ChangeDeadState() => stateMachine.SendEvent((int)StateEventId.Dead);
 
         public bool IsAttackState() => stateMachine.CurrentStateName == "AttackState";
+        public bool IsGuardState() => stateMachine.CurrentStateName == "GuardState";
     }
 }
 

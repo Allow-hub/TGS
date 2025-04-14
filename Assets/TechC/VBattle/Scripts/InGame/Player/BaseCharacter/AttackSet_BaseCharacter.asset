@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: AttackSet_BaseCharacter
   m_EditorClassIdentifier: 
   characterName: Base_Character
-  weakNeutral: {fileID: 11400000, guid: 1177b74adfb8c274fb3d7a6f684de930, type: 2}
+  weakNeutral_1: {fileID: 11400000, guid: 1177b74adfb8c274fb3d7a6f684de930, type: 2}
+  weakNeutral_2: {fileID: 11400000, guid: d41428c96ac295d48b2d8b6674005883, type: 2}
+  weakNeutral_3: {fileID: 11400000, guid: 58714b9130199ee44a3b4e0da4a4d09e, type: 2}
   weakUp: {fileID: 11400000, guid: 5dccbb77c623467498465bb8b2f1a3fd, type: 2}
   weakDown: {fileID: 11400000, guid: a15eb21c80d84594ca0db08ece37afce, type: 2}
   weakLeft: {fileID: 11400000, guid: 0887aa2ca1096ce4a8a665a4574d63fc, type: 2}

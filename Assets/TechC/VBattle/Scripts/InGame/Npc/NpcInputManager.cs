@@ -71,9 +71,17 @@ namespace TechC
                 OnWeakAttack(true, false);
                 StartCoroutine(AutoRelease(ActionType.WeakAttack));
             }
+            // 右弱攻撃ボタン
+            if (GUI.Button(new Rect(startX + buttonWidth + padding, currentY, buttonWidth, buttonHeight), "右弱攻撃"))
+            {
+                WeakAttack(true, false, 1, 0);
+                StartCoroutine(AutoRelease(ActionType.WeakAttack));
+            }
+
+            currentY += buttonHeight + padding;
 
             // 強攻撃ボタン
-            if (GUI.Button(new Rect(startX + buttonWidth + padding, currentY, buttonWidth, buttonHeight), "強攻撃"))
+            if (GUI.Button(new Rect(startX , currentY, buttonWidth, buttonHeight), "強攻撃"))
             {
                 OnStrongAttack(true, false);
                 StartCoroutine(AutoRelease(ActionType.StrongAttack));
@@ -116,7 +124,7 @@ namespace TechC
                     OnJump(false, true);
                     break;
                 case ActionType.WeakAttack:
-                    OnWeakAttack(false, true);
+                    WeakAttack(false, true,0,0);
                     break;
                 case ActionType.StrongAttack:
                     OnStrongAttack(false, true);
@@ -138,6 +146,22 @@ namespace TechC
 
             // 基底クラスのUpdateを呼び出し、CheckDashなどを実行
             base.Update();
+        }
+
+
+        private void WeakAttack(bool started, bool canceled,int x,int y)
+        {
+            if (started)
+            {
+                moveInput.x = x;
+                moveInput.y = y;
+                characterState.EnqueueCommand(commands[attackCommand]);
+            }
+            else if (canceled)
+            {
+                moveInput = Vector2.zero;
+            }
+            OnWeakAttack(started, canceled);
         }
 
         // --- 基底クラスの抽象メソッド実装 ---
@@ -197,7 +221,6 @@ namespace TechC
         public override void OnWeakAttack(bool started, bool canceled)
         {
             isWeakAttacking = started;
-
             if (started)
             {
                 characterState.EnqueueCommand(commands[attackCommand]);

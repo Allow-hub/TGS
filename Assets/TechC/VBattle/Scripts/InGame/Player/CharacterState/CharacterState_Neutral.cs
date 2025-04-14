@@ -41,9 +41,10 @@ namespace TechC
                         Context.commandHistory.RecordCommand(
                             currentCommand,
                             GetType().Name,
-                            !(currentCommand is INeutralUsableCommand usableCommand) || !usableCommand.IsFinished,
+                            !(currentCommand is INeutralUsableCommand usableCommand) || usableCommand.IsFinished,
                             Context.characterController.transform.position
                         );
+
                         //Debug.Log(Context.commandHistory.GetFullHistory());
                     }
                 }
@@ -67,7 +68,10 @@ namespace TechC
                             Context.commandHistory.RecordCommand(
                                 currentCommand,
                                 GetType().Name,
-                                !(currentCommand is INeutralUsableCommand usableCommand) || !usableCommand.IsFinished,
+                                //パターンマッチング
+                                //currentCommand が INeutralUsableCommand インターフェースを実装しているかをチェック。
+                                //もしそうなら、usableCommand という変数にキャストされる。
+                                !(currentCommand is INeutralUsableCommand usableCommand) || usableCommand.IsFinished,
                                 Context.characterController.transform.position
                             );
                             //Debug.Log(Context.commandHistory.GetFullHistory());

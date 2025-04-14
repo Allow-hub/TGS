@@ -17,7 +17,8 @@ namespace TechC.Player
         [SerializeField] private StrongAttack strongAttack;
         //[SerializeField] private AttackSet attackSet; 
 
-
+        [SerializeField] private float defaultAnimSpeed = 1.0f;
+        public float DefaultAnimSpeed => defaultAnimSpeed;
         [SerializeField] private float maxGage = 100;
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
@@ -38,6 +39,7 @@ namespace TechC.Player
             characterState = new CharacterState(playerInputManager, this, attackManager, anim, commandHistory);
             attackManager?.Initialize(weakAttack, strongAttack, playerInputManager, this);
 
+            anim.speed = defaultAnimSpeed;
 
             //SetupAttackData();
         }
@@ -212,7 +214,7 @@ namespace TechC.Player
         public HitData GetLastHitData() => lastHitData;
 
 
-
+        public Animator GetAnim() => anim;
         public void SetAnim(int hashName, bool value) => anim.SetBool(hashName, value);
         public CharacterState GetCharacterState() => characterState;
 
@@ -231,12 +233,12 @@ namespace TechC.Player
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.CompareTag("Player"))
-            {
-                if (collision.gameObject.TryGetComponent<CharacterController>(out CharacterController controller))
-                {
-                }
-            }
+            //if (collision.gameObject.CompareTag("Player"))
+            //{
+            //    if (collision.gameObject.TryGetComponent<CharacterController>(out CharacterController controller))
+            //    {
+            //    }
+            //}
 
             // 地面に着地した時の処理
             if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))

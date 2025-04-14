@@ -34,6 +34,28 @@ namespace TechC
             return obj.transform.parent.gameObject.GetComponentInHierarchy<T>();
         }
 
+
+        /// <summary>
+        /// 一番親のオブジェクトのコンポーネントを検索   
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static T GetMostParentComponent<T>(this GameObject obj) where T : Component
+        {
+            // 現在のオブジェクトでコンポーネントを検索
+            T component = obj.GetComponent<T>();
+
+         
+            // 親がない場合はコンポーネントを返す
+            if (obj.transform.parent == null)
+                return component;
+
+            // 親オブジェクトに対して再帰的に検索
+            return obj.transform.parent.gameObject.GetComponentInHierarchy<T>();
+        }
+
+
         /// <summary>
         /// 自身または親階層を遡って指定した型のコンポーネントを取得します
         /// </summary>

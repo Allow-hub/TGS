@@ -7,20 +7,33 @@ namespace TechC.Player
     [CreateAssetMenu]
     public class CharacterData : ScriptableObject
     {
+        [Tooltip("キャラクター名")]
         public string Name;
-
+        [Tooltip("キャラクターのHp")]
         public int Hp;
-        public float GuardPower;              //ガードの耐久値
-        public float GuardRecoverySpeed;      //ガードの回復スピード
-        public float GuardRecoveryInterval;   //ガードの回復までのインターバル
+        [Tooltip("ガードの耐久値")]
+        public float GuardPower;
+        [Tooltip("ガードの回復速度")]
+        public float GuardRecoverySpeed;
+        [Tooltip("ガードの回復までのインターバル")]
+        public float GuardRecoveryInterval;
+        [Tooltip("移動速度")]
         public float MoveSpeed;
-        public float Acceleration = 10f;      // 加速度
-        public float Deceleration = 8f;       // 減速度
-        public float JumpForce = 10f;         // ジャンプ力
-        public float DoubleJumpForce = 8f;    // 二段ジャンプの力
-        public float AirControlMultiplier = 0.7f; // 空中での移動制御係数
-        public float AirAcceleration = 5f;    // 空中での加速度
-        public float FastFallSpeed = 15f;     // 急降下速度
-        public float RotationSpeed = 10f;     // 回転速度
+        [Tooltip("加速度")]
+        public float Acceleration = 10f;
+        [Tooltip("減速度")]
+        public float Deceleration = 8f;
+        [Tooltip("ジャンプ力")]
+        public float JumpForce = 10f;
+        [Tooltip("2段ジャンプの力")]
+        public float DoubleJumpForce = 8f;
+        [Tooltip("空中での移動制御係数")]
+        public float AirControlMultiplier = 0.7f;
+        [Tooltip("空中での加速度")]
+        public float AirAcceleration = 5f;
+        [Tooltip("急降下速度")]
+        public float FastFallSpeed = 15f;
+        [Tooltip("回転速度")]
+        public float RotationSpeed = 10f;
     }
 }

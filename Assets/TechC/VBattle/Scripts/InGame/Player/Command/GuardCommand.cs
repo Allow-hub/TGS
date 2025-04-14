@@ -7,27 +7,44 @@ namespace TechC
 {
     public class GuardCommand : INeutralUsableCommand
     {
+        //参照
+        private GameObject guardObj;
         private Player.CharacterController characterController;
         private BaseInputManager playerInputManager;
-        private int guardAnim = Animator.StringToHash("IsGuarding");
-        private bool isForceFinished;
+        private CharacterData characterData;
 
+        //animation
+        private int guardAnim = Animator.StringToHash("IsGuarding");
+
+
+        //終了
+        private bool isForceFinished;//強制終了
         public bool IsFinished => isForceFinished || !playerInputManager.IsGuarding;
 
-        public GuardCommand(Player.CharacterController characterController,BaseInputManager playerInputManager)
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="characterController"></param>
+        /// <param name="playerInputManager"></param>
+        /// <param name="characterData"></param>
+        /// <param name="guardObj"></param>
+        public GuardCommand(Player.CharacterController characterController,BaseInputManager playerInputManager,CharacterData characterData,GameObject guardObj)
         {
             this.characterController = characterController;
             this.playerInputManager = playerInputManager;
+            this.characterData = characterData;
+            this.guardObj = guardObj;
         }
 
         public void Execute()
         {
             isForceFinished = false;
             characterController.SetAnim(guardAnim,true);
+            guardObj.SetActive(true);
             if(IsFinished)
             {
                 characterController.SetAnim(guardAnim, false);
-
+                guardObj.SetActive(false);
             }
         }
 

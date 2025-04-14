@@ -20,18 +20,34 @@ namespace TechC
         
         [Header("攻撃特性")]
         public int damage;
+
         public float knockback;
-        public float range;      // 攻撃の届く距離
-        public float radius;     // 攻撃の半径
+
+        [Tooltip("攻撃の半径")]
+        public float radius;
+        
+        [Tooltip("攻撃が可能なレイヤー")]
         public LayerMask targetLayers;
-        public Vector3 hitboxOffset; // キャラクターからの相対位置
-        public float hitTiming;     //当たり判定の発生タイミング
-        public float hitStopDuration; // ヒットストップの持続時間
-        public float hitStopTimeScale; // ヒットストップ中の時間スケール
+
+        [Tooltip("キャラクターからの相対位置")]
+        public Vector3 hitboxOffset;
+
+        [Tooltip("当たり判定の発生タイミング")]
+        public float hitTiming;
+
+        [Tooltip("ヒットストップの持続時間")]
+        public float hitStopDuration;
+
+        [Tooltip("ヒットストップ中の時間スケール")]
+        public float hitStopTimeScale; 
 
         [Header("ノックバック設定")]
-        public Vector3 knockbackDirection = Vector3.forward; // 吹っ飛ぶ方向を定義（デフォルトは前方）
-        public bool useCustomKnockbackDirection = false; // カスタム方向を使用するかのフラグ
+
+        [Tooltip("吹っ飛ぶ方向を定義（デフォルトは前方）")]
+        public Vector3 knockbackDirection = Vector3.forward;
+
+        [Tooltip("カスタム方向を使用するかのフラグ")]
+        public bool useCustomKnockbackDirection = false; 
 
         [Header("エフェクト")]
         public AudioClip soundEffect;
@@ -39,7 +55,9 @@ namespace TechC
         public Vector3 effectOffset;
         
         [Header("ヒットスタン設定")]
-        public float hitStunDuration = 0.5f;   // ヒットスタンの持続時間
+
+        [Tooltip("ヒットスタンの持続時間")]
+        public float hitStunDuration = 0.5f;   
         public int hitStunLevel = 0;          // 0=軽い、1=中、2=強い
         public bool isLaunchAttack = false;   // 打ち上げ攻撃か
         public bool canTech = true;           // 受け身可能か

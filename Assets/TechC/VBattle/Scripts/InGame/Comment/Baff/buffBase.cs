@@ -42,12 +42,11 @@ namespace TechC
         public virtual void UpdateBuff(float deltaTime, GameObject target)
         {
             remainingTime -= deltaTime;
-            if (remainingTime <= 0)
-            {
-                Remove(target);
-            }
         }
 
+        /// <summary>
+        /// 残り時間を初期化
+        /// </summary>
         public void ResetDuration()
         {
             remainingTime = buffDuration;

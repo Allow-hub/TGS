@@ -72,7 +72,7 @@ namespace TechC
             // デバッグログ表示
             if (showDebugLog)
             {
-                Debug.Log($"Command Executed: {record}");
+                // Debug.Log($"Command Executed: {record}");
             }
         }
 

@@ -733,7 +733,6 @@ GameObject:
   - component: {fileID: 499721608}
   - component: {fileID: 499721611}
   - component: {fileID: 499721610}
-  - component: {fileID: 499721609}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Untagged
@@ -756,29 +755,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1854956137}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!136 &499721609
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499721607}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!23 &499721610
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -24,8 +24,6 @@ namespace TechC
             protected internal override void Exit()
             {
                 base.Exit();
-
-
             }
         }
     }

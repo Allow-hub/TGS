@@ -87,7 +87,7 @@ namespace TechC
                 rect.anchoredPosition += Vector2.left * speed * Time.deltaTime;
                 yield return null; /* 次のフレームまで待機 */
             }
-            rect.gameObject.SetActive(false); /* どっちを使用しよう */
+            rect.gameObject.SetActive(false);
         }
 
         /* 最初にコメントを表示 / 非表示にする座標を取得する */

@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
 {
+    [Serializable]
     public class SpeedBuff : BuffBase
     {
+        [SerializeField]
         private float speedMultiplier = 3.0f;
 
         public SpeedBuff()

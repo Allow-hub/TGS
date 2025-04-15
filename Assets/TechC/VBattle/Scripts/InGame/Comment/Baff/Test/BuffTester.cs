@@ -7,7 +7,7 @@ namespace TechC
     public class BuffTester : MonoBehaviour
     {
         private BuffManager buffManager;
-        private SpeedBuff speedBuff;
+        [SerializeField]private SpeedBuff speedBuff;
         private GameObject target;
         private bool isBuffApplied = false;
         void Start()
@@ -18,7 +18,7 @@ namespace TechC
             target = gameObject;
 
             /* SpeedBuffのインスタンスを作成 */
-            speedBuff = new SpeedBuff();
+            // speedBuff = new SpeedBuff();
         }
 
         void Update()

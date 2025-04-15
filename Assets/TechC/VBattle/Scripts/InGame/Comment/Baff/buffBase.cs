@@ -8,6 +8,7 @@ namespace TechC
     /// <summary>
     /// 全てのバフの基本処理をまとめた基底クラス
     /// </summary>
+    
     public class BuffBase
     {
         public string buffName { get; protected set; }

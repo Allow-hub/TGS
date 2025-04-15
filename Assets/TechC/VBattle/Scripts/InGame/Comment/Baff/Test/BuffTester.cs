@@ -23,22 +23,6 @@ namespace TechC
 
         void Update()
         {
-            /* バフの更新 */
-            if (isBuffApplied)
-            {
-                if (speedBuff.remainingTime <= 0)
-                {
-                    isBuffApplied = false;
-                    Debug.Log("SpeedBuff 解除！");
-                    var characterController = target.GetComponent<Player.CharacterController>();
-                    if (characterController != null)
-                    {
-                        float baseSpeed = characterController.GetCharacterData().MoveSpeed;
-                        Debug.Log($"バフ解除後のスピード: {baseSpeed}");
-                    }
-                }
-            }
-
             if (Input.GetKeyDown(KeyCode.T))
             {
                 buffManager.ApplyBuff(speedBuff);

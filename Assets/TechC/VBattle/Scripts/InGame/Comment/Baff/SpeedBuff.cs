@@ -6,7 +6,7 @@ namespace TechC
 {
     public class SpeedBuff : BuffBase
     {
-        public float speedMultiplier = 3.0f;
+        private float speedMultiplier = 3.0f;
 
         public SpeedBuff()
         {

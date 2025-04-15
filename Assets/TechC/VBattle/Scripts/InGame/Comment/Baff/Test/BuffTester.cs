@@ -20,32 +20,30 @@ namespace TechC
 
         void Update()
         {
-            if(Input.GetKeyDown(KeyCode.T))
+            /* バフの更新 */
+            if(isBuffApplied)
             {
-                /* バフを適用する */
-                speedBuff.Apply(target);
+                speedBuff.UpdateBuff(Time.deltaTime, target);
 
-                /* できているかどうかの確認用 */
-                CharacterController cc = target.GetComponent<CharacterController>();
-            if (cc != null)
-            {
-                if (!isBuffApplied)
+                if (speedBuff.remainingTime <= 0)
                 {
-                    speedBuff.Apply(target);
-                    isBuffApplied = true;
-                    Debug.Log("SpeedBuff 適用！");
-                }
-                else
-                {
-                    speedBuff.Remove(target);
                     isBuffApplied = false;
                     Debug.Log("SpeedBuff 解除！");
+                    var characterController = target.GetComponent<Player.CharacterController>();
+                if (characterController != null)
+                {
+                    float baseSpeed = characterController.GetCharacterData().MoveSpeed;
+                    Debug.Log($"現在のスピード: {baseSpeed}");
                 }
+                }
+            }
 
-                // 現在の移動速度を表示（GroundかAirどちらかのスピード）
-                float baseSpeed = cc.GetCharacterData().MoveSpeed;
-                float actualSpeed = baseSpeed * (isBuffApplied ? 1.5f : 1.0f);
-                Debug.Log($"現在のスピード: {actualSpeed}");
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                speedBuff.ResetDuration();
+                speedBuff.Apply(target);
+                isBuffApplied = true;
+                Debug.Log("SpeedBuffを適用");
             }
         }
     }

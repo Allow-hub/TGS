@@ -1,31 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// using TechC.Player;
 
 namespace TechC
 {
     public class SpeedBuff : BuffBase
     {
         public float speedMultiplier = 1.5f;
+
+        public SpeedBuff()
+        {
+            buffName = "SpeedBuff";
+            description = "移動速度が上昇する";
+            buffDuration = 3.0f;
+            remainingTime = buffDuration;
+        }
         public override void Apply(GameObject target)
         {
-            TechC.Player.CharacterController cc = target.GetComponent<TechC.Player.CharacterController>();
+            Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
 
-            if (cc != null)
+            if (characterController != null)
             {
                 /* スピード倍率を変更 */
-                cc.AddSpeedMultiplier(speedMultiplier);
+                characterController.AddSpeedMultiplier(speedMultiplier);
             }
         }
 
         public override void Remove(GameObject target)
         {
-            TechC.Player.CharacterController cc = target.GetComponent<TechC.Player.CharacterController>();
+            Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
 
-            if (cc != null)
+            if (characterController != null)
             {
-                cc.RemoveSpeedMultiplier(speedMultiplier);
+                characterController.RemoveSpeedMultiplier(speedMultiplier);
             }
         }
     }

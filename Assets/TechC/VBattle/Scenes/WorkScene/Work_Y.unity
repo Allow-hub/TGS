@@ -1195,6 +1195,7 @@ GameObject:
   - component: {fileID: 1389670170}
   - component: {fileID: 1389670172}
   - component: {fileID: 1389670171}
+  - component: {fileID: 1389670173}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1416,7 +1417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1389670156}
-  characterData: {fileID: 11400000, guid: 2f8f9795b85e3e64babbdd0fcfc65a02, type: 2}
+  characterData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
   characterState:
     canDebugLog: 0
   anim: {fileID: 1232335037}
@@ -1513,6 +1514,18 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: 77b8573078c4dfc40addcd780f1e2e2a, type: 2}
   downAttackData: {fileID: 11400000, guid: ebed5bf1f02784f4ea26b13f7cbaf5ba, type: 2}
   upAttackData: {fileID: 11400000, guid: 9babdb7dcadae81489b1460971521193, type: 2}
+--- !u!114 &1389670173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389670154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc377cb8f8c965349a757e2002b109db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1519539025
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2202,7 +2215,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1919128616}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 484bd76d197ff5b4891d596d93d2223a, type: 3}
+  m_Script: {fileID: 11500000, guid: 78c31368f2ebe5f43a057f1024f8acf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1919128619

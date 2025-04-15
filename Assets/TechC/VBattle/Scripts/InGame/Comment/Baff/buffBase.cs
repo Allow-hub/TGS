@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ namespace TechC
     /// <summary>
     /// 全てのバフの基本処理をまとめた基底クラス
     /// </summary>
-    public class BuffBase : MonoBehaviour
+    public class BuffBase
     {
         public string buffName { get; protected set; }
         public string description { get; protected set; }
@@ -46,6 +46,11 @@ namespace TechC
             {
                 Remove(target);
             }
+        }
+
+        public void ResetDuration()
+        {
+            remainingTime = buffDuration;
         }
     }
 }

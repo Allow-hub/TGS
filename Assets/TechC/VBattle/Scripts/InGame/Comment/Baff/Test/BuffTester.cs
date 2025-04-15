@@ -34,7 +34,7 @@ namespace TechC
                     if (characterController != null)
                     {
                         float baseSpeed = characterController.GetCharacterData().MoveSpeed;
-                        Debug.Log($"現在のスピード: {baseSpeed}");
+                        Debug.Log($"バフ解除後のスピード: {baseSpeed}");
                     }
                 }
             }
@@ -43,7 +43,14 @@ namespace TechC
             {
                 buffManager.ApplyBuff(speedBuff);
                 isBuffApplied = true;
-                Debug.Log("SpeedBuffを適用");
+
+                /* バフ適用後にスピードを出力するよう */
+                // var characterController = target.GetComponent<Player.CharacterController>();
+                // if(characterController != null)
+                // {
+                //     float currentSpeed = characterController.GetCharacterData().MoveSpeed;
+                //     Debug.Log($"バフ適用後のスピード：{currentSpeed}");
+                // }
             }
         }
     }

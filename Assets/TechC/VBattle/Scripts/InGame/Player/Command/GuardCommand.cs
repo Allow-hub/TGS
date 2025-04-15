@@ -44,7 +44,7 @@ namespace TechC
             characterState.ChangeGuardrState();
             characterController.SetAnim(guardAnim,true);
             guardObj.SetActive(true);
-            if(IsFinished)
+            if (IsFinished)
             {
                 characterController.SetAnim(guardAnim, false);
                 guardObj.SetActive(false);
@@ -59,11 +59,8 @@ namespace TechC
         public void ForceFinish()
         {
             Debug.Log("ガードが強制終了しました");
-            
-            characterController.SetAnim(guardAnim, false);
             isForceFinished = true;
             playerInputManager.ResetInput();
-            characterState.ChangeNeutralState();
 
         }
     }

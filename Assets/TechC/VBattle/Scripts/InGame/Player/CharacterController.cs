@@ -59,7 +59,8 @@ namespace TechC.Player
             if (IsGrounded() &&
                 characterState.StateMachine.CurrentStateName != "DamageState" &&
                 characterState.StateMachine.CurrentStateName != "NeutralState" &&
-                characterState.StateMachine.CurrentStateName != "AttackState")
+                characterState.StateMachine.CurrentStateName != "AttackState"&&
+                characterState.StateMachine.CurrentStateName != "GuardState")
             {
                 characterState.ChangeNeutralState();
             }
@@ -77,16 +78,19 @@ namespace TechC.Player
         public float GetGuardPower() => currentGuardPower;
 
 
-        public void GuardDamage(float damage)
+        public void GuardDamage(float damage,ICommand guardCommand)
         {
             currentGuardPower -= damage;
+            Debug.Log(currentGuardPower);
             if (currentGuardPower > 0) return;
             currentGuardPower = 0;
-            GuardBreak();
+            GuardBreak(guardCommand);
         }
 
-        public void GuardBreak()
+        public void GuardBreak(ICommand guardCommand)
         {
+            guardCommand.ForceFinish();
+            Debug.Log("Guardが破壊されました");
         }
         public void TakeDamage(float damage)
         {

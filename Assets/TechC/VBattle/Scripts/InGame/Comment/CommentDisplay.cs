@@ -8,11 +8,14 @@ namespace TechC
 {
     public class CommentDisplay : MonoBehaviour
     {
-        [Header("コメントデータ")]
+        [Header("通常コメントデータ")]
         public NormalCommentData commentData;
+        [Header("バフコメントデータ")]
+        public List<BuffCommentData> buffComments;
 
         [Header("コメントのテキスト用Prefab")]
         public TMP_Text commentPrefab;
+        public TMP_Text buffCommentPrefab;
 
         [Header("コメントが流れるエリア")]
         public RectTransform commentLayer;
@@ -55,31 +58,47 @@ namespace TechC
 
         public void SpawnComment()
         {
-            if (commentData == null || commentData.comment.Length == 0)
+            float buffChance = 0.3f; /* バフのコメントの確率 */
+            bool spawnBuff = Random.value < buffChance; /* 0.0以上1.0未満のランダムなfloat値を返す */
+
+            if (spawnBuff && buffComments != null && buffComments.Count > 0)
             {
-                Debug.LogError("コメントデータが設定されてないか、空");
-                return;
+                /* ランダムにバフコメントをデータから選ぶ */
+                int buffIndex = Random.Range(0, buffComments.Count);
+                BuffCommentData selectedBuff = buffComments[buffIndex];
+
+                /* ランダムにバフバフテキストを選択する */
+                int textIndex = Random.Range(0, selectedBuff.comments.Length);
+                string buffText = selectedBuff.comments[textIndex];
+
+                /* バフコメントのPrefabを流す */
+                TMP_Text comment = Instantiate(buffCommentPrefab, commentLayer);
+                comment.text = buffText;
+
+
+                RectTransform rect = comment.GetComponent<RectTransform>();
+                float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
+                rect.anchoredPosition = new Vector2(spawnPosX, randomY);
+
+                StartCoroutine(MoveComment(rect));
             }
+            else
+            {
+                /* 通常コメント */
 
-            /* コメントデータの中からランダムに一つ選択 */
-            int index = Random.Range(0, commentData.comment.Length);
-            string commentText = commentData.comment[index];
-            // Debug.Log("表示するコメント：" + commentText);
+                int index = Random.Range(0, commentData.comment.Length);
+                string commentText = commentData.comment[index];
 
-            /* Prefabから新しいコメントオブジェクトを生成 */
-            TMP_Text comment = Instantiate(commentPrefab, commentLayer);
-            comment.text = commentText;
-            // Debug.Log("実際に設定されたコメント：" + comment.text);
+                TMP_Text comment = Instantiate(commentPrefab, commentLayer);
+                comment.text = commentText;
 
-            RectTransform rect = comment.GetComponent<RectTransform>();
+                RectTransform rect = comment.GetComponent<RectTransform>();
+                float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
+                rect.anchoredPosition = new Vector2(spawnPosX, randomY);
 
-
-            float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
-            rect.anchoredPosition = new Vector2(spawnPosX, randomY);
-
-            StartCoroutine(MoveComment(rect));
+                StartCoroutine(MoveComment(rect));
+            }
         }
-
         IEnumerator MoveComment(RectTransform rect)
         {
             while (rect.anchoredPosition.x > despawnPosX) /* 左端まで */
@@ -115,7 +134,7 @@ namespace TechC
 
         private void OnCollisionEnter(Collision other)
         {
-            if(other.gameObject.CompareTag("Player"))
+            if (other.gameObject.CompareTag("Player"))
             {
                 Debug.Log("Playerがコメントにぶつかった。");
             }

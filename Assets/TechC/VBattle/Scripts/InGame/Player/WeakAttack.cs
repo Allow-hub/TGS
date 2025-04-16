@@ -33,7 +33,7 @@ namespace TechC
         private float lastAttackRadius;
         private bool isAttacking = false;
         private int neutralAttackCount = 0;
-
+        private Player.CharacterController opponentCharacterController;
 
         public void OnValidate()
         {
@@ -165,12 +165,17 @@ namespace TechC
                 if (hitCollider.gameObject.GetMostParentComponent<Transform>() == characterController.transform)
                     continue;
 
-                if (characterController.GetCharacterState().IsGuardState())
+                //対戦相手のコントローラーからステートを拾いGuardを識別する
+                if (opponentCharacterController == null)
+                    opponentCharacterController = hitCollider.gameObject.transform.parent.GetComponent<Player.CharacterController>();
+                if (opponentCharacterController.GetCharacterState().IsGuardState())
                 {
+
                     IGuardable guardable = hitCollider.gameObject.transform.parent.GetComponent<IGuardable>();
                     if (guardable != null)
                     {
-                        guardable.GuardDamage(attackData.damage);
+                        var opponentState = opponentCharacterController.GetCharacterState();
+                        guardable.GuardDamage(attackData.damage,opponentState.GetCurrentCommand());
                         Debug.Log("対象がガード中です");
                         return true;
                     }

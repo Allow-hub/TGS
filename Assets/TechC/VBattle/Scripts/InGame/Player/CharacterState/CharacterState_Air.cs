@@ -9,7 +9,6 @@ namespace TechC
     {
         private class AirState : ImtStateMachine<CharacterState>.State
         {
-            private ICommand currentCommand = null;
 
 
 
@@ -21,17 +20,9 @@ namespace TechC
             protected internal override void Update()
             {
                 base.Update();
-                // 実行中のコマンドがなければ、新しいコマンドを取り出す
-                if (currentCommand == null)
-                {
-                    GetNextCommand();
-                }
-                // 現在のコマンドを実行中かつ割り込みコマンドがキューにあるかチェック
-                else
-                {
-                    // 現在実行中のコマンドよりも優先度の高いコマンドがキューにあるか確認
-                    var highPriorityCommand = CheckForHighPriorityCommand();
+                Context.HandleCommand<IAirUsableCommand>(ref Context.currentCommand);
 
+<<<<<<< HEAD
                     if (highPriorityCommand != null)
                     {
                         // 現在のコマンドを中断（必要に応じて中断処理を追加）
@@ -111,14 +102,16 @@ namespace TechC
                     return priority;
                 }
                 return 0; // デフォルトの優先度
+=======
+>>>>>>> main
             }
 
             protected internal override void Exit()
             {
                 base.Exit();
-                currentCommand = null;
+                Context.currentCommand = null;
             }
 
-        }   
+        }
     }
 }

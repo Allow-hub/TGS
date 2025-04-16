@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TechC.Player;
 using UnityEngine;
@@ -85,7 +86,7 @@ namespace TechC
             commands[jumpCommand] = new JumpCommand(characterController);
             commands[attackCommand] = new AttackCommand(characterState);
             commands[crouchCommand] = new CrouchCommand(characterController, this);
-            commands[guardCommand] = new GuardCommand(characterController, this,characterController.GetCharacterData(),guardObj);
+            commands[guardCommand] = new GuardCommand(characterState, characterController, this, characterController.GetCharacterData(), guardObj);
         }
 
         protected virtual void Update()
@@ -133,6 +134,20 @@ namespace TechC
             lastIsMoving = isMoving; // 現在の移動状態を保存
         }
 
+        /// <summary>
+        /// 全ての入力をリセット
+        /// </summary>
+        public void ResetInput()
+        {
+            isMoving = false;   
+            isJumping = false;
+            isGuarding = false;
+            isAppealing = false;
+            isCrouching = false;
+            isDashing = false ;
+            isWeakAttacking = false;
+            isStrongAttacking = false ;
+        }
 
         // 各入力に対する抽象メソッド - 継承先で実装
         public abstract void OnMove(Vector2 inputValue, bool started, bool canceled);

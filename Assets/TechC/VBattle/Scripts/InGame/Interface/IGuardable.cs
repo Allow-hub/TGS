@@ -14,12 +14,12 @@ namespace TechC
         /// ガードにダメージを与える処理
         /// </summary>
         /// <param name="damage"></param>
-        public void GuardDamage(float damage);
+        public void GuardDamage(float damage,ICommand guardCommand);
 
 
         /// <summary>
         /// ガードを破壊されたときの処理
         /// </summary>
-        public void GuardBreak();
+        public void GuardBreak(ICommand guardCommand);
     }
 }

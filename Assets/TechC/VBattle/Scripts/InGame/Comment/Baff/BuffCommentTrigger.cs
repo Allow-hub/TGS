@@ -15,12 +15,18 @@ namespace TechC
 
             if (other.CompareTag("Player"))
             {
-                Debug.Log($"バフ{buffType}が発動した");
+                // Debug.Log($"バフ{buffType}が発動した");
 
                 BuffBase buff = BuffFactory.CreateBuff(buffType);
                 if (buff != null)
                 {
-                    buff.Apply(other.gameObject);
+                    BuffManager buffManager = other.GetComponent<BuffManager>();
+                    if(buffManager != null)
+                    {
+                        buffManager.ApplyBuff(buff);
+                    }
+
+                    // buff.Apply(other.gameObject);
                 }
 
                 alreadyApplied = true;

@@ -23,6 +23,8 @@ namespace TechC
         [Header("コメントの設定")]
         [SerializeField] private float spawnInterval = 1.5f;
         [SerializeField] private float speed = 100.0f;
+        [SerializeField, Tooltip("1.0で100%")] 
+        private float buffChance = 0.3f; /* バフのコメントの確率 */
 
         [Header("コメントが出現する場所")]
         /* コメントが出現する場所 */
@@ -58,7 +60,6 @@ namespace TechC
 
         public void SpawnComment()
         {
-            float buffChance = 0.3f; /* バフのコメントの確率 */
             bool spawnBuff = Random.value < buffChance; /* 0.0以上1.0未満のランダムなfloat値を返す */
 
             if (spawnBuff && buffComments != null && buffComments.Count > 0)

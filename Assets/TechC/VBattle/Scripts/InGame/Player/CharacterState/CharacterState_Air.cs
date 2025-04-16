@@ -63,14 +63,14 @@ namespace TechC
                     var command = Context.commandQueue.Dequeue();
                     if (command is IAirUsableCommand usable)
                     {
-                        Debug.Log($"[NeutralState] 対応コマンド: {command.GetType().Name}");
+                        // Debug.Log($"[NeutralState] 対応コマンド: {command.GetType().Name}");
                         currentCommand = usable;
                         currentCommand.Execute(); // 最初の1回
                         break;
                     }
                     else
                     {
-                        Debug.Log($"[NeutralState] 非対応コマンド: {command.GetType().Name}");
+                        // Debug.Log($"[NeutralState] 非対応コマンド: {command.GetType().Name}");
                     }
                 }
             }

@@ -245,6 +245,12 @@ namespace TechC.Player
         public void AddSpeedMultiplier(float multiplier) => speedMultiplier *= multiplier;
 
         /// <summary>
+        /// スピードバフのデバック用
+        /// </summary>
+        /// <returns></returns>
+        public float GetCurrentSpeedMultiplier() => speedMultiplier;
+
+        /// <summary>
         /// スピードバフを除外
         /// </summary>
         /// <param name="multiplier"></param>

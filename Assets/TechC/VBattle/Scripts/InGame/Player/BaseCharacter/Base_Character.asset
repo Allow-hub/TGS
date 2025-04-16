@@ -15,8 +15,9 @@ MonoBehaviour:
   Name: Base_Character
   Hp: 500
   GuardPower: 100
-  GuardRecoverySpeed: 5
-  GuardRecoveryInterval: 1
+  GuardRecoverySpeed: 0.3
+  GuardRecoveryInterval: 8
+  GuardBreakDuration: 0
   MoveSpeed: 2
   Acceleration: 10
   Deceleration: 8

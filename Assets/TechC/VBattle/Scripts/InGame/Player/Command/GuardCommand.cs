@@ -40,10 +40,16 @@ namespace TechC
 
         public void Execute()
         {
+            if (characterController.GetGuardPower() <= 0)
+            {
+                Debug.Log("ガードが復活してません");
+                ForceFinish();
+            }
             isForceFinished = false;
             characterState.ChangeGuardrState();
             characterController.SetAnim(guardAnim,true);
             guardObj.SetActive(true);
+            characterController.SetLastGuardTime(Time.time);//ガードをした時間を記録
             if (IsFinished)
             {
                 characterController.SetAnim(guardAnim, false);

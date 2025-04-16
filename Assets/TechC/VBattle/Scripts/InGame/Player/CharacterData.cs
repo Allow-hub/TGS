@@ -17,6 +17,8 @@ namespace TechC.Player
         public float GuardRecoverySpeed;
         [Tooltip("ガードの回復までのインターバル")]
         public float GuardRecoveryInterval;
+        [Tooltip("ガード破壊スタンの時間")]
+        public float GuardBreakDuration;
         [Tooltip("移動速度")]
         public float MoveSpeed;
         [Tooltip("加速度")]

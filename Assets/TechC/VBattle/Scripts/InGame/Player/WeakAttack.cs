@@ -222,6 +222,9 @@ namespace TechC
         }
 
 
+
+
+
         public float GetDuration(AttackType attackType)
         {
             switch (attackType)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TechC.Player
 {
-    public class CharacterController : MonoBehaviour, IDamageable ,IGuardable
+    public class CharacterController : MonoBehaviour, IDamageable, IGuardable
     {
         [Header("Reference")]
         [SerializeField] private BaseInputManager playerInputManager;
@@ -16,6 +16,9 @@ namespace TechC.Player
         [SerializeField] private WeakAttack weakAttack;
         [SerializeField] private StrongAttack strongAttack;
 
+        [Header("ガード設定")]
+        private float currentGuardPower;
+        private float lastGuardTime;
 
         [SerializeField] private float defaultAnimSpeed = 1.0f;
         public float DefaultAnimSpeed => defaultAnimSpeed;
@@ -26,10 +29,9 @@ namespace TechC.Player
 
 
         private HitData lastHitData;
-        private float speedMultiplier=1.0f;//スピードバフを受け取るための変数
+        private float speedMultiplier = 1.0f;//スピードバフを受け取るための変数
         private Rigidbody rb;
         private float currentHp;
-        private float currentGuardPower;
 
         private bool hasDoubleJumped = false;
 
@@ -43,14 +45,13 @@ namespace TechC.Player
             anim.speed = defaultAnimSpeed;
 
             currentHp = characterData.Hp;
-            currentGuardPower =characterData.GuardPower;
+            currentGuardPower = characterData.GuardPower;
             //SetupAttackData();
         }
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
             currentHp = characterData.Hp;
-
         }
 
         private void FixedUpdate()
@@ -59,7 +60,7 @@ namespace TechC.Player
             if (IsGrounded() &&
                 characterState.StateMachine.CurrentStateName != "DamageState" &&
                 characterState.StateMachine.CurrentStateName != "NeutralState" &&
-                characterState.StateMachine.CurrentStateName != "AttackState"&&
+                characterState.StateMachine.CurrentStateName != "AttackState" &&
                 characterState.StateMachine.CurrentStateName != "GuardState")
             {
                 characterState.ChangeNeutralState();
@@ -67,8 +68,9 @@ namespace TechC.Player
             else if (!IsGrounded() && characterState.StateMachine.CurrentStateName != "DamageState")
             {
                 characterState.ChangeAirState();
-
             }
+            if (CanHeal())
+                HealGuardPower(characterData.GuardRecoverySpeed);
         }
 
         public void AddForcePlayer(Vector3 dir, float force, ForceMode forceMode)
@@ -76,9 +78,9 @@ namespace TechC.Player
 
         public float GetHp() => currentHp;
         public float GetGuardPower() => currentGuardPower;
+        public void SetLastGuardTime(float time) => lastGuardTime = time;
 
-
-        public void GuardDamage(float damage,ICommand guardCommand)
+        public void GuardDamage(float damage, ICommand guardCommand)
         {
             currentGuardPower -= damage;
             Debug.Log(currentGuardPower);
@@ -90,8 +92,24 @@ namespace TechC.Player
         public void GuardBreak(ICommand guardCommand)
         {
             guardCommand.ForceFinish();
+            currentGuardPower = 0;//ガードがマイナスで保存されないように
             Debug.Log("Guardが破壊されました");
         }
+
+        public void HealGuardPower(float value)
+        {
+            if (currentGuardPower < characterData.GuardPower)
+                currentGuardPower += value;
+            else
+                currentGuardPower = characterData.GuardPower;
+            Debug.Log($"{currentGuardPower}");
+        }
+        public bool CanHeal()
+        {
+            var lastGuard = Time.time - lastGuardTime;
+            return lastGuard >= characterData.GuardRecoveryInterval;
+        }
+
         public void TakeDamage(float damage)
         {
             currentHp -= damage;
@@ -148,7 +166,7 @@ namespace TechC.Player
         private void GroundMovement(Vector3 moveDirection, float horizontalInput, float controlMultiplier)
         {
             // 地上での移動速度
-            float groundSpeed = characterData.MoveSpeed* controlMultiplier * speedMultiplier;
+            float groundSpeed = characterData.MoveSpeed * controlMultiplier * speedMultiplier;
 
             // 入力があれば移動方向に速度を設定
             if (Mathf.Abs(horizontalInput) > 0.1f)
@@ -172,7 +190,7 @@ namespace TechC.Player
         private void AirMovement(Vector3 moveDirection, float horizontalInput)
         {
             // 空中での移動速度（地上より制限される）
-            float airSpeed = characterData.MoveSpeed *speedMultiplier* characterData.AirControlMultiplier;
+            float airSpeed = characterData.MoveSpeed * speedMultiplier * characterData.AirControlMultiplier;
 
             // 空中での水平移動（制限付き）
             if (Mathf.Abs(horizontalInput) > 0.1f)

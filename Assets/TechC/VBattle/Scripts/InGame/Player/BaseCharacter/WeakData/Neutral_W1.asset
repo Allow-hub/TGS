@@ -32,7 +32,7 @@ MonoBehaviour:
   soundEffect: {fileID: 0}
   effectPrefab: {fileID: 0}
   effectOffset: {x: 0, y: 0, z: 0}
-  hitStunDuration: 0.5
+  hitStunDuration: 2
   hitStunLevel: 0
   isLaunchAttack: 0
   canTech: 1

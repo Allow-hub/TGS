@@ -6,6 +6,9 @@ using static TechC.CharacterState;
 
 namespace TechC
 {
+    /// <summary>
+    /// アピールは現状Neutral以外使わない予定
+    /// </summary>
     [Serializable]
     public class AppealBase : MonoBehaviour, IAttackBase
     {

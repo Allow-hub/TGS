@@ -43,12 +43,6 @@ namespace TechC
                     // DIの設定
                     //canRecoverWithDI = currentHitData.canDI && currentHitData.hitStunLevel < 2;
 
-                    // ヒットストップ（画面や動きの一時停止）を適用
-                    if (currentHitData.hitStopDuration > 0)
-                    {
-                        // ヒットストップマネージャーがあると仮定
-                        //HitStopManager.I.DoHitStop(currentHitData.hitStopDuration);
-                    }
                 }
                 else
                 {

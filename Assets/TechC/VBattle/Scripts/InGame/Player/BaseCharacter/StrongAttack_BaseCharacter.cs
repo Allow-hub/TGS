@@ -37,5 +37,8 @@ namespace TechC
         {
             Debug.Log("オーバーライド," + attackData.damage);
         }
+        public override void ForceFinish()
+        {
+        }
     }
 }

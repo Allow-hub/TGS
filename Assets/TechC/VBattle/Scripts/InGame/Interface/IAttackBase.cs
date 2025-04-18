@@ -35,15 +35,17 @@ namespace TechC
         void UpAttack();
 
         /// <summary>
+        /// 強制終了
+        /// </summary>
+        void ForceFinish();
+        /// <summary>
         /// 攻撃種を受け取りその攻撃の時間をDataから受ける
         /// </summary>
         /// <param name="attackType"></param>
         /// <returns></returns>
         float GetDuration(CharacterState.AttackType attackType);
 
-        /// <summary>
-        /// 強制終了
-        /// </summary>
-        void ForceFinish();
+        AttackData GetAttackData(CharacterState.AttackType attackType);
+
     }
 }

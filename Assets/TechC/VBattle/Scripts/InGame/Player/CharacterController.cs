@@ -4,59 +4,115 @@ using UnityEngine;
 
 namespace TechC.Player
 {
+    /// <summary>
+    ///キャラクターを管理をするクラス
+    ///regionを使うとタブ化して見やすくできる
+    /// </summary>
     public class CharacterController : MonoBehaviour, IDamageable, IGuardable
     {
-        [Header("Reference")]
+        #region シリアライズされたフィールド
+        [Header("基本リファレンス")]
         [SerializeField] private BaseInputManager playerInputManager;
         [SerializeField] private CharacterData characterData;
         [SerializeField] private CharacterState characterState;
         [SerializeField] private Animator anim;
         [SerializeField] private CommandHistory commandHistory;
+
         [Header("攻撃コンポーネント")]
         [SerializeField] private WeakAttack weakAttack;
         [SerializeField] private StrongAttack strongAttack;
+        [SerializeField] private AppealBase appealBase;
 
         [Header("ガード設定")]
-        private float currentGuardPower;
-        private float lastGuardTime;
-
         [SerializeField] private float defaultAnimSpeed = 1.0f;
-        public float DefaultAnimSpeed => defaultAnimSpeed;
-        [SerializeField] private float maxGage = 100;
+
+        [Header("必殺技設定")]
+        [SerializeField] private float maxGauge = 100f;
+
+        [Header("移動・ジャンプ設定")]
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
+        #endregion
 
+        #region プライベート変数
+        // ガード関連
+        private float currentGuardPower;
+        private float lastGuardTime;
 
-        private HitData lastHitData;
-        private float speedMultiplier = 1.0f;//スピードバフを受け取るための変数
+        // 必殺技関連
+        private CharacterGauge characterGauge;
+
+        // 移動・物理関連
         private Rigidbody rb;
-        private float currentHp;
+        private Vector3 velocity = Vector3.zero; // 現在の速度
+        private float speedMultiplier = 1.0f; // スピードバフを受け取るための変数
 
+        // ジャンプ関連
         private bool hasDoubleJumped = false;
 
-        private Vector3 velocity = Vector3.zero;                    // 現在の速度
+        // 戦闘関連
+        private float currentHp;
+        private HitData lastHitData;
+        #endregion
+
+        #region プロパティ
+        public float DefaultAnimSpeed => defaultAnimSpeed;
+        #endregion
+
+        #region 初期化メソッド
         private void Awake()
         {
+            // アタックマネージャーの初期化
             var attackManager = new AttackManager();
+            var previousDebugLogValue = characterState?.canDebugLog ?? false;
             characterState = new CharacterState(playerInputManager, this, attackManager, anim, commandHistory);
-            attackManager?.Initialize(weakAttack, strongAttack, playerInputManager, this);
+            characterState.canDebugLog = previousDebugLogValue;
+            attackManager?.Initialize(weakAttack, strongAttack, appealBase, playerInputManager, this);
 
+            // アニメーション設定
             anim.speed = defaultAnimSpeed;
 
+            // パラメータ初期化
             currentHp = characterData.Hp;
             currentGuardPower = characterData.GuardPower;
-            //SetupAttackData();
+
+            // 必殺技ゲージの初期化
+            characterGauge = new CharacterGauge(maxGauge);
         }
+
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
             currentHp = characterData.Hp;
         }
+        #endregion
 
+        #region 更新メソッド
         private void FixedUpdate()
         {
+            // プレイヤーのステート管理
             characterState.OnUpdate();
+
+            // ステート遷移制御
+            UpdateStateTransitions();
+
+            // ガード値回復処理
+            if (CanHeal())
+                HealGuardPower(characterData.GuardRecoverySpeed);
+        }
+
+        /// <summary>
+        /// ステート遷移の条件をチェックして適切なステートに変更する
+        /// </summary>
+        private void UpdateStateTransitions()
+        {
+            // 通常ステートへの遷移条件
+            // 1.地上にいる場合
+            // 2.ダメージステートでない場合
+            // 3.通常ステートでない場合
+            // 4.アタックステートでない場合
+            // 5.ガードステートでない場合
             if (IsGrounded() &&
                 characterState.StateMachine.CurrentStateName != "DamageState" &&
                 characterState.StateMachine.CurrentStateName != "NeutralState" &&
@@ -69,63 +125,19 @@ namespace TechC.Player
             {
                 characterState.ChangeAirState();
             }
-            if (CanHeal())
-                HealGuardPower(characterData.GuardRecoverySpeed);
         }
+        #endregion
 
+        #region 物理・移動関連メソッド
+        /// <summary>
+        /// キャラクターに力を加える
+        /// </summary>
         public void AddForcePlayer(Vector3 dir, float force, ForceMode forceMode)
             => rb.AddForce(dir * force, forceMode);
 
-        public float GetHp() => currentHp;
-        public float GetGuardPower() => currentGuardPower;
-        public void SetLastGuardTime(float time) => lastGuardTime = time;
-
-        public void GuardDamage(float damage, ICommand guardCommand)
-        {
-            currentGuardPower -= damage;
-            Debug.Log(currentGuardPower);
-            if (currentGuardPower > 0) return;
-            currentGuardPower = 0;
-            GuardBreak(guardCommand);
-        }
-
-        public void GuardBreak(ICommand guardCommand)
-        {
-            guardCommand.ForceFinish();
-            currentGuardPower = 0;//ガードがマイナスで保存されないように
-            Debug.Log("Guardが破壊されました");
-        }
-
-        public void HealGuardPower(float value)
-        {
-            if (currentGuardPower < characterData.GuardPower)
-                currentGuardPower += value;
-            else
-                currentGuardPower = characterData.GuardPower;
-            Debug.Log($"{currentGuardPower}");
-        }
-        public bool CanHeal()
-        {
-            var lastGuard = Time.time - lastGuardTime;
-            return lastGuard >= characterData.GuardRecoveryInterval;
-        }
-
-        public void TakeDamage(float damage)
-        {
-            currentHp -= damage;
-            if (currentHp > 0) return;
-            currentHp = 0;
-            Des();
-        }
-        public void Des()
-        {
-
-        }
-
         /// <summary>
-        /// 地上にいるかどうか
+        /// 地上にいるかどうかを判定する
         /// </summary>
-        /// <returns></returns>
         public bool IsGrounded()
         {
             Vector3 rayOrigin = transform.position + Vector3.up;
@@ -160,9 +172,11 @@ namespace TechC.Player
                 // 空中での移動
                 AirMovement(moveDirection, horizontalInput);
             }
-
         }
 
+        /// <summary>
+        /// 地上での移動処理
+        /// </summary>
         private void GroundMovement(Vector3 moveDirection, float horizontalInput, float controlMultiplier)
         {
             // 地上での移動速度
@@ -187,6 +201,9 @@ namespace TechC.Player
             rb.velocity = new Vector3(velocity.x, rb.velocity.y, 0);
         }
 
+        /// <summary>
+        /// 空中での移動処理
+        /// </summary>
         private void AirMovement(Vector3 moveDirection, float horizontalInput)
         {
             // 空中での移動速度（地上より制限される）
@@ -212,7 +229,12 @@ namespace TechC.Player
                 rb.AddForce(Vector3.down * characterData.FastFallSpeed, ForceMode.Acceleration);
             }
         }
+        #endregion
 
+        #region ジャンプ関連メソッド
+        /// <summary>
+        /// ジャンプ処理
+        /// </summary>
         public void Jump()
         {
             if (IsGrounded())
@@ -221,6 +243,9 @@ namespace TechC.Player
             }
         }
 
+        /// <summary>
+        /// 二段ジャンプ処理
+        /// </summary>
         public void DoubleJump()
         {
             // 空中での二段ジャンプ 
@@ -232,55 +257,193 @@ namespace TechC.Player
             }
         }
 
-
-        // ジャンプ状態をリセット（着地時に呼び出す）
+        /// <summary>
+        /// ジャンプ状態をリセット（着地時に呼び出す）
+        /// </summary>
         private void ResetJump()
         {
             hasDoubleJumped = false;
         }
 
-        // 二段ジャンプが可能かどうか
+        /// <summary>
+        /// 二段ジャンプが可能かどうか
+        /// </summary>
         private bool CanDoubleJump() => !hasDoubleJumped;
 
-        // 二段ジャンプを使用
+        /// <summary>
+        /// 二段ジャンプを使用済みにする
+        /// </summary>
         private void UseDoubleJump() => hasDoubleJumped = true;
+        #endregion
 
+        #region ダメージ・HP関連メソッド
+        /// <summary>
+        /// HP値を取得する
+        /// </summary>
+        public float GetHp() => currentHp;
+
+        /// <summary>
+        /// ダメージを受ける処理
+        /// </summary>
+        public void TakeDamage(float damage)
+        {
+            currentHp -= damage;
+            if (currentHp > 0) return;
+            currentHp = 0;
+            Des();
+        }
+
+        /// <summary>
+        /// キャラクター死亡時の処理
+        /// </summary>
+        public void Des()
+        {
+            // 死亡時の処理を実装
+        }
+
+        /// <summary>
+        /// 最後に受けた攻撃データを設定
+        /// </summary>
         public void SetLastHitData(HitData hitData) => lastHitData = hitData;
 
-
+        /// <summary>
+        /// 最後に受けた攻撃データを取得
+        /// </summary>
         public HitData GetLastHitData() => lastHitData;
+        #endregion
 
+        #region ガード関連メソッド
+        /// <summary>
+        /// ガードパワーを取得
+        /// </summary>
+        public float GetGuardPower() => currentGuardPower;
 
-        public Animator GetAnim() => anim;
-        public void SetAnim(int hashName, bool value) => anim.SetBool(hashName, value);
-        public CharacterState GetCharacterState() => characterState;
-        public CharacterData GetCharacterData() => characterData;
+        /// <summary>
+        /// ガード中に耐久値減少
+        /// </summary>
+        public void DecreaseGuardPower() => currentGuardPower -= characterData.GuardDecreasePower;
 
+        /// <summary>
+        /// 最後にガードした時間を設定
+        /// </summary>
+        public void SetLastGuardTime(float time) => lastGuardTime = time;
 
+        /// <summary>
+        /// ガード時のダメージ処理
+        /// </summary>
+        public void GuardDamage(float damage, ICommand guardCommand)
+        {
+            currentGuardPower -= damage;
+            Debug.Log(currentGuardPower);
+            if (currentGuardPower > 0) return;
+            currentGuardPower = 0;
+            GuardBreak(guardCommand);
+        }
 
-        //----------バフ処理--------------//
+        /// <summary>
+        /// ガードブレイク処理
+        /// </summary>
+        public void GuardBreak(ICommand guardCommand)
+        {
+            guardCommand.ForceFinish();
+            currentGuardPower = 0; // ガードがマイナスで保存されないように
+            Debug.Log("Guardが破壊されました");
+        }
 
+        /// <summary>
+        /// ガードパワー回復処理
+        /// </summary>
+        public void HealGuardPower(float value)
+        {
+            if (currentGuardPower < characterData.GuardPower)
+                currentGuardPower += value;
+            else
+                currentGuardPower = characterData.GuardPower;
+            Debug.Log($"{currentGuardPower}");
+        }
+
+        /// <summary>
+        /// ガード回復が可能な状態かを判定
+        /// </summary>
+        public bool CanHeal()
+        {
+            var lastGuard = Time.time - lastGuardTime;
+            return lastGuard >= characterData.GuardRecoveryInterval;
+        }
+        #endregion
+
+        #region 必殺技関連メソッド
+        /// <summary>
+        /// 必殺技ゲージを増加させる
+        /// </summary>
+        public void AddSpecialGauge(float amount)
+        {
+            characterGauge.AddGauge(amount);
+        }
+
+        /// <summary>
+        /// 必殺技を使用する（使用可能な場合のみ成功）
+        /// </summary>
+        public bool TryUseSpecialAttack(float cost)
+        {
+            return characterGauge.UseGauge(cost);
+        }
+
+        /// <summary>
+        /// 必殺技ゲージの割合を取得（UI表示用など）
+        /// </summary>
+        public float GetSpecialGaugePercentage() => characterGauge.GaugePercentage;
+
+        /// <summary>
+        /// 必殺技が使用可能かどうか
+        /// </summary>
+        public bool IsSpecialAttackReady(float cost) => characterGauge.HasEnoughGauge(cost);
+        /// <summary>
+        /// 必殺技がチャージ可能かどうかを切り替える
+        /// </summary>
+        /// <param name="value"></param>
+        public void ChangeCanCharge(bool value)=>characterGauge.ChangeCanCharge(value);
+        #endregion
+
+        #region バフ関連メソッド
         /// <summary>
         /// スピードバフを適用
         /// </summary>
-        /// <param name="multiplier"></param>
         public void AddSpeedMultiplier(float multiplier) => speedMultiplier *= multiplier;
 
         /// <summary>
         /// スピードバフを除外
         /// </summary>
-        /// <param name="multiplier"></param>
         public void RemoveSpeedMultiplier(float multiplier) => speedMultiplier /= multiplier;
+        #endregion
 
+        #region アニメーション関連メソッド
+        /// <summary>
+        /// アニメーターを取得
+        /// </summary>
+        public Animator GetAnim() => anim;
+
+        /// <summary>
+        /// アニメーションのブールパラメータを設定
+        /// </summary>
+        public void SetAnim(int hashName, bool value) => anim.SetBool(hashName, value);
+        #endregion
+
+        #region ゲッターメソッド
+        /// <summary>
+        /// キャラクターステートを取得
+        /// </summary>
+        public CharacterState GetCharacterState() => characterState;
+
+        /// <summary>
+        /// キャラクターデータを取得
+        /// </summary>
+        public CharacterData GetCharacterData() => characterData;
+        #endregion
+
+        #region Unity内部コールバック
         private void OnCollisionEnter(Collision collision)
         {
-            //if (collision.gameObject.CompareTag("Player"))
-            //{
-            //    if (collision.gameObject.TryGetComponent<CharacterController>(out CharacterController controller))
-            //    {
-            //    }
-            //}
-
             // 地面に着地した時の処理
             if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
@@ -303,6 +466,6 @@ namespace TechC.Player
             // レイの終端に球を表示
             Gizmos.DrawSphere(rayOrigin + Vector3.down * rayLength, 0.05f);
         }
-
+        #endregion
     }
 }

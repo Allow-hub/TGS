@@ -15,10 +15,14 @@ namespace TechC
         private Player.CharacterController characterController;
         public IAttackBase WeakAttack => weakAttack;
         public IAttackBase StrongAttack => strongAttack;
+        public IAttackBase Appeal => appeal;
         // 他の攻撃タイプも追加可能
         private IAttackBase weakAttack;
         private IAttackBase strongAttack;
+        private IAttackBase appeal;
         private IAttackBase airAttack;
+
+        private AttackData currentAttackData;
 
 
         /// <summary>
@@ -26,10 +30,11 @@ namespace TechC
         /// </summary>
         /// <param name="WeakAttack"></param>
         /// <param name="StrongAttack"></param>
-        public void Initialize(IAttackBase WeakAttack,IAttackBase StrongAttack,BaseInputManager PlayerInputManager, Player.CharacterController CharacterController)
+        public void Initialize(IAttackBase WeakAttack,IAttackBase StrongAttack, IAttackBase Appeal, BaseInputManager PlayerInputManager, Player.CharacterController CharacterController)
         {
             weakAttack = WeakAttack;
             strongAttack =StrongAttack;
+            appeal =Appeal;
             playerInputManager =PlayerInputManager;
             characterController = CharacterController;
             // airAttack = airAttackImplementation as IAttackBase;
@@ -38,6 +43,7 @@ namespace TechC
             if (characterController == null) Debug.LogError("characterController");
             if (weakAttack == null) Debug.LogError("WeakAttack実装が IAttackBase を実装していません");
             if (strongAttack == null) Debug.LogError("StrongAttack実装が IAttackBase を実装していません");
+            if (appeal == null) Debug.LogError("appeal実装が IAttackBase を実装していません");
             // if (airAttack == null) Debug.LogError("AirAttack実装が IAttackBase を実装していません");
         }
 
@@ -96,6 +102,15 @@ namespace TechC
                 //command?.Execute();
                 ExecuteSpecificAttack(weakAttack, attackType);
                 return;
+            }   
+            
+            // アピール
+            if (playerInputManager.IsAppealing && appeal != null)
+            {
+                //var command = CreateAttackCommand(attackType, true, attackDuration);
+                //command?.Execute();
+                ExecuteSpecificAttack(appeal, attackType);
+                return;
             }
 
             Debug.LogWarning("攻撃が入力されていません");
@@ -132,10 +147,78 @@ namespace TechC
             }
         }
 
-        public float GetDuration(AttackType attackType, bool isWeak)
+        public enum AttackStrength
         {
-            IAttackBase attackImpl = isWeak ? weakAttack : strongAttack;
+            Weak,
+            Strong,
+            Appeal
+        }
+
+        public float GetDuration(AttackType attackType, AttackStrength strength)
+        {
+            IAttackBase attackImpl;
+
+            switch (strength)
+            {
+                case AttackStrength.Weak:
+                    attackImpl = weakAttack;
+                    break;
+                case AttackStrength.Strong:
+                    attackImpl = strongAttack;
+                    break;
+                case AttackStrength.Appeal:
+                    attackImpl = appeal;
+                    break;
+                default:
+                    Debug.LogWarning("未定義のAttackStrengthが指定されました");
+                    attackImpl = weakAttack; // デフォルト
+                    break;
+            }
+
             return attackImpl.GetDuration(attackType);
+        }
+        public AttackData GetAttackData(AttackType attackType, AttackStrength strength)
+        {
+            IAttackBase attackImpl;
+            switch (strength)
+            {
+                case AttackStrength.Weak:
+                    attackImpl = weakAttack;
+                    break;
+                case AttackStrength.Strong:
+                    attackImpl = strongAttack;
+                    break;
+                case AttackStrength.Appeal:
+                    attackImpl = appeal;
+                    break;
+                default:
+                    Debug.LogWarning("未定義のAttackStrengthが指定されました");
+                    attackImpl = weakAttack; // デフォルト
+                    break;
+            }
+            return attackImpl.GetAttackData(attackType);
+        }
+
+        public void ForceFinish(AttackStrength strength)
+        {
+            IAttackBase attackImpl;
+            switch (strength)
+            {
+                case AttackStrength.Weak:
+                    attackImpl = weakAttack;
+                    break;
+                case AttackStrength.Strong:
+                    attackImpl = strongAttack;
+                    break;
+                case AttackStrength.Appeal:
+                    attackImpl = appeal;
+                    break;
+                default:
+                    Debug.LogWarning("未定義のAttackStrengthが指定されました");
+                    attackImpl = weakAttack; // デフォルト
+                    break;
+            }
+            attackImpl.ForceFinish();
         }
     }
 }

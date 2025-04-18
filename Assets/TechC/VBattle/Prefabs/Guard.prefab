@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4085347029255324682}
   - component: {fileID: 4387603003220074701}
   - component: {fileID: 9101584346065133354}
+  - component: {fileID: -4736649221598981313}
   m_Layer: 0
   m_Name: Guard
   m_TagString: Untagged
@@ -105,3 +106,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-4736649221598981313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3919362311753863366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d95aa9b04a5008f4e874be3e6aaad5e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterController: {fileID: 0}
+  maxScale: {x: 2.3, y: 2.3, z: 2.3}
+  minScaleRatio: 0.1

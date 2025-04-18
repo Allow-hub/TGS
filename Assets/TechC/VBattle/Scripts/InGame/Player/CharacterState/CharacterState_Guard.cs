@@ -18,6 +18,7 @@ namespace TechC
             protected internal override void Update()
             {
                 base.Update();
+                Context.characterController.DecreaseGuardPower();
                 Context.HandleCommand<INeutralUsableCommand>(ref Context.currentCommand);
             }
 

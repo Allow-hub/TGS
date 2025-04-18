@@ -12,6 +12,7 @@ namespace TechC
     [Serializable]
     public class AppealBase : MonoBehaviour, IAttackBase
     {
+        [SerializeField] private Player.CharacterController characterController;
         [SerializeField]
         private AttackSet attackSet;
         [SerializeField]
@@ -25,6 +26,20 @@ namespace TechC
         [SerializeField]
         protected AttackData upAttackData;
 
+        [Tooltip("必殺技のチャージが可能な期間"), SerializeField]
+        protected float canChargeDuration = 10f;
+
+        private readonly Dictionary<AttackType, AttackData> attackDataMap;
+
+        public AppealBase()
+        {
+            attackDataMap = new Dictionary<AttackType, AttackData>();
+        }
+        private void Start()
+        {
+            InitializeAttackDataMap();
+        }
+
         public void OnValidate()
         {
             neutralAttackData = attackSet.appealNeutral;
@@ -32,7 +47,17 @@ namespace TechC
             rightAttackData = attackSet.appealRight;
             downAttackData = attackSet.appealDown;
             upAttackData = attackSet.appealUp;
+
         }
+        private void InitializeAttackDataMap()
+        {
+            attackDataMap[AttackType.Neutral] = neutralAttackData;
+            attackDataMap[AttackType.Left] = leftAttackData;
+            attackDataMap[AttackType.Right] = rightAttackData;
+            attackDataMap[AttackType.Down] = downAttackData;
+            attackDataMap[AttackType.Up] = upAttackData;
+        }
+
         public virtual void NeutralAttack()
         {
             ExecuteAttack(neutralAttackData);
@@ -61,15 +86,25 @@ namespace TechC
         // privateからprotectedに変更して子クラスからアクセス可能にする
         protected virtual void ExecuteAttack(AttackData attackData)
         {
-            // ダメージ処理
-            //Debug.Log($"弱攻撃を実行: {attackData.attackName}, ダメージ: {attackData.damage}");
+            characterController.GetAnim().speed = attackData.animationSpeed;
+            characterController.GetAnim().SetBool(attackData.animHash, true);
+            StartCoroutine(Charge(attackData));
         }
-
+        /// <summary>
+        /// 必殺技のチャージを可能に
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator Charge(AttackData attackData)
+        {
+            yield return new WaitForSeconds(attackData.attackDuration);
+            characterController.ChangeCanCharge(true);
+        }
         /// <summary>
         /// 強制終了時
         /// </summary>
         public virtual void ForceFinish()
         {
+            Debug.Log("Force");
         }
 
         public float GetDuration(AttackType attackType)
@@ -90,6 +125,16 @@ namespace TechC
                     Debug.LogWarning("未定義のAttackTypeが指定されました");
                     return 0f;
             }
+        }
+        public AttackData GetAttackData(AttackType attackType)
+        {
+            if (attackDataMap.TryGetValue(attackType, out var attackData))
+            {
+                return attackData;
+            }
+
+            Debug.LogWarning("未定義のAttackTypeが指定されました");
+            return neutralAttackData;
         }
     }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// 素体のアピール
+    /// </summary>
     public class Appeal_BaseCharacter : AppealBase
     {
         public override void NeutralAttack()
@@ -33,8 +36,7 @@ namespace TechC
 
         protected override void ExecuteAttack(AttackData attackData)
         {
-            // ダメージ処理
-            //Debug.Log($"弱攻撃を実行: {attackData.attackName}, ダメージ: {attackData.damage}");
+            base.ExecuteAttack(attackData);
         }
 
         /// <summary>
@@ -42,6 +44,7 @@ namespace TechC
         /// </summary>
         public override void ForceFinish()
         {
+            Debug.Log("強制");
         }
     }
 }

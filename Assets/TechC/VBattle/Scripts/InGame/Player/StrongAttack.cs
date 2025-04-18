@@ -8,7 +8,7 @@ using static TechC.CharacterState;
 namespace TechC
 {
     [Serializable]
-    public  class StrongAttack : MonoBehaviour , IAttackBase
+    public class StrongAttack : MonoBehaviour, IAttackBase
     {
         [SerializeField]
         private AttackSet attackSet;
@@ -16,12 +16,18 @@ namespace TechC
         protected AttackData neutralAttackData;
         [SerializeField]
         protected AttackData leftAttackData;
-        [SerializeField] 
+        [SerializeField]
         protected AttackData rightAttackData;
-        [SerializeField] 
+        [SerializeField]
         protected AttackData downAttackData;
-        [SerializeField] 
+        [SerializeField]
         protected AttackData upAttackData;
+        private readonly Dictionary<AttackType, AttackData> attackDataMap;
+
+        public StrongAttack()
+        {
+            attackDataMap = new Dictionary<AttackType, AttackData>();
+        }
 
         public void OnValidate()
         {
@@ -30,6 +36,19 @@ namespace TechC
             rightAttackData = attackSet.strongRight;
             downAttackData = attackSet.strongDown;
             upAttackData = attackSet.strongUp;
+        }
+        private void Start()
+        {
+            InitializeAttackDataMap();
+        }
+
+        private void InitializeAttackDataMap()
+        {
+            attackDataMap[AttackType.Neutral] = neutralAttackData;
+            attackDataMap[AttackType.Left] = leftAttackData;
+            attackDataMap[AttackType.Right] = rightAttackData;
+            attackDataMap[AttackType.Down] = downAttackData;
+            attackDataMap[AttackType.Up] = upAttackData;
         }
         public virtual void NeutralAttack()
         {
@@ -81,11 +100,19 @@ namespace TechC
                     return 0f;
             }
         }
-        /// <summary>
-        /// 強制終了時
-        /// </summary>
+        public AttackData GetAttackData(AttackType attackType)
+        {
+            if (attackDataMap.TryGetValue(attackType, out var attackData))
+            {
+                return attackData;
+            }
+
+            Debug.LogWarning("未定義のAttackTypeが指定されました");
+            return neutralAttackData;
+        }
         public virtual void ForceFinish()
         {
         }
+
     }
 }

@@ -34,7 +34,7 @@ namespace TechC
         private Player.CharacterController characterController;
         private CommandHistory commandHistory;
 
-        [SerializeField] private bool canDebugLog;
+        [SerializeField] public bool canDebugLog;
 
         private Animator anim;
 
@@ -100,19 +100,25 @@ namespace TechC
             stateMachine.AddTransition<AttackState, NeutralState>((int)StateEventId.Neutral);
             stateMachine.AddTransition<GuardState, NeutralState>((int)StateEventId.Neutral);
             stateMachine.AddTransition<DamageState, NeutralState>((int)StateEventId.Neutral);
+            //stateMachine.AddTransition<AppealState, NeutralState>((int)StateEventId.Neutral);
 
             //通常ステートからの移行
             stateMachine.AddTransition<NeutralState, AirState>((int)StateEventId.Air);
             stateMachine.AddTransition<NeutralState, GuardState>((int)StateEventId.Guard);
             stateMachine.AddTransition<NeutralState, AttackState>((int)StateEventId.Attack);
             stateMachine.AddTransition<NeutralState, DamageState>((int)StateEventId.Damage);
+            //stateMachine.AddTransition<NeutralState, AppealState>((int)StateEventId.Appeal);
 
             //空中ステートからの移行
             stateMachine.AddTransition<AirState, DamageState>((int)StateEventId.Damage);
             stateMachine.AddTransition<AirState, AttackState>((int)StateEventId.Attack);
 
+            //攻撃ステートからの移行
+            stateMachine.AddTransition<AttackState, DamageState>((int)StateEventId.Damage);
 
-            //stateMachine.AddAnyTransition<DamageState>((int)StateEventId.Damage);
+            //アピールステートからの移行
+            //stateMachine.AddTransition<AppealState, DamageState>((int)StateEventId.Damage);
+
             //どのステートからでも移行できる
             stateMachine.AddAnyTransition<DeadState>((int)StateEventId.Dead);
 
@@ -130,7 +136,7 @@ namespace TechC
             var newQueue = new Queue<ICommand>();
             foreach (var cmd in commandQueue)
             {
-                if (!(cmd is MoveCommand) && !(cmd is JumpCommand))
+                if (!(cmd is MoveCommand) && !(cmd is JumpCommand)&& !(cmd is AttackCommand))
                 {
                     newQueue.Enqueue(cmd);
                 }
@@ -280,7 +286,7 @@ namespace TechC
 
         public void ChangeDamageState() => stateMachine.SendEvent((int)StateEventId.Damage);
         public void ChangeDeadState() => stateMachine.SendEvent((int)StateEventId.Dead);
-
+        public void ChangeAppealState() => stateMachine.SendEvent((int)StateEventId.Appeal);
         public bool IsAttackState() => stateMachine.CurrentStateName == "AttackState";
         public bool IsGuardState() => stateMachine.CurrentStateName == "GuardState";
     }

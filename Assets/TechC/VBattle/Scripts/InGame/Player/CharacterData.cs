@@ -13,6 +13,8 @@ namespace TechC.Player
         public int Hp;
         [Tooltip("ガードの耐久値")]
         public float GuardPower;
+        [Tooltip("ガード中に毎フレーム耐久値を減少する値")]
+        public float GuardDecreasePower;
         [Tooltip("ガードの回復速度")]
         public float GuardRecoverySpeed;
         [Tooltip("ガードの回復までのインターバル")]

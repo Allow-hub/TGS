@@ -154,7 +154,10 @@ namespace TechC.Player
 
         public override void OnAppeal(bool started, bool canceled)
         {
-            // アピールのコマンドがあれば実行
+            if (started && commands.ContainsKey(attackCommand))
+            {
+                characterState.EnqueueCommand(commands[attackCommand]);
+            }
         }
     }
 }

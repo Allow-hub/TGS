@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static TechC.AttackManager;
 
 namespace TechC
 {
@@ -18,6 +19,7 @@ namespace TechC
         private class AttackState : ImtStateMachine<CharacterState>.State
         {
             private AttackType attackType;
+            private AttackManager.AttackStrength attackStrength;
             private float duration;
             private float elapsedTime = 0;
 
@@ -32,13 +34,21 @@ namespace TechC
                 //CreateAndEnqueueAttackCommand();
                 attackType = CheckAttackType();
                 Context.attackManager.ExecuteAttack(attackType, Context);
-                duration = Context.attackManager.GetDuration(attackType, Context.playerInputManager.IsWeakAttacking);
+                if (Context.playerInputManager.IsWeakAttacking)
+                    attackStrength = AttackStrength.Weak;
+                else if (Context.playerInputManager.IsStrongAttacking)
+                    attackStrength = AttackStrength.Strong;
+                else if (Context.playerInputManager.IsAppealing)
+                    attackStrength = AttackStrength.Appeal;
+
+                duration = Context.attackManager.GetDuration(attackType, attackStrength);
+
             }
 
             protected internal override void Update()
             {
                 elapsedTime += Time.deltaTime;
-                if(elapsedTime > duration)
+                if (elapsedTime > duration)
                 {
                     Context.ChangeNeutralState();
                 }
@@ -47,8 +57,23 @@ namespace TechC
             protected internal override void Exit()
             {
                 elapsedTime = 0;
+                AttackData data = Context.attackManager.GetAttackData(attackType, attackStrength);
+                Context.anim.speed = Context.characterController.DefaultAnimSpeed;
+                if (data != null)
+                {
+                    Context.anim.SetBool(data.animHash, false);
+                }
+                else
+                {
+                    Debug.LogWarning($"AttackData is null for type {attackType} and strength {attackStrength}");
+                }
+                //もし攻撃時間がたたずに他ステートから割り込まれたときに強制終了のメソッドを呼ぶ
+                var isEarlyExit = elapsedTime < duration;
+                if (isEarlyExit)
+                    Context.attackManager.ForceFinish(attackStrength);
+                Context.currentCommand = null;
             }
-        
+
             /// <summary>
             /// 攻撃種方向の確認
             /// </summary>

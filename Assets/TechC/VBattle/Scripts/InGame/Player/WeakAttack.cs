@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using TechC.Player;
 using UnityEngine;
 using static TechC.CharacterState;
@@ -34,7 +35,12 @@ namespace TechC
         private bool isAttacking = false;
         private int neutralAttackCount = 0;
         private Player.CharacterController opponentCharacterController;
+        private readonly Dictionary<AttackType, AttackData> attackDataMap;
 
+        public WeakAttack()
+        {
+            attackDataMap = new Dictionary<AttackType, AttackData>();
+        }
         public void OnValidate()
         {
             if (attackSet == null) return;
@@ -47,12 +53,22 @@ namespace TechC
             downAttackData = attackSet.weakDown;
             upAttackData = attackSet.weakUp;
         }
-
+        private void Start()
+        {
+            InitializeAttackDataMap();
+        }
+        private void InitializeAttackDataMap()
+        {
+            attackDataMap[AttackType.Neutral] = neutralAttackData_1;
+            attackDataMap[AttackType.Left] = leftAttackData;
+            attackDataMap[AttackType.Right] = rightAttackData;
+            attackDataMap[AttackType.Down] = downAttackData;
+            attackDataMap[AttackType.Up] = upAttackData;
+        }
         public virtual void NeutralAttack()
         {
             if (commandHistory.WasCommandExecutedRecently<AttackCommand>(nWeakAttackInterval))
             {
-
                 neutralAttackCount++;
                 switch (neutralAttackCount)
                 {
@@ -118,25 +134,70 @@ namespace TechC
             characterController.SetAnim(attackData.animHash, false);
             characterController.GetAnim().speed = characterController.DefaultAnimSpeed;
         }
-        /// <summary>
-        /// 強制終了時
-        /// </summary>
-        public virtual void ForceFinish()
-        {
-        }
 
+    
         private IEnumerator DelayAttack(AttackData attackData)
         {
             yield return new WaitForSeconds(attackData.hitTiming);
             // ヒットチェックを実行し、ヒットした場合にヒットストップを発生させる
-            if (CheckHit(attackData))
+            if (PerformAttackHitCheck(attackData))
             {
                 // ヒットストップを実行
                 HitStopManager.I.DoHitStop(attackData.hitStopDuration, attackData.hitStopTimeScale); // 弱攻撃の場合はfalse
             }
         }
-        // ヒットチェックメソッド（攻撃の当たり判定を処理）
-        private bool CheckHit(AttackData attackData)
+
+        // ヒットチェックの統括メソッド
+        private bool PerformAttackHitCheck(AttackData attackData)
+        {
+            // 攻撃位置の計算
+            Vector3 attackPosition = CalculateAttackPosition(attackData);
+
+            // デバッグ用に情報を保存
+            UpdateDebugInfo(attackPosition, attackData.radius);
+
+            // 攻撃範囲内のコライダーを検出
+            Collider[] hitColliders = Physics.OverlapSphere(attackPosition, attackData.radius, attackData.targetLayers);
+
+            bool hitConfirmed = false;
+            foreach (var hitCollider in hitColliders)
+            {
+                // 自分自身は除外
+                if (IsOwnCollider(hitCollider))
+                    continue;
+
+                // 対戦相手のコントローラーを取得
+                Player.CharacterController targetController = GetOpponentController(hitCollider);
+                if (targetController == null) continue;
+
+                // ガード処理
+                if (TryProcessGuard(targetController, hitCollider, attackData))
+                {
+                    hitConfirmed = true;
+                    continue;
+                }
+
+                // ダメージ処理
+                if (TryProcessDamage(hitCollider, attackData))
+                {
+                    hitConfirmed = true;
+                    // ヒットスタン処理
+                    ProcessHitStun(hitCollider, attackData);
+                }
+            }
+
+            // ヒットボックスの可視化
+            VisualizeHitbox(attackPosition, attackData.radius, hitConfirmed);
+
+            return hitConfirmed;
+        }
+
+        /// <summary>
+        /// 攻撃位置の計算
+        /// </summary>
+        /// <param name="attackData"></param>
+        /// <returns></returns>
+        private Vector3 CalculateAttackPosition(AttackData attackData)
         {
             // キャラクターの向いている方向を考慮
             Vector3 attackDirection = characterController.transform.forward;
@@ -148,91 +209,130 @@ namespace TechC
             Vector3 worldOffset = characterController.transform.TransformDirection(localOffset);
 
             // 最終的な攻撃位置を計算
-            Vector3 attackPosition = characterController.transform.position + worldOffset;
+            return characterController.transform.position + worldOffset;
+        }
 
-            // デバッグ用にヒットボックス情報を保存
-            lastAttackPosition = attackPosition;
-            lastAttackRadius = attackData.radius;
+        /// <summary>
+        /// デバッグ情報を更新
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="radius"></param>
+        private void UpdateDebugInfo(Vector3 position, float radius)
+        {
+            lastAttackPosition = position;
+            lastAttackRadius = radius;
             isAttacking = true;
+        }
 
-            // 攻撃範囲内のコライダーを検出
-            Collider[] hitColliders = Physics.OverlapSphere(attackPosition, attackData.radius, attackData.targetLayers);
+        /// <summary>
+        /// 自分のコライダーかどうかをチェック
+        /// </summary>
+        /// <param name="collider"></param>
+        /// <returns></returns>
+        private bool IsOwnCollider(Collider collider)
+        {
+            return collider.gameObject.GetMostParentComponent<Transform>() == characterController.transform;
+        }
 
-            bool hitConfirmed = false;
-            foreach (var hitCollider in hitColliders)
+        /// <summary>
+        /// 対戦相手のコントローラーを取得
+        /// </summary>
+        /// <param name="collider"></param>
+        /// <returns></returns>
+        private Player.CharacterController GetOpponentController(Collider collider)
+        {
+            if (opponentCharacterController == null)
+                opponentCharacterController = collider.gameObject.transform.parent.GetComponent<Player.CharacterController>();
+
+            return opponentCharacterController;
+        }
+
+        /// <summary>
+        /// ガード処理を試行
+        /// </summary>
+        /// <param name="targetController"></param>
+        /// <param name="hitCollider"></param>
+        /// <param name="attackData"></param>
+        /// <returns></returns>
+        private bool TryProcessGuard(Player.CharacterController targetController, Collider hitCollider, AttackData attackData)
+        {
+            if (targetController.GetCharacterState().IsGuardState())
             {
-                // 自分自身は除外
-                if (hitCollider.gameObject.GetMostParentComponent<Transform>() == characterController.transform)
-                    continue;
-
-                //対戦相手のコントローラーからステートを拾いGuardを識別する
-                if (opponentCharacterController == null)
-                    opponentCharacterController = hitCollider.gameObject.transform.parent.GetComponent<Player.CharacterController>();
-                if (opponentCharacterController.GetCharacterState().IsGuardState())
+                IGuardable guardable = hitCollider.gameObject.transform.parent.GetComponent<IGuardable>();
+                if (guardable != null)
                 {
-
-                    IGuardable guardable = hitCollider.gameObject.transform.parent.GetComponent<IGuardable>();
-                    if (guardable != null)
-                    {
-                        var opponentState = opponentCharacterController.GetCharacterState();
-                        guardable.GuardDamage(attackData.damage,opponentState.GetCurrentCommand());
-                        Debug.Log("対象がガード中です");
-                        return true;
-                    }
-                }
-
-
-                // ヒットしたオブジェクトにダメージを与える
-                IDamageable target = hitCollider.gameObject.transform.parent.GetComponent<IDamageable>();
-                if (target != null)
-                {
-                    //Debug.Log($"ヒット検出: {hitCollider.name}にダメージ {attackData.damage} を与えました");
-                    target.TakeDamage(attackData.damage);
-                    hitConfirmed = true;
-
-                    //ヒットスタンのデータを生成
-                    if (hitCollider.gameObject.transform.parent.TryGetComponent<Player.CharacterController>(out Player.CharacterController characterController))
-                    {
-                        // 攻撃者と被攻撃者の情報からHitDataを生成
-                        HitData hitData = HitDataProcessor.CreateFromAttackData(
-                            attackData,
-                            gameObject.transform,
-                            hitCollider.transform
-                        );
-                        characterController.SetLastHitData(hitData);
-
-                        var state = characterController.GetCharacterState();
-                        state.ChangeDamageState();
-                        // ターゲットにHitDataを設定
-                    }
+                    var opponentState = targetController.GetCharacterState();
+                    guardable.GuardDamage(attackData.damage, opponentState.GetCurrentCommand());
+                    Debug.Log("対象がガード中です");
+                    return true;
                 }
             }
+            return false;
+        }
 
-            // ヒットボックスを可視化
+        /// <summary>
+        /// ダメージ処理を試行
+        /// </summary>
+        /// <param name="hitCollider"></param>
+        /// <param name="attackData"></param>
+        /// <returns></returns>
+        private bool TryProcessDamage(Collider hitCollider, AttackData attackData)
+        {
+            IDamageable target = hitCollider.gameObject.transform.parent.GetComponent<IDamageable>();
+            if (target != null)
+            {
+                target.TakeDamage(attackData.damage);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// ヒットスタン処理
+        /// </summary>
+        /// <param name="hitCollider"></param>
+        /// <param name="attackData"></param>
+        private void ProcessHitStun(Collider hitCollider, AttackData attackData)
+        {
+            if (hitCollider.gameObject.transform.parent.TryGetComponent<Player.CharacterController>(out Player.CharacterController characterController))
+            {
+                // 攻撃者と被攻撃者の情報からHitDataを生成
+                HitData hitData = HitDataProcessor.CreateFromAttackData(
+                    attackData,
+                    gameObject.transform,
+                    hitCollider.transform
+                );
+                characterController.SetLastHitData(hitData);
+
+                var state = characterController.GetCharacterState();
+                state.ChangeDamageState();
+            }
+        }
+
+        /// <summary>
+        /// ヒットボックスの可視化
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="radius"></param>
+        /// <param name="hitConfirmed"></param>
+        private void VisualizeHitbox(Vector3 position, float radius, bool hitConfirmed)
+        {
             if (showAttackGizmos)
             {
                 AttackVisualizer.I.DrawHitbox(
-                    attackPosition,
-                    attackData.radius,
+                    position,
+                    radius,
                     0.5f, // 表示時間
                     hitConfirmed ? Color.red : hitboxColor // ヒット時は赤く表示
                 );
             }
-            return hitConfirmed;
         }
-
-
-
-
 
         public float GetDuration(AttackType attackType)
         {
             switch (attackType)
             {
                 case AttackType.Neutral:
-                    ///
-                    ///ニュートラル攻撃の時間要修正
-                    ///
                     return neutralAttackData_1.attackDuration;
                 case AttackType.Left:
                     return leftAttackData.attackDuration;
@@ -246,6 +346,19 @@ namespace TechC
                     Debug.LogWarning("未定義のAttackTypeが指定されました");
                     return 0f;
             }
+        }
+        public AttackData GetAttackData(AttackType attackType)
+        {
+            if (attackDataMap.TryGetValue(attackType, out var attackData))
+            {
+                return attackData;
+            }
+
+            Debug.LogWarning("未定義のAttackTypeが指定されました");
+            return neutralAttackData_1;
+        }
+        public virtual void ForceFinish()
+        {
         }
     }
 }

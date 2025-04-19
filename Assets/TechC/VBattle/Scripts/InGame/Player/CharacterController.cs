@@ -27,6 +27,7 @@ namespace TechC.Player
         [SerializeField] private float defaultAnimSpeed = 1.0f;
 
         [Header("必殺技設定")]
+        [SerializeField] private GaugePresenter gaugePresenter;
         [SerializeField] private float maxGauge = 100f;
 
         [Header("移動・ジャンプ設定")]
@@ -100,6 +101,10 @@ namespace TechC.Player
             // ガード値回復処理
             if (CanHeal())
                 HealGuardPower(characterData.GuardRecoverySpeed);
+
+            // 時間経過によるゲージ加算処理
+            //characterGauge.AddGaugeOnTime(characterData.GaugeIncreaseInterval, characterData.GaugeIncreaseAmount);
+            //Debug.Log(characterGauge.CurrentGauge);
         }
 
         /// <summary>
@@ -378,31 +383,37 @@ namespace TechC.Player
         /// </summary>
         public void AddSpecialGauge(float amount)
         {
-            characterGauge.AddGauge(amount);
+            gaugePresenter.AddGauge(amount);
         }
-
+        /// <summary>
+        /// 必殺技ゲージを増加させる、bool値を問わず
+        /// </summary>
+        public void NotBoolAddSpecialGauge(float amount)
+        {
+            gaugePresenter.NotBoolAddGauge(amount);
+        }
         /// <summary>
         /// 必殺技を使用する（使用可能な場合のみ成功）
         /// </summary>
         public bool TryUseSpecialAttack(float cost)
         {
-            return characterGauge.UseGauge(cost);
+            return gaugePresenter.TryUseSpecialAttack(cost);
         }
 
         /// <summary>
         /// 必殺技ゲージの割合を取得（UI表示用など）
         /// </summary>
-        public float GetSpecialGaugePercentage() => characterGauge.GaugePercentage;
+        public float GetSpecialGaugePercentage() => gaugePresenter.GetGaugePercentage();
 
         /// <summary>
         /// 必殺技が使用可能かどうか
         /// </summary>
-        public bool IsSpecialAttackReady(float cost) => characterGauge.HasEnoughGauge(cost);
+        public bool IsSpecialAttackReady(float cost) => gaugePresenter.IsSpecialAttackReady(cost);
+
         /// <summary>
         /// 必殺技がチャージ可能かどうかを切り替える
         /// </summary>
-        /// <param name="value"></param>
-        public void ChangeCanCharge(bool value)=>characterGauge.ChangeCanCharge(value);
+        public void ChangeCanCharge(bool value) => gaugePresenter.SetCanCharge(value);
         #endregion
 
         #region バフ関連メソッド

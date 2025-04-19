@@ -44,7 +44,7 @@ namespace TechC
         /// </summary>
         public override void ForceFinish()
         {
-            Debug.Log("強制");
+            base .ForceFinish();
         }
     }
 }

@@ -898,10 +898,14 @@ MonoBehaviour:
   commentPrefab: {fileID: 545129694804395307, guid: 7fa3747485c5d784294c1a896a63b3a0,
     type: 3}
   buffCommentPrefab: {fileID: 424618744469515612}
+  mapChangePrefab: {fileID: 2865774595755681340, guid: 8e5cbdeb15c5cc74bbe7291afb8c8c04,
+    type: 3}
   commentLayer: {fileID: 2096582039}
   spawnInterval: 2
   speed: 2
-  buffChance: 1
+  normalCommentChance: 0
+  buffCommentChance: 0
+  mapChangeChance: 1
   topRightSpawn: {fileID: 1781021142}
   bottomRightSpawn: {fileID: 796291349}
   topLeftDespawn: {fileID: 1012137274}
@@ -2349,7 +2353,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1919128616}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 484bd76d197ff5b4891d596d93d2223a, type: 3}
+  m_Script: {fileID: 11500000, guid: 78c31368f2ebe5f43a057f1024f8acf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1919128619

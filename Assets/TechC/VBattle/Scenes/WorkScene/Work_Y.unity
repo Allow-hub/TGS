@@ -523,6 +523,57 @@ Transform:
   - {fileID: 158321555}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &672580401
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 672580403}
+  - component: {fileID: 672580402}
+  m_Layer: 0
+  m_Name: CommentProvider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &672580402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672580401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cea96ec3b0160841b4e810510d2bb76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalComments: {fileID: 11400000, guid: bb4d59f718567b64e8ce875502b21655, type: 2}
+  buffComments:
+  - {fileID: 11400000, guid: 09a7fc4219b36294b935eeb862608990, type: 2}
+  - {fileID: 11400000, guid: efb77ce6fd583934f90278662409542c, type: 2}
+  normalChance: 0.7
+  buffChance: 0.2
+  mapChangeChance: 0.1
+--- !u!4 &672580403
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672580401}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 7.3239136, y: 1.2386513, z: 10.571025}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1228443377}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &796291349
 GameObject:
   m_ObjectHideFlags: 0
@@ -891,10 +942,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1c8d1788a097a46b3497fbb43e166b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  commentData: {fileID: 11400000, guid: bb4d59f718567b64e8ce875502b21655, type: 2}
-  buffComments:
-  - {fileID: 11400000, guid: 09a7fc4219b36294b935eeb862608990, type: 2}
-  - {fileID: 11400000, guid: efb77ce6fd583934f90278662409542c, type: 2}
   commentPrefab: {fileID: 545129694804395307, guid: 7fa3747485c5d784294c1a896a63b3a0,
     type: 3}
   buffCommentPrefab: {fileID: 424618744469515612}
@@ -903,9 +950,7 @@ MonoBehaviour:
   commentLayer: {fileID: 2096582039}
   spawnInterval: 2
   speed: 2
-  normalCommentChance: 0
-  buffCommentChance: 0
-  mapChangeChance: 1
+  commentProvider: {fileID: 672580402}
   topRightSpawn: {fileID: 1781021142}
   bottomRightSpawn: {fileID: 796291349}
   topLeftDespawn: {fileID: 1012137274}
@@ -922,7 +967,8 @@ Transform:
   m_LocalPosition: {x: 0, y: -2.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 672580403}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1228443378

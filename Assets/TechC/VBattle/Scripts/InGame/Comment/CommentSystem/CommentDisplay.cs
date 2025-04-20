@@ -76,6 +76,13 @@ namespace TechC
                 TMP_Text comment = Instantiate(buffCommentPrefab, commentLayer);
                 comment.text = buffText;
 
+                /* 選ばれたバフタイプをコメントに反映（プレハブの初期値を上書き） */
+                BuffCommentTrigger trigger = comment.GetComponent<BuffCommentTrigger>();
+                if(trigger != null)
+                {
+                    trigger.buffType = selectedBuff.buffType;
+                }
+
 
                 RectTransform rect = comment.GetComponent<RectTransform>();
                 float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);

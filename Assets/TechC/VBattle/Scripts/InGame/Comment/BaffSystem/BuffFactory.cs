@@ -16,6 +16,7 @@ namespace TechC
                 { BuffType.Speed, () => new SpeedBuff()},
                 // { BuffType.Power, () => new PowerBuff()},
                 // { BuffType.Jump, () => new JumpBuff()},
+                { BuffType.MapChange,() => new MapChangeBuff()}
             };
         }
 

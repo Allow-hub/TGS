@@ -871,6 +871,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1228443377}
   - component: {fileID: 1228443376}
+  - component: {fileID: 1228443378}
   m_Layer: 0
   m_Name: CommentManager
   m_TagString: Untagged
@@ -893,14 +894,14 @@ MonoBehaviour:
   commentData: {fileID: 11400000, guid: bb4d59f718567b64e8ce875502b21655, type: 2}
   buffComments:
   - {fileID: 11400000, guid: 09a7fc4219b36294b935eeb862608990, type: 2}
-  - {fileID: 11400000, guid: b893081f989efd54cb2b0989f70a2ca2, type: 2}
+  - {fileID: 11400000, guid: efb77ce6fd583934f90278662409542c, type: 2}
   commentPrefab: {fileID: 545129694804395307, guid: 7fa3747485c5d784294c1a896a63b3a0,
     type: 3}
   buffCommentPrefab: {fileID: 424618744469515612}
   commentLayer: {fileID: 2096582039}
   spawnInterval: 2
   speed: 2
-  buffChance: 0.3
+  buffChance: 1
   topRightSpawn: {fileID: 1781021142}
   bottomRightSpawn: {fileID: 796291349}
   topLeftDespawn: {fileID: 1012137274}
@@ -920,6 +921,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1228443378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228443375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 641e3d0e88f3e1c4e8df038b2e8033f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1232335032 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6067294018758884927, guid: e118c56b6c2f0c64cb26f52db018648e,

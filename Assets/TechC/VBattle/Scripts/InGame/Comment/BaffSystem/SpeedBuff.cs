@@ -24,11 +24,17 @@ namespace TechC
 
             if (characterController != null)
             {
-                /* スピード倍率を変更 */
-                Debug.Log($"<color=orange>[Apply前]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
+                /* スピード倍率を変更
+                 * 以下のコメントアウトを表示したい場合は 
+                 * CharacterController.csに以下のコードをバフのところを入力する 
+                 * public float GetCurrentSpeedMultiplier() => SpeedMultiplier;
+                 * そうするとできる→詳細はコミット名428c198
+                 */
+                 
+                // Debug.Log($"<color=orange>[Apply前]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
 
                 characterController.AddSpeedMultiplier(speedMultiplier);
-                Debug.Log($"<color=orange>[Apply後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
+                // Debug.Log($"<color=orange>[Apply後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
             }
         }
 
@@ -39,10 +45,10 @@ namespace TechC
             if (characterController != null)
             {
 
-                Debug.Log($"<color=#00FFFF>[Remove]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
+                // Debug.Log($"<color=#00FFFF>[Remove]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
                 characterController.RemoveSpeedMultiplier(speedMultiplier);
 
-                Debug.Log($"<color=#00FFFF>[Remove後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
+                // Debug.Log($"<color=#00FFFF>[Remove後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
 
 
             }

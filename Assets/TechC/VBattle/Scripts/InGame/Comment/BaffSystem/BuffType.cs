@@ -10,6 +10,7 @@ namespace TechC
         Speed,
         Power,
         Jump,
+        MapChange,
     }
 
 }

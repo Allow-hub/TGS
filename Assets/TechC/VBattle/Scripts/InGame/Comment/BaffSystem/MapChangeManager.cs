@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,11 @@ namespace TechC
 {
     public class MapChangeManager : MonoBehaviour
     {
+        /* インスタンスの定義 */
         public static MapChangeManager Instance;
+
+        /* Mapを格納する */
+        public GameObject [] mapObjects; /* 複数入れれるように */
 
         private void Awake()
         {
@@ -22,10 +27,23 @@ namespace TechC
             }
         }
 
-        public void ChangeMap()
+        public void ChangeMap(int mapIndex)
         {
             Debug.Log("ChangeMapメソッドが呼ばれました。");
-            /* ここに具体的にマップ変化の処理を書く */
+
+            for (int i = 0; i < mapObjects.Length; i++)
+            {
+                mapObjects[i].SetActive(false);
+            }
+           
+            if (mapIndex >= 0 && mapIndex < mapObjects.Length)
+            {
+                mapObjects[mapIndex].SetActive(true);
+            }
+            else if(mapIndex != -1)
+            {
+                Debug.LogWarning("無効なマップインデックスが指定されました: " + mapIndex);
+            }
         }
 
     }

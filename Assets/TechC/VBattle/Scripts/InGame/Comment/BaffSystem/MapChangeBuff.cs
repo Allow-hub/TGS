@@ -6,7 +6,7 @@ namespace TechC
 {
     public class MapChangeBuff : BuffBase
     {
-        private bool isMapChanged = false;
+       private int currentMapIndex = -1;
 
         public MapChangeBuff()
         {
@@ -22,17 +22,16 @@ namespace TechC
             Debug.Log("マップ変化のバフを発動");
 
             /* マップの変更をまだ行っていない場合は、マップを変更する */
-            if (!isMapChanged)
+            if(MapChangeManager.Instance != null && MapChangeManager.Instance.mapObjects.Length > 0)
             {
-                if (MapChangeManager.Instance != null)
-                {
-                    MapChangeManager.Instance.ChangeMap(); /* ChangeMapメソッドをよぶ */
-                    isMapChanged = true; /* マップを変化させたフラグを立てる */
-                }
-                else
-                {
-                    Debug.LogError("MapChangeManagerのInstanceがない");
-                }
+                int randomIndex = Random.Range(0, MapChangeManager.Instance.mapObjects.Length);
+                currentMapIndex = randomIndex;
+                MapChangeManager.Instance.ChangeMap(currentMapIndex);
+            }
+            else
+            {
+                Debug.LogError("マップオブジェクトが未設定");
+                return;
             }
         }
 
@@ -40,7 +39,13 @@ namespace TechC
         {
             base.Remove(target);
             Debug.Log("マップ変形バフが解除されました");
-            isMapChanged = false; /* フラグをリセットする */
+            
+            if(MapChangeManager.Instance != null)
+            {
+                MapChangeManager.Instance.ChangeMap(-1); /* ここでMapを非表示 */
+            }
+
+            currentMapIndex = -1;
         }
 
         public override void UpdateBuff(float deltaTime, GameObject target)

@@ -11,22 +11,20 @@ namespace TechC
     /// </summary>
     public class CommandHistory : MonoBehaviour
     {
-        // コマンド履歴の最大保存数
-        [SerializeField] private int maxHistorySize = 50;
-
-        // コマンド情報を保持する構造体
         [Serializable]
         public class CommandRecord
         {
-            public string commandName;      // コマンド名
-            public string stateName;        // 実行時の状態名
-            public float executionTime;     // 実行時間
-            public bool wasSuccessful;      // 成功したか
-            public Vector3 playerPosition;  // 実行時のプレイヤー位置
+            public string commandName;              // コマンド名（型名）
+            public string stateName;                // 実行時の状態名
+            public float executionTime;             // 実行時間
+            public bool wasSuccessful;              // 成功したか
+            public Vector3 playerPosition;          // 実行時のプレイヤー位置
+            public ICommand commandInstance;        // ICommandインスタンス本体
 
             public CommandRecord(ICommand command, string stateName, bool wasSuccessful, Vector3 position)
             {
-                this.commandName = command.GetType().Name;
+                commandName = command.GetType().Name;
+                commandInstance = command;
                 this.stateName = stateName;
                 this.executionTime = Time.time;
                 this.wasSuccessful = wasSuccessful;
@@ -39,177 +37,110 @@ namespace TechC
             }
         }
 
-        // コマンド履歴リスト
-        private List<CommandRecord> commandHistory = new List<CommandRecord>();
+        [SerializeField] private int maxHistorySize = 50;
+        private List<CommandRecord> commandHistory = new();
 
-        // デバッグ表示用
         [SerializeField] private bool showDebugLog = true;
         [SerializeField] private bool showGUI = false;
         [SerializeField] private int displayCount = 10;
 
         /// <summary>
-        /// コマンド実行を記録する
+        /// コマンド実行を記録
         /// </summary>
-        /// <param name="command">実行されたコマンド</param>
-        /// <param name="stateName">現在の状態名</param>
-        /// <param name="wasSuccessful">コマンドが成功したか</param>
-        /// <param name="position">プレイヤーの位置</param>
+        /// <param name="command"></param>
+        /// <param name="stateName"></param>
+        /// <param name="wasSuccessful"></param>
+        /// <param name="position"></param>
         public void RecordCommand(ICommand command, string stateName, bool wasSuccessful, Vector3 position)
         {
             if (command == null) return;
 
-            CommandRecord record = new CommandRecord(command, stateName, wasSuccessful, position);
-
-            // 履歴に追加
+            var record = new CommandRecord(command, stateName, wasSuccessful, position);
             commandHistory.Add(record);
 
-            // 最大サイズを超えたら古いものから削除
             if (commandHistory.Count > maxHistorySize)
-            {
                 commandHistory.RemoveAt(0);
-            }
 
-            // デバッグログ表示
             if (showDebugLog)
-            {
-                // Debug.Log($"Command Executed: {record}");
-            }
+                Debug.Log(record);
         }
 
         /// <summary>
-        /// 指定したタイプのコマンドが最近実行されたかチェック
+        /// 指定時間内に特定の型のコマンドが成功したか
         /// </summary>
-        /// <typeparam name="T">コマンドの型</typeparam>
-        /// <param name="timeWindow">チェックする時間範囲（秒）</param>
-        /// <returns>指定時間内に実行されていればtrue</returns>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="timeWindow"></param>
+        /// <returns></returns>
         public bool WasCommandExecutedRecently<T>(float timeWindow = 1.0f) where T : ICommand
         {
+            float now = Time.time;
             string typeName = typeof(T).Name;
-            float currentTime = Time.time;
             for (int i = commandHistory.Count - 1; i >= 0; i--)
             {
-                if (currentTime - commandHistory[i].executionTime > timeWindow)
-                    break; // 時間範囲を超えたら終了
-                if (commandHistory[i].commandName == typeName && commandHistory[i].wasSuccessful)
-                    return true;
-
+                var r = commandHistory[i];
+                if (now - r.executionTime > timeWindow) break;
+                if (r.commandName == typeName && r.wasSuccessful) return true;
             }
             return false;
         }
 
         /// <summary>
-        /// 特定の状態で実行されたコマンドの履歴を取得
+        /// 指定の状態で実行された履歴を取得
         /// </summary>
-        /// <param name="stateName">状態名</param>
-        /// <param name="count">取得する数</param>
-        /// <returns>コマンド履歴リスト</returns>
+        /// <param name="stateName"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public List<CommandRecord> GetHistoryByState(string stateName, int count = 10)
         {
-            List<CommandRecord> result = new List<CommandRecord>();
-
+            List<CommandRecord> result = new();
             for (int i = commandHistory.Count - 1; i >= 0 && result.Count < count; i--)
             {
                 if (commandHistory[i].stateName == stateName)
-                {
                     result.Add(commandHistory[i]);
-                }
             }
-
             return result;
         }
 
         /// <summary>
-        /// すべてのコマンド履歴を取得
+        /// 全履歴を取得
         /// </summary>
-        /// <param name="count">取得する数（デフォルトは全て）</param>
-        /// <returns>コマンド履歴リスト</returns>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public List<CommandRecord> GetFullHistory(int count = 0)
         {
             if (count <= 0 || count > commandHistory.Count)
                 return new List<CommandRecord>(commandHistory);
-
             return commandHistory.GetRange(commandHistory.Count - count, count);
         }
 
         /// <summary>
         /// 履歴をクリア
         /// </summary>
-        public void ClearHistory()
-        {
-            commandHistory.Clear();
-        }
+        public void ClearHistory() => commandHistory.Clear();
 
         /// <summary>
-        /// コマンドの成功率を計算
+        /// コマンドの成功率を取得
         /// </summary>
-        /// <typeparam name="T">コマンドの型</typeparam>
-        /// <returns>成功率（0～1）</returns>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public float GetCommandSuccessRate<T>() where T : ICommand
         {
+            int total = 0, success = 0;
             string typeName = typeof(T).Name;
-            int total = 0;
-            int success = 0;
-
-            foreach (var record in commandHistory)
+            foreach (var r in commandHistory)
             {
-                if (record.commandName == typeName)
+                if (r.commandName == typeName)
                 {
                     total++;
-                    if (record.wasSuccessful)
-                        success++;
+                    if (r.wasSuccessful) success++;
                 }
             }
-
             return total > 0 ? (float)success / total : 0f;
         }
 
         /// <summary>
-        /// 特定のコンボが実行されたかチェック
+        /// GUIで表示（デバッグ用）
         /// </summary>
-        /// <param name="commandTypes">チェックするコマンドの型の配列</param>
-        /// <param name="maxTimeBetweenCommands">コマンド間の最大許容時間</param>
-        /// <returns>コンボが検出されたかどうか</returns>
-        public bool CheckCombo(Type[] commandTypes, float maxTimeBetweenCommands = 1.0f)
-        {
-            if (commandTypes.Length == 0 || commandHistory.Count < commandTypes.Length)
-                return false;
-
-            int historyIndex = commandHistory.Count - 1;
-            for (int i = commandTypes.Length - 1; i >= 0; i--)
-            {
-                bool found = false;
-                float lastTime = i < commandTypes.Length - 1 ?
-                    commandHistory[historyIndex + 1].executionTime :
-                    float.MaxValue;
-
-                // 時間内のコマンドを探す
-                while (historyIndex >= 0)
-                {
-                    var record = commandHistory[historyIndex];
-                    if (record.commandName == commandTypes[i].Name &&
-                        record.wasSuccessful &&
-                        (lastTime - record.executionTime) <= maxTimeBetweenCommands)
-                    {
-                        found = true;
-                        break;
-                    }
-                    historyIndex--;
-                }
-
-                if (!found)
-                    return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// 最新のコマンドの名前を拾う
-        /// </summary>
-        /// <returns></returns>
-        public string GetLatestCommandName()=> commandHistory[0].commandName;
-
-        // デバッグ用GUI表示
         private void OnGUI()
         {
             if (!showGUI) return;
@@ -217,13 +148,50 @@ namespace TechC
             GUILayout.BeginArea(new Rect(10, 10, 400, 25 * displayCount));
             GUILayout.Label("コマンド履歴:");
 
-            int startIndex = Mathf.Max(0, commandHistory.Count - displayCount);
-            for (int i = startIndex; i < commandHistory.Count; i++)
+            int start = Mathf.Max(0, commandHistory.Count - displayCount);
+            for (int i = start; i < commandHistory.Count; i++)
             {
                 GUILayout.Label(commandHistory[i].ToString());
             }
-
             GUILayout.EndArea();
+        }
+
+        /// <summary>
+        /// 最新のコマンド名を取得
+        /// </summary>
+        /// <returns></returns>
+        public string GetLatestCommandName() => commandHistory.Count > 0 ? commandHistory[^1].commandName : "なし";
+
+        /// <summary>
+        /// コマンドの型一致でコンボをチェック（シンプル版）
+        /// </summary>
+        /// <param name="types"></param>
+        /// <param name="maxInterval"></param>
+        /// <returns></returns>
+        public bool CheckCombo(Type[] types, float maxInterval = 1.0f)
+        {
+            if (types.Length == 0 || commandHistory.Count < types.Length) return false;
+
+            int index = commandHistory.Count - 1;
+            for (int i = types.Length - 1; i >= 0; i--)
+            {
+                bool found = false;
+                float lastTime = i < types.Length - 1 ? commandHistory[index + 1].executionTime : float.MaxValue;
+
+                while (index >= 0)
+                {
+                    var r = commandHistory[index];
+                    if (r.commandName == types[i].Name && r.wasSuccessful && lastTime - r.executionTime <= maxInterval)
+                    {
+                        found = true;
+                        break;
+                    }
+                    index--;
+                }
+
+                if (!found) return false;
+            }
+            return true;
         }
     }
 }

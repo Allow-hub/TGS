@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 
   animationTrigger: IsAppealing
   animationSpeed: 1.2
-  attackDuration: 5
+  attackDuration: 2
   damage: 0
   knockback: 0
   radius: 0

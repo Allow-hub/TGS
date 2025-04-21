@@ -27,6 +27,7 @@ namespace TechC
             private AttackManager.AttackStrength attackStrength;
             private float duration;
             private float elapsedTime = 0;
+            private bool isEarlyExit = true;
             // 同じ攻撃を何回繰り返すとゲージ減少が始まるか
             private const int PENALTY_THRESHOLD = 3;
             // ゲージ減少量
@@ -63,6 +64,7 @@ namespace TechC
                 elapsedTime += Time.deltaTime;
                 if (elapsedTime > duration)
                 {
+                    isEarlyExit = false;
                     Context.ChangeNeutralState();
                 }
             }
@@ -81,9 +83,12 @@ namespace TechC
                     Debug.LogWarning($"AttackData is null for type {attackType} and strength {attackStrength}");
                 }
                 //もし攻撃時間がたたずに他ステートから割り込まれたときに強制終了のメソッドを呼ぶ
-                var isEarlyExit = elapsedTime < duration;
+                
                 if (isEarlyExit)
-                    Context.attackManager.ForceFinish(attackStrength);
+                {
+
+                    Context.attackManager.ForceFinish(attackStrength);Debug.Log("Earty");
+                }
                 Context.currentCommand = null;
             }
 

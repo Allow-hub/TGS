@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TechC.Player;
 using UnityEngine;
 using static TechC.CharacterState;
@@ -13,6 +14,7 @@ namespace TechC
         [Header("Reference")]
         [SerializeField] protected Player.CharacterController characterController;
         [SerializeField] private CommandHistory commandHistory;
+        [SerializeField] private ComboSystem comboSystem;
         [Header("Data")]
         [SerializeField]
         private AttackSet attackSet;
@@ -186,6 +188,15 @@ namespace TechC
                 }
             }
 
+
+            if (hitConfirmed)
+            {
+                // アピール後のチャージ状態でヒットした場合、ゲージを増加
+                //CheckAndAddGauge(attackData);
+                comboSystem.CheckCombos();
+                // コンボ履歴を検証し、特別なコンボの場合は追加ボーナスを付与
+                //CheckForSpecialCombos();
+            }
             // ヒットボックスの可視化
             VisualizeHitbox(attackPosition, attackData.radius, hitConfirmed);
 
@@ -359,6 +370,78 @@ namespace TechC
         }
         public virtual void ForceFinish()
         {
+        }
+
+        private void CheckAndAddGauge(AttackData attackData)
+        {
+            // チャージ可能状態かチェック
+            if (characterController.IsChargeEnabled())
+            {
+                // 基本チャージ量（攻撃の種類や威力に応じて変動可能）
+                float chargeAmount = attackData.damage * 0.5f;
+
+                // ゲージ増加処理
+                characterController.NotBoolAddSpecialGauge(chargeAmount);
+
+                // 必要に応じてエフェクト表示
+                ShowChargeEffect(attackData.damage);
+            }
+        }
+
+        //// コンボ検証メソッド
+        //private void CheckForSpecialCombos()
+        //{
+        //    // コマンド履歴から特定のコンボパターンを検出
+        //    if (commandHistory == null) return;
+
+        //    // 例: 3連続攻撃コンボの検出
+        //    if (IsThreeAttackCombo())
+        //    {
+        //        // 特別ボーナスを付与
+        //        characterController.NotBoolAddSpecialGauge(10f);
+        //        Debug.Log("3連続攻撃コンボ達成! ボーナスゲージ獲得!");
+        //    }
+
+        //    // 例: 特殊な方向コンボ（下→中立→上）の検出
+        //    if (IsDirectionalCombo())
+        //    {
+        //        characterController.NotBoolAddSpecialGauge(15f);
+        //        Debug.Log("方向コンボ達成! 大きなボーナスゲージ獲得!");
+        //    }
+        //}
+
+        //// 3連続攻撃コンボの検出
+        //private bool IsThreeAttackCombo()
+        //{
+        //    var history = commandHistory.GetFullHistory(3);
+        //    if (history.Count < 3) return false;
+
+        //    // 全てのコマンドが攻撃で、全て成功していることを確認
+        //    return history.All(record =>
+        //        (record.commandName.Contains("Attack") || record.commandName.Contains("Appeal"))
+        //        && record.wasSuccessful);
+        //}
+
+        //// 方向コンボの検出
+        //private bool IsDirectionalCombo()
+        //{
+        //    // Type配列を使って特定のコマンドシーケンスをチェック
+        //    return commandHistory.CheckCombo(
+        //        new Type[] {
+        //    //typeof(DownAttackCommand),
+        //    typeof(AttackCommand),  // 中立攻撃
+        //    //typeof(UpAttackCommand)
+        //        },
+        //        2.0f  // コマンド間の最大許容時間
+        //    );
+        //}
+
+        // エフェクト表示用（オプション）
+        private void ShowChargeEffect(float amount)
+        {
+            // チャージエフェクトを表示するコード
+            // 例: パーティクルシステムの再生など
+            Debug.Log($"ゲージチャージ! +{amount * 0.5f}");
         }
     }
 }

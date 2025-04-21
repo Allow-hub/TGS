@@ -105,6 +105,8 @@ namespace TechC
         public virtual void ForceFinish()
         {
             characterController.ChangeCanCharge(false);
+            Debug.Log("AN");
+
         }
 
         public float GetDuration(AttackType attackType)

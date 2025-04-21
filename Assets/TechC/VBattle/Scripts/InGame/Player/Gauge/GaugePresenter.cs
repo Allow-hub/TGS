@@ -107,5 +107,6 @@ namespace TechC
         public void FillGauge() => gaugeModel.FillGauge();
         public bool IsSpecialAttackReady(float cost) => gaugeModel.HasEnoughGauge(cost);
         public float GetGaugePercentage() => gaugeModel.GaugePercentage;
+        public bool GetCanCharge() => gaugeModel.CanCharge;
     }
 }

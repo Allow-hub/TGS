@@ -30,7 +30,7 @@ namespace TechC
         {
             this.maxGauge = maxGauge;
             this.currentGauge = 0f;
-            this.canCharge = true;
+            this.canCharge = false;
         }
 
         /// <summary>
@@ -71,8 +71,6 @@ namespace TechC
             elapsedTime += deltaTime;
             if (elapsedTime >= interval)
             {
-                Debug.Log("Y");
-
                 AddGaugeInternal(amount);
                 elapsedTime = 0;
             }

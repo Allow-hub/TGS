@@ -942,6 +942,7 @@ GameObject:
   - component: {fileID: 629549804}
   - component: {fileID: 629549803}
   - component: {fileID: 629549810}
+  - component: {fileID: 629549811}
   m_Layer: 0
   m_Name: Player (1)
   m_TagString: Untagged
@@ -1017,6 +1018,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterController: {fileID: 629549807}
   commandHistory: {fileID: 629549803}
+  comboSystem: {fileID: 629549811}
   attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
   neutralAttackData_1: {fileID: 11400000, guid: 1177b74adfb8c274fb3d7a6f684de930,
     type: 2}
@@ -1124,6 +1126,24 @@ MonoBehaviour:
   startY: 10
   padding: 5
   inputSmoothness: 0.1
+--- !u!114 &629549811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 629549802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cf3aa6ef8c423c4f8a3ad1d342df6b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  commandHistory: {fileID: 629549803}
+  characterController: {fileID: 629549807}
+  combos:
+  - {fileID: 11400000, guid: 7f458afe5f1ef4d49ab15f646e263cb7, type: 2}
+  lastDetectedCombo: "\u306A\u3057"
+  showDebugInfo: 1
 --- !u!1 &642506621 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3919362311753863366, guid: 08511d7ad1147594eb6e38e470c3d104,
@@ -1147,7 +1167,7 @@ GameObject:
   - component: {fileID: 661456092}
   - component: {fileID: 661456091}
   m_Layer: 0
-  m_Name: Gojeq5FWwAATXYK
+  m_Name: back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1267,6 +1287,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 2P
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275471418475158546, guid: d9dd290009ba7194db30ea68a948927c,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4463642719969818080, guid: d9dd290009ba7194db30ea68a948927c,
+        type: 3}
+      propertyPath: fullColor.b
+      value: 0.02655753
+      objectReference: {fileID: 0}
+    - target: {fileID: 4463642719969818080, guid: d9dd290009ba7194db30ea68a948927c,
+        type: 3}
+      propertyPath: fullColor.g
+      value: 0.015686274
+      objectReference: {fileID: 0}
+    - target: {fileID: 4463642719969818080, guid: d9dd290009ba7194db30ea68a948927c,
+        type: 3}
+      propertyPath: normalColor.b
+      value: 0.27972865
+      objectReference: {fileID: 0}
+    - target: {fileID: 4463642719969818080, guid: d9dd290009ba7194db30ea68a948927c,
+        type: 3}
+      propertyPath: normalColor.g
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6256103655824234232, guid: d9dd290009ba7194db30ea68a948927c,
         type: 3}
@@ -1739,6 +1784,7 @@ GameObject:
   - component: {fileID: 1389670166}
   - component: {fileID: 1389670165}
   - component: {fileID: 1389670168}
+  - component: {fileID: 1389670169}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2027,6 +2073,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterController: {fileID: 1389670164}
   commandHistory: {fileID: 1389670168}
+  comboSystem: {fileID: 1389670169}
   attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
   neutralAttackData_1: {fileID: 11400000, guid: 1177b74adfb8c274fb3d7a6f684de930,
     type: 2}
@@ -2057,6 +2104,24 @@ MonoBehaviour:
   showDebugLog: 0
   showGUI: 0
   displayCount: 10
+--- !u!114 &1389670169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389670154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cf3aa6ef8c423c4f8a3ad1d342df6b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  commandHistory: {fileID: 1389670168}
+  characterController: {fileID: 1389670164}
+  combos:
+  - {fileID: 11400000, guid: 7f458afe5f1ef4d49ab15f646e263cb7, type: 2}
+  lastDetectedCombo: "\u306A\u3057"
+  showDebugInfo: 1
 --- !u!1001 &1519539025
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2704,6 +2769,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
   commandHistory: {fileID: 0}
+  comboSystem: {fileID: 0}
   attackSet: {fileID: 0}
   neutralAttackData_1: {fileID: 0}
   neutralAttackData_2: {fileID: 0}
@@ -2805,6 +2871,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 1P
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275471418475158546, guid: d9dd290009ba7194db30ea68a948927c,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7938230971775563347, guid: d9dd290009ba7194db30ea68a948927c,
         type: 3}

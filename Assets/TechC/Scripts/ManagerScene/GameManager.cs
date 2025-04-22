@@ -83,6 +83,11 @@ namespace TechC
                 yield return null;
             }
         }
+
+        public void StartButton()
+        {
+            SceneManager.LoadScene("InGame");
+        }
     }
 
 }

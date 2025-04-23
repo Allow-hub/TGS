@@ -8,54 +8,59 @@ using UnityEngine.Video;
 public class TitleManager : MonoBehaviour
 {
     [SerializeField] GameObject MoviePlayer;
+    [SerializeField] private float ChangeTime = 5.0f; // 修正: 型をfloatに変更
 
     private bool MoviePlaying = false;
-    private bool MovieFlag = true;
 
     private InputAction _pressAnyKeyAction =
         new InputAction(type: InputActionType.PassThrough, binding: "*/<Button>", interactions: "Press");
 
-
     private void OnEnable() => _pressAnyKeyAction.Enable();
     private void OnDisable() => _pressAnyKeyAction.Disable();
+
     void Start()
     {
         MoviePlayer.gameObject.SetActive(false);
-        Invoke("playMovie", 5.0f);
+        StartCoroutine(PlayMovieWithDelay(ChangeTime)); // Coroutineを使用
     }
 
     void Update()
     {
-        if (MoviePlaying == false)
+        if (_pressAnyKeyAction.triggered)
         {
-            if (MovieFlag == false)
+            if (MoviePlaying)
             {
-                Invoke("playMovie", 5.0f);
-                MovieFlag = true;
+                StopMovie();
             }
-
-            if (_pressAnyKeyAction.triggered)
+            else
             {
                 SceneManager.LoadScene("InGame");
             }
         }
-        else
-        {
-            if (_pressAnyKeyAction.triggered)
-            {
-                MoviePlayer.gameObject.SetActive(false);
-                MoviePlaying = false;
-                MovieFlag = false;
-            }
-        }
     }
 
-    void playMovie()
+    // Coroutineで遅延処理を実現
+    private IEnumerator PlayMovieWithDelay(float delay)
     {
-        if (MoviePlaying == false)
+        yield return new WaitForSeconds(delay);
+        PlayMovie();
+    }
+
+    // 映像再生を開始
+    void PlayMovie()
+    {
+        if (!MoviePlaying)
         {
             MoviePlayer.gameObject.SetActive(true);
             MoviePlaying = true;
         }
+    }
+
+    // 映像再生を停止
+    void StopMovie()
+    {
+        MoviePlayer.gameObject.SetActive(false);
+        MoviePlaying = false;
+        StartCoroutine(PlayMovieWithDelay(ChangeTime)); // 次の再生をスケジュール
     }
 }

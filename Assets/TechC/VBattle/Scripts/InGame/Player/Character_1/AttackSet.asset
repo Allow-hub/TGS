@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06e5952216fdb6f40b12b62048d26560, type: 3}
+  m_Name: AttackSet
+  m_EditorClassIdentifier: 
+  characterName: 
+  weakNeutral: {fileID: 11400000, guid: 69c58004d22fc694abf630bb3272c9e6, type: 2}
+  weakUp: {fileID: 11400000, guid: 69c58004d22fc694abf630bb3272c9e6, type: 2}
+  weakDown: {fileID: 11400000, guid: 69c58004d22fc694abf630bb3272c9e6, type: 2}
+  weakLeft: {fileID: 11400000, guid: 69c58004d22fc694abf630bb3272c9e6, type: 2}
+  weakRight: {fileID: 11400000, guid: 69c58004d22fc694abf630bb3272c9e6, type: 2}
+  strongNeutral: {fileID: 11400000, guid: 69c58004d22fc694abf630bb3272c9e6, type: 2}
+  strongUp: {fileID: 11400000, guid: 69c58004d22fc694abf630bb3272c9e6, type: 2}
+  strongDown: {fileID: 11400000, guid: 69c58004d22fc694abf630bb3272c9e6, type: 2}
+  strongLeft: {fileID: 11400000, guid: 69c58004d22fc694abf630bb3272c9e6, type: 2}
+  strongRight: {fileID: 11400000, guid: 69c58004d22fc694abf630bb3272c9e6, type: 2}

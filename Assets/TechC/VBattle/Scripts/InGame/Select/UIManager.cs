@@ -7,8 +7,8 @@ namespace TechC
 {
     public class UIManager : MonoBehaviour
     {
-        public GameObject confirmButton;  // 決定ボタン
-        public CharacterSelectionManager manager;  // キャラクター選択管理
+        [SerializeField] private GameObject confirmButton;  // 決定ボタン
+        [SerializeField] private CharacterSelectionManager manager;  // キャラクター選択管理
 
         // 決定ボタンが押された時に呼ばれる
         public void ConfirmSelection()

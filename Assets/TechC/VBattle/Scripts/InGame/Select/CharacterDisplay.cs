@@ -6,7 +6,7 @@ namespace TechC
 {
     public class CharacterDisplay : MonoBehaviour
     {
-        private Animator characterAnimator;  // キャラクターのAnimator
+        [SerializeField] private Animator characterAnimator;  // キャラクターのAnimator
 
         void Start()
         {

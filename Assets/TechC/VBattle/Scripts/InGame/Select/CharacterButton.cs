@@ -7,9 +7,9 @@ namespace TechC
 {
     public class CharacterButton : MonoBehaviour
     {
-        public int characterIndex;  // このボタンが操作するキャラのインデックス
-        public Button button;       // このボタンのUIコンポーネント
-        public CharacterSelectionManager manager;  // CharacterSelectionManagerへの参照
+        [SerializeField] private int characterIndex;  // このボタンが操作するキャラのインデックス
+        [SerializeField] private Button button;       // このボタンのUIコンポーネント
+        [SerializeField] private CharacterSelectionManager manager;  // CharacterSelectionManagerへの参照
 
         void Start()
         {

@@ -6,10 +6,10 @@ namespace TechC
 {
     public class CharacterSelectionManager : MonoBehaviour
     {
-        public GameObject[] characterPrefabs;   // キャラのプレハブを格納
-        public Transform displayArea;           // キャラを表示するエリア
-        public GameObject confirmButton;        // 決定ボタン
-        public UnityEngine.UI.Text characterNameText;  // 選択したキャラの名前を表示するUIテキスト
+        [SerializeField] private GameObject[] characterPrefabs;   // キャラのプレハブを格納
+        [SerializeField] private Transform displayArea;           // キャラを表示するエリア
+        [SerializeField] private GameObject confirmButton;        // 決定ボタン
+        [SerializeField] private UnityEngine.UI.Text characterNameText;  // 選択したキャラの名前を表示するUIテキスト
 
         private GameObject currentCharacter;    // 現在選択されているキャラクター
 

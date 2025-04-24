@@ -43,14 +43,7 @@ namespace TechC
                 }
 
                 attackType = CheckAttackType();
-
-                // 攻撃強度の判定
-                if (Context.playerInputManager.IsWeakAttacking)
-                    attackStrength = AttackStrength.Weak;
-                else if (Context.playerInputManager.IsStrongAttacking)
-                    attackStrength = AttackStrength.Strong;
-                else if (Context.playerInputManager.IsAppealing)
-                    attackStrength = AttackStrength.Appeal;
+                attackStrength = CheckAttackStength();
 
                 // 同じ攻撃の連続使用をチェック
                 CheckConsecutiveAttacks();
@@ -83,11 +76,11 @@ namespace TechC
                     Debug.LogWarning($"AttackData is null for type {attackType} and strength {attackStrength}");
                 }
                 //もし攻撃時間がたたずに他ステートから割り込まれたときに強制終了のメソッドを呼ぶ
-                
+
                 if (isEarlyExit)
                 {
 
-                    Context.attackManager.ForceFinish(attackStrength);Debug.Log("Earty");
+                    Context.attackManager.ForceFinish(attackStrength); Debug.Log("Earty");
                 }
                 Context.currentCommand = null;
             }
@@ -108,7 +101,23 @@ namespace TechC
                     return AttackType.Up;
                 return AttackType.Neutral;
             }
+            /// <summary>
+            /// 攻撃の強さの確認
+            /// </summary>
+            /// <returns></returns>
+            private AttackStrength CheckAttackStength()
+            {
 
+                // 攻撃強度の判定
+                if (Context.playerInputManager.IsWeakAttacking)
+                    return AttackStrength.Weak;
+                else if (Context.playerInputManager.IsStrongAttacking)
+                    return AttackStrength.Strong;
+                else if (Context.playerInputManager.IsAppealing)
+                    return AttackStrength.Appeal;
+
+                return AttackStrength.Weak;
+            }
             /// <summary>
             /// 同じ攻撃の連続使用をチェックし、必要に応じてゲージを減らす
             /// </summary>

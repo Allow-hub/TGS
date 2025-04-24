@@ -18,9 +18,7 @@ MonoBehaviour:
   - {fileID: 11500000, guid: 9a812eb0c65069c48b6bcc4a94c89b8b, type: 3}
   - {fileID: 11500000, guid: e8b92da9d80611f43a42dd0bd75c639e, type: 3}
   sequence:
-  - attackType: 0
-    attackStrength: 0
-  - attackType: 0
+  - attackType: 2
     attackStrength: 0
   timeWindow: 2
   gaugeBonus: 10

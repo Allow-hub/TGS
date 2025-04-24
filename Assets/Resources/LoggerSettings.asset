@@ -45,7 +45,15 @@ MonoBehaviour:
   - categoryId: state
     displayName: State Machine
     color: {r: 0.74158955, g: 0.9528302, b: 0.74158955, a: 1}
-    enabledByDefault: 0
+    enabledByDefault: 1
+  - categoryId: comboCheck
+    displayName: ComboCheck
+    color: {r: 0.4503382, g: 0.46382818, b: 0.8301887, a: 1}
+    enabledByDefault: 1
+  - categoryId: comboClear
+    displayName: ComboClear
+    color: {r: 1, g: 0.9600028, b: 0, a: 1}
+    enabledByDefault: 1
   defaultCategory:
     categoryId: default
     displayName: Default
@@ -58,7 +66,9 @@ MonoBehaviour:
   - ui
   - default
   - audio
-  _disabledCategoryIds:
-  - state
   - gamePlay
   - physics
+  - comboClear
+  - comboCheck
+  _disabledCategoryIds:
+  - state

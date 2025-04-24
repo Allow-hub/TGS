@@ -6,6 +6,7 @@ using TechC.Extensions;
 using TechC.Player;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
+using static TechC.AttackManager;
 
 namespace TechC
 {
@@ -200,6 +201,13 @@ namespace TechC
 
             if (commandHistory != null && currentCommand != null)
             {
+                //CommandがAttackCommandならTypeとStrengthの保存
+                if (currentCommand is AttackCommand attackCommand)
+                {
+                    attackCommand.SetAttackType(CheckAttackType());
+                    attackCommand.SetAttackStrength(CheckAttackStrength());
+
+                }
                 commandHistory.RecordCommand(
                     currentCommand,
                     GetType().Name,
@@ -207,8 +215,41 @@ namespace TechC
                     characterController.transform.position
                 );
             }
+            CustomLogger.Info("コマンドを保存"+Time.time);
         }
+        /// <summary>
+        /// 攻撃種方向の確認
+        /// </summary>
+        /// <returns></returns>
+        private AttackType CheckAttackType()
+        {
+            if (playerInputManager.MoveInput.x < 0)
+                return AttackType.Left;
+            if (playerInputManager.MoveInput.x > 0)
+                return AttackType.Right;
+            if (playerInputManager.MoveInput.y < 0)
+                return AttackType.Down;
+            if (playerInputManager.MoveInput.y > 0)
+                return AttackType.Up;
+            return AttackType.Neutral;
+        }
+        /// <summary>
+        /// 攻撃の強さの確認
+        /// </summary>
+        /// <returns></returns>
+        private AttackStrength CheckAttackStrength()
+        {
 
+            // 攻撃強度の判定
+            if (playerInputManager.IsWeakAttacking)
+                return AttackStrength.Weak;
+            else if (playerInputManager.IsStrongAttacking)
+                return AttackStrength.Strong;
+            else if (playerInputManager.IsAppealing)
+                return AttackStrength.Appeal;
+
+            return AttackStrength.Weak;
+        }
         /// <summary>
         /// 次のコマンドを取得する
         /// </summary>

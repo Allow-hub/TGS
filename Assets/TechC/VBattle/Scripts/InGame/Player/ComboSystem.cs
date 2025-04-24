@@ -20,6 +20,8 @@ namespace TechC
 
         // Unity Inspectorで表示するためのデバッグ情報
         [SerializeField, ReadOnly] private string lastDetectedCombo = "なし";
+        [SerializeField, ReadOnly] private string comboCheckLogId = "comboCheck";
+        [SerializeField, ReadOnly] private string comboClearLogId = "comboClear";
         [SerializeField] private bool showDebugInfo = true;
 
         private void Awake()
@@ -46,10 +48,10 @@ namespace TechC
         {
             if (showDebugInfo)
             {
-                Debug.Log("コンボチェック開始 ----------------" + Time.time);
+                CustomLogger.Info("コンボチェック開始 ----------------" + Time.time, comboCheckLogId);
 
                 var history = commandHistory.GetFullHistory(5);
-                Debug.Log($"最新履歴: {string.Join(" -> ", history.Select(h => $"{h.attackType}/{h.attackStrength}/{h.executionTime:F2}"))}");
+                //CustomLogger.Info($"最新履歴: {string.Join(" -> ", history.Select(h => $"{h.attackType}/{h.attackStrength}/{h.executionTime:F2}"))}", comboCheckLogId);
 
                 // 除外された履歴
                 List<CommandRecord> excludedRecords = new();
@@ -76,7 +78,7 @@ namespace TechC
                 }
 
                 // 除外されていない履歴のみの表示
-                Debug.Log($"除外された状態の最新履歴: {string.Join(" -> ", includedRecords.Select(r => $"{r.attackType}/{r.attackStrength}/{r.executionTime:F2}"))}");
+                CustomLogger.Info($"除外された状態の最新履歴: {string.Join(" -> ", includedRecords.Select(r => $"{r.attackType}/{r.attackStrength}/{r.executionTime:F2}"))}", comboCheckLogId);
             }
 
 
@@ -85,16 +87,18 @@ namespace TechC
             {
                 if (combo.requiresCharge && !characterController.IsChargeEnabled())
                     continue;
-                Debug.Log(CheckComboSequence(combo));
-                if (CheckComboSequence(combo))
+                bool result = CheckComboSequence(combo);
+                Debug.Log($"CheckComboSequence({combo.comboName}) = {result}");
+
+                if (result)
                 {
-                    Debug.Log($"コンボシーケンス確認: {combo.comboName}");
+                    CustomLogger.Info($"コンボシーケンス確認: {combo.comboName}", comboClearLogId);
                     characterController.NotBoolAddSpecialGauge(combo.gaugeBonus);
                     lastDetectedCombo = combo.comboName;
 
                     if (showDebugInfo)
                     {
-                        Debug.Log($"コンボ「{combo.comboName}」発動! ボーナスゲージ +{combo.gaugeBonus}");
+                        CustomLogger.Info($"コンボ「{combo.comboName}」発動! ボーナスゲージ +{combo.gaugeBonus}", comboClearLogId);
                     }
 
                     PlayComboEffect(combo);
@@ -104,7 +108,7 @@ namespace TechC
 
             if (showDebugInfo)
             {
-                Debug.Log("コンボチェック終了 ----------------");
+                CustomLogger.Info("コンボチェック終了 ----------------", comboCheckLogId);
             }
         }
 
@@ -121,9 +125,9 @@ namespace TechC
             if (showDebugInfo)
             {
 
-                Debug.Log($"コンボチェック - コンボ名: {combo.comboName}{Time.time}");
-                Debug.Log($"必要なシーケンス: {string.Join(" -> ", combo.sequence.Select(s => $"{s.attackType}/{s.attackStrength}"))}");
-                Debug.Log($"実際の履歴: {string.Join(" -> ", history.Select(h => $"{h.attackType}/{h.attackStrength}({h.executionTime:F2})"))}");
+                CustomLogger.Info($"コンボチェック - コンボ名: {combo.comboName}{Time.time}", comboCheckLogId);
+                CustomLogger.Info($"必要なシーケンス: {string.Join(" -> ", combo.sequence.Select(s => $"{s.attackType}/{s.attackStrength}"))}", comboCheckLogId);
+                CustomLogger.Info($"実際の履歴: {string.Join(" -> ", history.Select(h => $"{h.attackType}/{h.attackStrength}({h.executionTime:F2})"))}", comboCheckLogId);
             }
 
             // 履歴の中から連続するコンボとして一致するものを探す
@@ -156,11 +160,11 @@ namespace TechC
                     // タイプと強度が一致するか確認
                     if (record.attackType == step.attackType && record.attackStrength == step.attackStrength)
                     {
-                        // 時間窓内か確認（リストが空でなければ前のコマンドとの時間差をチェック）
+                        // 時間内か確認（リストが空でなければ前のコマンドとの時間差をチェック）
                         if (matchedRecords.Count > 0)
                         {
-                            float timeDiff = matchedRecords[matchedRecords.Count - 1].executionTime - record.executionTime;
-                            if (timeDiff > combo.timeWindow) continue; // 時間窓を超えていたら不一致
+                            float timeDiff = record.executionTime - matchedRecords[matchedRecords.Count - 1].executionTime;
+                            if (timeDiff > combo.timeWindow) continue;
                         }
 
                         // 一致したら記録して次のステップへ
@@ -182,7 +186,7 @@ namespace TechC
 
             if (showDebugInfo)
             {
-                Debug.Log($"コンボ成功: {combo.comboName}");
+                CustomLogger.Info($"コンボ成功: {combo.comboName}", comboClearLogId);
             }
 
             return true;
@@ -219,7 +223,7 @@ namespace TechC
             {
                 if (showDebugInfo)
                 {
-                    Debug.Log($"コマンド一致: {record.commandName} (Type: {record.attackType}, Strength: {record.attackStrength})");
+                    CustomLogger.Info($"コマンド一致: {record.commandName} (Type: {record.attackType}, Strength: {record.attackStrength})", comboCheckLogId);
                 }
                 return true;
             }

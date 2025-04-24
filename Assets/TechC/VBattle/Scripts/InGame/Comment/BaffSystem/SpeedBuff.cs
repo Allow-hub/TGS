@@ -11,8 +11,7 @@ namespace TechC
     [Serializable]
     public class SpeedBuff : BuffBase
     {
-        [SerializeField]
-        private float speedMultiplier = 3.0f;
+        [SerializeField] private float speedMultiplier = 3.0f;
 
         public SpeedBuff()
         {
@@ -21,6 +20,11 @@ namespace TechC
             buffDuration = 3.0f;
             remainingTime = buffDuration;
         }
+
+        /// <summary>
+        /// 移動速度上昇のバフを適用する
+        /// </summary>
+        /// <param name="target"></param>
         public override void Apply(GameObject target)
         {
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
@@ -40,7 +44,11 @@ namespace TechC
                 // Debug.Log($"<color=orange>[Apply後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
             }
         }
-
+        
+        /// <summary>
+        /// 移動速度上昇のバフを解除する
+        /// </summary>
+        /// <param name="target"></param>
         public override void Remove(GameObject target)
         {
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();

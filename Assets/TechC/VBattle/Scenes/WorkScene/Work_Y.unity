@@ -555,10 +555,11 @@ MonoBehaviour:
   normalComments: {fileID: 11400000, guid: bb4d59f718567b64e8ce875502b21655, type: 2}
   buffComments:
   - {fileID: 11400000, guid: 09a7fc4219b36294b935eeb862608990, type: 2}
+  - {fileID: 11400000, guid: b893081f989efd54cb2b0989f70a2ca2, type: 2}
   - {fileID: 11400000, guid: efb77ce6fd583934f90278662409542c, type: 2}
   normalChance: 0
-  buffChance: 0
-  mapChangeChance: 1
+  buffChance: 0.5
+  mapChangeChance: 0.5
 --- !u!4 &672580403
 Transform:
   m_ObjectHideFlags: 0
@@ -1561,8 +1562,10 @@ MonoBehaviour:
   commandHistory: {fileID: 1389670170}
   weakAttack: {fileID: 1389670171}
   strongAttack: {fileID: 1389670172}
+  appealBase: {fileID: 0}
   defaultAnimSpeed: 1
-  maxGage: 100
+  gaugePresenter: {fileID: 0}
+  maxGauge: 100
   jumpInputThreshold: 0.7
   rayLength: 1.1
   isDrawingRay: 1
@@ -1618,7 +1621,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 1389670164}
+  inputManager: {fileID: 0}
   commandHistory: {fileID: 1389670170}
+  comboSystem: {fileID: 0}
   attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
   neutralAttackData_1: {fileID: 11400000, guid: 1177b74adfb8c274fb3d7a6f684de930,
     type: 2}
@@ -2523,8 +2528,10 @@ MonoBehaviour:
   commandHistory: {fileID: 0}
   weakAttack: {fileID: 0}
   strongAttack: {fileID: 0}
+  appealBase: {fileID: 0}
   defaultAnimSpeed: 1
-  maxGage: 100
+  gaugePresenter: {fileID: 0}
+  maxGauge: 100
   jumpInputThreshold: 0.7
   rayLength: 1.1
   isDrawingRay: 1
@@ -2591,7 +2598,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
+  inputManager: {fileID: 0}
   commandHistory: {fileID: 0}
+  comboSystem: {fileID: 0}
   attackSet: {fileID: 0}
   neutralAttackData_1: {fileID: 0}
   neutralAttackData_2: {fileID: 0}

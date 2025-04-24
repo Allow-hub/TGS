@@ -37,6 +37,7 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
+
         }
 
         /// <summary>

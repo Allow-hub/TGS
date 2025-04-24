@@ -15,16 +15,17 @@ namespace TechC
         [SerializeField] private Player.CharacterController characterController;
         [SerializeField]
         private AttackSet attackSet;
-        [SerializeField]
+        [SerializeField,ReadOnly]
         protected AttackData neutralAttackData;
-        [SerializeField]
+        [SerializeField, ReadOnly]
         protected AttackData leftAttackData;
-        [SerializeField]
+        [SerializeField, ReadOnly]
         protected AttackData rightAttackData;
-        [SerializeField]
+        [SerializeField, ReadOnly]
         protected AttackData downAttackData;
-        [SerializeField]
+        [SerializeField, ReadOnly]
         protected AttackData upAttackData;
+        [SerializeField] private BaseInputManager inputManager;
 
         [Tooltip("必殺技のチャージが可能な期間"), SerializeField]
         protected float canChargeDuration = 10f;

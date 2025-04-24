@@ -19,15 +19,15 @@ namespace TechC
         [Header("Data")]
         [SerializeField]
         private AttackSet attackSet;
-        [SerializeField]
+        [SerializeField, ReadOnly]
         protected AttackData neutralAttackData_1, neutralAttackData_2, neutralAttackData_3;
-        [SerializeField]
+        [SerializeField, ReadOnly]
         protected AttackData leftAttackData;
-        [SerializeField]
+        [SerializeField, ReadOnly]
         protected AttackData rightAttackData;
-        [SerializeField]
+        [SerializeField, ReadOnly]
         protected AttackData downAttackData;
-        [SerializeField]
+        [SerializeField, ReadOnly]
         protected AttackData upAttackData;
 
         [SerializeField] private float nWeakAttackInterval = 1.0f;
@@ -122,7 +122,7 @@ namespace TechC
             if (isAttacking) return;
             isAttacking = true;
 
-            SetAttackCommand(attackData);
+            //SetAttackCommand(attackData);
             characterController.GetAnim().speed = attackData.animationSpeed;
             characterController.SetAnim(attackData.animHash, true);
             StartCoroutine(DelayAttack(attackData));

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static TechC.CommandHistory;
 
 namespace TechC
 {
@@ -43,11 +44,48 @@ namespace TechC
         /// </summary>
         public void CheckCombos()
         {
+            if (showDebugInfo)
+            {
+                Debug.Log("コンボチェック開始 ----------------" + Time.time);
+
+                var history = commandHistory.GetFullHistory(5);
+                Debug.Log($"最新履歴: {string.Join(" -> ", history.Select(h => $"{h.attackType}/{h.attackStrength}/{h.executionTime:F2}"))}");
+
+                // 除外された履歴
+                List<CommandRecord> excludedRecords = new();
+                List<CommandRecord> includedRecords = new();
+
+                foreach (var record in history)
+                {
+                    bool isExcluded = false;
+                    foreach (var combo in combos)
+                    {
+                        if (IsExcludedCommand(record, combo))
+                        {
+                            excludedRecords.Add(record);
+                            //Debug.Log($"除外された履歴: {record.attackType}/{record.attackStrength}/{record.executionTime:F2} → 除外理由: {record.commandInstance?.GetType()?.Name} が {combo.comboName} の除外対象");
+                            isExcluded = true;
+                            break;
+                        }
+                    }
+
+                    if (!isExcluded)
+                    {
+                        includedRecords.Add(record);
+                    }
+                }
+
+                // 除外されていない履歴のみの表示
+                Debug.Log($"除外された状態の最新履歴: {string.Join(" -> ", includedRecords.Select(r => $"{r.attackType}/{r.attackStrength}/{r.executionTime:F2}"))}");
+            }
+
+
+
             foreach (var combo in combos)
             {
                 if (combo.requiresCharge && !characterController.IsChargeEnabled())
                     continue;
-
+                Debug.Log(CheckComboSequence(combo));
                 if (CheckComboSequence(combo))
                 {
                     Debug.Log($"コンボシーケンス確認: {combo.comboName}");
@@ -60,9 +98,13 @@ namespace TechC
                     }
 
                     PlayComboEffect(combo);
-
                     break;
                 }
+            }
+
+            if (showDebugInfo)
+            {
+                Debug.Log("コンボチェック終了 ----------------");
             }
         }
 
@@ -75,49 +117,72 @@ namespace TechC
             var history = commandHistory.GetFullHistory();
             if (history.Count < combo.sequence.Count) return false;
 
-            float lastMatchedTime = float.MaxValue;
-            int matchCount = 0;
-            List<CommandHistory.CommandRecord> usedRecords = new();
-            //if (showDebugInfo)
-            //{
-            //    Debug.Log($"コンボチェック - コンボ名: {combo.comboName}");
-            //    Debug.Log($"必要なシーケンス: {string.Join(" -> ", combo.sequence.Select(s => $"{s.attackType}/{s.attackStrength}"))}");
-            //    Debug.Log($"実際の履歴: {string.Join(" -> ", history.Select(h => $"{h.commandName}({h.executionTime:F2})"))}");
-            //}
-
-
-            for (int stepIndex = combo.sequence.Count - 1; stepIndex >= 0; stepIndex--)
+            // デバッグ情報表示
+            if (showDebugInfo)
             {
-                var step = combo.sequence[stepIndex];
-                bool found = false;
-                Debug.Log(stepIndex);
-                for (int i = history.Count - 1; i >= 0; i--)
-                {
-                    var record = history[i];
-                    if (IsExcludedCommand(record, combo)) continue;
-                    if (!record.wasSuccessful) continue;
-                    if (!IsMatchingCommand(record, step)) continue;
 
-                    if (record.executionTime >= lastMatchedTime) continue;
-                    float timeBetween = lastMatchedTime - record.executionTime;
-                    if (timeBetween > combo.timeWindow) continue;
-                    Debug.Log(record.attackType);
-                    lastMatchedTime = record.executionTime;
-                    usedRecords.Add(record); 
-                    found = true;
-                    matchCount++;
-                    break;
-                }
-
-                if (!found)
-                {
-                    return false;
-                }
+                Debug.Log($"コンボチェック - コンボ名: {combo.comboName}{Time.time}");
+                Debug.Log($"必要なシーケンス: {string.Join(" -> ", combo.sequence.Select(s => $"{s.attackType}/{s.attackStrength}"))}");
+                Debug.Log($"実際の履歴: {string.Join(" -> ", history.Select(h => $"{h.attackType}/{h.attackStrength}({h.executionTime:F2})"))}");
             }
 
-            foreach (var record in usedRecords)
+            // 履歴の中から連続するコンボとして一致するものを探す
+            List<CommandHistory.CommandRecord> matchedRecords = new List<CommandHistory.CommandRecord>();
+
+            // 履歴を新しい順に検索
+            int currentHistoryIndex = history.Count - 1;
+
+            // コンボシーケンスを後ろから（最新の動作から）確認
+            for (int comboStepIndex = combo.sequence.Count - 1; comboStepIndex >= 0; comboStepIndex--)
+            {
+                var step = combo.sequence[comboStepIndex];
+                bool foundMatch = false;
+
+                // 履歴を新しいものから順に検索
+                while (currentHistoryIndex >= 0)
+                {
+                    var record = history[currentHistoryIndex];
+                    currentHistoryIndex--;
+
+                    // 既にコンボに使われたものはスキップ
+                    if (record.wasUsedForCombo) continue;
+
+                    // 除外コマンドはスキップ
+                    if (IsExcludedCommand(record, combo)) continue;
+
+                    // 成功していないものはスキップ
+                    if (!record.wasSuccessful) continue;
+
+                    // タイプと強度が一致するか確認
+                    if (record.attackType == step.attackType && record.attackStrength == step.attackStrength)
+                    {
+                        // 時間窓内か確認（リストが空でなければ前のコマンドとの時間差をチェック）
+                        if (matchedRecords.Count > 0)
+                        {
+                            float timeDiff = matchedRecords[matchedRecords.Count - 1].executionTime - record.executionTime;
+                            if (timeDiff > combo.timeWindow) continue; // 時間窓を超えていたら不一致
+                        }
+
+                        // 一致したら記録して次のステップへ
+                        matchedRecords.Add(record);
+                        foundMatch = true;
+                        break;
+                    }
+                }
+
+                // 一つでも一致しなければコンボ不成立
+                if (!foundMatch) return false;
+            }
+
+            // すべてのステップが一致したら、使用済みとマーク
+            foreach (var record in matchedRecords)
             {
                 record.wasUsedForCombo = true;
+            }
+
+            if (showDebugInfo)
+            {
+                Debug.Log($"コンボ成功: {combo.comboName}");
             }
 
             return true;
@@ -147,22 +212,19 @@ namespace TechC
         {
             if (!record.wasSuccessful) return false;
 
-            if (record.commandInstance is AttackCommand attackCommand)
+            // 直接attackTypeとattackStrengthを比較
+            bool typeMatches = record.attackType == step.attackType;
+            bool strengthMatches = record.attackStrength == step.attackStrength;
+            if (typeMatches && strengthMatches)
             {
-                bool typeMatches = attackCommand.Type == step.attackType;
-                bool strengthMatches = attackCommand.Strength == step.attackStrength;
-
-                if (typeMatches && strengthMatches)
+                if (showDebugInfo)
                 {
-                    if (showDebugInfo)
-                    {
-                        Debug.Log($"コマンド一致: {record.commandName} (Type: {attackCommand.Type}, Strength: {attackCommand.Strength})");
-                    }
-                    return true;
+                    Debug.Log($"コマンド一致: {record.commandName} (Type: {record.attackType}, Strength: {record.attackStrength})");
                 }
-                return false;
+                return true;
             }
 
+            // Appealコマンドの特別処理
             if (record.commandName == "AppealCommand" && step.attackStrength == AttackManager.AttackStrength.Appeal)
             {
                 return true;

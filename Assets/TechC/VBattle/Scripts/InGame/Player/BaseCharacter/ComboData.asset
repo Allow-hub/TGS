@@ -20,9 +20,7 @@ MonoBehaviour:
   sequence:
   - attackType: 0
     attackStrength: 0
-  - attackType: 2
-    attackStrength: 0
-  - attackType: 2
+  - attackType: 0
     attackStrength: 0
   timeWindow: 2
   gaugeBonus: 10

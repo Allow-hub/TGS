@@ -1048,8 +1048,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 629549810}
   characterData: {fileID: 11400000, guid: 2f8f9795b85e3e64babbdd0fcfc65a02, type: 2}
-  characterState:
-    canDebugLog: 0
   anim: {fileID: 1797276121}
   commandHistory: {fileID: 629549803}
   weakAttack: {fileID: 629549806}
@@ -1097,7 +1095,7 @@ Transform:
   m_GameObject: {fileID: 629549802}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -2.69, y: -3.4, z: -5.37}
+  m_LocalPosition: {x: 0.86, y: -3.4, z: -5.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1118,6 +1116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 629549807}
+  inputLogId: input
   guardObj: {fileID: 642506621}
   dashTimeWindow: 0.3
   enableDebugUI: 1
@@ -1833,6 +1832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 1389670164}
+  inputLogId: input
   guardObj: {fileID: 1375312021}
   dashTimeWindow: 0.5
 --- !u!114 &1389670157
@@ -2009,8 +2009,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1389670156}
   characterData: {fileID: 11400000, guid: 2f8f9795b85e3e64babbdd0fcfc65a02, type: 2}
-  characterState:
-    canDebugLog: 0
   anim: {fileID: 1232335037}
   commandHistory: {fileID: 1389670168}
   weakAttack: {fileID: 1389670167}
@@ -2678,6 +2676,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
+  inputLogId: input
   guardObj: {fileID: 0}
   dashTimeWindow: 0.3
 --- !u!114 &1919128620
@@ -2694,8 +2693,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1919128619}
   characterData: {fileID: 0}
-  characterState:
-    canDebugLog: 0
   anim: {fileID: 0}
   commandHistory: {fileID: 0}
   weakAttack: {fileID: 0}

@@ -421,17 +421,7 @@ namespace TechC.Player
         #endregion
 
         #region バフ関連メソッド
-        /// <summary>
-        /// スピードバフを適用
-        /// ダミーメソッドです、AddMultipilerに移行したら消してください
-        /// </summary>
-        public void AddSpeedMultiplier(float multiplier) => Debug.Log("Dummy");
-
-        /// <summary>
-        /// スピードバフを除外
-        /// ダミーメソッドです、AddMultipilerに移行したら消してください
-        /// </summary>
-        public void RemoveSpeedMultiplier(float multiplier) => Debug.Log("Dummy");
+    
         /// <summary>
         /// バフの適用（バフの種類,乗算の数値）
         /// </summary>

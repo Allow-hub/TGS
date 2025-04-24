@@ -40,7 +40,7 @@ namespace TechC
                  
                 // Debug.Log($"<color=orange>[Apply前]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
 
-                characterController.AddSpeedMultiplier(speedMultiplier);
+                characterController.AddMultiplier(BuffType.Speed, speedMultiplier);
                 // Debug.Log($"<color=orange>[Apply後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
             }
         }
@@ -57,7 +57,7 @@ namespace TechC
             {
 
                 // Debug.Log($"<color=#00FFFF>[Remove]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
-                characterController.RemoveSpeedMultiplier(speedMultiplier);
+                characterController.RemoveMultiplier(BuffType.Speed, speedMultiplier);
 
                 // Debug.Log($"<color=#00FFFF>[Remove後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
 

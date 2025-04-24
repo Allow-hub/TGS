@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TechC.Extensions;
 using TechC.Player;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
@@ -34,7 +35,7 @@ namespace TechC
         private Player.CharacterController characterController;
         private CommandHistory commandHistory;
 
-        [SerializeField] public bool canDebugLog;
+        private string stateLogId = "state";
 
         private Animator anim;
 
@@ -129,14 +130,12 @@ namespace TechC
         public void OnUpdate()
         {
             stateMachine.Update();
-            if (canDebugLog)
-                Debug.Log(stateMachine.CurrentStateName);
-
-            // MoveCommand だけ残さないようにフィルタリング
+            CustomLogger.Info(stateMachine.CurrentStateName, stateLogId);
+            // 重複しないようにフィルタリング
             var newQueue = new Queue<ICommand>();
             foreach (var cmd in commandQueue)
             {
-                if (!(cmd is MoveCommand) && !(cmd is JumpCommand)&& !(cmd is AttackCommand))
+                if (!(cmd is MoveCommand) && !(cmd is JumpCommand) && !(cmd is AttackCommand))
                 {
                     newQueue.Enqueue(cmd);
                 }
@@ -171,9 +170,7 @@ namespace TechC
                 var highPriorityCommand = CheckForHighPriorityCommand<T>(ref currentCommand);
                 if (highPriorityCommand != null)
                 {
-                    if (canDebugLog)
-                        Debug.Log($"[{stateMachine.CurrentStateName}] コマンド {currentCommand.GetType().Name} を中断し、{highPriorityCommand.GetType().Name} を実行");
-
+                    CustomLogger.Info($"[{stateMachine.CurrentStateName}] コマンド {currentCommand.GetType().Name} を中断し、{highPriorityCommand.GetType().Name} を実行", stateLogId);
                     currentCommand.ForceFinish();
                     currentCommand = highPriorityCommand;
                     currentCommand.Execute();
@@ -200,6 +197,7 @@ namespace TechC
         /// <typeparam name="T"></typeparam>
         private void RecordCommandToHistory<T>(ref ICommand currentCommand) where T : class, ICommand
         {
+
             if (commandHistory != null && currentCommand != null)
             {
                 commandHistory.RecordCommand(
@@ -219,18 +217,17 @@ namespace TechC
         {
             while (commandQueue.Count > 0)
             {
-                var command =   commandQueue.Dequeue();
+                var command = commandQueue.Dequeue();
                 if (command is T usable)
                 {
-                    if (canDebugLog)
-                        Debug.Log($"[{stateMachine.CurrentStateName}]対応コマンド: {command.GetType().Name}");
+                    CustomLogger.Info($"[{stateMachine.CurrentStateName}]対応コマンド: {command.GetType().Name}", stateLogId);
                     currentCommand = usable;
                     currentCommand.Execute(); // 最初の1回
                     break;
                 }
                 else
                 {
-                    Debug.Log($"[ {stateMachine.CurrentStateName} ]非対応コマンド: {command.GetType().Name}");
+                    CustomLogger.Info($"[ {stateMachine.CurrentStateName} ]非対応コマンド: {command.GetType().Name}", stateLogId);
                 }
             }
         }

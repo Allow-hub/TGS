@@ -64,9 +64,7 @@ namespace TechC.Player
         {
             // アタックマネージャーの初期化
             var attackManager = new AttackManager();
-            var previousDebugLogValue = characterState?.canDebugLog ?? false;
             characterState = new CharacterState(playerInputManager, this, attackManager, anim, commandHistory);
-            characterState.canDebugLog = previousDebugLogValue;
             attackManager?.Initialize(weakAttack, strongAttack, appealBase, playerInputManager, this);
 
             // アニメーション設定
@@ -97,7 +95,7 @@ namespace TechC.Player
             // ガード値回復処理
             if (CanHeal())
                 HealGuardPower(characterData.GuardRecoverySpeed);
-            Debug.Log(IsChargeEnabled());
+            //Debug.Log(IsChargeEnabled());
             // 時間経過によるゲージ加算処理
             //characterGauge.AddGaugeOnTime(characterData.GaugeIncreaseInterval, characterData.GaugeIncreaseAmount);
             //Debug.Log(characterGauge.CurrentGauge);

@@ -137,6 +137,7 @@ namespace TechC
             {
                 command.SetAttackType(attackData.data.attackType);
                 command.SetAttackStrength(attackData.data.attackStrength);
+                Debug.Log(attackData.data.attackType + " " + attackData.data.attackStrength+Time.time);
             }
             else
             {

@@ -1332,8 +1332,8 @@ GameObject:
   - component: {fileID: 1389670170}
   - component: {fileID: 1389670172}
   - component: {fileID: 1389670171}
-  - component: {fileID: 1389670173}
   - component: {fileID: 1389670174}
+  - component: {fileID: 1389670175}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1562,7 +1562,7 @@ MonoBehaviour:
   commandHistory: {fileID: 1389670170}
   weakAttack: {fileID: 1389670171}
   strongAttack: {fileID: 1389670172}
-  appealBase: {fileID: 0}
+  appealBase: {fileID: 1389670175}
   defaultAnimSpeed: 1
   gaugePresenter: {fileID: 0}
   maxGauge: 100
@@ -1656,20 +1656,6 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: 77b8573078c4dfc40addcd780f1e2e2a, type: 2}
   downAttackData: {fileID: 11400000, guid: ebed5bf1f02784f4ea26b13f7cbaf5ba, type: 2}
   upAttackData: {fileID: 11400000, guid: 9babdb7dcadae81489b1460971521193, type: 2}
---- !u!114 &1389670173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1389670154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc377cb8f8c965349a757e2002b109db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speedBuff:
-    speedMultiplier: 3
 --- !u!114 &1389670174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1682,6 +1668,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a42e09dcf65ed7547ac3bb9829f46fd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1389670175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389670154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6e9d0b051e0e36429f35db6bdec097b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterController: {fileID: 1389670164}
+  attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
+  neutralAttackData: {fileID: 11400000, guid: 3fcedbbd66127104681bb1377676723b, type: 2}
+  leftAttackData: {fileID: 11400000, guid: 308936b8f368b0f469e9c32b656dfa79, type: 2}
+  rightAttackData: {fileID: 11400000, guid: 44fd3f1e079315745b6039883adc7d85, type: 2}
+  downAttackData: {fileID: 11400000, guid: 5ee8e9dc7d9c5eb4e8f6884ed748c6fb, type: 2}
+  upAttackData: {fileID: 11400000, guid: 017c8e2e8638cef49ab16133bc650355, type: 2}
+  canChargeDuration: 10
 --- !u!1001 &1519539025
 PrefabInstance:
   m_ObjectHideFlags: 0

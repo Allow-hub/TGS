@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: Left_A
   description: 
+  data:
+    attackType: 2
+    attackStrength: 2
   animationTrigger: IsAppealing
   animationSpeed: 1
   attackDuration: 2

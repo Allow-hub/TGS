@@ -30,15 +30,15 @@ namespace TechC
         /// </summary>
         /// <param name="WeakAttack"></param>
         /// <param name="StrongAttack"></param>
-        public void Initialize(IAttackBase WeakAttack,IAttackBase StrongAttack, IAttackBase Appeal, BaseInputManager PlayerInputManager, Player.CharacterController CharacterController)
+        public void Initialize(IAttackBase WeakAttack, IAttackBase StrongAttack, IAttackBase Appeal, BaseInputManager PlayerInputManager, Player.CharacterController CharacterController)
         {
             weakAttack = WeakAttack;
-            strongAttack =StrongAttack;
-            appeal =Appeal;
-            playerInputManager =PlayerInputManager;
+            strongAttack = StrongAttack;
+            appeal = Appeal;
+            playerInputManager = PlayerInputManager;
             characterController = CharacterController;
             // airAttack = airAttackImplementation as IAttackBase;
-            
+
             if (playerInputManager == null) Debug.LogError("playerInputManagerが空です");
             if (characterController == null) Debug.LogError("characterController");
             if (weakAttack == null) Debug.LogError("WeakAttack実装が IAttackBase を実装していません");
@@ -102,8 +102,8 @@ namespace TechC
                 //command?.Execute();
                 ExecuteSpecificAttack(weakAttack, attackType);
                 return;
-            }   
-            
+            }
+
             // アピール
             if (playerInputManager.IsAppealing && appeal != null)
             {

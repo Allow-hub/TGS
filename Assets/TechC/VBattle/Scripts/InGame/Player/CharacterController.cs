@@ -41,8 +41,6 @@ namespace TechC.Player
         private float currentGuardPower;
         private float lastGuardTime;
 
-        // 必殺技関連
-        private CharacterGauge characterGauge;
 
         // 移動・物理関連
         private Rigidbody rb;
@@ -78,8 +76,6 @@ namespace TechC.Player
             currentHp = characterData.Hp;
             currentGuardPower = characterData.GuardPower;
 
-            // 必殺技ゲージの初期化
-            characterGauge = new CharacterGauge(maxGauge);
         }
 
         private void Start()
@@ -101,7 +97,7 @@ namespace TechC.Player
             // ガード値回復処理
             if (CanHeal())
                 HealGuardPower(characterData.GuardRecoverySpeed);
-
+            Debug.Log(IsChargeEnabled());
             // 時間経過によるゲージ加算処理
             //characterGauge.AddGaugeOnTime(characterData.GaugeIncreaseInterval, characterData.GaugeIncreaseAmount);
             //Debug.Log(characterGauge.CurrentGauge);
@@ -364,7 +360,7 @@ namespace TechC.Player
                 currentGuardPower += value;
             else
                 currentGuardPower = characterData.GuardPower;
-            Debug.Log($"{currentGuardPower}");
+            //Debug.Log($"{currentGuardPower}");
         }
 
         /// <summary>
@@ -414,6 +410,13 @@ namespace TechC.Player
         /// 必殺技がチャージ可能かどうかを切り替える
         /// </summary>
         public void ChangeCanCharge(bool value) => gaugePresenter.SetCanCharge(value);
+        
+        /// <summary>
+        /// チャージ可能状態かどうか
+        /// </summary>
+        /// <returns></returns>
+        public bool IsChargeEnabled() => gaugePresenter.GetCanCharge();
+
         #endregion
 
         #region バフ関連メソッド

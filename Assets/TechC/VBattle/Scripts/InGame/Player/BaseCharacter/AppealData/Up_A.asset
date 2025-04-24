@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: Up_A
   description: 
+  data:
+    attackType: 4
+    attackStrength: 2
   animationTrigger: IsAppealing
   animationSpeed: 1
   attackDuration: 2

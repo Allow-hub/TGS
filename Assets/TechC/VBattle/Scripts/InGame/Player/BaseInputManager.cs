@@ -149,6 +149,13 @@ namespace TechC
             isStrongAttacking = false ;
         }
 
+        /// <summary>
+        /// コマンドのインスタンスを外部から取得する
+        /// </summary>
+        /// <param name="commandName"></param>
+        /// <returns></returns>
+        public ICommand GetCommandInstance(string commandName) => commands[commandName];
+
         // 各入力に対する抽象メソッド - 継承先で実装
         public abstract void OnMove(Vector2 inputValue, bool started, bool canceled);
         public abstract void OnJump(bool started, bool canceled);

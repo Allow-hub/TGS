@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TechC.Player;
 using UnityEngine;
 using static TechC.CharacterState;
@@ -12,7 +13,9 @@ namespace TechC
     {
         [Header("Reference")]
         [SerializeField] protected Player.CharacterController characterController;
+        [SerializeField] private BaseInputManager inputManager;
         [SerializeField] private CommandHistory commandHistory;
+        [SerializeField] private ComboSystem comboSystem;
         [Header("Data")]
         [SerializeField]
         private AttackSet attackSet;
@@ -116,12 +119,31 @@ namespace TechC
 
         protected virtual void ExecuteAttack(AttackData attackData)
         {
+            if (isAttacking) return;
+            isAttacking = true;
+
+            SetAttackCommand(attackData);
             characterController.GetAnim().speed = attackData.animationSpeed;
             characterController.SetAnim(attackData.animHash, true);
             StartCoroutine(DelayAttack(attackData));
             StartCoroutine(EndAttack(attackData));
-            Debug.Log(attackData.attackName);
         }
+
+
+        private void SetAttackCommand(AttackData attackData)
+        {
+            ICommand commandBase = inputManager.GetCommandInstance("Attack");
+            if (commandBase is AttackCommand command)
+            {
+                command.SetAttackType(attackData.data.attackType);
+                command.SetAttackStrength(attackData.data.attackStrength);
+            }
+            else
+            {
+                Debug.LogWarning("AttackCommand が取得できませんでした");
+            }
+        }
+
 
         /// <summary>
         /// アニメーションの秒数分経過したら自動でfalseに
@@ -131,11 +153,12 @@ namespace TechC
         private IEnumerator EndAttack(AttackData attackData)
         {
             yield return new WaitForSeconds(attackData.attackDuration);
+            isAttacking = false;
             characterController.SetAnim(attackData.animHash, false);
             characterController.GetAnim().speed = characterController.DefaultAnimSpeed;
         }
 
-    
+
         private IEnumerator DelayAttack(AttackData attackData)
         {
             yield return new WaitForSeconds(attackData.hitTiming);
@@ -147,12 +170,15 @@ namespace TechC
             }
         }
 
-        // ヒットチェックの統括メソッド
+        /// <summary>
+        /// ヒットチェックの統括メソッド
+        /// </summary>
+        /// <param name="attackData"></param>
+        /// <returns></returns>
         private bool PerformAttackHitCheck(AttackData attackData)
         {
             // 攻撃位置の計算
             Vector3 attackPosition = CalculateAttackPosition(attackData);
-
             // デバッグ用に情報を保存
             UpdateDebugInfo(attackPosition, attackData.radius);
 
@@ -165,7 +191,6 @@ namespace TechC
                 // 自分自身は除外
                 if (IsOwnCollider(hitCollider))
                     continue;
-
                 // 対戦相手のコントローラーを取得
                 Player.CharacterController targetController = GetOpponentController(hitCollider);
                 if (targetController == null) continue;
@@ -186,6 +211,16 @@ namespace TechC
                 }
             }
 
+
+            if (hitConfirmed)
+            {
+
+                // アピール後のチャージ状態でヒットした場合、ゲージを増加
+                //CheckAndAddGauge(attackData);
+                comboSystem.CheckCombos();
+                // コンボ履歴を検証し、特別なコンボの場合は追加ボーナスを付与
+                //CheckForSpecialCombos();
+            }
             // ヒットボックスの可視化
             VisualizeHitbox(attackPosition, attackData.radius, hitConfirmed);
 
@@ -221,7 +256,6 @@ namespace TechC
         {
             lastAttackPosition = position;
             lastAttackRadius = radius;
-            isAttacking = true;
         }
 
         /// <summary>
@@ -359,6 +393,31 @@ namespace TechC
         }
         public virtual void ForceFinish()
         {
+            isAttacking = false;
+        }
+
+        private void CheckAndAddGauge(AttackData attackData)
+        {
+            // チャージ可能状態かチェック
+            if (characterController.IsChargeEnabled())
+            {
+                // 基本チャージ量（攻撃の種類や威力に応じて変動可能）
+                float chargeAmount = attackData.damage * 0.5f;
+
+                // ゲージ増加処理
+                characterController.NotBoolAddSpecialGauge(chargeAmount);
+
+                // 必要に応じてエフェクト表示
+                ShowChargeEffect(attackData.damage);
+            }
+        }
+
+        // エフェクト表示用（オプション）
+        private void ShowChargeEffect(float amount)
+        {
+            // チャージエフェクトを表示するコード
+            // 例: パーティクルシステムの再生など
+            Debug.Log($"ゲージチャージ! +{amount * 0.5f}");
         }
     }
 }

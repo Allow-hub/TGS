@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace TechC
@@ -11,7 +12,15 @@ namespace TechC
         [Header("基本情報")]
         public string attackName;
         public string description;
-        
+        [System.Serializable]
+        public class Data
+        {
+            public CharacterState.AttackType attackType;
+            public AttackManager.AttackStrength attackStrength;
+        }
+
+        public Data data;
+
         [Header("アニメーション")]
         public string animationTrigger;
         public float animationSpeed = 1f;

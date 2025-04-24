@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: Neutral_A
   description: 
+  data:
+    attackType: 0
+    attackStrength: 2
   animationTrigger: IsAppealing
   animationSpeed: 1.2
-  attackDuration: 5
+  attackDuration: 2
   damage: 0
   knockback: 0
   radius: 0

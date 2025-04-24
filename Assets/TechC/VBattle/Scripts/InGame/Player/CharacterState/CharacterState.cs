@@ -160,7 +160,10 @@ namespace TechC
             {
                 GetNextCommand<T>(ref currentCommand);
                 // コマンド履歴に記録
-                RecordCommandToHistory<T>(ref currentCommand);
+                if (currentCommand != null)
+                {
+                    RecordCommandToHistory<T>(ref currentCommand);
+                }
             }
             else
             {

@@ -13,6 +13,7 @@ namespace TechC
     {
         [Header("Reference")]
         [SerializeField] protected Player.CharacterController characterController;
+        [SerializeField] private BaseInputManager inputManager;
         [SerializeField] private CommandHistory commandHistory;
         [SerializeField] private ComboSystem comboSystem;
         [Header("Data")]
@@ -118,12 +119,31 @@ namespace TechC
 
         protected virtual void ExecuteAttack(AttackData attackData)
         {
+            if (isAttacking) return;
+            isAttacking = true;
+
+            SetAttackCommand(attackData);
             characterController.GetAnim().speed = attackData.animationSpeed;
             characterController.SetAnim(attackData.animHash, true);
             StartCoroutine(DelayAttack(attackData));
             StartCoroutine(EndAttack(attackData));
-            Debug.Log(attackData.attackName);
         }
+
+
+        private void SetAttackCommand(AttackData attackData)
+        {
+            ICommand commandBase = inputManager.GetCommandInstance("Attack");
+            if (commandBase is AttackCommand command)
+            {
+                command.SetAttackType(attackData.data.attackType);
+                command.SetAttackStrength(attackData.data.attackStrength);
+            }
+            else
+            {
+                Debug.LogWarning("AttackCommand が取得できませんでした");
+            }
+        }
+
 
         /// <summary>
         /// アニメーションの秒数分経過したら自動でfalseに
@@ -133,11 +153,12 @@ namespace TechC
         private IEnumerator EndAttack(AttackData attackData)
         {
             yield return new WaitForSeconds(attackData.attackDuration);
+            isAttacking = false;
             characterController.SetAnim(attackData.animHash, false);
             characterController.GetAnim().speed = characterController.DefaultAnimSpeed;
         }
 
-    
+
         private IEnumerator DelayAttack(AttackData attackData)
         {
             yield return new WaitForSeconds(attackData.hitTiming);
@@ -149,12 +170,15 @@ namespace TechC
             }
         }
 
-        // ヒットチェックの統括メソッド
+        /// <summary>
+        /// ヒットチェックの統括メソッド
+        /// </summary>
+        /// <param name="attackData"></param>
+        /// <returns></returns>
         private bool PerformAttackHitCheck(AttackData attackData)
         {
             // 攻撃位置の計算
             Vector3 attackPosition = CalculateAttackPosition(attackData);
-
             // デバッグ用に情報を保存
             UpdateDebugInfo(attackPosition, attackData.radius);
 
@@ -167,7 +191,6 @@ namespace TechC
                 // 自分自身は除外
                 if (IsOwnCollider(hitCollider))
                     continue;
-
                 // 対戦相手のコントローラーを取得
                 Player.CharacterController targetController = GetOpponentController(hitCollider);
                 if (targetController == null) continue;
@@ -191,6 +214,7 @@ namespace TechC
 
             if (hitConfirmed)
             {
+
                 // アピール後のチャージ状態でヒットした場合、ゲージを増加
                 //CheckAndAddGauge(attackData);
                 comboSystem.CheckCombos();
@@ -232,7 +256,6 @@ namespace TechC
         {
             lastAttackPosition = position;
             lastAttackRadius = radius;
-            isAttacking = true;
         }
 
         /// <summary>
@@ -370,6 +393,7 @@ namespace TechC
         }
         public virtual void ForceFinish()
         {
+            isAttacking = false;
         }
 
         private void CheckAndAddGauge(AttackData attackData)
@@ -387,54 +411,6 @@ namespace TechC
                 ShowChargeEffect(attackData.damage);
             }
         }
-
-        //// コンボ検証メソッド
-        //private void CheckForSpecialCombos()
-        //{
-        //    // コマンド履歴から特定のコンボパターンを検出
-        //    if (commandHistory == null) return;
-
-        //    // 例: 3連続攻撃コンボの検出
-        //    if (IsThreeAttackCombo())
-        //    {
-        //        // 特別ボーナスを付与
-        //        characterController.NotBoolAddSpecialGauge(10f);
-        //        Debug.Log("3連続攻撃コンボ達成! ボーナスゲージ獲得!");
-        //    }
-
-        //    // 例: 特殊な方向コンボ（下→中立→上）の検出
-        //    if (IsDirectionalCombo())
-        //    {
-        //        characterController.NotBoolAddSpecialGauge(15f);
-        //        Debug.Log("方向コンボ達成! 大きなボーナスゲージ獲得!");
-        //    }
-        //}
-
-        //// 3連続攻撃コンボの検出
-        //private bool IsThreeAttackCombo()
-        //{
-        //    var history = commandHistory.GetFullHistory(3);
-        //    if (history.Count < 3) return false;
-
-        //    // 全てのコマンドが攻撃で、全て成功していることを確認
-        //    return history.All(record =>
-        //        (record.commandName.Contains("Attack") || record.commandName.Contains("Appeal"))
-        //        && record.wasSuccessful);
-        //}
-
-        //// 方向コンボの検出
-        //private bool IsDirectionalCombo()
-        //{
-        //    // Type配列を使って特定のコマンドシーケンスをチェック
-        //    return commandHistory.CheckCombo(
-        //        new Type[] {
-        //    //typeof(DownAttackCommand),
-        //    typeof(AttackCommand),  // 中立攻撃
-        //    //typeof(UpAttackCommand)
-        //        },
-        //        2.0f  // コマンド間の最大許容時間
-        //    );
-        //}
 
         // エフェクト表示用（オプション）
         private void ShowChargeEffect(float amount)

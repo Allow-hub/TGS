@@ -14,12 +14,18 @@ namespace TechC
         [Serializable]
         public class CommandRecord
         {
-            public string commandName;              // コマンド名（型名）
-            public string stateName;                // 実行時の状態名
-            public float executionTime;             // 実行時間
-            public bool wasSuccessful;              // 成功したか
-            public Vector3 playerPosition;          // 実行時のプレイヤー位置
-            public ICommand commandInstance;        // ICommandインスタンス本体
+            public string commandName;                           // コマンド名（型名）
+            public string stateName;                             // 実行時の状態名
+            public float executionTime;                          // 実行時間
+            public bool wasSuccessful;                           // 成功したか
+            public Vector3 playerPosition;                       // 実行時のプレイヤー位置
+            public ICommand commandInstance;                     // ICommandインスタンス本体
+            public bool wasUsedForCombo;
+
+            // 攻撃コマンド用の追加情報
+            public CharacterState.AttackType attackType;         // 攻撃タイプ
+            public AttackManager.AttackStrength attackStrength;  // 攻撃強度
+            public string commandSignature;                      // 攻撃コマンドの識別子
 
             public CommandRecord(ICommand command, string stateName, bool wasSuccessful, Vector3 position)
             {
@@ -29,10 +35,22 @@ namespace TechC
                 this.executionTime = Time.time;
                 this.wasSuccessful = wasSuccessful;
                 this.playerPosition = position;
+
+                // 攻撃コマンドの場合は追加情報を取得
+                if (command is AttackCommand attackCommand)
+                {
+                    attackType = attackCommand.Type;
+                    attackStrength = attackCommand.Strength;
+                    commandSignature = attackCommand.GetCommandSignature();
+                }
             }
 
             public override string ToString()
             {
+                if (commandInstance is AttackCommand)
+                {
+                    return $"[{executionTime:F2}] {commandName} ({attackStrength}_{attackType}) @ {stateName} - {(wasSuccessful ? "成功" : "失敗")}";
+                }
                 return $"[{executionTime:F2}] {commandName} @ {stateName} - {(wasSuccessful ? "成功" : "失敗")}";
             }
         }

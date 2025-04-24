@@ -1017,6 +1017,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 629549807}
+  inputManager: {fileID: 0}
   commandHistory: {fileID: 629549803}
   comboSystem: {fileID: 629549811}
   attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
@@ -2009,7 +2010,7 @@ MonoBehaviour:
   playerInputManager: {fileID: 1389670156}
   characterData: {fileID: 11400000, guid: 2f8f9795b85e3e64babbdd0fcfc65a02, type: 2}
   characterState:
-    canDebugLog: 1
+    canDebugLog: 0
   anim: {fileID: 1232335037}
   commandHistory: {fileID: 1389670168}
   weakAttack: {fileID: 1389670167}
@@ -2072,6 +2073,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 1389670164}
+  inputManager: {fileID: 1389670156}
   commandHistory: {fileID: 1389670168}
   comboSystem: {fileID: 1389670169}
   attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
@@ -2768,6 +2770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
+  inputManager: {fileID: 0}
   commandHistory: {fileID: 0}
   comboSystem: {fileID: 0}
   attackSet: {fileID: 0}

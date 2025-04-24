@@ -360,7 +360,7 @@ namespace TechC.Player
                 currentGuardPower += value;
             else
                 currentGuardPower = characterData.GuardPower;
-            Debug.Log($"{currentGuardPower}");
+            //Debug.Log($"{currentGuardPower}");
         }
 
         /// <summary>

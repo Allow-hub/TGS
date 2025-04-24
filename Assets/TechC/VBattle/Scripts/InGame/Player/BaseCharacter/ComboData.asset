@@ -22,7 +22,9 @@ MonoBehaviour:
     attackStrength: 0
   - attackType: 2
     attackStrength: 0
-  timeWindow: 5
+  - attackType: 2
+    attackStrength: 0
+  timeWindow: 2
   gaugeBonus: 10
   requiresCharge: 1
   effectPrefab: {fileID: 0}

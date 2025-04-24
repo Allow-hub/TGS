@@ -48,7 +48,7 @@ namespace TechC.Player
         private Dictionary<BuffType, float> multipliers = new()
         {
             { BuffType.Speed, 1.0f },
-            { BuffType.Power, 1.0f }
+            { BuffType.Attack, 1.0f }
         };
         // ジャンプ関連
         private bool hasDoubleJumped = false;
@@ -289,7 +289,7 @@ namespace TechC.Player
         /// </summary>
         public void TakeDamage(float damage)
         {
-            currentHp -= damage * GetMultipiler(BuffType.Power);
+            currentHp -= damage * GetMultipiler(BuffType.Attack);
             if (currentHp > 0) return;
             currentHp = 0;
             Des();

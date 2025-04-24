@@ -10,7 +10,7 @@ namespace TechC
     public enum BuffType
     {
         Speed,
-        Power,
+        Attack,
         Jump,
         MapChange,
     }

@@ -7,13 +7,13 @@ namespace TechC
     /// <summary>
     /// Playerの攻撃力を上昇させるバフ
     /// </summary>
-    public class PowerBuff : BuffBase
+    public class AttackBuff : BuffBase
     {
         [SerializeField] private float attackMultiplier = 1.5f; /*攻撃力上昇の倍率 */
 
-        public PowerBuff()
+        public AttackBuff()
         {
-            buffName = "PowerBuff";
+            buffName = "AttackBuff";
             description = "攻撃力が上昇する";
             buffDuration = 5.0f;
             remainingTime = buffDuration;

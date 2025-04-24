@@ -5,61 +5,62 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
-namespace TechC
+public class TitleManager : MonoBehaviour
 {
+    [SerializeField] GameObject MoviePlayer;
+    [SerializeField] private float ChangeTime = 5.0f; // 修正: 型をfloatに変更
 
-    public class TitleManager : MonoBehaviour
+    private bool MoviePlaying = false;
+
+    private InputAction _pressAnyKeyAction =
+        new InputAction(type: InputActionType.PassThrough, binding: "*/<Button>", interactions: "Press");
+
+    private void OnEnable() => _pressAnyKeyAction.Enable();
+    private void OnDisable() => _pressAnyKeyAction.Disable();
+
+    void Start()
     {
-        [SerializeField] GameObject MoviePlayer;
+        MoviePlayer.gameObject.SetActive(false);
+        StartCoroutine(PlayMovieWithDelay(ChangeTime)); // Coroutineを使用
+    }
 
-        private bool MoviePlaying = false;
-        private bool MovieFlag = true;
-
-        private InputAction _pressAnyKeyAction =
-            new InputAction(type: InputActionType.PassThrough, binding: "*/<Button>", interactions: "Press");
-
-
-        private void OnEnable() => _pressAnyKeyAction.Enable();
-        private void OnDisable() => _pressAnyKeyAction.Disable();
-        void Start()
+    void Update()
+    {
+        if (_pressAnyKeyAction.triggered)
         {
-            MoviePlayer.gameObject.SetActive(false);
-            Invoke("playMovie", 5.0f);
-        }
-
-        void Update()
-        {
-            if (MoviePlaying == false)
+            if (MoviePlaying)
             {
-                if (MovieFlag == false)
-                {
-                    Invoke("playMovie", 5.0f);
-                    MovieFlag = true;
-                }
-
-                if (_pressAnyKeyAction.triggered)
-                {
-                    SceneManager.LoadScene("InGame");
-                }
+                StopMovie();
             }
             else
             {
-                if (_pressAnyKeyAction.triggered)
-                {
-                    MoviePlayer.gameObject.SetActive(false);
-                    MoviePlaying = false;
-                    MovieFlag = false;
-                }
+                SceneManager.LoadScene("InGame");
             }
         }
+    }
 
-        void playMovie()
+    // Coroutineで遅延処理を実現
+    private IEnumerator PlayMovieWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        PlayMovie();
+    }
+
+    // 映像再生を開始
+    void PlayMovie()
+    {
+        if (!MoviePlaying)
         {
-            if (MoviePlaying == false)
-            {
-                MoviePlayer.gameObject.SetActive(true);
-                MoviePlaying = true;
-            }
+            MoviePlayer.gameObject.SetActive(true);
+            MoviePlaying = true;
         }
+    }
+
+    // 映像再生を停止
+    void StopMovie()
+    {
+        MoviePlayer.gameObject.SetActive(false);
+        MoviePlaying = false;
+        StartCoroutine(PlayMovieWithDelay(ChangeTime)); // 次の再生をスケジュール
     }
 }

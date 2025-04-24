@@ -12,6 +12,7 @@ namespace TechC
     public abstract class BaseInputManager : MonoBehaviour
     {
         [SerializeField] protected Player.CharacterController characterController;
+        [SerializeField, ReadOnly] private string inputLogId = "input";
         protected CharacterState characterState;
         protected CommandHistory commandHistory;
 
@@ -73,7 +74,7 @@ namespace TechC
             }
             else
             {
-                Debug.LogError("CharacterControllerが設定されていません", this);
+                CustomLogger.Error("CharacterControllerが設定されていません", inputLogId);
             }
         }
 

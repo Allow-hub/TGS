@@ -45,8 +45,11 @@ namespace TechC.Player
         // 移動・物理関連
         private Rigidbody rb;
         private Vector3 velocity = Vector3.zero; // 現在の速度
-        private float speedMultiplier = 1.0f; // スピードバフを受け取るための変数
-
+        private Dictionary<BuffType, float> multipliers = new()
+        {
+            { BuffType.Speed, 1.0f },
+            { BuffType.Power, 1.0f }
+        };
         // ジャンプ関連
         private bool hasDoubleJumped = false;
 
@@ -64,9 +67,7 @@ namespace TechC.Player
         {
             // アタックマネージャーの初期化
             var attackManager = new AttackManager();
-            var previousDebugLogValue = characterState?.canDebugLog ?? false;
             characterState = new CharacterState(playerInputManager, this, attackManager, anim, commandHistory);
-            characterState.canDebugLog = previousDebugLogValue;
             attackManager?.Initialize(weakAttack, strongAttack, appealBase, playerInputManager, this);
 
             // アニメーション設定
@@ -97,7 +98,7 @@ namespace TechC.Player
             // ガード値回復処理
             if (CanHeal())
                 HealGuardPower(characterData.GuardRecoverySpeed);
-            Debug.Log(IsChargeEnabled());
+            //Debug.Log(IsChargeEnabled());
             // 時間経過によるゲージ加算処理
             //characterGauge.AddGaugeOnTime(characterData.GaugeIncreaseInterval, characterData.GaugeIncreaseAmount);
             //Debug.Log(characterGauge.CurrentGauge);
@@ -181,7 +182,7 @@ namespace TechC.Player
         private void GroundMovement(Vector3 moveDirection, float horizontalInput, float controlMultiplier)
         {
             // 地上での移動速度
-            float groundSpeed = characterData.MoveSpeed * controlMultiplier * speedMultiplier;
+            float groundSpeed = characterData.MoveSpeed * controlMultiplier * GetMultipiler(BuffType.Speed);
 
             // 入力があれば移動方向に速度を設定
             if (Mathf.Abs(horizontalInput) > 0.1f)
@@ -208,7 +209,7 @@ namespace TechC.Player
         private void AirMovement(Vector3 moveDirection, float horizontalInput)
         {
             // 空中での移動速度（地上より制限される）
-            float airSpeed = characterData.MoveSpeed * speedMultiplier * characterData.AirControlMultiplier;
+            float airSpeed = characterData.MoveSpeed * GetMultipiler(BuffType.Speed) * characterData.AirControlMultiplier;
 
             // 空中での水平移動（制限付き）
             if (Mathf.Abs(horizontalInput) > 0.1f)
@@ -288,7 +289,7 @@ namespace TechC.Player
         /// </summary>
         public void TakeDamage(float damage)
         {
-            currentHp -= damage;
+            currentHp -= damage * GetMultipiler(BuffType.Power);
             if (currentHp > 0) return;
             currentHp = 0;
             Des();
@@ -410,7 +411,7 @@ namespace TechC.Player
         /// 必殺技がチャージ可能かどうかを切り替える
         /// </summary>
         public void ChangeCanCharge(bool value) => gaugePresenter.SetCanCharge(value);
-        
+
         /// <summary>
         /// チャージ可能状態かどうか
         /// </summary>
@@ -422,13 +423,44 @@ namespace TechC.Player
         #region バフ関連メソッド
         /// <summary>
         /// スピードバフを適用
+        /// ダミーメソッドです、AddMultipilerに移行したら消してください
         /// </summary>
-        public void AddSpeedMultiplier(float multiplier) => speedMultiplier *= multiplier;
+        public void AddSpeedMultiplier(float multiplier) => Debug.Log("Dummy");
 
         /// <summary>
         /// スピードバフを除外
+        /// ダミーメソッドです、AddMultipilerに移行したら消してください
         /// </summary>
-        public void RemoveSpeedMultiplier(float multiplier) => speedMultiplier /= multiplier;
+        public void RemoveSpeedMultiplier(float multiplier) => Debug.Log("Dummy");
+        /// <summary>
+        /// バフの適用（バフの種類,乗算の数値）
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
+        public void AddMultiplier(BuffType type, float value)
+        {
+            if (multipliers.ContainsKey(type))
+                multipliers[type] *= value;
+        }
+        /// <summary>
+        /// バフの適用（バフの種類,除算の数値）
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
+        public void RemoveMultiplier(BuffType type, float value)
+        {
+            if (multipliers.ContainsKey(type))
+                multipliers[type] /= value;
+        }
+
+        /// <summary>
+        /// multipliers に type が 存在するなら、その値（value）を返す
+        /// 存在しないなら、デフォルト値の 1.0f を返す
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public float GetMultipiler(BuffType type) =>
+            multipliers.TryGetValue(type, out var value) ? value : 1.0f;
         #endregion
 
         #region アニメーション関連メソッド

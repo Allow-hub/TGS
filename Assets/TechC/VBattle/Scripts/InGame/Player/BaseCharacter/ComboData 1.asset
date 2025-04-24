@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01f576a6842c0284c845df63b9c7993f, type: 3}
-  m_Name: ComboData
+  m_Name: ComboData 1
   m_EditorClassIdentifier: 
   comboName: NormalCombo
   description: huttuunokonbo
@@ -22,7 +22,7 @@ MonoBehaviour:
     attackStrength: 0
   - attackType: 0
     attackStrength: 0
-  - attackType: 0
+  - attackType: 2
     attackStrength: 0
   timeWindow: 2
   gaugeBonus: 10

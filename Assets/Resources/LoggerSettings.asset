@@ -68,7 +68,7 @@ MonoBehaviour:
   - audio
   - gamePlay
   - physics
-  - comboClear
-  - comboCheck
   _disabledCategoryIds:
   - state
+  - comboClear
+  - comboCheck

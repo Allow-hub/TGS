@@ -42,8 +42,8 @@ namespace TechC
                     return;
                 }
 
-                attackType = CheckAttackType();
-                attackStrength = CheckAttackStength();
+                attackType = Context.CheckAttackType();
+                attackStrength = Context.CheckAttackStrength();
 
                 // 同じ攻撃の連続使用をチェック
                 CheckConsecutiveAttacks();
@@ -89,35 +89,35 @@ namespace TechC
             /// 攻撃種方向の確認
             /// </summary>
             /// <returns></returns>
-            private AttackType CheckAttackType()
-            {
-                if (Context.playerInputManager.MoveInput.x < 0)
-                    return AttackType.Left;
-                if (Context.playerInputManager.MoveInput.x > 0)
-                    return AttackType.Right;
-                if (Context.playerInputManager.MoveInput.y < 0)
-                    return AttackType.Down;
-                if (Context.playerInputManager.MoveInput.y > 0)
-                    return AttackType.Up;
-                return AttackType.Neutral;
-            }
+            //private AttackType CheckAttackType()
+            //{
+            //    if (Context.playerInputManager.MoveInput.x < 0)
+            //        return AttackType.Left;
+            //    if (Context.playerInputManager.MoveInput.x > 0)
+            //        return AttackType.Right;
+            //    if (Context.playerInputManager.MoveInput.y < 0)
+            //        return AttackType.Down;
+            //    if (Context.playerInputManager.MoveInput.y > 0)
+            //        return AttackType.Up;
+            //    return AttackType.Neutral;
+            //}
             /// <summary>
             /// 攻撃の強さの確認
             /// </summary>
             /// <returns></returns>
-            private AttackStrength CheckAttackStength()
-            {
+            //private AttackStrength CheckAttackStength()
+            //{
 
-                // 攻撃強度の判定
-                if (Context.playerInputManager.IsWeakAttacking)
-                    return AttackStrength.Weak;
-                else if (Context.playerInputManager.IsStrongAttacking)
-                    return AttackStrength.Strong;
-                else if (Context.playerInputManager.IsAppealing)
-                    return AttackStrength.Appeal;
+            //    // 攻撃強度の判定
+            //    if (Context.playerInputManager.IsWeakAttacking)
+            //        return AttackStrength.Weak;
+            //    else if (Context.playerInputManager.IsStrongAttacking)
+            //        return AttackStrength.Strong;
+            //    else if (Context.playerInputManager.IsAppealing)
+            //        return AttackStrength.Appeal;
 
-                return AttackStrength.Weak;
-            }
+            //    return AttackStrength.Weak;
+            //}
             /// <summary>
             /// 同じ攻撃の連続使用をチェックし、必要に応じてゲージを減らす
             /// </summary>

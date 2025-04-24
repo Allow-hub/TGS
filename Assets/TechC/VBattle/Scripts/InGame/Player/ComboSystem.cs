@@ -14,6 +14,8 @@ namespace TechC
     {
         [SerializeField] private CommandHistory commandHistory;
         [SerializeField] private Player.CharacterController characterController;
+        [SerializeField] private GameObject comboEffect;
+        [SerializeField] private float effectActiveTime;
 
         // コンボデータリスト
         [SerializeField] private List<ComboDataSO> combos = new List<ComboDataSO>();
@@ -88,7 +90,7 @@ namespace TechC
                 if (combo.requiresCharge && !characterController.IsChargeEnabled())
                     continue;
                 bool result = CheckComboSequence(combo);
-                Debug.Log($"CheckComboSequence({combo.comboName}) = {result}");
+                CustomLogger.Info($"CheckComboSequence({combo.comboName}) = {result}", comboCheckLogId);
 
                 if (result)
                 {
@@ -244,18 +246,20 @@ namespace TechC
         {
             if (combo.effectPrefab != null)
             {
-                Instantiate(combo.effectPrefab, characterController.transform.position, Quaternion.identity);
+                comboEffect.SetActive(true);
+                StopAllCoroutines();
+                StartCoroutine(ResetEffect());
             }
 
             if (combo.soundEffect != null)
             {
-                AudioSource.PlayClipAtPoint(combo.soundEffect, characterController.transform.position);
-            }
+            }   
+        }
 
-            if (!string.IsNullOrEmpty(combo.animationTrigger))
-            {
-                characterController.GetAnim().SetTrigger(combo.animationTrigger);
-            }
+        private IEnumerator ResetEffect()
+        {
+            yield return new WaitForSeconds(effectActiveTime);
+            comboEffect.SetActive(false);
         }
     }
 }

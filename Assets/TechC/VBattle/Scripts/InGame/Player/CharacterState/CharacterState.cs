@@ -215,7 +215,7 @@ namespace TechC
                     characterController.transform.position
                 );
             }
-            CustomLogger.Info("コマンドを保存"+Time.time);
+            //CustomLogger.Info("コマンドを保存"+Time.time);
         }
         /// <summary>
         /// 攻撃種方向の確認

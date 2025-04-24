@@ -45,7 +45,7 @@ MonoBehaviour:
   - categoryId: state
     displayName: State Machine
     color: {r: 0.74158955, g: 0.9528302, b: 0.74158955, a: 1}
-    enabledByDefault: 1
+    enabledByDefault: 0
   defaultCategory:
     categoryId: default
     displayName: Default

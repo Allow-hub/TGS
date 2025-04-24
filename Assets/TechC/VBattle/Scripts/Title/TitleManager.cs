@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
+namespace TechC{
 
 public class TitleManager : MonoBehaviour
 {
@@ -39,14 +40,20 @@ public class TitleManager : MonoBehaviour
         }
     }
 
-    // Coroutineで遅延処理を実現
+    /// <summary>
+    /// Coroutineで遅延処理を実現
+    /// </summary>
+    /// <param name="delay"></param>
+    /// <returns></returns>
     private IEnumerator PlayMovieWithDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         PlayMovie();
     }
 
-    // 映像再生を開始
+    /// <summary>
+    /// 映像再生を開始
+    /// </summary>
     void PlayMovie()
     {
         if (!MoviePlaying)
@@ -56,11 +63,14 @@ public class TitleManager : MonoBehaviour
         }
     }
 
-    // 映像再生を停止
+    /// <summary>
+    /// 映像再生を停止
+    /// </summary>
     void StopMovie()
     {
         MoviePlayer.gameObject.SetActive(false);
         MoviePlaying = false;
         StartCoroutine(PlayMovieWithDelay(ChangeTime)); // 次の再生をスケジュール
     }
+}
 }

@@ -28,7 +28,7 @@ namespace TechC
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
             if(characterController != null)
             {
-                // characterController.AddAttackMultiplier(attackMultiplier);
+                characterController.AddMultiplier(BuffType.Attack, attackMultiplier);
             }
         }
 
@@ -41,7 +41,7 @@ namespace TechC
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
             if(characterController != null)
             {
-                // characterController.RemoveAttackMultiplier(attackMultiplier);
+                characterController.RemoveMultiplier(BuffType.Attack, attackMultiplier);
             }
         }
     }

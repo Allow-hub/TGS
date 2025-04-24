@@ -7,7 +7,7 @@ namespace TechC
    /// <summary>
     /// コメントタイプを定義
     /// </summary>
-    public enum CommentType { Normal, Buff, MapChange }
+    public enum CommentType { Normal, SpeedBuff, AttackBuff, MapChange }
 
     public class CommentData
     {

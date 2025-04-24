@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1285167256717913542}
   - component: {fileID: 2958978707759081936}
   m_Layer: 5
-  m_Name: BuffComments
+  m_Name: SpeedBuffPrefab
   m_TagString: Comments
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

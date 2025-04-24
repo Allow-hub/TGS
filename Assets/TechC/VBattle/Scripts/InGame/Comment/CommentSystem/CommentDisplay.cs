@@ -6,13 +6,15 @@ using UnityEngine.UI;
 
 namespace TechC
 {
+    /// <summary>
+    /// コメントを画面上に流す処理
+    /// </summary>
     public class CommentDisplay : MonoBehaviour
     {
-        [Header("コメントデータ")]
-        public NormalCommentData commentData;
-
         [Header("コメントのテキスト用Prefab")]
-        public TMP_Text commentPrefab;
+        [SerializeField] private TMP_Text commentPrefab;
+        [SerializeField] private TMP_Text buffCommentPrefab;
+        [SerializeField] private TMP_Text mapChangePrefab;
 
         [Header("コメントが流れるエリア")]
         public RectTransform commentLayer;
@@ -20,6 +22,8 @@ namespace TechC
         [Header("コメントの設定")]
         [SerializeField] private float spawnInterval = 1.5f;
         [SerializeField] private float speed = 100.0f;
+        [Header("ランダムなコメントを表示するためのスクリプトを取得")]
+        [SerializeField] private CommentProvider commentProvider;
 
         [Header("コメントが出現する場所")]
         /* コメントが出現する場所 */
@@ -36,7 +40,6 @@ namespace TechC
         private float topLeftDespawnPosY;
         private float buttonLeftDespawnPosY;
         private float despawnPosX;
-
 
         void Start()
         {
@@ -55,25 +58,38 @@ namespace TechC
 
         public void SpawnComment()
         {
-            if (commentData == null || commentData.comment.Length == 0)
+            var commentData = commentProvider.GetRandomComment();
+
+            TMP_Text prefab;
+            switch (commentData.type)
             {
-                Debug.LogError("コメントデータが設定されてないか、空");
-                return;
+                case CommentType.Normal:
+                    prefab = commentPrefab;
+                    break;
+                case CommentType.Buff:
+                    prefab = buffCommentPrefab;
+                    break;
+                case CommentType.MapChange:
+                    prefab = mapChangePrefab;
+                    break;
+                default:
+                    prefab = commentPrefab;
+                    break;
             }
 
-            /* コメントデータの中からランダムに一つ選択 */
-            int index = Random.Range(0, commentData.comment.Length);
-            string commentText = commentData.comment[index];
-            // Debug.Log("表示するコメント：" + commentText);
+            TMP_Text comment = Instantiate(prefab, commentLayer);
+            comment.text = commentData.text;
 
-            /* Prefabから新しいコメントオブジェクトを生成 */
-            TMP_Text comment = Instantiate(commentPrefab, commentLayer);
-            comment.text = commentText;
-            // Debug.Log("実際に設定されたコメント：" + comment.text);
+            if (commentData.buffType.HasValue)
+            {
+                BuffCommentTrigger trigger = comment.GetComponent<BuffCommentTrigger>();
+                if (trigger != null)
+                {
+                    trigger.buffType = commentData.buffType.Value;
+                }
+            }
 
             RectTransform rect = comment.GetComponent<RectTransform>();
-
-
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
             rect.anchoredPosition = new Vector2(spawnPosX, randomY);
 
@@ -87,13 +103,12 @@ namespace TechC
                 rect.anchoredPosition += Vector2.left * speed * Time.deltaTime;
                 yield return null; /* 次のフレームまで待機 */
             }
-            rect.gameObject.SetActive(false); /* どっちを使用しよう */
+            rect.gameObject.SetActive(false);
         }
 
         /* 最初にコメントを表示 / 非表示にする座標を取得する */
         private void InitSetPositions()
         {
-
             /* コメントを発生させる座標を取得する */
             topRightSpawnPosY = topRightSpawn.transform.position.y;
             bottomRightSpawnPosY = bottomRightSpawn.transform.position.y;
@@ -103,22 +118,6 @@ namespace TechC
             topLeftDespawnPosY = topLeftDespawn.transform.position.y;
             buttonLeftDespawnPosY = buttonLeftDespawn.transform.position.y;
             despawnPosX = topLeftDespawn.transform.position.x;
-
-            // Debug.Log("コメントを発生させる上のy座標は：" + topRightSpawnPosY);
-            // Debug.Log("コメントを発生させる下のy座標は：" + bottomRightSpawnPosY);
-            // Debug.Log("spawnPosX座標は" + spawnPosX);
-
-            // Debug.Log("コメントを非表示にさせる上のy座標は：" + topRightSpawnPosY);
-            // Debug.Log("コメントを非表示にさせる下のy座標は：" + bottomRightSpawnPosY);
-            // Debug.Log("despawnPosX座標は" + spawnPosX);
-        }
-
-        private void OnCollisionEnter(Collision other)
-        {
-            if(other.gameObject.CompareTag("Player"))
-            {
-                Debug.Log("Playerがコメントにぶつかった。");
-            }
         }
     }
 }

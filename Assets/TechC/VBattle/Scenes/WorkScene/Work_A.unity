@@ -985,6 +985,7 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: 44fd3f1e079315745b6039883adc7d85, type: 2}
   downAttackData: {fileID: 11400000, guid: 5ee8e9dc7d9c5eb4e8f6884ed748c6fb, type: 2}
   upAttackData: {fileID: 11400000, guid: 017c8e2e8638cef49ab16133bc650355, type: 2}
+  inputManager: {fileID: 0}
   canChargeDuration: 10
 --- !u!114 &629549805
 MonoBehaviour:
@@ -1095,7 +1096,7 @@ Transform:
   m_GameObject: {fileID: 629549802}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.86, y: -3.4, z: -5.37}
+  m_LocalPosition: {x: -0.75, y: -3.4, z: -5.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1140,9 +1141,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commandHistory: {fileID: 629549803}
   characterController: {fileID: 629549807}
+  comboEffect: {fileID: 0}
+  effectActiveTime: 0
   combos:
   - {fileID: 11400000, guid: 7f458afe5f1ef4d49ab15f646e263cb7, type: 2}
   lastDetectedCombo: "\u306A\u3057"
+  comboCheckLogId: comboCheck
+  comboClearLogId: comboClear
   showDebugInfo: 1
 --- !u!1 &642506621 stripped
 GameObject:
@@ -2039,6 +2044,7 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: 44fd3f1e079315745b6039883adc7d85, type: 2}
   downAttackData: {fileID: 11400000, guid: 5ee8e9dc7d9c5eb4e8f6884ed748c6fb, type: 2}
   upAttackData: {fileID: 11400000, guid: 017c8e2e8638cef49ab16133bc650355, type: 2}
+  inputManager: {fileID: 1389670156}
   canChargeDuration: 10
 --- !u!114 &1389670166
 MonoBehaviour:
@@ -2118,9 +2124,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commandHistory: {fileID: 1389670168}
   characterController: {fileID: 1389670164}
+  comboEffect: {fileID: 0}
+  effectActiveTime: 0
   combos:
   - {fileID: 11400000, guid: 7f458afe5f1ef4d49ab15f646e263cb7, type: 2}
+  - {fileID: 11400000, guid: 545fea61d5944b0499f065ceba7d8099, type: 2}
   lastDetectedCombo: "\u306A\u3057"
+  comboCheckLogId: comboCheck
+  comboClearLogId: comboClear
   showDebugInfo: 1
 --- !u!1001 &1519539025
 PrefabInstance:

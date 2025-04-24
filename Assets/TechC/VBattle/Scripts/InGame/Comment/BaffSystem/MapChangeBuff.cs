@@ -4,9 +4,12 @@ using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// マップ変更バフ。適用されたターゲットのマップをランダムに変更する。
+    /// </summary>
     public class MapChangeBuff : BuffBase
     {
-       private int currentMapIndex = -1;
+        private int currentMapIndex = -1;
 
         public MapChangeBuff()
         {
@@ -16,13 +19,17 @@ namespace TechC
             remainingTime = buffDuration;
         }
 
+        /// <summary>
+        /// バフが適用されたとき、ランダムでマップを変更する。
+        /// </summary>
+        /// <param name="target">バフが適用されるターゲット</param>
         public override void Apply(GameObject target)
         {
             base.Apply(target);
             Debug.Log("マップ変化のバフを発動");
 
             /* マップの変更をまだ行っていない場合は、マップを変更する */
-            if(MapChangeManager.Instance != null && MapChangeManager.Instance.mapObjects.Length > 0)
+            if (MapChangeManager.Instance != null && MapChangeManager.Instance.mapObjects.Length > 0)
             {
                 int randomIndex = Random.Range(0, MapChangeManager.Instance.mapObjects.Length);
                 currentMapIndex = randomIndex;
@@ -35,12 +42,16 @@ namespace TechC
             }
         }
 
+        /// <summary>
+        /// バフが解除されたとき、マップを元に戻す。
+        /// </summary>
+        /// <param name="target">バフが解除されるターゲット</param>
         public override void Remove(GameObject target)
         {
             base.Remove(target);
             Debug.Log("マップ変形バフが解除されました");
-            
-            if(MapChangeManager.Instance != null)
+
+            if (MapChangeManager.Instance != null)
             {
                 MapChangeManager.Instance.ChangeMap(-1); /* ここでMapを非表示 */
             }
@@ -48,6 +59,11 @@ namespace TechC
             currentMapIndex = -1;
         }
 
+        /// <summary>
+        /// バフの残り時間を更新し、終了時にバフを解除する。
+        /// </summary>
+        /// <param name="deltaTime">経過時間</param>
+        /// <param name="target">バフが適用されているターゲット</param>
         public override void UpdateBuff(float deltaTime, GameObject target)
         {
             base.UpdateBuff(deltaTime, target);

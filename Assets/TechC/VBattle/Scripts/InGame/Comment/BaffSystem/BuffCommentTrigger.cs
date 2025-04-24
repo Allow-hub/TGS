@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// バフコメントがプレイヤーと衝突した際にバフを適用するトリガークラス
+    /// </summary>
     public class BuffCommentTrigger : MonoBehaviour
     {
         public BuffType buffType;

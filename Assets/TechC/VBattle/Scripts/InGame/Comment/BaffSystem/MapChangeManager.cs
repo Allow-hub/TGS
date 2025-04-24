@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// 複数のマップを管理し、指定されたマップに切り替えるためのシングルトンマネージャー
+    /// </summary>
     public class MapChangeManager : MonoBehaviour
     {
         /* インスタンスの定義 */

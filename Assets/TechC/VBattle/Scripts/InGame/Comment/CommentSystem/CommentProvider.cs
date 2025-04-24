@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// コメントタイプを定義
+    /// </summary>
     public enum CommentType { Normal, Buff, MapChange }
 
     public class CommentData
@@ -19,7 +22,9 @@ namespace TechC
             this.buffType = buffType;
         }
     }
-
+    /// <summary>
+    /// ランダムにコメントを選び提供する
+    /// </summary>
     public class CommentProvider : MonoBehaviour
     {
         [Header("コメントデータ")]

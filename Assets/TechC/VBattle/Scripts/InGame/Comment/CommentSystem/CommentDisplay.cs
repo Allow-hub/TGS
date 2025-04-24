@@ -6,12 +6,15 @@ using UnityEngine.UI;
 
 namespace TechC
 {
+    /// <summary>
+    /// コメントを画面上に流す処理
+    /// </summary>
     public class CommentDisplay : MonoBehaviour
     {
         [Header("コメントのテキスト用Prefab")]
-        public TMP_Text commentPrefab;
-        public TMP_Text buffCommentPrefab;
-        public TMP_Text mapChangePrefab;
+        [SerializeField] private TMP_Text commentPrefab;
+        [SerializeField] private TMP_Text buffCommentPrefab;
+        [SerializeField] private TMP_Text mapChangePrefab;
 
         [Header("コメントが流れるエリア")]
         public RectTransform commentLayer;
@@ -21,9 +24,6 @@ namespace TechC
         [SerializeField] private float speed = 100.0f;
         [Header("ランダムなコメントを表示するためのスクリプトを取得")]
         [SerializeField] private CommentProvider commentProvider;
-
-
-
 
         [Header("コメントが出現する場所")]
         /* コメントが出現する場所 */

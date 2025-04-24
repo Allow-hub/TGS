@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// バフを生成するファクトリクラス
+    /// バフタイプに応じて、適切なバフを生成するためのメソッドを提供
+    /// </summary>
     public class BuffFactory : MonoBehaviour
     {
         private static Dictionary<BuffType, System.Func<BuffBase>> buffDictionary;

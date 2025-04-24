@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// Playerの移動速度を上昇させるバフ
+    /// </summary>
     [Serializable]
     public class SpeedBuff : BuffBase
     {

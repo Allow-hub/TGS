@@ -53,12 +53,12 @@ MonoBehaviour:
     enabledByDefault: 1
   _enabledCategoryIds:
   - 
-  - default
-  - ui
-  - audio
   - network
   - input
-  - physics
-  - gamePlay
+  - ui
+  - default
+  - audio
+  _disabledCategoryIds:
   - state
-  _disabledCategoryIds: []
+  - gamePlay
+  - physics

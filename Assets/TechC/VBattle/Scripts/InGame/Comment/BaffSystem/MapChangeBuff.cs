@@ -12,7 +12,7 @@ namespace TechC
         {
             buffName = "MapChangeBuff";
             description = "マップが変化する";
-            buffDuration = 2.0f;
+            buffDuration = 7.0f;
             remainingTime = buffDuration;
         }
 

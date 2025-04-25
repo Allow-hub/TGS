@@ -122,52 +122,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &30194610
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 30194612}
-  - component: {fileID: 30194611}
-  m_Layer: 0
-  m_Name: SeManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &30194611
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30194610}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e83634e7c597d6841b5530d5e5019237, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 0}
-  clip: []
---- !u!4 &30194612
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30194610}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &730966509
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,27 +190,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 885070830}
-  - component: {fileID: 885070829}
+  - component: {fileID: 885070831}
   m_Layer: 0
-  m_Name: BgmManager
+  m_Name: AudioManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &885070829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 885070828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f28e470d346dd9c49a21a0e8c68a9c86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 0}
+  m_IsActive: 1
 --- !u!4 &885070830
 Transform:
   m_ObjectHideFlags: 0
@@ -272,6 +213,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &885070831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 885070828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d76d655313902d40b163c0be74ba6dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioData: {fileID: 11400000, guid: d74cd3607812e0a499867a72ef3b0d95, type: 2}
+  characterAudioDataList:
+  - {fileID: 11400000, guid: 45890cea50f702b4d9129ed6ef97ac5a, type: 2}
+  - {fileID: 11400000, guid: f855af0918f726b499a871ac9cf5a766, type: 2}
+  - {fileID: 11400000, guid: bda04b6aa6697eb49afb67653b0f79db, type: 2}
+  masterVolume: 1
+  bgmVolume: 1
+  seVolume: 1
+  voiceVolume: 1
+  seSourceCount: 10
+  characterSESourceCount: 10
+  characterVoiceSourceCount: 10
+  audioLogId: audio
 --- !u!1 &1183286592
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,6 +289,5 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1183286594}
-  - {fileID: 30194612}
   - {fileID: 885070830}
   - {fileID: 730966511}

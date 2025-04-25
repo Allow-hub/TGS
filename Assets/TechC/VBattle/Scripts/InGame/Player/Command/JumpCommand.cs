@@ -36,6 +36,7 @@ namespace TechC
             if (character.IsGrounded())
             {
                 character.Jump();
+                //AudioManager.I.PlayCharacterSE(CharacterType.)
                 character.SetAnim(jumpAnim, true);
             }
             //else

@@ -32,7 +32,6 @@ namespace TechC
         public bool requiresCharge = false;
         // エフェクト
         public GameObject effectPrefab;
-        public AudioClip soundEffect;
         public string animationTrigger;
 
         /// <summary>

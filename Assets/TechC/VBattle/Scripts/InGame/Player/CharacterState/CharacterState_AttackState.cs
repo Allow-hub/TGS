@@ -73,7 +73,7 @@ namespace TechC
                 }
                 else
                 {
-                    Debug.LogWarning($"AttackData is null for type {attackType} and strength {attackStrength}");
+                    CustomLogger.Warning($"AttackData is null for type {attackType} and strength {attackStrength}");
                 }
                 //もし攻撃時間がたたずに他ステートから割り込まれたときに強制終了のメソッドを呼ぶ
 

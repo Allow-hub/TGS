@@ -16,7 +16,7 @@ namespace TechC
         [SerializeField] private Player.CharacterController characterController;
         [SerializeField] private GameObject comboEffect;
         [SerializeField] private float effectActiveTime;
-
+        [SerializeField] private CharacterType characterType;
         // コンボデータリスト
         [SerializeField] private List<ComboDataSO> combos = new List<ComboDataSO>();
 
@@ -251,9 +251,7 @@ namespace TechC
                 StartCoroutine(ResetEffect());
             }
 
-            if (combo.soundEffect != null)
-            {
-            }   
+            AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Combo);
         }
 
         private IEnumerator ResetEffect()

@@ -10,6 +10,7 @@ namespace TechC
     public class AttackData : ScriptableObject
     {
         [Header("基本情報")]
+        public CharacterType characterType;
         public string attackName;
         public string description;
         [System.Serializable]
@@ -59,7 +60,8 @@ namespace TechC
         public bool useCustomKnockbackDirection = false; 
 
         [Header("エフェクト")]
-        public AudioClip soundEffect;
+        public CharacterSEType characterSEType;
+        public CharacterVoiceType characterVoiceType;
         public GameObject effectPrefab;
         public Vector3 effectOffset;
         

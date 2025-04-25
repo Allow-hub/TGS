@@ -64,11 +64,11 @@ MonoBehaviour:
   - network
   - input
   - ui
-  - default
   - audio
   - gamePlay
   - physics
+  - default
+  - comboClear
   _disabledCategoryIds:
   - state
-  - comboClear
   - comboCheck

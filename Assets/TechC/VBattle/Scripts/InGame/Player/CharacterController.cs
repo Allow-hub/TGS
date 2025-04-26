@@ -48,7 +48,7 @@ namespace TechC.Player
         private Dictionary<BuffType, float> multipliers = new()
         {
             { BuffType.Speed, 1.0f },
-            { BuffType.Power, 1.0f }
+            { BuffType.Attack, 1.0f }
         };
         // ジャンプ関連
         private bool hasDoubleJumped = false;
@@ -289,7 +289,7 @@ namespace TechC.Player
         /// </summary>
         public void TakeDamage(float damage)
         {
-            currentHp -= damage * GetMultipiler(BuffType.Power);
+            currentHp -= damage * GetMultipiler(BuffType.Attack);
             if (currentHp > 0) return;
             currentHp = 0;
             Des();
@@ -421,17 +421,7 @@ namespace TechC.Player
         #endregion
 
         #region バフ関連メソッド
-        /// <summary>
-        /// スピードバフを適用
-        /// ダミーメソッドです、AddMultipilerに移行したら消してください
-        /// </summary>
-        public void AddSpeedMultiplier(float multiplier) => Debug.Log("Dummy");
-
-        /// <summary>
-        /// スピードバフを除外
-        /// ダミーメソッドです、AddMultipilerに移行したら消してください
-        /// </summary>
-        public void RemoveSpeedMultiplier(float multiplier) => Debug.Log("Dummy");
+    
         /// <summary>
         /// バフの適用（バフの種類,乗算の数値）
         /// </summary>

@@ -13,7 +13,8 @@ namespace TechC
     {
         [Header("コメントのテキスト用Prefab")]
         [SerializeField] private TMP_Text commentPrefab;
-        [SerializeField] private TMP_Text buffCommentPrefab;
+        [SerializeField] private TMP_Text SpeedBuffPrefab;
+        [SerializeField] private TMP_Text AttackBuffPrefab;
         [SerializeField] private TMP_Text mapChangePrefab;
 
         [Header("コメントが流れるエリア")]
@@ -66,8 +67,11 @@ namespace TechC
                 case CommentType.Normal:
                     prefab = commentPrefab;
                     break;
-                case CommentType.Buff:
-                    prefab = buffCommentPrefab;
+                case CommentType.SpeedBuff:
+                    prefab = SpeedBuffPrefab;
+                    break;
+                case CommentType.AttackBuff:
+                    prefab = AttackBuffPrefab;
                     break;
                 case CommentType.MapChange:
                     prefab = mapChangePrefab;

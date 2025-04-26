@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffType: 1
   comments:
-  - power1
-  - power2
+  - Attack1
+  - Attack2

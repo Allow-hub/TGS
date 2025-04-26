@@ -15,7 +15,7 @@ namespace TechC
         {
             buffName = "AttackBuff";
             description = "攻撃力が上昇する";
-            buffDuration = 5.0f;
+            buffDuration = 2.0f;
             remainingTime = buffDuration;
         }
 
@@ -26,9 +26,16 @@ namespace TechC
         public override void Apply(GameObject target)
         {
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
-            if(characterController != null)
+            if (characterController != null)
             {
+                // Debug.Log($"<color=orange>[Apply前]</color>攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
+                // public float GetCurrentAttackMultiplier() => GetMultipiler(BuffType.Attack); これをcharacterControllerに書く
+
+
                 characterController.AddMultiplier(BuffType.Attack, attackMultiplier);
+
+                // Debug.Log($"<color=orange>[Apply後]</color>:攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
+
             }
         }
 
@@ -39,9 +46,13 @@ namespace TechC
         public override void Remove(GameObject target)
         {
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
-            if(characterController != null)
+            if (characterController != null)
             {
+                // Debug.Log($"<color=blue>[Remove後]</color>:攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
+
                 characterController.RemoveMultiplier(BuffType.Attack, attackMultiplier);
+                // Debug.Log($"<color=blue>[Remove後]</color>:攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
+                
             }
         }
     }

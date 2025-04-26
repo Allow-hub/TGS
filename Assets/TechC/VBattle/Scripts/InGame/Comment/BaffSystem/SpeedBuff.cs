@@ -30,18 +30,8 @@ namespace TechC
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
 
             if (characterController != null)
-            {
-                /* スピード倍率を変更
-                 * 以下のコメントアウトを表示したい場合は 
-                 * CharacterController.csに以下のコードをバフのところを入力する 
-                 * public float GetCurrentSpeedMultiplier() => SpeedMultiplier;
-                 * そうするとできる→詳細はコミット名428c198
-                 */
-                 
-                // Debug.Log($"<color=orange>[Apply前]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
-
+            { 
                 characterController.AddMultiplier(BuffType.Speed, speedMultiplier);
-                // Debug.Log($"<color=orange>[Apply後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
             }
         }
         
@@ -55,13 +45,7 @@ namespace TechC
 
             if (characterController != null)
             {
-
-                // Debug.Log($"<color=#00FFFF>[Remove]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
                 characterController.RemoveMultiplier(BuffType.Speed, speedMultiplier);
-
-                // Debug.Log($"<color=#00FFFF>[Remove後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
-
-
             }
         }
     }

@@ -24,7 +24,7 @@ MonoBehaviour:
   Deceleration: 8
   JumpForce: 5
   DoubleJumpForce: 6
-  AirControlMultiplier: 1
+  AirControlMultiplier: 0.7
   AirAcceleration: 5
   FastFallSpeed: 15
   RotationSpeed: 10

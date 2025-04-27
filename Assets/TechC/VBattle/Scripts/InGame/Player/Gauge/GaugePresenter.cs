@@ -9,33 +9,23 @@ namespace TechC
     /// モデルとビューを繋ぐプレゼンター
     /// GaugeView と GaugeModel
     /// </summary>
-    public class GaugePresenter : MonoBehaviour
+    public class GaugePresenter : ParameterPresenter
     {
         [SerializeField] private GaugeView gaugeView;
-        [SerializeField] private float maxGauge = 100f;
         [SerializeField] private float timeBasedChargeInterval = 1.0f;
         [SerializeField] private float timeBasedChargeAmount = 2.0f;
 
         private GaugeModel gaugeModel;
 
-        /// <summary>
-        /// ゲージがマックスになったとき
-        /// </summary>
-        public event Action OnGaugeFilled;
-
-        /// <summary>
-        /// ゲージが空になったとき
-        /// </summary>
-        public event Action OnGaugeEmpty;
-
-        private void Awake()
+        protected override void InitializeModel()
         {
-            gaugeModel = new GaugeModel(maxGauge);
+            gaugeModel = new GaugeModel(maxValue);
+            model = gaugeModel;
+        }
 
-            // モデルのイベントをサブスクライブ
-            gaugeModel.OnGaugeChanged += HandleGaugeChanged;
-            gaugeModel.OnGaugeFilled += HandleGaugeFilled;
-            gaugeModel.OnGaugeEmpty += HandleGaugeEmpty;
+        protected override void InitializeView()
+        {
+            view = gaugeView;
         }
 
         private void FixedUpdate()
@@ -44,69 +34,40 @@ namespace TechC
             gaugeModel.UpdateTimeBasedCharge(Time.fixedDeltaTime, timeBasedChargeInterval, timeBasedChargeAmount);
         }
 
-        /// <summary>
-        /// ゲージが変化した時の処理
-        /// </summary>
-        /// <param name="newValue"></param>
-        private void HandleGaugeChanged(float newValue)
+        protected override void HandleValueFilled()
         {
-            gaugeView.UpdateGaugeDisplay(gaugeModel.GaugePercentage);
-        }
-
-        /// <summary>
-        /// ゲージが満タンになった時の処理
-        /// </summary>
-        private void HandleGaugeFilled()
-        {
+            base.HandleValueFilled();
             gaugeView.ShowFullGaugeEffect(true);
-            OnGaugeFilled?.Invoke();
         }
 
-        /// <summary>
-        /// ゲージが空になった時の処理
-        /// </summary>
-        private void HandleGaugeEmpty()
+        protected override void HandleValueEmpty()
         {
+            base.HandleValueEmpty();
             gaugeView.ShowFullGaugeEffect(false);
             gaugeView.ShowEmptyGaugeEffect();
-            OnGaugeEmpty?.Invoke();
         }
 
-        /// <summary>
-        /// 外部からゲージを増加させるメソッド
-        /// </summary>
-        /// <param name="amount"></param>
+        // ゲージ特有のメソッド
         public void AddGauge(float amount)
         {
             gaugeModel.AddGauge(amount);
         }
-        /// <summary>
-        /// 外部からゲージを増加させるメソッド,ブール値に依存しない
-        /// </summary>
-        /// <param name="amount"></param>
+
         public void NotBoolAddGauge(float amount)
         {
             gaugeModel.AddGaugeInternal(amount);
         }
-        /// <summary>
-        /// 必殺技使用時のゲージ消費
-        /// </summary>
-        /// <param name="cost"></param>
-        /// <returns></returns>
+
         public bool TryUseSpecialAttack(float cost)
         {
-            return gaugeModel.UseGauge(cost);
+            return gaugeModel.UseValue(cost);
         }
 
-        /// <summary>
-        /// 外部からの制御用メソッド
-        /// </summary>
-        /// <param name="value"></param>
+        public float GetGaugePercentage() => gaugeModel.GetGaugePercentage();
         public void SetCanCharge(bool value) => gaugeModel.SetCanCharge(value);
-        public void ResetGauge() => gaugeModel.ResetGauge();
-        public void FillGauge() => gaugeModel.FillGauge();
-        public bool IsSpecialAttackReady(float cost) => gaugeModel.HasEnoughGauge(cost);
-        public float GetGaugePercentage() => gaugeModel.GaugePercentage;
+        public void ResetGauge() => gaugeModel.EmptyValue();
+        public void FillGauge() => gaugeModel.FillValue();
+        public bool IsSpecialAttackReady(float cost) => gaugeModel.HasEnoughValue(cost);
         public bool GetCanCharge() => gaugeModel.CanCharge;
     }
 }

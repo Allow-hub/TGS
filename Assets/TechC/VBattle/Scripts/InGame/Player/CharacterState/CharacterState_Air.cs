@@ -14,7 +14,9 @@ namespace TechC
 
             protected internal override void Enter()
             {
-                base.Enter();
+                base.Enter(); 
+                Context.currentCommand = null;
+
             }
 
             protected internal override void Update()

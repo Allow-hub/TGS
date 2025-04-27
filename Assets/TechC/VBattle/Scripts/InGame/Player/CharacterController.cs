@@ -18,11 +18,14 @@ namespace TechC.Player
         [SerializeField] private Animator anim;
         [SerializeField] private CommandHistory commandHistory;
 
+        [SerializeField] private CharacterType characterType;
         [Header("攻撃コンポーネント")]
         [SerializeField] private WeakAttack weakAttack;
         [SerializeField] private StrongAttack strongAttack;
         [SerializeField] private AppealBase appealBase;
 
+        [Header("HP設定")]
+        [SerializeField] private HPPresenter hpPresenter;
         [Header("ガード設定")]
         [SerializeField] private float defaultAnimSpeed = 1.0f;
 
@@ -54,12 +57,12 @@ namespace TechC.Player
         private bool hasDoubleJumped = false;
 
         // 戦闘関連
-        private float currentHp;
         private HitData lastHitData;
         #endregion
 
         #region プロパティ
         public float DefaultAnimSpeed => defaultAnimSpeed;
+        public CharacterType CharacterType => characterType;
         #endregion
 
         #region 初期化メソッド
@@ -74,15 +77,14 @@ namespace TechC.Player
             anim.speed = defaultAnimSpeed;
 
             // パラメータ初期化
-            currentHp = characterData.Hp;
             currentGuardPower = characterData.GuardPower;
+            hpPresenter.OnDeath += Des;
 
         }
 
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
-            currentHp = characterData.Hp;
         }
         #endregion
 
@@ -279,28 +281,38 @@ namespace TechC.Player
         #endregion
 
         #region ダメージ・HP関連メソッド
+
+        //IDamageable用メソッド
+        public void TakeDamage(float damage)
+        {
+            PresenterTakeDamage(damage);
+        }
+        public void Des()
+        {
+            HandleDeath();
+        }
+
         /// <summary>
         /// HP値を取得する
         /// </summary>
-        public float GetHp() => currentHp;
+        public float GetHp() => hpPresenter.GetCurrentValue();
 
+ 
         /// <summary>
         /// ダメージを受ける処理
         /// </summary>
-        public void TakeDamage(float damage)
+        public void PresenterTakeDamage(float damage)
         {
-            currentHp -= damage * GetMultipiler(BuffType.Attack);
-            if (currentHp > 0) return;
-            currentHp = 0;
-            Des();
+            hpPresenter.TakeDamage(damage * GetMultipiler(BuffType.Attack));
         }
 
         /// <summary>
         /// キャラクター死亡時の処理
         /// </summary>
-        public void Des()
+        private void HandleDeath()
         {
             // 死亡時の処理を実装
+            Debug.Log("キャラクターが死亡しました");
         }
 
         /// <summary>

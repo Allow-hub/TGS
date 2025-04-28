@@ -1040,9 +1040,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b893081f989efd54cb2b0989f70a2ca2, type: 2}
   - {fileID: 11400000, guid: efb77ce6fd583934f90278662409542c, type: 2}
   normalChance: 0
-  speedBuffChance: 0
-  attackBuffChance: 0
-  mapChangeChance: 1
+  speedBuffChance: 0.3
+  attackBuffChance: 0.3
+  mapChangeChance: 0.3
 --- !u!4 &1232335032 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6067294018758884927, guid: e118c56b6c2f0c64cb26f52db018648e,

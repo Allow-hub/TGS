@@ -16,7 +16,7 @@ namespace TechC
         public event Action OnValueFilled;
         public event Action OnValueEmpty;
 
-        protected virtual void Awake()
+        public virtual void Init()
         {
             InitializeModel();
             InitializeView();

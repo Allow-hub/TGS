@@ -18,11 +18,14 @@ namespace TechC.Player
         [SerializeField] private Animator anim;
         [SerializeField] private CommandHistory commandHistory;
 
+        [SerializeField] private CharacterType characterType;
         [Header("攻撃コンポーネント")]
         [SerializeField] private WeakAttack weakAttack;
         [SerializeField] private StrongAttack strongAttack;
         [SerializeField] private AppealBase appealBase;
 
+        [Header("HP設定")]
+        [SerializeField] private HPPresenter hpPresenter;
         [Header("ガード設定")]
         [SerializeField] private float defaultAnimSpeed = 1.0f;
 
@@ -48,18 +51,18 @@ namespace TechC.Player
         private Dictionary<BuffType, float> multipliers = new()
         {
             { BuffType.Speed, 1.0f },
-            { BuffType.Power, 1.0f }
+            { BuffType.Attack, 1.0f }
         };
         // ジャンプ関連
         private bool hasDoubleJumped = false;
 
         // 戦闘関連
-        private float currentHp;
         private HitData lastHitData;
         #endregion
 
         #region プロパティ
         public float DefaultAnimSpeed => defaultAnimSpeed;
+        public CharacterType CharacterType => characterType;
         #endregion
 
         #region 初期化メソッド
@@ -74,15 +77,14 @@ namespace TechC.Player
             anim.speed = defaultAnimSpeed;
 
             // パラメータ初期化
-            currentHp = characterData.Hp;
             currentGuardPower = characterData.GuardPower;
+            hpPresenter.OnDeath += Des;
 
         }
 
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
-            currentHp = characterData.Hp;
         }
         #endregion
 
@@ -279,28 +281,38 @@ namespace TechC.Player
         #endregion
 
         #region ダメージ・HP関連メソッド
+
+        //IDamageable用メソッド
+        public void TakeDamage(float damage)
+        {
+            PresenterTakeDamage(damage);
+        }
+        public void Des()
+        {
+            HandleDeath();
+        }
+
         /// <summary>
         /// HP値を取得する
         /// </summary>
-        public float GetHp() => currentHp;
+        public float GetHp() => hpPresenter.GetCurrentValue();
 
+ 
         /// <summary>
         /// ダメージを受ける処理
         /// </summary>
-        public void TakeDamage(float damage)
+        public void PresenterTakeDamage(float damage)
         {
-            currentHp -= damage * GetMultipiler(BuffType.Power);
-            if (currentHp > 0) return;
-            currentHp = 0;
-            Des();
+            hpPresenter.TakeDamage(damage * GetMultipiler(BuffType.Attack));
         }
 
         /// <summary>
         /// キャラクター死亡時の処理
         /// </summary>
-        public void Des()
+        private void HandleDeath()
         {
             // 死亡時の処理を実装
+            Debug.Log("キャラクターが死亡しました");
         }
 
         /// <summary>
@@ -421,17 +433,7 @@ namespace TechC.Player
         #endregion
 
         #region バフ関連メソッド
-        /// <summary>
-        /// スピードバフを適用
-        /// ダミーメソッドです、AddMultipilerに移行したら消してください
-        /// </summary>
-        public void AddSpeedMultiplier(float multiplier) => Debug.Log("Dummy");
-
-        /// <summary>
-        /// スピードバフを除外
-        /// ダミーメソッドです、AddMultipilerに移行したら消してください
-        /// </summary>
-        public void RemoveSpeedMultiplier(float multiplier) => Debug.Log("Dummy");
+    
         /// <summary>
         /// バフの適用（バフの種類,乗算の数値）
         /// </summary>

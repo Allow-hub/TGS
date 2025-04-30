@@ -523,57 +523,6 @@ Transform:
   - {fileID: 158321555}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &672580401
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 672580403}
-  - component: {fileID: 672580402}
-  m_Layer: 0
-  m_Name: CommentProvider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &672580402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 672580401}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cea96ec3b0160841b4e810510d2bb76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  normalComments: {fileID: 11400000, guid: bb4d59f718567b64e8ce875502b21655, type: 2}
-  buffComments:
-  - {fileID: 11400000, guid: 09a7fc4219b36294b935eeb862608990, type: 2}
-  - {fileID: 11400000, guid: efb77ce6fd583934f90278662409542c, type: 2}
-  normalChance: 0
-  buffChance: 0
-  mapChangeChance: 1
---- !u!4 &672580403
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 672580401}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.3239136, y: -1.1113486, z: 10.571025}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &796291349
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,6 +956,7 @@ GameObject:
   - component: {fileID: 1228443377}
   - component: {fileID: 1228443376}
   - component: {fileID: 1228443378}
+  - component: {fileID: 1228443379}
   m_Layer: 0
   m_Name: CommentManager
   m_TagString: Untagged
@@ -1028,13 +978,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commentPrefab: {fileID: 545129694804395307, guid: 7fa3747485c5d784294c1a896a63b3a0,
     type: 3}
-  buffCommentPrefab: {fileID: 424618744469515612}
+  SpeedBuffPrefab: {fileID: 1200996628336513147, guid: 52a7950d530170d47a73fa47a3e01232,
+    type: 3}
+  AttackBuffPrefab: {fileID: 1200996628336513147, guid: 9d8b38e2e9afd0b4f941ec35abc9625d,
+    type: 3}
   mapChangePrefab: {fileID: 2865774595755681340, guid: 8e5cbdeb15c5cc74bbe7291afb8c8c04,
     type: 3}
   commentLayer: {fileID: 2096582039}
   spawnInterval: 2
   speed: 2
-  commentProvider: {fileID: 672580402}
+  commentProvider: {fileID: 1228443379}
   topRightSpawn: {fileID: 1781021142}
   bottomRightSpawn: {fileID: 796291349}
   topLeftDespawn: {fileID: 1012137274}
@@ -1069,6 +1022,27 @@ MonoBehaviour:
   mapObjects:
   - {fileID: 2140623139}
   - {fileID: 1039125528}
+--- !u!114 &1228443379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228443375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cea96ec3b0160841b4e810510d2bb76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalComments: {fileID: 11400000, guid: bb4d59f718567b64e8ce875502b21655, type: 2}
+  buffComments:
+  - {fileID: 11400000, guid: 09a7fc4219b36294b935eeb862608990, type: 2}
+  - {fileID: 11400000, guid: b893081f989efd54cb2b0989f70a2ca2, type: 2}
+  - {fileID: 11400000, guid: efb77ce6fd583934f90278662409542c, type: 2}
+  normalChance: 0
+  speedBuffChance: 0.3
+  attackBuffChance: 0.3
+  mapChangeChance: 0.3
 --- !u!4 &1232335032 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6067294018758884927, guid: e118c56b6c2f0c64cb26f52db018648e,
@@ -1331,8 +1305,8 @@ GameObject:
   - component: {fileID: 1389670170}
   - component: {fileID: 1389670172}
   - component: {fileID: 1389670171}
-  - component: {fileID: 1389670173}
   - component: {fileID: 1389670174}
+  - component: {fileID: 1389670175}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1380,6 +1354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 1389670164}
+  inputLogId: input
   guardObj: {fileID: 1694769995}
   dashTimeWindow: 0.3
 --- !u!114 &1389670157
@@ -1555,14 +1530,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1389670156}
   characterData: {fileID: 11400000, guid: 9e9c8f3dbf93aa845b0180217cec2c10, type: 2}
-  characterState:
-    canDebugLog: 0
   anim: {fileID: 1232335037}
   commandHistory: {fileID: 1389670170}
   weakAttack: {fileID: 1389670171}
   strongAttack: {fileID: 1389670172}
+  appealBase: {fileID: 1389670175}
   defaultAnimSpeed: 1
-  maxGage: 100
+  gaugePresenter: {fileID: 0}
+  maxGauge: 100
   jumpInputThreshold: 0.7
   rayLength: 1.1
   isDrawingRay: 1
@@ -1618,7 +1593,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 1389670164}
+  inputManager: {fileID: 0}
   commandHistory: {fileID: 1389670170}
+  comboSystem: {fileID: 0}
   attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
   neutralAttackData_1: {fileID: 11400000, guid: 1177b74adfb8c274fb3d7a6f684de930,
     type: 2}
@@ -1651,20 +1628,6 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: 77b8573078c4dfc40addcd780f1e2e2a, type: 2}
   downAttackData: {fileID: 11400000, guid: ebed5bf1f02784f4ea26b13f7cbaf5ba, type: 2}
   upAttackData: {fileID: 11400000, guid: 9babdb7dcadae81489b1460971521193, type: 2}
---- !u!114 &1389670173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1389670154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc377cb8f8c965349a757e2002b109db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speedBuff:
-    speedMultiplier: 3
 --- !u!114 &1389670174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1677,6 +1640,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a42e09dcf65ed7547ac3bb9829f46fd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1389670175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389670154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6e9d0b051e0e36429f35db6bdec097b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterController: {fileID: 1389670164}
+  attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
+  neutralAttackData: {fileID: 11400000, guid: 3fcedbbd66127104681bb1377676723b, type: 2}
+  leftAttackData: {fileID: 11400000, guid: 308936b8f368b0f469e9c32b656dfa79, type: 2}
+  rightAttackData: {fileID: 11400000, guid: 44fd3f1e079315745b6039883adc7d85, type: 2}
+  downAttackData: {fileID: 11400000, guid: 5ee8e9dc7d9c5eb4e8f6884ed748c6fb, type: 2}
+  upAttackData: {fileID: 11400000, guid: 017c8e2e8638cef49ab16133bc650355, type: 2}
+  inputManager: {fileID: 0}
+  canChargeDuration: 10
 --- !u!1001 &1519539025
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2501,6 +2485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
+  inputLogId: input
   guardObj: {fileID: 0}
   dashTimeWindow: 0.3
 --- !u!114 &1919128620
@@ -2517,14 +2502,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 1919128619}
   characterData: {fileID: 0}
-  characterState:
-    canDebugLog: 0
   anim: {fileID: 0}
   commandHistory: {fileID: 0}
   weakAttack: {fileID: 0}
   strongAttack: {fileID: 0}
+  appealBase: {fileID: 0}
   defaultAnimSpeed: 1
-  maxGage: 100
+  gaugePresenter: {fileID: 0}
+  maxGauge: 100
   jumpInputThreshold: 0.7
   rayLength: 1.1
   isDrawingRay: 1
@@ -2591,7 +2576,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
+  inputManager: {fileID: 0}
   commandHistory: {fileID: 0}
+  comboSystem: {fileID: 0}
   attackSet: {fileID: 0}
   neutralAttackData_1: {fileID: 0}
   neutralAttackData_2: {fileID: 0}
@@ -2795,18 +2782,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &424618744469515612 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1200996628336513147, guid: 52a7950d530170d47a73fa47a3e01232,
-    type: 3}
-  m_PrefabInstance: {fileID: 4521493365158907401}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &4238763483018389695 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 745458424823268472, guid: 52a7950d530170d47a73fa47a3e01232,
@@ -2943,7 +2918,6 @@ SceneRoots:
   - {fileID: 1375315959}
   - {fileID: 299774912}
   - {fileID: 1710808889}
-  - {fileID: 672580403}
   - {fileID: 1228443377}
   - {fileID: 540168186}
   - {fileID: 1967307072}

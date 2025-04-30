@@ -11,8 +11,7 @@ namespace TechC
     [Serializable]
     public class SpeedBuff : BuffBase
     {
-        [SerializeField]
-        private float speedMultiplier = 3.0f;
+        [SerializeField] private float speedMultiplier = 3.0f;
 
         public SpeedBuff()
         {
@@ -21,39 +20,32 @@ namespace TechC
             buffDuration = 3.0f;
             remainingTime = buffDuration;
         }
+
+        /// <summary>
+        /// 移動速度上昇のバフを適用する
+        /// </summary>
+        /// <param name="target"></param>
         public override void Apply(GameObject target)
         {
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
 
             if (characterController != null)
-            {
-                /* スピード倍率を変更
-                 * 以下のコメントアウトを表示したい場合は 
-                 * CharacterController.csに以下のコードをバフのところを入力する 
-                 * public float GetCurrentSpeedMultiplier() => SpeedMultiplier;
-                 * そうするとできる→詳細はコミット名428c198
-                 */
-                 
-                // Debug.Log($"<color=orange>[Apply前]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
-
-                characterController.AddSpeedMultiplier(speedMultiplier);
-                // Debug.Log($"<color=orange>[Apply後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
+            { 
+                characterController.AddMultiplier(BuffType.Speed, speedMultiplier);
             }
         }
-
+        
+        /// <summary>
+        /// 移動速度上昇のバフを解除する
+        /// </summary>
+        /// <param name="target"></param>
         public override void Remove(GameObject target)
         {
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
 
             if (characterController != null)
             {
-
-                // Debug.Log($"<color=#00FFFF>[Remove]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
-                characterController.RemoveSpeedMultiplier(speedMultiplier);
-
-                // Debug.Log($"<color=#00FFFF>[Remove後]</color>:スピードの倍率は{characterController.GetCurrentSpeedMultiplier()}");
-
-
+                characterController.RemoveMultiplier(BuffType.Speed, speedMultiplier);
             }
         }
     }

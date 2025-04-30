@@ -84,7 +84,7 @@ namespace TechC
         protected virtual void RegisterCommands()
         {
             commands[moveCommand] = new MoveCommand(characterController, this);
-            commands[jumpCommand] = new JumpCommand(characterController);
+            commands[jumpCommand] = new JumpCommand(characterController, this);
             commands[attackCommand] = new AttackCommand(characterState);
             commands[crouchCommand] = new CrouchCommand(characterController, this);
             commands[guardCommand] = new GuardCommand(characterState, characterController, this, characterController.GetCharacterData(), guardObj);
@@ -140,14 +140,14 @@ namespace TechC
         /// </summary>
         public void ResetInput()
         {
-            isMoving = false;   
+            isMoving = false;
             isJumping = false;
             isGuarding = false;
             isAppealing = false;
             isCrouching = false;
-            isDashing = false ;
+            isDashing = false;
             isWeakAttacking = false;
-            isStrongAttacking = false ;
+            isStrongAttacking = false;
         }
 
         /// <summary>

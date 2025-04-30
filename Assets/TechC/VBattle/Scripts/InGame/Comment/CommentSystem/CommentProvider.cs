@@ -14,32 +14,38 @@ namespace TechC
 
         [Header("コメントの出現確率")]
         [SerializeField, Range(0f, 1f)] private float normalChance = 0.7f;
-        [SerializeField, Range(0f, 1f)] private float buffChance = 0.2f;
+        [SerializeField, Range(0f, 1f)] private float speedBuffChance = 0.2f;
+        [SerializeField, Range(0f, 1f)] private float attackBuffChance = 0.2f;
         [SerializeField, Range(0f, 1f)] private float mapChangeChance = 0.1f;
 
         private float totalChance; /* 合計確率 */
 
-        /* バフコメント（MapChange以外） */
-        private List<BuffCommentData> normalBuffs;
+        /* バフコメント（Speed） */
+        private List<BuffCommentData> speedBuffs;
+
+        /* バフコメント（Attack） */
+        private List<BuffCommentData> attackBuffs;
 
         /* マップ変更用バフコメント */
         private List<BuffCommentData> mapChangeBuffs;
 
         private void Awake()
         {
-            totalChance = normalChance + buffChance + mapChangeChance;
+            totalChance = normalChance + speedBuffChance + attackBuffChance + mapChangeChance;
 
             /* 確率が0またはマイナスならデフォルト値に設定 */
             if (totalChance <= 0f)
             {
                 normalChance = 0.7f;
-                buffChance = 0.2f;
+                speedBuffChance = 0.1f;
+                attackBuffChance = 0.1f;
                 mapChangeChance = 0.1f;
                 totalChance = 1.0f;
             }
 
             /* buffCommentsを事前にフィルタリングして分類 */
-            normalBuffs = new List<BuffCommentData>();
+            speedBuffs = new List<BuffCommentData>();
+            attackBuffs = new List<BuffCommentData>();
             mapChangeBuffs = new List<BuffCommentData>();
 
             foreach (var buff in buffComments)
@@ -48,14 +54,21 @@ namespace TechC
                 {
                     mapChangeBuffs.Add(buff);
                 }
-                else
+                else if (buff.buffType == BuffType.Speed)
                 {
-                    normalBuffs.Add(buff);
+                    speedBuffs.Add(buff);
+                }
+                else if (buff.buffType == BuffType.Attack)
+                {
+                    attackBuffs.Add(buff);
                 }
             }
         }
 
-        /* ランダムなコメントを取得するメソッド */
+        /// <summary>
+        /// ランダムなコメントを取得するメソッド
+        /// </summary>
+        /// <returns></returns>
         public CommentData GetRandomComment()
         {
             /* ランダムな値を計算 */
@@ -67,15 +80,26 @@ namespace TechC
                 string text = normalComments.comment[Random.Range(0, normalComments.comment.Length)];
                 return new CommentData(CommentType.Normal, text, null);
             }
-            /* バフコメントの確率 */
-            else if (randomValue < normalChance + buffChance)
+            /* Speedバフコメントの確率 */
+            else if (randomValue < normalChance + speedBuffChance)
             {
-                /* MapChange以外のバフコメントをランダムに選択 */
-                if (normalBuffs.Count > 0)
+                /* Speedバフコメントをランダムに選択 */
+                if (speedBuffs.Count > 0)
                 {
-                    var buff = normalBuffs[Random.Range(0, normalBuffs.Count)];
+                    var buff = speedBuffs[Random.Range(0, speedBuffs.Count)];
                     string text = buff.comments[Random.Range(0, buff.comments.Length)];
-                    return new CommentData(CommentType.Buff, text, buff.buffType);
+                    return new CommentData(CommentType.SpeedBuff, text, buff.buffType);
+                }
+            }
+            /* Attackバフコメントの確率 */
+            else if (randomValue < normalChance + speedBuffChance + attackBuffChance)
+            {
+                /* Attackバフコメントをランダムに選択 */
+                if (attackBuffs.Count > 0)
+                {
+                    var buff = attackBuffs[Random.Range(0, attackBuffs.Count)];
+                    string text = buff.comments[Random.Range(0, buff.comments.Length)];
+                    return new CommentData(CommentType.AttackBuff, text, buff.buffType);
                 }
             }
             /* マップ変更コメントの確率 */
@@ -95,5 +119,4 @@ namespace TechC
             return new CommentData(CommentType.Normal, fallback, null);
         }
     }
-
 }

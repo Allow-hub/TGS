@@ -27,6 +27,6 @@ MonoBehaviour:
   timeWindow: 2
   gaugeBonus: 10
   requiresCharge: 1
-  effectPrefab: {fileID: 0}
-  soundEffect: {fileID: 0}
+  effectPrefab: {fileID: 5673904798865036489, guid: 5fd168fb5c569014d8ee5ca4151dacaa,
+    type: 3}
   animationTrigger: 

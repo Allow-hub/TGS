@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using Cysharp.Threading.Tasks;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using static TechC.CommandHistory;
 
@@ -14,7 +17,10 @@ namespace TechC
     {
         [SerializeField] private CommandHistory commandHistory;
         [SerializeField] private Player.CharacterController characterController;
-        [SerializeField] private GameObject comboEffect;
+
+        [SerializeField] private GameObject comboEffectPrefab; // エフェクトPrefab
+        [SerializeField] private float upwardOffset = 2f;       // 上方向の高さ
+        [SerializeField] private float horizontalRandomRange = 0.5f; // XZ方向のランダム範囲
         [SerializeField] private float effectActiveTime;
         [SerializeField] private CharacterType characterType;
         // コンボデータリスト
@@ -103,7 +109,7 @@ namespace TechC
                         CustomLogger.Info($"コンボ「{combo.comboName}」発動! ボーナスゲージ +{combo.gaugeBonus}", comboClearLogId);
                     }
 
-                    PlayComboEffect(combo);
+                    PlayComboEffect(combo).Forget();
                     break;
                 }
             }
@@ -240,24 +246,35 @@ namespace TechC
         }
 
         /// <summary>
-        /// コンボ成功時のエフェクト表示
+        /// コンボ成功時のエフェクト表示（プレイヤーの上側に表示）
         /// </summary>
-        private void PlayComboEffect(ComboDataSO combo)
+
+        private async UniTask PlayComboEffect(ComboDataSO combo)
         {
-            if (combo.effectPrefab != null)
+            if (comboEffectPrefab != null)
             {
-                comboEffect.SetActive(true);
-                StopAllCoroutines();
-                StartCoroutine(ResetEffect());
+                // 水平方向のランダムオフセット
+                Vector3 randomXZ = new Vector3(
+                    UnityEngine.Random.Range(-horizontalRandomRange, horizontalRandomRange),
+                    0f,
+                    UnityEngine.Random.Range(-horizontalRandomRange, horizontalRandomRange)
+                );
+
+                // 上方向のオフセット
+                Vector3 spawnPosition = transform.position + new Vector3(0f, upwardOffset, 0f) + randomXZ;
+
+                ///TODO:エフェクトの取得はオブジェクトプールを介するように
+                GameObject effectInstance = Instantiate(comboEffectPrefab, spawnPosition, Quaternion.identity);
+                effectInstance.transform.position = spawnPosition;
+                CustomLogger.Info("ActiveEffect",comboClearLogId);
+                await UniTask.Delay(TimeSpan.FromSeconds(effectActiveTime));
+                Destroy(effectInstance);
             }
 
             AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Combo);
         }
 
-        private IEnumerator ResetEffect()
-        {
-            yield return new WaitForSeconds(effectActiveTime);
-            comboEffect.SetActive(false);
-        }
+
+
     }
 }

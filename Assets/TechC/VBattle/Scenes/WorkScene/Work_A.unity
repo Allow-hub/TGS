@@ -1197,7 +1197,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commandHistory: {fileID: 629549803}
   characterController: {fileID: 629549807}
-  comboEffect: {fileID: 0}
+  comboEffectPrefab: {fileID: 0}
+  upwardOffset: 2
+  horizontalRandomRange: 0.5
   effectActiveTime: 0
   characterType: 0
   combos:
@@ -2325,7 +2327,7 @@ Transform:
   m_GameObject: {fileID: 1389670154}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -3.4, z: -5.37}
+  m_LocalPosition: {x: 3.04, y: -3.4, z: -5.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2459,12 +2461,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commandHistory: {fileID: 1389670168}
   characterController: {fileID: 1389670164}
-  comboEffect: {fileID: 0}
+  comboEffectPrefab: {fileID: 5673904798865036489, guid: 5fd168fb5c569014d8ee5ca4151dacaa,
+    type: 3}
+  upwardOffset: 2
+  horizontalRandomRange: 0.5
   effectActiveTime: 3
   characterType: 0
   combos:
   - {fileID: 11400000, guid: 7f458afe5f1ef4d49ab15f646e263cb7, type: 2}
-  - {fileID: 11400000, guid: 545fea61d5944b0499f065ceba7d8099, type: 2}
   lastDetectedCombo: "\u306A\u3057"
   comboCheckLogId: comboCheck
   comboClearLogId: comboClear
@@ -2817,12 +2821,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commandHistory: {fileID: 1611527533}
   characterController: {fileID: 1611527528}
-  comboEffect: {fileID: 0}
+  comboEffectPrefab: {fileID: 5673904798865036489, guid: 5fd168fb5c569014d8ee5ca4151dacaa,
+    type: 3}
+  upwardOffset: 2
+  horizontalRandomRange: 0.5
   effectActiveTime: 3
   characterType: 0
   combos:
   - {fileID: 11400000, guid: 7f458afe5f1ef4d49ab15f646e263cb7, type: 2}
-  - {fileID: 11400000, guid: 545fea61d5944b0499f065ceba7d8099, type: 2}
   lastDetectedCombo: "\u306A\u3057"
   comboCheckLogId: comboCheck
   comboClearLogId: comboClear

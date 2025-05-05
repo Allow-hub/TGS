@@ -24,6 +24,9 @@ namespace TechC.Player
         [SerializeField] private StrongAttack strongAttack;
         [SerializeField] private AppealBase appealBase;
 
+        [Header("プレイヤー設定")]
+        [SerializeField] private int playerID = 1; // 1Pか2Pかを識別するID
+
         [Header("HP設定")]
         [SerializeField] private HPPresenter hpPresenter;
         [Header("ガード設定")]
@@ -63,11 +66,13 @@ namespace TechC.Player
         #region プロパティ
         public float DefaultAnimSpeed => defaultAnimSpeed;
         public CharacterType CharacterType => characterType;
+        public int PlayerID => playerID; // PlayerIDのゲッター
         #endregion
 
         #region 初期化メソッド
         private void Awake()
         {
+
             // アタックマネージャーの初期化
             var attackManager = new AttackManager();
             characterState = new CharacterState(playerInputManager, this, attackManager, anim, commandHistory);
@@ -78,14 +83,56 @@ namespace TechC.Player
 
             // パラメータ初期化
             currentGuardPower = characterData.GuardPower;
-            hpPresenter.OnDeath += Des;
-
+            
         }
-
+        
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
+            
+            // HPPresenterがnullでないか確認してから購読
+            if (hpPresenter != null)
+            {
+                hpPresenter.OnDeath += Des;
+            }
+            else
+            {
+                Debug.LogError($"Player {playerID}: HPPresenterが見つかりません。");
+            }
         }
+
+        /// <summary>
+        /// プレイヤーIDに基づいて適切なHPPresenterとGaugePresenterを検索して取得
+        /// </summary>
+        private void FindPresenters()
+        {
+            string presenterTag = $"Presenter_P{playerID}";
+
+            // タグで検索
+            GameObject preObj = GameObject.FindWithTag(presenterTag);
+            gaugePresenter = preObj.GetComponent<GaugePresenter>();
+
+            hpPresenter = preObj.GetComponent<HPPresenter>();
+
+            // デバッグログ
+            Debug.Log($"Player {playerID}: HPPresenter {(hpPresenter != null ? "見つかりました" : "見つかりませんでした")}");
+            Debug.Log($"Player {playerID}: GaugePresenter {(gaugePresenter != null ? "見つかりました" : "見つかりませんでした")}");
+        }
+
+        /// <summary>
+        /// プレイヤーIDを設定する（生成時に呼び出す）
+        /// </summary>
+        public void SetPlayerID(int id)
+        {
+            playerID = id;
+            if (id == 1)
+                gameObject.transform.rotation =Quaternion.Euler(0.0f, 90.0f, 0.0f);
+            else if (id == 2)
+                gameObject.transform.rotation =Quaternion.Euler(0.0f, -90.0f, 0.0f);
+            // IDが変更された場合は、対応するPresenterを再取得
+            FindPresenters();
+        }
+
         #endregion
 
         #region 更新メソッド
@@ -295,7 +342,16 @@ namespace TechC.Player
         /// <summary>
         /// HP値を取得する
         /// </summary>
-        public float GetHp() => hpPresenter.GetCurrentValue();
+        public float GetHp() 
+        {
+            // hpPresenterがnullでないことを確認
+            if (hpPresenter != null)
+            {
+                return hpPresenter.GetCurrentValue();
+            }
+            Debug.LogWarning($"Player {playerID}: HPPresenterが見つかりません。デフォルト値を返します。");
+            return 0f;
+        }
 
  
         /// <summary>
@@ -303,7 +359,15 @@ namespace TechC.Player
         /// </summary>
         public void PresenterTakeDamage(float damage)
         {
-            hpPresenter.TakeDamage(damage * GetMultipiler(BuffType.Attack));
+            // hpPresenterがnullでないことを確認
+            if (hpPresenter != null)
+            {
+                hpPresenter.TakeDamage(damage * GetMultipiler(BuffType.Attack));
+            }
+            else
+            {
+                Debug.LogError($"Player {playerID}: HPPresenterがnullのため、ダメージ処理ができません");
+            }
         }
 
         /// <summary>
@@ -312,7 +376,7 @@ namespace TechC.Player
         private void HandleDeath()
         {
             // 死亡時の処理を実装
-            Debug.Log("キャラクターが死亡しました");
+            Debug.Log($"Player {playerID}のキャラクターが死亡しました");
         }
 
         /// <summary>
@@ -392,43 +456,96 @@ namespace TechC.Player
         /// </summary>
         public void AddSpecialGauge(float amount)
         {
-            gaugePresenter.AddGauge(amount);
+            if (gaugePresenter != null)
+            {
+                gaugePresenter.AddGauge(amount);
+            }
+            else
+            {
+                Debug.LogError($"Player {playerID}: GaugePresenterがnullのため、ゲージ追加ができません");
+            }
         }
         /// <summary>
         /// 必殺技ゲージを増加させる、bool値を問わず
         /// </summary>
         public void NotBoolAddSpecialGauge(float amount)
         {
-            gaugePresenter.NotBoolAddGauge(amount);
+            if (gaugePresenter != null)
+            {
+                gaugePresenter.NotBoolAddGauge(amount);
+            }
+            else
+            {
+                Debug.LogError($"Player {playerID}: GaugePresenterがnullのため、ゲージ追加ができません");
+            }
         }
         /// <summary>
         /// 必殺技を使用する（使用可能な場合のみ成功）
         /// </summary>
         public bool TryUseSpecialAttack(float cost)
         {
-            return gaugePresenter.TryUseSpecialAttack(cost);
+            if (gaugePresenter != null)
+            {
+                return gaugePresenter.TryUseSpecialAttack(cost);
+            }
+            Debug.LogError($"Player {playerID}: GaugePresenterがnullのため、必殺技使用ができません");
+            return false;
         }
 
         /// <summary>
         /// 必殺技ゲージの割合を取得（UI表示用など）
         /// </summary>
-        public float GetSpecialGaugePercentage() => gaugePresenter.GetGaugePercentage();
+        public float GetSpecialGaugePercentage() 
+        {
+            if (gaugePresenter != null)
+            {
+                return gaugePresenter.GetGaugePercentage();
+            }
+            Debug.LogWarning($"Player {playerID}: GaugePresenterがnullのため、ゲージ割合が取得できません");
+            return 0f;
+        }
 
         /// <summary>
         /// 必殺技が使用可能かどうか
         /// </summary>
-        public bool IsSpecialAttackReady(float cost) => gaugePresenter.IsSpecialAttackReady(cost);
+        public bool IsSpecialAttackReady(float cost) 
+        {
+            if (gaugePresenter != null)
+            {
+                return gaugePresenter.IsSpecialAttackReady(cost);
+            }
+            Debug.LogWarning($"Player {playerID}: GaugePresenterがnullのため、必殺技準備状態が確認できません");
+            return false;
+        }
 
         /// <summary>
         /// 必殺技がチャージ可能かどうかを切り替える
         /// </summary>
-        public void ChangeCanCharge(bool value) => gaugePresenter.SetCanCharge(value);
+        public void ChangeCanCharge(bool value) 
+        {
+            if (gaugePresenter != null)
+            {
+                gaugePresenter.SetCanCharge(value);
+            }
+            else
+            {
+                Debug.LogError($"Player {playerID}: GaugePresenterがnullのため、チャージ状態を変更できません");
+            }
+        }
 
         /// <summary>
         /// チャージ可能状態かどうか
         /// </summary>
         /// <returns></returns>
-        public bool IsChargeEnabled() => gaugePresenter.GetCanCharge();
+        public bool IsChargeEnabled() 
+        {
+            if (gaugePresenter != null)
+            {
+                return gaugePresenter.GetCanCharge();
+            }
+            Debug.LogWarning($"Player {playerID}: GaugePresenterがnullのため、チャージ状態が確認できません");
+            return false;
+        }
 
         #endregion
 

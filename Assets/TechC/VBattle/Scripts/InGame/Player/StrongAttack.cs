@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using TechC.Player;
 using UnityEngine;
 using static TechC.CharacterState;
 
@@ -12,6 +9,7 @@ namespace TechC
     {
         [Header("Components")]
         [SerializeField] private ComboSystem comboSystem;
+        [SerializeField] private GameObject hitEffectPrefab;
 
         [Header("Data")]
         [SerializeField] private AttackSet attackSet;
@@ -24,9 +22,10 @@ namespace TechC
         // コンポジション - 処理を委譲するコンポーネント
         private AttackProcessor attackProcessor;
 
-        private void Awake()
+        protected override void Awake()
         {
-            attackProcessor = new AttackProcessor(characterController, comboSystem);
+            base.Awake();
+            attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool, hitEffectPrefab,battleJudge);
         }
 
         public void OnValidate()

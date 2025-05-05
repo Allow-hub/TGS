@@ -1,6 +1,8 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace TechC
@@ -9,22 +11,30 @@ namespace TechC
     /// 攻撃処理の実行を担当するクラス
     /// 攻撃判定やヒットチェックなどの処理を集約
     /// </summary>
-    [Serializable]
     public class AttackProcessor
     {
-        [SerializeField] private bool showAttackGizmos = true;
-        [SerializeField] private Color hitboxColor = new Color(1f, 0f, 0f, 0.5f); // 半透明の赤
-        
+        private GameObject hitEffectPrefab;
+        private bool showAttackGizmos = true;
+        private Color hitboxColor = new Color(1f, 0f, 0f, 0.5f); // 半透明の赤
+
         private Vector3 lastAttackPosition;
         private float lastAttackRadius;
         private Player.CharacterController characterController;
         private Player.CharacterController opponentCharacterController;
         private ComboSystem comboSystem;
 
-        public AttackProcessor(Player.CharacterController controller, ComboSystem comboSystem)
+        // ヒットエフェクトの持続時間（秒）
+         private float hitEffectDuration = 1.5f;
+        private GameObject currentHitEffect;
+        private ObjectPool objectPool;
+        private BattleJudge battleJudge;
+       public AttackProcessor(Player.CharacterController controller, ComboSystem comboSystem, ObjectPool objectPool, GameObject hitEffectPrefab, BattleJudge battleJudge)
         {
             this.characterController = controller;
             this.comboSystem = comboSystem;
+            this.objectPool = objectPool;
+            this.hitEffectPrefab = hitEffectPrefab;
+            this.battleJudge = battleJudge;
         }
 
         /// <summary>
@@ -33,7 +43,7 @@ namespace TechC
         public IEnumerator ProcessAttack(AttackData attackData, MonoBehaviour coroutineRunner)
         {
             yield return new WaitForSeconds(attackData.hitTiming);
-            
+
             // ヒットチェックを実行し、ヒットした場合にヒットストップを発生させる
             if (PerformAttackHitCheck(attackData))
             {
@@ -61,10 +71,16 @@ namespace TechC
                 // 自分自身は除外
                 if (IsOwnCollider(hitCollider))
                     continue;
-                
+
                 // 対戦相手のコントローラーを取得
                 Player.CharacterController targetController = GetOpponentController(hitCollider);
                 if (targetController == null) continue;
+                // BattleJudgeを通じて攻撃対象が有効かどうかを確認
+                if (battleJudge != null && !battleJudge.IsValidAttackTarget(targetController.PlayerID))
+                {
+                    Debug.Log($"Player {targetController.PlayerID} は現在攻撃対象として無効です");
+                    continue;
+                }
 
                 // ガード処理
                 if (TryProcessGuard(targetController, hitCollider, attackData))
@@ -84,13 +100,44 @@ namespace TechC
 
             if (hitConfirmed)
             {
+                // ヒットエフェクトを生成し、変数に保存
+                currentHitEffect = objectPool.GetObject(hitEffectPrefab);
+                Debug.Log(currentHitEffect);
+                // ヒット位置にエフェクトを配置
+                if (currentHitEffect != null)
+                {
+                    currentHitEffect.transform.position = attackPosition;
+                    
+                    // 非同期でエフェクトを返却
+                    ReturnEffect().Forget();
+                }
+                
                 comboSystem?.CheckCombos();
             }
-            
+
             // ヒットボックスの可視化
             VisualizeHitbox(attackPosition, attackData.radius, hitConfirmed);
-
+            
             return hitConfirmed;
+        }
+
+        /// <summary>
+        /// ヒットエフェクトを一定時間後にプールに戻す非同期メソッド
+        /// </summary>
+        private async UniTask ReturnEffect()
+        {
+            if (currentHitEffect == null) return;
+            
+            // 指定された時間待機
+            await UniTask.Delay(TimeSpan.FromSeconds(hitEffectDuration));
+            
+            // エフェクトをプールに戻す
+            if (currentHitEffect != null)
+            {
+                objectPool.ReturnObject(currentHitEffect);
+                currentHitEffect = null;
+                Debug.Log("ヒットエフェクトをプールに返却しました");
+            }
         }
 
         /// <summary>
@@ -204,7 +251,7 @@ namespace TechC
                 );
             }
         }
-        
+
         /// <summary>
         /// ゲージ増加処理
         /// </summary>

@@ -9,7 +9,6 @@ namespace TechC
     [Serializable]
     public class WeakAttack_BaseCharacter : WeakAttack
     {
-
         public override void NeutralAttack()
         {
             base.NeutralAttack();

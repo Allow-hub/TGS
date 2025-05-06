@@ -14,7 +14,8 @@ namespace TechC
         [SerializeField] private BaseInputManager inputManager;
         [SerializeField] private CommandHistory commandHistory;
         [SerializeField] private ComboSystem comboSystem;
-        
+        [SerializeField] private GameObject hitEffectPrefab;
+
         [Header("Data")]
         [SerializeField] private AttackSet attackSet;
         [SerializeField, ReadOnly] protected AttackData neutralAttackData_1, neutralAttackData_2, neutralAttackData_3;
@@ -27,9 +28,10 @@ namespace TechC
         private AttackProcessor attackProcessor;
         private NeutralComboChecker neutralComboChecker;
 
-        private void Awake()
+        protected override void Awake()
         {
-            attackProcessor = new AttackProcessor(characterController, comboSystem);
+            base.Awake();
+            attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool,hitEffectPrefab,battleJudge);
             neutralComboChecker = new NeutralComboChecker(commandHistory);
         }
 
@@ -64,11 +66,11 @@ namespace TechC
         {
             // ニュートラルコンボチェッカーに次の攻撃データを取得
             AttackData nextAttack = neutralComboChecker.GetNextNeutralAttackData(
-                neutralAttackData_1, 
-                neutralAttackData_2, 
+                neutralAttackData_1,
+                neutralAttackData_2,
                 neutralAttackData_3
             );
-            
+
             ExecuteAttack(nextAttack);
         }
 
@@ -95,28 +97,10 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
-
-            // 攻撃コマンドの設定
-            SetAttackCommand(attackData);
-            
             // 攻撃処理をAttackProcessorに委譲
             StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
         }
 
-        private void SetAttackCommand(AttackData attackData)
-        {
-            ICommand commandBase = inputManager.GetCommandInstance("Attack");
-            if (commandBase is AttackCommand command)
-            {
-                command.SetAttackType(attackData.data.attackType);
-                command.SetAttackStrength(attackData.data.attackStrength);
-                Debug.Log(attackData.data.attackType + " " + attackData.data.attackStrength + Time.time);
-            }
-            else
-            {
-                CustomLogger.Warning("AttackCommand が取得できませんでした");
-            }
-        }
 
         public override void ForceFinish()
         {

@@ -76,11 +76,11 @@ namespace TechC
                 Player.CharacterController targetController = GetOpponentController(hitCollider);
                 if (targetController == null) continue;
                 // BattleJudgeを通じて攻撃対象が有効かどうかを確認
-                if (battleJudge != null && !battleJudge.IsValidAttackTarget(targetController.PlayerID))
-                {
-                    Debug.Log($"Player {targetController.PlayerID} は現在攻撃対象として無効です");
-                    continue;
-                }
+                // if (battleJudge != null && !battleJudge.IsValidAttackTarget(targetController.PlayerID))
+                // {
+                //     Debug.Log($"Player {targetController.PlayerID} は現在攻撃対象として無効です");
+                //     continue;
+                // }
 
                 // ガード処理
                 if (TryProcessGuard(targetController, hitCollider, attackData))

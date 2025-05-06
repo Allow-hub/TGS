@@ -88,6 +88,9 @@ MonoBehaviour:
   weakAttack: {fileID: 8107065506592492921}
   strongAttack: {fileID: 3999386690547373567}
   appealBase: {fileID: 93282543654870511}
+  wallBounceMultiplier: 3
+  enableWallBounce: 1
+  playerID: 1
   hpPresenter: {fileID: 0}
   defaultAnimSpeed: 1
   gaugePresenter: {fileID: 0}
@@ -109,6 +112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterController: {fileID: 3238670089051408438}
   objectPool: {fileID: 0}
+  battleJudge: {fileID: 0}
   inputManager: {fileID: 2734539244212182464}
   commandHistory: {fileID: 2022474134450979922}
   comboSystem: {fileID: 4974999171731066052}
@@ -137,8 +141,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 3238670089051408438}
-  comboSystem: {fileID: 4974999171731066052}
   objectPool: {fileID: 0}
+  battleJudge: {fileID: 0}
+  comboSystem: {fileID: 4974999171731066052}
   hitEffectPrefab: {fileID: 0}
   attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
   neutralAttackData: {fileID: 11400000, guid: 8d2104333482b54429548c7136d5d182, type: 2}

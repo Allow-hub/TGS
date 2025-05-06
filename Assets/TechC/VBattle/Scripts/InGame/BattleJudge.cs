@@ -128,7 +128,7 @@ namespace TechC
             for (int i = 0; i < players.Count; i++)
             {
                 players[i].isAlive = true;
-                players[i].isInvincible = false;
+                players[i].isInvincible = true;
                 players[i].canAttack = true;
 
                 // プレイヤーの生成

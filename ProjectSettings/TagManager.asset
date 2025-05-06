@@ -10,6 +10,7 @@ TagManager:
   - Presenter_P2
   - EffectPool
   - BattleJadge
+  - Wall
   layers:
   - Default
   - TransparentFX

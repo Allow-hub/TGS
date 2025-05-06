@@ -330,6 +330,7 @@ namespace TechC
         public void ChangeAppealState() => stateMachine.SendEvent((int)StateEventId.Appeal);
         public bool IsAttackState() => stateMachine.CurrentStateName == "AttackState";
         public bool IsGuardState() => stateMachine.CurrentStateName == "GuardState";
+        public bool IsDamageState() => stateMachine.CurrentStateName == "DamageState";
     }
 }
 

@@ -27,7 +27,7 @@ MonoBehaviour:
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
-  hitboxOffset: {x: 0, y: 0, z: 0}
+  hitboxOffset: {x: 0, y: 5, z: 1}
   hitTiming: 0.3
   hitStopDuration: 0.3
   hitStopTimeScale: 0.02

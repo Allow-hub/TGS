@@ -23,7 +23,9 @@ namespace TechC.Player
         [SerializeField] private WeakAttack weakAttack;
         [SerializeField] private StrongAttack strongAttack;
         [SerializeField] private AppealBase appealBase;
-
+        [Header("反発設定")]
+        [SerializeField] private float wallBounceMultiplier = 1.5f; // 壁からの反発倍率
+        [SerializeField] private bool enableWallBounce = true; // 壁反発機能の有効/無効
         [Header("プレイヤー設定")]
         [SerializeField] private int playerID = 1; // 1Pか2Pかを識別するID
 
@@ -83,13 +85,13 @@ namespace TechC.Player
 
             // パラメータ初期化
             currentGuardPower = characterData.GuardPower;
-            
+
         }
-        
+
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
-            
+
             // HPPresenterがnullでないか確認してから購読
             if (hpPresenter != null)
             {
@@ -126,9 +128,9 @@ namespace TechC.Player
         {
             playerID = id;
             if (id == 1)
-                gameObject.transform.rotation =Quaternion.Euler(0.0f, 90.0f, 0.0f);
+                gameObject.transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
             else if (id == 2)
-                gameObject.transform.rotation =Quaternion.Euler(0.0f, -90.0f, 0.0f);
+                gameObject.transform.rotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
             // IDが変更された場合は、対応するPresenterを再取得
             FindPresenters();
         }
@@ -342,7 +344,7 @@ namespace TechC.Player
         /// <summary>
         /// HP値を取得する
         /// </summary>
-        public float GetHp() 
+        public float GetHp()
         {
             // hpPresenterがnullでないことを確認
             if (hpPresenter != null)
@@ -353,7 +355,7 @@ namespace TechC.Player
             return 0f;
         }
 
- 
+
         /// <summary>
         /// ダメージを受ける処理
         /// </summary>
@@ -495,7 +497,7 @@ namespace TechC.Player
         /// <summary>
         /// 必殺技ゲージの割合を取得（UI表示用など）
         /// </summary>
-        public float GetSpecialGaugePercentage() 
+        public float GetSpecialGaugePercentage()
         {
             if (gaugePresenter != null)
             {
@@ -508,7 +510,7 @@ namespace TechC.Player
         /// <summary>
         /// 必殺技が使用可能かどうか
         /// </summary>
-        public bool IsSpecialAttackReady(float cost) 
+        public bool IsSpecialAttackReady(float cost)
         {
             if (gaugePresenter != null)
             {
@@ -521,7 +523,7 @@ namespace TechC.Player
         /// <summary>
         /// 必殺技がチャージ可能かどうかを切り替える
         /// </summary>
-        public void ChangeCanCharge(bool value) 
+        public void ChangeCanCharge(bool value)
         {
             if (gaugePresenter != null)
             {
@@ -537,7 +539,7 @@ namespace TechC.Player
         /// チャージ可能状態かどうか
         /// </summary>
         /// <returns></returns>
-        public bool IsChargeEnabled() 
+        public bool IsChargeEnabled()
         {
             if (gaugePresenter != null)
             {
@@ -550,7 +552,7 @@ namespace TechC.Player
         #endregion
 
         #region バフ関連メソッド
-    
+
         /// <summary>
         /// バフの適用（バフの種類,乗算の数値）
         /// </summary>
@@ -614,8 +616,46 @@ namespace TechC.Player
             {
                 ResetJump();
             }
+
+            // 壁に衝突しかつダメージステート中なら反発する
+            if (characterState.IsDamageState() && collision.gameObject.CompareTag("Wall") && enableWallBounce)
+            {
+                ApplyWallBounce(collision);
+            }
         }
 
+   
+        /// <summary>
+        /// 壁に衝突した時の反発処理
+        /// </summary>
+        /// <param name="collision">衝突情報</param>
+        private void ApplyWallBounce(Collision collision)
+        {
+            // 衝突した壁の法線ベクトルを取得
+            Vector3 wallNormal = collision.contacts[0].normal;
+            
+            // デバッグ: 壁の法線ベクトルを表示
+            Debug.Log($"Player {playerID}: 壁の法線ベクトル: {wallNormal}");
+            
+            // 反発方向は壁の法線方向（壁から離れる方向）
+            Vector3 bounceDirection = wallNormal;
+            
+            // Y成分は少し上向きに設定して跳ねる感じを出す
+            bounceDirection.y = 0.2f;
+            
+            // 正規化して単位ベクトルにする
+            bounceDirection.Normalize();
+            
+            // 反発力を計算
+            float bounceForce = characterData.MoveSpeed * wallBounceMultiplier;
+            
+            // 現在の速度をリセットして新しい力を加える
+            rb.velocity = Vector3.zero;
+            rb.AddForce(bounceDirection * bounceForce, ForceMode.Impulse);
+            
+            // デバッグ情報
+            Debug.Log($"Player {playerID}: 壁から反発しました。反発方向: {bounceDirection}, 反発力: {bounceForce}");
+        }
         private void OnDrawGizmos()
         {
             if (!isDrawingRay) return;

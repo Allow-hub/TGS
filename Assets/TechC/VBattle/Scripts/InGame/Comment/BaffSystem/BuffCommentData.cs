@@ -11,8 +11,12 @@ namespace TechC
     [CreateAssetMenu(fileName = "BuffCommentData", menuName = "TechC/Comment/Buff")]
     public class BuffCommentData : ScriptableObject
     {
+        [Header("バフの種類")]
         public BuffType buffType;
         [TextArea]
         public string[] comments;
+
+        [Header("エフェクトのプレハブ")]
+        public GameObject effectPrefab;
     }
 }

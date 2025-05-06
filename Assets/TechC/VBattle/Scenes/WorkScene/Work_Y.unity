@@ -1305,8 +1305,8 @@ GameObject:
   - component: {fileID: 1389670170}
   - component: {fileID: 1389670172}
   - component: {fileID: 1389670171}
-  - component: {fileID: 1389670174}
   - component: {fileID: 1389670175}
+  - component: {fileID: 1389670174}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player

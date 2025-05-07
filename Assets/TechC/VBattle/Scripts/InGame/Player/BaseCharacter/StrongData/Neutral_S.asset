@@ -22,7 +22,7 @@ MonoBehaviour:
   animationSpeed: 1
   attackDuration: 2
   damage: 10
-  knockback: 10
+  knockback: 30
   radius: 1
   targetLayers:
     serializedVersion: 2
@@ -31,7 +31,7 @@ MonoBehaviour:
   hitTiming: 0.3
   hitStopDuration: 0.3
   hitStopTimeScale: 0.8
-  knockbackDirection: {x: 0, y: 1, z: 1}
+  knockbackDirection: {x: 0, y: 2, z: 5}
   useCustomKnockbackDirection: 1
   characterSEType: 12
   characterVoiceType: 0

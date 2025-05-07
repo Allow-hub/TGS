@@ -338,6 +338,8 @@ MonoBehaviour:
   weakAttack: {fileID: 1525952342745143217}
   strongAttack: {fileID: 8035457019798965900}
   appealBase: {fileID: 465988328092469450}
+  bounceStopTime: 0.05
+  addY: 1
   wallBounceMultiplier: 3
   enableWallBounce: 1
   playerID: 1

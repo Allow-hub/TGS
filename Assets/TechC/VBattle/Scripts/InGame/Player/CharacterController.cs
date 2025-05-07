@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Cysharp.Threading.Tasks;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +26,8 @@ namespace TechC.Player
         [SerializeField] private StrongAttack strongAttack;
         [SerializeField] private AppealBase appealBase;
         [Header("反発設定")]
+        [SerializeField] private float bounceStopTime = 0.5f;
+        [SerializeField] private float addY = 1;
         [SerializeField] private float wallBounceMultiplier = 1.5f; // 壁からの反発倍率
         [SerializeField] private bool enableWallBounce = true; // 壁反発機能の有効/無効
         [Header("プレイヤー設定")]
@@ -48,7 +52,7 @@ namespace TechC.Player
         // ガード関連
         private float currentGuardPower;
         private float lastGuardTime;
-
+        private Vector3 lastVelocity;
 
         // 移動・物理関連
         private Rigidbody rb;
@@ -117,8 +121,8 @@ namespace TechC.Player
             hpPresenter = preObj.GetComponent<HPPresenter>();
 
             // デバッグログ
-            Debug.Log($"Player {playerID}: HPPresenter {(hpPresenter != null ? "見つかりました" : "見つかりませんでした")}");
-            Debug.Log($"Player {playerID}: GaugePresenter {(gaugePresenter != null ? "見つかりました" : "見つかりませんでした")}");
+            // Debug.Log($"Player {playerID}: HPPresenter {(hpPresenter != null ? "見つかりました" : "見つかりませんでした")}");
+            // Debug.Log($"Player {playerID}: GaugePresenter {(gaugePresenter != null ? "見つかりました" : "見つかりませんでした")}");
         }
 
         /// <summary>
@@ -146,6 +150,7 @@ namespace TechC.Player
             // ステート遷移制御
             UpdateStateTransitions();
 
+            lastVelocity = rb.velocity;
             // ガード値回復処理
             if (CanHeal())
                 HealGuardPower(characterData.GuardRecoverySpeed);
@@ -618,44 +623,45 @@ namespace TechC.Player
             }
 
             // 壁に衝突しかつダメージステート中なら反発する
-            if (characterState.IsDamageState() && collision.gameObject.CompareTag("Wall") && enableWallBounce)
+            if (collision.gameObject.CompareTag("Wall") && enableWallBounce)
             {
-                ApplyWallBounce(collision);
+                ApplyWallBounce(collision).Forget();
             }
         }
 
-   
+
         /// <summary>
         /// 壁に衝突した時の反発処理
         /// </summary>
         /// <param name="collision">衝突情報</param>
-        private void ApplyWallBounce(Collision collision)
+        private async UniTask ApplyWallBounce(Collision collision)
         {
+            // 現在の速度を取得
+            var inDirection = lastVelocity;
+
             // 衝突した壁の法線ベクトルを取得
             Vector3 wallNormal = collision.contacts[0].normal;
-            
-            // デバッグ: 壁の法線ベクトルを表示
-            Debug.Log($"Player {playerID}: 壁の法線ベクトル: {wallNormal}");
-            
-            // 反発方向は壁の法線方向（壁から離れる方向）
-            Vector3 bounceDirection = wallNormal;
-            
-            // Y成分は少し上向きに設定して跳ねる感じを出す
-            bounceDirection.y = 0.2f;
-            
-            // 正規化して単位ベクトルにする
-            bounceDirection.Normalize();
-            
+            rb.velocity = Vector3.zero;
+            await UniTask.Delay(TimeSpan.FromSeconds(bounceStopTime));
+
+            // 反射ベクトルを計算
+            Vector3 result = Vector3.Reflect(inDirection, wallNormal);
+            result.y = Mathf.Max(result.y, addY);
+
+            // 正規化
+            result.Normalize();
+
             // 反発力を計算
             float bounceForce = characterData.MoveSpeed * wallBounceMultiplier;
-            
+
             // 現在の速度をリセットして新しい力を加える
             rb.velocity = Vector3.zero;
-            rb.AddForce(bounceDirection * bounceForce, ForceMode.Impulse);
-            
+            rb.AddForce(result * bounceForce, ForceMode.Impulse);
+
             // デバッグ情報
-            Debug.Log($"Player {playerID}: 壁から反発しました。反発方向: {bounceDirection}, 反発力: {bounceForce}");
+            // Debug.Log($"Player {playerID}: 壁から反発しました。反射方向: {result}, 反発力: {bounceForce}");
         }
+
         private void OnDrawGizmos()
         {
             if (!isDrawingRay) return;

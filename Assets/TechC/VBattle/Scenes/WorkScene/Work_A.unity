@@ -698,6 +698,11 @@ MonoBehaviour:
       type: 3}
     parent: {fileID: 2085433296}
     initialSize: 20
+  - name: Debris
+    prefab: {fileID: 5164942412983795581, guid: 59e062bc7fca5e642979a693de18b225,
+      type: 3}
+    parent: {fileID: 765327591}
+    initialSize: 20
   autoExpand: 1
   expandSize: 5
 --- !u!4 &654129967
@@ -714,6 +719,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2085433297}
+  - {fileID: 765327592}
   m_Father: {fileID: 1048516776}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &661456090
@@ -1013,6 +1019,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9dd290009ba7194db30ea68a948927c, type: 3}
+--- !u!1 &765327591
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 765327592}
+  m_Layer: 0
+  m_Name: Debris
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &765327592
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765327591}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 654129967}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &817453789
 GameObject:
   m_ObjectHideFlags: 0
@@ -1823,6 +1860,8 @@ MonoBehaviour:
   weakAttack: {fileID: 1611527531}
   strongAttack: {fileID: 1611527530}
   appealBase: {fileID: 1611527529}
+  bounceStopTime: 0.5
+  addY: 1
   wallBounceMultiplier: 1.5
   enableWallBounce: 1
   playerID: 1
@@ -2200,7 +2239,7 @@ Transform:
   m_GameObject: {fileID: 1820257360}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.05, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 25, y: 1, z: 25}
   m_ConstrainProportionsScale: 0
   m_Children: []

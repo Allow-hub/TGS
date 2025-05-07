@@ -13,8 +13,8 @@ namespace TechC
     {
         [SerializeField] private float speedMultiplier = 3.0f;
 
-        private GameObject effectPrefab; /* エフェクトの元となるPrefab */
-        private GameObject effectInstance; /* 実際にInstantiateで生成されたエフェクトのインスタンス */
+        [SerializeField] private GameObject effectPrefab; /* エフェクトの元となるPrefab */
+        [SerializeField] private GameObject effectInstance; /* 実際にInstantiateで生成されたエフェクトのインスタンス */
 
         public SpeedBuff()
         {
@@ -22,15 +22,6 @@ namespace TechC
             description = "移動速度が上昇する";
             buffDuration = 3.0f;
             remainingTime = buffDuration;
-        }
-
-        /// <summary>
-        /// エフェクトPrefabを事前に設定する
-        /// </summary>
-        /// <param name="prefab"></param>
-        public void SetEffectPrefab(GameObject prefab)
-        {
-            effectPrefab = prefab;
         }
 
         /// <summary>

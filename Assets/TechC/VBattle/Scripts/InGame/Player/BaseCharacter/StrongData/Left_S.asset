@@ -20,7 +20,7 @@ MonoBehaviour:
     attackStrength: 1
   animationTrigger: IsLeftStrongAttack
   animationSpeed: 1
-  attackDuration: 2
+  attackDuration: 0
   damage: 10
   knockback: 10
   radius: 1

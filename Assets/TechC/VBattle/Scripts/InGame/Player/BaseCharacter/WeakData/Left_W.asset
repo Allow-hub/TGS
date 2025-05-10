@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d62277a4cf745c43bcaa0408b92a2f2, type: 3}
   m_Name: Left_W
   m_EditorClassIdentifier: 
+  characterType: 0
   attackName: Left_W
   description: 
   data:
@@ -32,8 +33,10 @@ MonoBehaviour:
   hitStopTimeScale: 0.1
   knockbackDirection: {x: 0, y: 0, z: 1}
   useCustomKnockbackDirection: 1
-  soundEffect: {fileID: 0}
-  effectPrefab: {fileID: 0}
+  characterSEType: 0
+  characterVoiceType: 0
+  effectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+    type: 3}
   effectOffset: {x: 0, y: 0, z: 0}
   hitStunDuration: 0.5
   hitStunLevel: 0

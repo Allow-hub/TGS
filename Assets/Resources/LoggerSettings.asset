@@ -69,6 +69,6 @@ MonoBehaviour:
   - physics
   - default
   - comboClear
+  - comboCheck
   _disabledCategoryIds:
   - state
-  - comboCheck

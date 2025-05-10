@@ -223,13 +223,16 @@ namespace TechC
         /// <returns></returns>
         private AttackType CheckAttackType()
         {
-            if (playerInputManager.MoveInput.x < 0)
+            Vector2 input = playerInputManager.MoveInput;
+            float x = Mathf.Ceil(input.x * 10f) / 10f;
+            float y = Mathf.Ceil(input.y * 10f) / 10f;
+            if (x < 0)
                 return AttackType.Left;
-            if (playerInputManager.MoveInput.x > 0)
+            if (x > 0)
                 return AttackType.Right;
-            if (playerInputManager.MoveInput.y < 0)
+            if (y < 0)
                 return AttackType.Down;
-            if (playerInputManager.MoveInput.y > 0)
+            if (y > 0)
                 return AttackType.Up;
             return AttackType.Neutral;
         }

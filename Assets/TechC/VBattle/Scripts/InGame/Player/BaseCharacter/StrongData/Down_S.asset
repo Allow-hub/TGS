@@ -20,7 +20,7 @@ MonoBehaviour:
     attackStrength: 1
   animationTrigger: IsDownStrongAttack
   animationSpeed: 1
-  attackDuration: 2
+  attackDuration: 0.5
   damage: 10
   knockback: 10
   radius: 1
@@ -29,7 +29,7 @@ MonoBehaviour:
     m_Bits: 1
   hitboxOffset: {x: 0, y: 0, z: 0}
   hitTiming: 0.3
-  hitStopDuration: 0.3
+  hitStopDuration: 0.1
   hitStopTimeScale: 0.02
   knockbackDirection: {x: 0, y: 0, z: 1}
   useCustomKnockbackDirection: 1

@@ -85,7 +85,7 @@ namespace TechC
 
             characterController.GetAnim().speed = attackData.animationSpeed;
             characterController.SetAnim(attackData.animHash, true);
-            
+            CustomLogger.Info("アタックデータ:"+attackData.name,"comboCheck");
             StartCoroutine(EndAttack(attackData));
         }
 

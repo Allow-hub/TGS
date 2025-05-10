@@ -70,7 +70,7 @@ namespace TechC
                 neutralAttackData_2,
                 neutralAttackData_3
             );
-
+            CustomLogger.Info("ニュートラル番号"+nextAttack.name,"comboCheck");
             ExecuteAttack(nextAttack);
         }
 

@@ -104,10 +104,10 @@ MonoBehaviour:
   categories: []
   uiBounds:
     serializedVersion: 2
-    x: 598
+    x: 597
     y: -736
-    width: 2837
-    height: 2390
+    width: 2839
+    height: 2379
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7321,7 +7321,7 @@ MonoBehaviour:
       slotIndex: 0
     - context: {fileID: 8926484042661615130}
       slotIndex: 0
-  eventName: OnPlay
+  eventName: Hit
 --- !u!114 &8926484042661615234
 MonoBehaviour:
   m_ObjectHideFlags: 0

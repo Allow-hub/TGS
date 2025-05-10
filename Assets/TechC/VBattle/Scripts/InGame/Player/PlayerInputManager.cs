@@ -17,7 +17,7 @@ namespace TechC.Player
         [SerializeField] private float jumpButtonPriority = 0.9f; // ジャンプボタン優先度（高いほどボタン入力優先）
         [SerializeField] private float crouchButtonPriority = 0.9f; // しゃがみボタン優先度
         [SerializeField] private float inputDebounceDuration = 0.12f; // 入力の無効時間（秒）
-
+        
         // スナップ方向入力用の設定
         [Header("スナップ方向設定")]
         [SerializeField] private float directionDeadzone = 0.3f; // 方向入力のデッドゾーン
@@ -26,7 +26,6 @@ namespace TechC.Player
 
         // 内部状態管理
         private Vector2 lastMoveInput;
-        private float jumpInputTime;
         private float lastJumpTime = -10f;
         private float lastCrouchTime = -10f;
         private bool isJumpButtonPressed = false;
@@ -70,92 +69,56 @@ namespace TechC.Player
                 isJumpButtonPressed = true;
             else if (canceled)
                 isJumpButtonPressed = false;
-            /*
-            ジャンプは上攻撃と競合する可能性がある
-            解決策は
-            １．ジャンプはキーを離したときにする。
-            ２．上入力後数フレームは入力がなければジャンプにする
-            */
 
             // 誤操作防止ロジック
-            // if (started)
-            // {
-            //     float currentTime = Time.time;
-
-            //     // 次の条件のいずれかを満たす場合のみジャンプを実行
-            //     bool shouldJump = false;
-
-            //     // 1. 明示的なボタン入力（スティック以外）の場合は常に許可
-            //     if (context.control.name != "stick")
-            //     {
-            //         shouldJump = true;
-            //     }
-            //     // 2. スティック入力の場合
-            //     else
-            //     {
-            //         // スナップ方向による判定
-            //         if (restrictJumpToPureUp)
-            //         {
-            //             // 真上方向の場合のみジャンプを許可
-            //             shouldJump = DirectionInputHandler.IsJumpDirection(currentDirection);
-            //         }
-            //         else
-            //         {
-            //             // 従来のロジック：上方向への強い入力があればジャンプを許可
-            //             if (moveInput.y > jumpButtonPriority)
-            //             {
-            //                 shouldJump = true;
-            //             }
-            //         }
-            //     }
-
-            //     // 前回のジャンプからの時間間隔を考慮
-            //     if (currentTime - lastJumpTime <= inputDebounceDuration)
-            //     {
-            //         shouldJump = false;
-            //     }
-
-            //     if (shouldJump)
-            //     {
-            //         isJumping = true;
-            //         lastJumpTime = currentTime;
-            //         OnJump(true, false);
-            //     }
-            // }
-            // else if (canceled)
-            // {
-            //     isJumping = false;
-            //     OnJump(false, true);
-            // }
             if (started)
             {
-                jumpInputTime = 0;
-            }
-            if (context.performed)
-            {
-                jumpInputTime += Time.deltaTime;
-            }
-            // ジャンプのロジックはキーを離したときだけ処理する
-            if (canceled)
-            {
-                var jumpIgnoreTime =1f;
-                if(jumpInputTime >= jumpIgnoreTime)
-                    return;
                 float currentTime = Time.time;
+                
+                // 次の条件のいずれかを満たす場合のみジャンプを実行
+                bool shouldJump = false;
+                
+                // 1. 明示的なボタン入力（スティック以外）の場合は常に許可
+                if (context.control.name != "stick")
+                {
+                    shouldJump = true;
+                }
+                // 2. スティック入力の場合
+                else
+                {
+                    // スナップ方向による判定
+                    if (restrictJumpToPureUp)
+                    {
+                        // 真上方向の場合のみジャンプを許可
+                        shouldJump = DirectionInputHandler.IsJumpDirection(currentDirection);
+                    }
+                    else
+                    {
+                        // 従来のロジック：上方向への強い入力があればジャンプを許可
+                        if (moveInput.y > jumpButtonPriority)
+                        {
+                            shouldJump = true;
+                        }
+                    }
+                }
+                
+                // 前回のジャンプからの時間間隔を考慮
+                if (currentTime - lastJumpTime <= inputDebounceDuration)
+                {
+                    shouldJump = false;
+                }
 
-                // 前回のジャンプからの時間間隔を考慮してバウンド防止
-                if (currentTime - lastJumpTime > inputDebounceDuration)
+                if (shouldJump)
                 {
                     isJumping = true;
                     lastJumpTime = currentTime;
-
-                    // 実際のジャンプ処理をここで呼ぶ（started = true, canceled = false）
                     OnJump(true, false);
                 }
-
-                // ジャンプフラグを即時オフにするならこちらも追加
-                // isJumping = false;
-                // OnJump(false, true); ← これは不要なら省略
+            }
+            else if (canceled)
+            {
+                isJumping = false;
+                OnJump(false, true);
             }
         }
 
@@ -175,10 +138,10 @@ namespace TechC.Player
             if (started)
             {
                 float currentTime = Time.time;
-
+                
                 // 次の条件のいずれかを満たす場合のみしゃがみを実行
                 bool shouldCrouch = false;
-
+                
                 // 1. 明示的なボタン入力（スティック以外）の場合は常に許可
                 if (context.control.name != "stick")
                 {
@@ -202,7 +165,7 @@ namespace TechC.Player
                         }
                     }
                 }
-
+                
                 // 前回のしゃがみからの時間間隔を考慮
                 if (currentTime - lastCrouchTime <= inputDebounceDuration)
                 {

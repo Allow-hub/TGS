@@ -35,7 +35,7 @@ namespace TechC
         // ExecuteAttackメソッドもオーバーライド
         protected override void ExecuteAttack(AttackData attackData)
         {
-            base.ExecuteAttack(attackData);
+            Debug.Log("オーバーライド," + attackData.damage);
         }
         public override void ForceFinish()
         {

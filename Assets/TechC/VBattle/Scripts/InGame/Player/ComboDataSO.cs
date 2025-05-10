@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 using UnityEngine;
 
 namespace TechC
@@ -26,9 +24,8 @@ namespace TechC
         //public List<string> excludedCommandNames = new List<string> {
         //"MoveCommand", "CrouchCommand"
         //};
-#if UNITY_EDITOR
         public List<MonoScript> excludedCommandScripts = new();
-#endif
+
         public List<ComboStep> sequence = new List<ComboStep>();
         public float timeWindow = 2.0f;
         public float gaugeBonus = 10f;
@@ -36,7 +33,7 @@ namespace TechC
         // エフェクト
         public GameObject effectPrefab;
         public string animationTrigger;
-#if UNITY_EDITOR
+
         /// <summary>
         /// 除外対象として有効な Type の一覧を返す
         /// </summary>
@@ -56,8 +53,5 @@ namespace TechC
             }
             return types;
         }
-#else
-public List<Type> GetExcludedCommandTypes() => new();
-#endif
     }
 }

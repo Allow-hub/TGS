@@ -223,16 +223,13 @@ namespace TechC
         /// <returns></returns>
         private AttackType CheckAttackType()
         {
-            Vector2 input = playerInputManager.MoveInput;
-            float x = Mathf.Ceil(input.x * 10f) / 10f;
-            float y = Mathf.Ceil(input.y * 10f) / 10f;
-            if (x < 0)
+            if (playerInputManager.MoveInput.x < 0)
                 return AttackType.Left;
-            if (x > 0)
+            if (playerInputManager.MoveInput.x > 0)
                 return AttackType.Right;
-            if (y < 0)
+            if (playerInputManager.MoveInput.y < 0)
                 return AttackType.Down;
-            if (y > 0)
+            if (playerInputManager.MoveInput.y > 0)
                 return AttackType.Up;
             return AttackType.Neutral;
         }
@@ -333,7 +330,6 @@ namespace TechC
         public void ChangeAppealState() => stateMachine.SendEvent((int)StateEventId.Appeal);
         public bool IsAttackState() => stateMachine.CurrentStateName == "AttackState";
         public bool IsGuardState() => stateMachine.CurrentStateName == "GuardState";
-        public bool IsDamageState() => stateMachine.CurrentStateName == "DamageState";
     }
 }
 

@@ -266,12 +266,12 @@ namespace TechC
                 ///TODO:エフェクトの取得はオブジェクトプールを介するように
                 GameObject effectInstance = Instantiate(comboEffectPrefab, spawnPosition, Quaternion.identity);
                 effectInstance.transform.position = spawnPosition;
-                CustomLogger.Info("ActiveEffect", comboClearLogId);
-                AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Combo);
+                CustomLogger.Info("ActiveEffect",comboClearLogId);
                 await UniTask.Delay(TimeSpan.FromSeconds(effectActiveTime));
                 Destroy(effectInstance);
             }
 
+            AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Combo);
         }
 
 

@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66658d1605800d04e947b5499caf2a98, type: 3}
-  m_Name: PowerBuff
+  m_Name: AttackBuff
   m_EditorClassIdentifier: 
   buffType: 1
   comments:
   - Attack1
   - Attack2
+  effectPrefab: {fileID: 6856130345347563706, guid: 9d8b38e2e9afd0b4f941ec35abc9625d,
+    type: 3}

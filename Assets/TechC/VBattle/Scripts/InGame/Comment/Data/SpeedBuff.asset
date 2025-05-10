@@ -16,3 +16,5 @@ MonoBehaviour:
   comments:
   - dash1
   - dash2
+  effectPrefab: {fileID: 169163439561339329, guid: e0624ead6003cd3498711f1a00799ab9,
+    type: 3}

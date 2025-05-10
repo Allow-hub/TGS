@@ -25,6 +25,8 @@ namespace TechC.Player
         [SerializeField] private bool restrictCrouchToPureDown = true; // しゃがみを純粋な下方向のみに制限するか
 
         // 内部状態管理
+        private bool isUpPressedDuringJump = false;
+
         private Vector2 lastMoveInput;
         private float jumpInputTime;
         private float lastJumpTime = -10f;
@@ -33,6 +35,24 @@ namespace TechC.Player
         private bool isCrouchButtonPressed = false;
         private InputDirection currentDirection = InputDirection.None;
 
+        protected override void Update()
+        {
+            base.Update();
+            // Debug.Log(DirectionInputHandler.GetSnappedDirection(moveInput,0.3f));
+
+            if (isJumpButtonPressed)
+            {
+                jumpInputTime += Time.deltaTime;
+
+                // ジャンプボタンを押している間にUp方向があったかどうか記録
+                if (DirectionInputHandler.GetSnappedDirection(moveInput, directionDeadzone) == InputDirection.Up)
+                {
+                    isUpPressedDuringJump = true;
+                }
+            }
+            else
+                jumpInputTime = 0;
+        }
         // 移動入力処理
         public void OnMove(InputAction.CallbackContext context)
         {
@@ -76,70 +96,15 @@ namespace TechC.Player
             １．ジャンプはキーを離したときにする。
             ２．上入力後数フレームは入力がなければジャンプにする
             */
-
-            // 誤操作防止ロジック
-            // if (started)
-            // {
-            //     float currentTime = Time.time;
-
-            //     // 次の条件のいずれかを満たす場合のみジャンプを実行
-            //     bool shouldJump = false;
-
-            //     // 1. 明示的なボタン入力（スティック以外）の場合は常に許可
-            //     if (context.control.name != "stick")
-            //     {
-            //         shouldJump = true;
-            //     }
-            //     // 2. スティック入力の場合
-            //     else
-            //     {
-            //         // スナップ方向による判定
-            //         if (restrictJumpToPureUp)
-            //         {
-            //             // 真上方向の場合のみジャンプを許可
-            //             shouldJump = DirectionInputHandler.IsJumpDirection(currentDirection);
-            //         }
-            //         else
-            //         {
-            //             // 従来のロジック：上方向への強い入力があればジャンプを許可
-            //             if (moveInput.y > jumpButtonPriority)
-            //             {
-            //                 shouldJump = true;
-            //             }
-            //         }
-            //     }
-
-            //     // 前回のジャンプからの時間間隔を考慮
-            //     if (currentTime - lastJumpTime <= inputDebounceDuration)
-            //     {
-            //         shouldJump = false;
-            //     }
-
-            //     if (shouldJump)
-            //     {
-            //         isJumping = true;
-            //         lastJumpTime = currentTime;
-            //         OnJump(true, false);
-            //     }
-            // }
-            // else if (canceled)
-            // {
-            //     isJumping = false;
-            //     OnJump(false, true);
-            // }
-            if (started)
-            {
-                jumpInputTime = 0;
-            }
-            if (context.performed)
-            {
-                jumpInputTime += Time.deltaTime;
-            }
             // ジャンプのロジックはキーを離したときだけ処理する
             if (canceled)
             {
-                var jumpIgnoreTime =1f;
-                if(jumpInputTime >= jumpIgnoreTime)
+                //ジャンプを離すまでの時間を図り、無視する値
+                var jumpIgnoreTime = 0.3f;
+                // Debug.Log(jumpInputTime);
+                if (jumpInputTime >= jumpIgnoreTime)
+                    return;
+                if (!isUpPressedDuringJump)
                     return;
                 float currentTime = Time.time;
 
@@ -153,9 +118,6 @@ namespace TechC.Player
                     OnJump(true, false);
                 }
 
-                // ジャンプフラグを即時オフにするならこちらも追加
-                // isJumping = false;
-                // OnJump(false, true); ← これは不要なら省略
             }
         }
 

@@ -19,7 +19,7 @@ MonoBehaviour:
   GuardRecoverySpeed: 0.3
   GuardRecoveryInterval: 8
   GuardBreakDuration: 2
-  MoveSpeed: 2
+  MoveSpeed: 3
   Acceleration: 10
   Deceleration: 8
   JumpForce: 5

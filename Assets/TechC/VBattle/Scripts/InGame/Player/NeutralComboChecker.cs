@@ -11,16 +11,16 @@ namespace TechC
     [Serializable]
     public class NeutralComboChecker
     {
-        [SerializeField] private float neutralAttackInterval = 1.0f;
-        
+        [SerializeField] private float neutralAttackInterval = 3.0f;
+
         private CommandHistory commandHistory;
         private int neutralAttackCount = 0;
-        
+
         public NeutralComboChecker(CommandHistory commandHistory)
         {
             this.commandHistory = commandHistory;
         }
-        
+
         /// <summary>
         /// ニュートラル攻撃のコンボ状態を管理し、適切な攻撃データを返す
         /// </summary>
@@ -29,6 +29,7 @@ namespace TechC
             if (commandHistory.WasCommandExecutedRecently<AttackCommand>(neutralAttackInterval))
             {
                 neutralAttackCount++;
+                // CustomLogger.Info(neutralAttackCount.ToString(), "comboCheck");
                 switch (neutralAttackCount)
                 {
                     case 1:
@@ -38,7 +39,7 @@ namespace TechC
                     case 3:
                         // コンボ終了でリセット
                         AttackData result = neutralAttack3;
-                        neutralAttackCount = 0; 
+                        neutralAttackCount = 0;
                         return result;
                     default:
                         neutralAttackCount = 0;
@@ -51,7 +52,7 @@ namespace TechC
                 return neutralAttack1;
             }
         }
-        
+
         /// <summary>
         /// コンボカウントをリセット
         /// </summary>

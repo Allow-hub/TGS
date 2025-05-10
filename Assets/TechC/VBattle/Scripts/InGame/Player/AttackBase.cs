@@ -14,7 +14,8 @@ namespace TechC
     {
         [Header("Reference")]
         [SerializeField] protected Player.CharacterController characterController;
-        
+        [SerializeField] protected ObjectPool objectPool;
+        [SerializeField] protected BattleJudge battleJudge;
         private readonly Dictionary<AttackType, AttackData> attackDataMap = new Dictionary<AttackType, AttackData>();
         protected bool isAttacking = false;
 
@@ -54,6 +55,11 @@ namespace TechC
         }
         #endregion
 
+        protected virtual void Awake()
+        {
+            objectPool = GameObject.FindWithTag("EffectPool").GetComponent<ObjectPool>();
+            battleJudge = GameObject.FindWithTag("BattleJadge").GetComponent<BattleJudge>();
+        }
         /// <summary>
         /// 攻撃データをマップに登録
         /// </summary>
@@ -79,7 +85,7 @@ namespace TechC
 
             characterController.GetAnim().speed = attackData.animationSpeed;
             characterController.SetAnim(attackData.animHash, true);
-            
+            CustomLogger.Info("アタックデータ:"+attackData.name,"comboCheck");
             StartCoroutine(EndAttack(attackData));
         }
 

@@ -6,6 +6,12 @@ TagManager:
   tags:
   - Enemy
   - Comments
+  - Presenter_P1
+  - Presenter_P2
+  - EffectPool
+  - BattleJadge
+  - Wall
+  - Debirs
   layers:
   - Default
   - TransparentFX

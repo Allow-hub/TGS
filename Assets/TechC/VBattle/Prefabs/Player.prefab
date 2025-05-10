@@ -334,6 +334,7 @@ MonoBehaviour:
   characterData: {fileID: 11400000, guid: 2f8f9795b85e3e64babbdd0fcfc65a02, type: 2}
   anim: {fileID: 343110093766342358}
   commandHistory: {fileID: 3455362588810788779}
+  effectPool: {fileID: 0}
   characterType: 0
   weakAttack: {fileID: 1525952342745143217}
   strongAttack: {fileID: 8035457019798965900}
@@ -350,6 +351,8 @@ MonoBehaviour:
   jumpInputThreshold: 0.7
   rayLength: 1.2
   isDrawingRay: 1
+  debrisPrefab: {fileID: 5164942412983795581, guid: 59e062bc7fca5e642979a693de18b225,
+    type: 3}
 --- !u!114 &1525952342745143217
 MonoBehaviour:
   m_ObjectHideFlags: 0

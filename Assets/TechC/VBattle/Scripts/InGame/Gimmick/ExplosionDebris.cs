@@ -11,7 +11,8 @@ namespace TechC
     {
         [SerializeField] private GameObject parentObj;
         [SerializeField, ReadOnly] private List<GameObject> childObj;
-        [SerializeField] private float explosionForce = 300f;
+        [SerializeField, Range(0f, 200f)] private float explosionForceMin = 100f;
+        [SerializeField, Range(0f, 200f)] private float explosionForceMax = 500f;
         [SerializeField] private float explosionRadius = 5f;
         [SerializeField] private float upwardsModifier = 0.5f;
         private void OnValidate()
@@ -35,9 +36,12 @@ namespace TechC
                 {
                     rb = obj.AddComponent<Rigidbody>();
                 }
+                obj.transform.rotation = Random.rotation;
 
-                rb.AddExplosionForce(explosionForce, explosionPosition, explosionRadius, upwardsModifier, ForceMode.Impulse);
+                float randomForce = Random.Range(explosionForceMin, explosionForceMax);
+                rb.AddExplosionForce(randomForce, explosionPosition, explosionRadius, upwardsModifier, ForceMode.Impulse);
             }
         }
+
     }
 }

@@ -19,7 +19,7 @@ namespace TechC.Player
         [SerializeField] private CharacterState characterState;
         [SerializeField] private Animator anim;
         [SerializeField] private CommandHistory commandHistory;
-
+        [SerializeField] private ObjectPool effectPool;
         [SerializeField] private CharacterType characterType;
         [Header("攻撃コンポーネント")]
         [SerializeField] private WeakAttack weakAttack;
@@ -46,6 +46,9 @@ namespace TechC.Player
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
+
+        [Header("エフェクトのPrefab")]
+        [SerializeField] private GameObject debrisPrefab;
         #endregion
 
         #region プライベート変数
@@ -78,7 +81,7 @@ namespace TechC.Player
         #region 初期化メソッド
         private void Awake()
         {
-
+            effectPool = GameObject.FindGameObjectWithTag("EffectPool").GetComponent<ObjectPool>();
             // アタックマネージャーの初期化
             var attackManager = new AttackManager();
             characterState = new CharacterState(playerInputManager, this, attackManager, anim, commandHistory);
@@ -625,7 +628,12 @@ namespace TechC.Player
             // 壁に衝突しかつダメージステート中なら反発する
             if (collision.gameObject.CompareTag("Wall") && enableWallBounce)
             {
-                ApplyWallBounce(collision).Forget();
+                if (collision.contacts.Length > 0)
+                {
+                    Vector3 contactPoint = collision.contacts[0].point;
+                    ApplyWallBounce(collision, contactPoint).Forget();
+
+                }
             }
         }
 
@@ -634,7 +642,7 @@ namespace TechC.Player
         /// 壁に衝突した時の反発処理
         /// </summary>
         /// <param name="collision">衝突情報</param>
-        private async UniTask ApplyWallBounce(Collision collision)
+        private async UniTask ApplyWallBounce(Collision collision, Vector3 hitPos)
         {
             // 現在の速度を取得
             var inDirection = lastVelocity;
@@ -642,6 +650,8 @@ namespace TechC.Player
             // 衝突した壁の法線ベクトルを取得
             Vector3 wallNormal = collision.contacts[0].normal;
             rb.velocity = Vector3.zero;
+
+            var debris = effectPool.GetObject(debrisPrefab, hitPos, debrisPrefab.transform.rotation);
             await UniTask.Delay(TimeSpan.FromSeconds(bounceStopTime));
 
             // 反射ベクトルを計算
@@ -657,6 +667,9 @@ namespace TechC.Player
             // 現在の速度をリセットして新しい力を加える
             rb.velocity = Vector3.zero;
             rb.AddForce(result * bounceForce, ForceMode.Impulse);
+            
+            await UniTask.Delay(TimeSpan.FromSeconds(3f));
+            effectPool.ReturnObject(debris);
 
             // デバッグ情報
             // Debug.Log($"Player {playerID}: 壁から反発しました。反射方向: {result}, 反発力: {bounceForce}");

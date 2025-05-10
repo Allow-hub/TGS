@@ -102,7 +102,7 @@ namespace TechC
             {
                 // ヒットエフェクトを生成し、変数に保存
                 currentHitEffect = objectPool.GetObject(hitEffectPrefab);
-                Debug.Log(currentHitEffect);
+                // Debug.Log(currentHitEffect);
                 // ヒット位置にエフェクトを配置
                 if (currentHitEffect != null)
                 {

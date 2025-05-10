@@ -1,42 +1,44 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using TechC.Player;
 using UnityEngine;
 using static TechC.CharacterState;
 
 namespace TechC
 {
     [Serializable]
-    public class StrongAttack : MonoBehaviour, IAttackBase
+    public class StrongAttack : AttackBase
     {
-        [SerializeField]
-        private AttackSet attackSet;
-        [SerializeField]
-        protected AttackData neutralAttackData;
-        [SerializeField]
-        protected AttackData leftAttackData;
-        [SerializeField]
-        protected AttackData rightAttackData;
-        [SerializeField]
-        protected AttackData downAttackData;
-        [SerializeField]
-        protected AttackData upAttackData;
-        private readonly Dictionary<AttackType, AttackData> attackDataMap;
+        [Header("Components")]
+        [SerializeField] private ComboSystem comboSystem;
+        [SerializeField] private GameObject hitEffectPrefab;
 
-        public StrongAttack()
+        [Header("Data")]
+        [SerializeField] private AttackSet attackSet;
+        [SerializeField, ReadOnly] protected AttackData neutralAttackData;
+        [SerializeField, ReadOnly] protected AttackData leftAttackData;
+        [SerializeField, ReadOnly] protected AttackData rightAttackData;
+        [SerializeField, ReadOnly] protected AttackData downAttackData;
+        [SerializeField, ReadOnly] protected AttackData upAttackData;
+
+        // コンポジション - 処理を委譲するコンポーネント
+        private AttackProcessor attackProcessor;
+
+        protected override void Awake()
         {
-            attackDataMap = new Dictionary<AttackType, AttackData>();
+            base.Awake();
+            attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool, hitEffectPrefab,battleJudge);
         }
 
         public void OnValidate()
         {
+            if (attackSet == null) return;
+
             neutralAttackData = attackSet.strongNeutral;
             leftAttackData = attackSet.strongLeft;
             rightAttackData = attackSet.strongRight;
             downAttackData = attackSet.strongDown;
             upAttackData = attackSet.strongUp;
         }
+
         private void Start()
         {
             InitializeAttackDataMap();
@@ -44,75 +46,47 @@ namespace TechC
 
         private void InitializeAttackDataMap()
         {
-            attackDataMap[AttackType.Neutral] = neutralAttackData;
-            attackDataMap[AttackType.Left] = leftAttackData;
-            attackDataMap[AttackType.Right] = rightAttackData;
-            attackDataMap[AttackType.Down] = downAttackData;
-            attackDataMap[AttackType.Up] = upAttackData;
+            RegisterAttackData(AttackType.Neutral, neutralAttackData);
+            RegisterAttackData(AttackType.Left, leftAttackData);
+            RegisterAttackData(AttackType.Right, rightAttackData);
+            RegisterAttackData(AttackType.Down, downAttackData);
+            RegisterAttackData(AttackType.Up, upAttackData);
         }
-        public virtual void NeutralAttack()
+
+        public override void NeutralAttack()
         {
             ExecuteAttack(neutralAttackData);
         }
 
-        public virtual void LeftAttack()
+        public override void LeftAttack()
         {
             ExecuteAttack(leftAttackData);
         }
 
-        public virtual void RightAttack()
+        public override void RightAttack()
         {
             ExecuteAttack(rightAttackData);
         }
 
-        public virtual void DownAttack()
+        public override void DownAttack()
         {
             ExecuteAttack(downAttackData);
         }
 
-        public virtual void UpAttack()
+        public override void UpAttack()
         {
             ExecuteAttack(upAttackData);
         }
 
-        // privateからprotectedに変更して子クラスからアクセス可能にする
-        protected virtual void ExecuteAttack(AttackData attackData)
+        protected override void ExecuteAttack(AttackData attackData)
         {
-            // ダメージ処理
+            base.ExecuteAttack(attackData);
+
+            // ログ出力（元のStrongAttackの処理）
             Debug.Log($"強攻撃を実行: {attackData.attackName}, ダメージ: {attackData.damage}");
-        }
-        public float GetDuration(AttackType attackType)
-        {
-            switch (attackType)
-            {
-                case AttackType.Neutral:
-                    return neutralAttackData.attackDuration;
-                case AttackType.Left:
-                    return leftAttackData.attackDuration;
-                case AttackType.Right:
-                    return rightAttackData.attackDuration;
-                case AttackType.Down:
-                    return downAttackData.attackDuration;
-                case AttackType.Up:
-                    return upAttackData.attackDuration;
-                default:
-                    Debug.LogWarning("未定義のAttackTypeが指定されました");
-                    return 0f;
-            }
-        }
-        public AttackData GetAttackData(AttackType attackType)
-        {
-            if (attackDataMap.TryGetValue(attackType, out var attackData))
-            {
-                return attackData;
-            }
 
-            Debug.LogWarning("未定義のAttackTypeが指定されました");
-            return neutralAttackData;
+            // 攻撃処理をAttackProcessorに委譲
+            StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
         }
-        public virtual void ForceFinish()
-        {
-        }
-
     }
 }

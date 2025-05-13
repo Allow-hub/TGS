@@ -20,14 +20,14 @@ MonoBehaviour:
     attackStrength: 1
   animationTrigger: IsNormalStrongAttack
   animationSpeed: 1
-  attackDuration: 2
+  attackDuration: 1
   damage: 10
   knockback: 30
   radius: 1
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
-  hitboxOffset: {x: 0, y: 1, z: 5}
+  hitboxOffset: {x: 0, y: 1, z: 1}
   hitTiming: 0.3
   hitStopDuration: 0.3
   hitStopTimeScale: 0.8

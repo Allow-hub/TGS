@@ -21,17 +21,17 @@ MonoBehaviour:
   animationTrigger: IsLeftWeakAttack
   animationSpeed: 1
   attackDuration: 1
-  damage: 100
-  knockback: 0
-  radius: 5
+  damage: 20
+  knockback: 10
+  radius: 2
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
-  hitboxOffset: {x: 0, y: 0, z: 0}
-  hitTiming: 0.5
+  hitboxOffset: {x: 0, y: 1, z: 0}
+  hitTiming: 0.3
   hitStopDuration: 0.1
   hitStopTimeScale: 0.1
-  knockbackDirection: {x: 0, y: 0, z: 1}
+  knockbackDirection: {x: 0, y: 0, z: -1}
   useCustomKnockbackDirection: 1
   characterSEType: 0
   characterVoiceType: 0

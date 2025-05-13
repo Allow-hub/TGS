@@ -19,11 +19,11 @@ MonoBehaviour:
     attackType: 0
     attackStrength: 0
   animationTrigger: IsNormalWeakAttack_1
-  animationSpeed: 1.2
-  attackDuration: 1
+  animationSpeed: 1.5
+  attackDuration: 0.6
   damage: 10
   knockback: 2
-  radius: 10
+  radius: 1
   targetLayers:
     serializedVersion: 2
     m_Bits: 1

@@ -5,6 +5,7 @@ namespace TechC
 {
     /// <summary>
     /// 壁にぶつかった時に破片を飛び散らかす処理
+    /// 複数回の爆発と最適化を追加
     /// </summary>
     public class ExplosionDebris : MonoBehaviour
     {
@@ -35,13 +36,17 @@ namespace TechC
         [SerializeField, ReadOnly] private List<GameObject> childObj = new List<GameObject>();
         [SerializeField, ReadOnly] private List<Transform> childTrans = new List<Transform>();
         [SerializeField, ReadOnly] private List<TransformSnapshot> originalTransforms = new List<TransformSnapshot>();
+        
+        // Rigidbodyのキャッシュ用リスト
+        [SerializeField, ReadOnly] private List<Rigidbody> childRigidbodies = new List<Rigidbody>();
 
         [SerializeField, Range(0f, 200f)] private float explosionForceMin = 100f;
         [SerializeField, Range(0f, 200f)] private float explosionForceMax = 500f;
         [SerializeField] private float explosionRadius = 5f;
         [SerializeField] private float upwardsModifier = 0.5f;
 
-        private Transform initPos;
+        // 爆発の状態を追跡するフラグ
+        private bool hasExploded = false;
 
         private void OnValidate()
         {
@@ -50,6 +55,7 @@ namespace TechC
             childObj.Clear();
             childTrans.Clear();
             originalTransforms.Clear();
+            childRigidbodies.Clear();
 
             int childCount = parentObj.transform.childCount;
             for (int i = 0; i < childCount; i++)
@@ -58,10 +64,28 @@ namespace TechC
                 childObj.Add(child.gameObject);
                 childTrans.Add(child);
                 originalTransforms.Add(new TransformSnapshot(child));
+
+                // Rigidbodyをキャッシュ
+                Rigidbody rb = child.GetComponent<Rigidbody>();
+                if (rb == null) rb = child.gameObject.AddComponent<Rigidbody>();
+                childRigidbodies.Add(rb);
             }
         }
 
         private void OnEnable()
+        {
+            Explode();
+        }
+
+        private void OnDisable()
+        {
+            ResetExplosion();
+        }
+
+        /// <summary>
+        /// 明示的に爆発を呼び出すメソッド
+        /// </summary>
+        public void Explode()
         {
             Vector3 explosionPosition = transform.position;
 
@@ -70,16 +94,17 @@ namespace TechC
                 GameObject obj = childObj[i];
                 Transform t = childTrans[i];
                 TransformSnapshot snapshot = originalTransforms[i];
+                Rigidbody rb = childRigidbodies[i];
 
                 // Transformを初期状態に戻す
                 snapshot.ApplyTo(t);
 
-                Rigidbody rb = obj.GetComponent<Rigidbody>();
-                if (rb == null) rb = obj.AddComponent<Rigidbody>();
-
                 // 物理状態をリセット
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
+
+                // キネマティックモードを解除
+                rb.isKinematic = false;
 
                 // ランダムな回転を適用
                 t.rotation = Random.rotation;
@@ -88,12 +113,37 @@ namespace TechC
                 float randomForce = Random.Range(explosionForceMin, explosionForceMax);
                 rb.AddExplosionForce(randomForce, explosionPosition, explosionRadius, upwardsModifier, ForceMode.Impulse);
             }
+
+            hasExploded = true;
         }
+
+        /// <summary>
+        /// 明示的に爆発をリセットするメソッド
+        /// </summary>
+        public void ResetExplosion()
+        {
+            if (!hasExploded) return;
+
+            for (int i = 0; i < childObj.Count; i++)
+            {
+                Transform t = childTrans[i];
+                TransformSnapshot snapshot = originalTransforms[i];
+                Rigidbody rb = childRigidbodies[i];
+
+                // 元の状態に戻す
+                snapshot.ApplyTo(t);
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true;
+            }
+
+            hasExploded = false;
+        }
+
         private void OnDrawGizmos()
         {
             Gizmos.color = new Color(1f, 0.5f, 0f, 0.3f); // 半透明のオレンジ
             Gizmos.DrawSphere(transform.position, explosionRadius);
         }
-
     }
 }

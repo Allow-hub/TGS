@@ -175,12 +175,41 @@ namespace TechC
         /// <summary>
         /// 対戦相手のコントローラーを取得
         /// </summary>
+        /// <summary>
+        /// 対戦相手のコントローラーを取得
+        /// </summary>
         private Player.CharacterController GetOpponentController(Collider collider)
         {
-            if (opponentCharacterController == null)
-                opponentCharacterController = collider.gameObject.transform.parent.GetComponent<Player.CharacterController>();
+            // nullチェック
+            if (collider == null)
+            {
+                Debug.LogWarning("Null collider passed to GetOpponentController");
+                return null;
+            }
 
-            return opponentCharacterController;
+            // コライダーの親オブジェクトを取得
+            Transform parentTransform = collider.gameObject.transform.parent;
+
+            // 親オブジェクトのnullチェック
+            if (parentTransform == null)
+            {
+                Debug.LogWarning($"No parent transform found for collider on object: {collider.gameObject.name}");
+                return null;
+            }
+
+            // CharacterControllerコンポーネントを取得
+            Player.CharacterController opponentController = parentTransform.GetComponent<Player.CharacterController>();
+
+            // コンポーネントのnullチェック
+            if (opponentController == null)
+            {
+                Debug.LogWarning($"No CharacterController found on parent of object: {collider.gameObject.name}");
+                return null;
+            }
+
+            // オプションとして、毎回新しいコンポーネントを取得する代わりにキャッシュを活用
+            // これは呼び出し元のコンテキストに依存するため、慎重に実装する必要があります
+            return opponentController;
         }
 
         /// <summary>

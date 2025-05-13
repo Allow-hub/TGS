@@ -370,7 +370,7 @@ Material:
     - _Bump2ndScale: 1
     - _BumpScale: 0.3
     - _ColorMask: 15
-    - _Cull: 2
+    - _Cull: 0
     - _CullMode: 2
     - _Cutoff: 0.5
     - _DebugMode: 0

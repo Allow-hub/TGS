@@ -20,18 +20,18 @@ MonoBehaviour:
     attackStrength: 1
   animationTrigger: IsLeftStrongAttack
   animationSpeed: 1
-  attackDuration: 0
+  attackDuration: 1
   damage: 10
   knockback: 10
-  radius: 1
+  radius: 3
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
-  hitboxOffset: {x: 0, y: 0, z: 0}
-  hitTiming: 0.3
-  hitStopDuration: 0.3
-  hitStopTimeScale: 0.02
-  knockbackDirection: {x: 0, y: 0, z: 1}
+  hitboxOffset: {x: 0, y: 1, z: 3}
+  hitTiming: 0.5
+  hitStopDuration: 0.1
+  hitStopTimeScale: 0.01
+  knockbackDirection: {x: 0, y: -1, z: 4}
   useCustomKnockbackDirection: 1
   characterSEType: 12
   characterVoiceType: 0

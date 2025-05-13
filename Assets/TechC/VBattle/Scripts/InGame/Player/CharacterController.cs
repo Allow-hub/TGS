@@ -502,6 +502,8 @@ namespace TechC.Player
             return false;
         }
 
+        public void ResetSpecial()=>gaugePresenter.ResetGauge();
+
         /// <summary>
         /// 必殺技ゲージの割合を取得（UI表示用など）
         /// </summary>
@@ -518,11 +520,11 @@ namespace TechC.Player
         /// <summary>
         /// 必殺技が使用可能かどうか
         /// </summary>
-        public bool IsSpecialAttackReady(float cost)
+        public bool CanSpecialAttack()
         {
             if (gaugePresenter != null)
             {
-                return gaugePresenter.IsSpecialAttackReady(cost);
+                return gaugePresenter.CanSpecialAttack();
             }
             Debug.LogWarning($"Player {playerID}: GaugePresenterがnullのため、必殺技準備状態が確認できません");
             return false;

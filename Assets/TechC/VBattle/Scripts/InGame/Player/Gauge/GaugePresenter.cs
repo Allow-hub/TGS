@@ -68,6 +68,8 @@ namespace TechC
         public void ResetGauge() => gaugeModel.EmptyValue();
         public void FillGauge() => gaugeModel.FillValue();
         public bool IsSpecialAttackReady(float cost) => gaugeModel.HasEnoughValue(cost);
+        public bool CanSpecialAttack() => gaugeModel.IsValueFull();
+
         public bool GetCanCharge() => gaugeModel.CanCharge;
     }
 }

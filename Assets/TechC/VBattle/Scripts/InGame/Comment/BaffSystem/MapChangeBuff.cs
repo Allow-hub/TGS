@@ -22,38 +22,36 @@ namespace TechC
         /// <summary>
         /// バフが適用されたとき、ランダムでマップを変更する。
         /// </summary>
-        /// <param name="target">バフが適用されるターゲット</param>
         public override void Apply(GameObject target)
         {
             base.Apply(target);
             Debug.Log("マップ変化のバフを発動");
 
-            /* マップの変更をまだ行っていない場合は、マップを変更する */
-            if (MapChangeManager.Instance != null && MapChangeManager.Instance.mapObjects.Length > 0)
+            var manager = MapChangeManager.Instance;
+            if (manager != null && manager.mapObjects != null && manager.mapObjects.Count > 0)
             {
-                int randomIndex = Random.Range(0, MapChangeManager.Instance.mapObjects.Length);
-                currentMapIndex = randomIndex;
-                MapChangeManager.Instance.ChangeMap(currentMapIndex);
+                // currentMapIndex = Random.Range(0, manager.mapObjects.Count);
+                manager.SetMapIndex();
             }
             else
             {
-                Debug.LogError("マップオブジェクトが未設定");
-                return;
+                Debug.LogError("MapChangeManager または mapObjects が未設定です。");
             }
         }
 
         /// <summary>
-        /// バフが解除されたとき、マップを元に戻す。
+        /// バフが解除されたとき、マップを非表示にする。
         /// </summary>
-        /// <param name="target">バフが解除されるターゲット</param>
         public override void Remove(GameObject target)
         {
             base.Remove(target);
-            Debug.Log("マップ変形バフが解除されました");
+            Debug.Log("マップ変化バフが解除されました");
 
-            if (MapChangeManager.Instance != null)
+            var manager = MapChangeManager.Instance;
+            if (manager != null)
             {
-                MapChangeManager.Instance.ChangeMap(-1); /* ここでMapを非表示 */
+                // -1を渡してすべて非表示にする場合
+                manager.SetMapIndex();
             }
 
             currentMapIndex = -1;
@@ -62,19 +60,14 @@ namespace TechC
         /// <summary>
         /// バフの残り時間を更新し、終了時にバフを解除する。
         /// </summary>
-        /// <param name="deltaTime">経過時間</param>
-        /// <param name="target">バフが適用されているターゲット</param>
         public override void UpdateBuff(float deltaTime, GameObject target)
         {
             base.UpdateBuff(deltaTime, target);
 
-            if (remainingTime <= 0)
+            remainingTime -= deltaTime;
+            if (remainingTime <= 0f)
             {
                 Remove(target);
-            }
-            else
-            {
-                remainingTime -= deltaTime;
             }
         }
     }

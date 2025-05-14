@@ -10,11 +10,15 @@ namespace TechC
     /// </summary>
     public class MapChangeManager : MonoBehaviour
     {
-        /* インスタンスの定義 */
+        // シングルトンインスタンス
         public static MapChangeManager Instance;
 
-        /* Mapを格納する */
-        public GameObject [] mapObjects; /* 複数入れれるように */
+        // マップオブジェクトのリスト
+        public List<GameObject> mapObjects;
+
+        // 現在のマップインデックス
+        [SerializeField]
+        private int currentMapIndex = 0;
 
         private void Awake()
         {
@@ -30,24 +34,42 @@ namespace TechC
             }
         }
 
-        public void ChangeMap(int mapIndex)
+        /// <summary>
+        /// 現在のマップインデックスに基づいてマップを切り替える
+        /// </summary>
+        public void ChangeMap()
         {
             Debug.Log("ChangeMapメソッドが呼ばれました。");
 
-            for (int i = 0; i < mapObjects.Length; i++)
+            // すべてのマップを非表示にする
+            foreach (GameObject map in mapObjects)
             {
-                mapObjects[i].SetActive(false);
+                map.SetActive(false);
             }
-           
-            if (mapIndex >= 0 && mapIndex < mapObjects.Length)
+
+if(currentMapIndex >= mapObjects.Count)
+currentMapIndex=0;
+            // 指定されたマップのみ表示
+            if (currentMapIndex >= 0 && currentMapIndex < mapObjects.Count)
             {
-                mapObjects[mapIndex].SetActive(true);
+                mapObjects[currentMapIndex].SetActive(true);
+                Debug.Log(mapObjects[currentMapIndex].name);
             }
-            else if(mapIndex != -1)
+            else if (currentMapIndex != -1)
             {
-                Debug.LogWarning("無効なマップインデックスが指定されました: " + mapIndex);
+                Debug.LogWarning("無効なマップインデックスが指定されました: " + currentMapIndex);
             }
+                            currentMapIndex++;
+
         }
 
+        /// <summary>
+        /// 外部からマップインデックスを指定して変更する
+        /// </summary>
+        public void SetMapIndex()
+        {
+            currentMapIndex++;
+            ChangeMap();
+        }
     }
 }

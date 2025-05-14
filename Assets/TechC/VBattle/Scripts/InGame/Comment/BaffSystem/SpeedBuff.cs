@@ -13,7 +13,6 @@ namespace TechC
     {
         [SerializeField] private float speedMultiplier = 3.0f;
 
-        [SerializeField] private GameObject effectPrefab; /* エフェクトの元となるPrefab */
         [SerializeField] private GameObject effectInstance; /* 実際にInstantiateで生成されたエフェクトのインスタンス */
 
         public SpeedBuff()
@@ -34,11 +33,16 @@ namespace TechC
 
             /* 速度上昇のバフを適用 */
             if (characterController != null)
-            { 
+            {
+                // Debug.Log($"<color=orange>[Apply前]</color>攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
                 characterController.AddMultiplier(BuffType.Speed, speedMultiplier);
+
+
+                // Debug.Log($"<color=orange>[Apply後]</color>:攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
+
             }
         }
-        
+
         /// <summary>
         /// 移動速度上昇のバフを解除する
         /// </summary>
@@ -51,13 +55,6 @@ namespace TechC
             if (characterController != null)
             {
                 characterController.RemoveMultiplier(BuffType.Speed, speedMultiplier);
-            }
-
-            /* エフェクトを削除する */
-            if(effectInstance != null)
-            {
-                UnityEngine.Object.Destroy(effectInstance);
-                effectInstance = null;
             }
         }
     }

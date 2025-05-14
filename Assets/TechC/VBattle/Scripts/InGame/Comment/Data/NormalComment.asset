@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: NormalComment
   m_EditorClassIdentifier: 
   comment:
-  - first
-  - second
-  - third
+  - "\u30E4\u30D0\u3059\u304E\u308B"
+  - "\u3053\u3093\u306B\u3061\u306F\uFF01"
+  - "\u521D\u898B\u3067\u3059"

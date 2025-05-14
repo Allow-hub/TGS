@@ -33,7 +33,6 @@ namespace TechC
             effect.transform.SetParent(obj.transform);
             effect.transform.rotation = rotation; /* 回転を設定 */
             effect.SetActive(true); /* エフェクトを表示 */
-            Debug.Log("エフェクトのPrefabを適用");
 
             if (effectRemainingTime > 0f)
             {

@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "T.sln"
+    "dotnet.defaultSolution": "V_Battle.sln"
 }

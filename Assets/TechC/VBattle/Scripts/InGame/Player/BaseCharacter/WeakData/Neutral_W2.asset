@@ -19,15 +19,15 @@ MonoBehaviour:
     attackType: 0
     attackStrength: 0
   animationTrigger: IsNormalWeakAttack_1
-  animationSpeed: 1.4
-  attackDuration: 1
+  animationSpeed: 1.6
+  attackDuration: 0.7
   damage: 10
   knockback: 2
-  radius: 4
+  radius: 1
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
-  hitboxOffset: {x: 0, y: 1, z: 1}
+  hitboxOffset: {x: 0, y: 1, z: 1.3}
   hitTiming: 0.5
   hitStopDuration: 0.01
   hitStopTimeScale: 0.2

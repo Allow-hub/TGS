@@ -429,5 +429,6 @@ namespace TechC
             return currentTime;
         }
         #endregion
+        public GameObject GetPlayerObjById(int id)=>players[id-1].playerObject;
     }
 }

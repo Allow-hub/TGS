@@ -37,12 +37,6 @@ namespace TechC
             { 
                 characterController.AddMultiplier(BuffType.Speed, speedMultiplier);
             }
-
-            /* エフェクトを適用する */
-            if(effectPrefab != null && effectInstance == null)
-            {
-                effectInstance = UnityEngine.Object.Instantiate(effectPrefab, target.transform);
-            }
         }
         
         /// <summary>

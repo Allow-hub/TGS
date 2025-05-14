@@ -38,7 +38,6 @@ namespace TechC.Player
         protected override void Update()
         {
             base.Update();
-            // Debug.Log(DirectionInputHandler.GetSnappedDirection(moveInput,0.3f));
 
             if (isJumpButtonPressed)
             {

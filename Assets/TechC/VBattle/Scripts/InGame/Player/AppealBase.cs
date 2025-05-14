@@ -84,12 +84,26 @@ namespace TechC
             ExecuteAttack(upAttackData);
         }
 
-        // privateからprotectedに変更して子クラスからアクセス可能にする
         protected virtual void ExecuteAttack(AttackData attackData)
         {
-            characterController.GetAnim().speed = attackData.animationSpeed;
-            characterController.GetAnim().SetBool(attackData.animHash, true);
-            StartCoroutine(Charge(attackData));
+            //必殺技が打てるかどうか
+            if (!characterController.CanSpecialAttack())
+            {
+                characterController.GetAnim().speed = attackData.animationSpeed;
+                characterController.GetAnim().SetBool(attackData.animHash, true);
+                StartCoroutine(Charge(attackData));
+            }
+            else
+            {
+                ExcuteSpecial();
+                characterController.ResetSpecial();
+            }
+        }
+
+        protected virtual void ExcuteSpecial()
+        {
+            Debug.Log("必殺技を発動");  
+
         }
         /// <summary>
         /// 必殺技のチャージを可能に
@@ -106,8 +120,6 @@ namespace TechC
         public virtual void ForceFinish()
         {
             characterController.ChangeCanCharge(false);
-            Debug.Log("AN");
-
         }
 
         public float GetDuration(AttackType attackType)

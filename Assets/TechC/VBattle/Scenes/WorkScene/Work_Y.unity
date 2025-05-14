@@ -1680,7 +1680,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: NormalComment
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2645167056380359738, guid: 77a5a9e8854ab8c458cf408de51653f5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7760075852823559747, guid: 77a5a9e8854ab8c458cf408de51653f5,

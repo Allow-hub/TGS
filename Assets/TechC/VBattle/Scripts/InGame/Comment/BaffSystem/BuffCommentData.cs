@@ -15,8 +15,5 @@ namespace TechC
         public BuffType buffType;
         [TextArea]
         public string[] comments;
-
-        [Header("エフェクトのプレハブ")]
-        public GameObject effectPrefab;
     }
 }

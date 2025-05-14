@@ -34,15 +34,9 @@ namespace TechC
                 // Debug.Log($"<color=orange>[Apply前]</color>攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
                 // public float GetCurrentAttackMultiplier() => GetMultipiler(BuffType.Attack); これをcharacterControllerに書く
 
-
                 characterController.AddMultiplier(BuffType.Attack, attackMultiplier);
 
                 // Debug.Log($"<color=orange>[Apply後]</color>:攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
-                /* エフェクトを適用する */
-                if (effectPrefab != null && effectInstance == null)
-                {
-                    effectInstance = UnityEngine.Object.Instantiate(effectPrefab, target.transform);
-                }
             }
         }
 

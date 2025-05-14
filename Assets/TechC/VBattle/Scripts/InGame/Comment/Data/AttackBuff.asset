@@ -14,7 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffType: 1
   comments:
-  - Attack1
-  - Attack2
-  effectPrefab: {fileID: 6856130345347563706, guid: 9d8b38e2e9afd0b4f941ec35abc9625d,
-    type: 3}
+  - "\u9811\u5F35\u308C\uFF01\uFF01"
+  - "\u30D1\u30EF\u30FC\u30A2\u30C3\u30D7\uFF01"

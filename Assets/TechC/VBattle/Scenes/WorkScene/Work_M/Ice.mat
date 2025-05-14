@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3474823710062544399
+--- !u!114 &-3366855211655968829
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: IceSword
-  m_Shader: {fileID: -6465566751694194690, guid: afb7eff236138184e9d95542422cb5bb,
+  m_Name: Ice
+  m_Shader: {fileID: -6465566751694194690, guid: 2824d1052c7b46c4d86003e50c44db3f,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -37,10 +37,6 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _SampleTexture2D_d4a3bea068e54597999b797162beaf2b_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: f30befc4f4179a14c96e098e1b40297d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -55,18 +51,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _FlowSpeed: -0.2
-    - _FresnelPower: 3
-    - _IceIntensify: 2
-    - _Mag: 4
-    - _Power: 2
+    - _Gradient_Offset: 0.01
+    - _NoiseStr: 0.28
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _RimNoiseStr: 45
+    - _RimPower: 1
     m_Colors:
-    - _ButtomColor: {r: 0, g: 0.3310289, b: 1, a: 0.4627451}
-    - _FlowColor: {r: 1, g: 1, b: 1, a: 1}
-    - _FresnelColor: {r: 0.216981, g: 0.9807612, b: 1, a: 1}
-    - _IceColor: {r: 0.4343577, g: 0.7969298, b: 0.9937106, a: 1}
-    - _Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _ButtomColor: {r: 0, g: 1, b: 0.9771137, a: 0}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 0}
     - _TopColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []

@@ -507,17 +507,7 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 762708206987177613, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_hasFontAssetChanged
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1947574187364501273, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357770565247420618, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -526,16 +516,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: InGame
-      objectReference: {fileID: 0}
-    - target: {fileID: 3744901541791122058, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4315862063598789008, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5547016823962536969, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -595,16 +575,6 @@ PrefabInstance:
     - target: {fileID: 7923638173486885026, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8021778234465506351, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8362738887710539125, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

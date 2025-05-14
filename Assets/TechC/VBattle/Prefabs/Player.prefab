@@ -577,6 +577,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ame_liltoon
       objectReference: {fileID: 0}
+    - target: {fileID: 7079368333751177568, guid: f0d2f52e1a5c3e141aa4c578a9abbdf0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

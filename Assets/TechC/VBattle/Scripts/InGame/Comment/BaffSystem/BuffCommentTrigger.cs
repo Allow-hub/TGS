@@ -19,6 +19,10 @@ namespace TechC
             if (other.CompareTag("Player"))
             {
                 // Debug.Log($"バフ{buffType}が発動した");
+                var controller=other.transform.parent.GetComponent<Player.CharacterController>();
+                int id = controller.PlayerID;
+                EffectFactory.I.PlayEffect("Attack",id, Quaternion.identity, 3.0f);
+                Debug.Log(other);
 
                 BuffBase buff = BuffFactory.CreateBuff(buffType);
                 if (buff != null)

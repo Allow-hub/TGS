@@ -254,7 +254,7 @@ MonoBehaviour:
   mapChangePrefab: {fileID: 2865774595755681340, guid: 8e5cbdeb15c5cc74bbe7291afb8c8c04,
     type: 3}
   commentLayer: {fileID: 665420163132266930}
-  spawnInterval: 2
+  spawnInterval: 1
   speed: 2
   commentProvider: {fileID: 2355759554391007691}
   topRightSpawn: {fileID: 2413045821005553389}
@@ -293,7 +293,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 09a7fc4219b36294b935eeb862608990, type: 2}
   - {fileID: 11400000, guid: b893081f989efd54cb2b0989f70a2ca2, type: 2}
   - {fileID: 11400000, guid: efb77ce6fd583934f90278662409542c, type: 2}
-  normalChance: 0
+  normalChance: 1
   speedBuffChance: 0.3
   attackBuffChance: 0.3
   mapChangeChance: 0
@@ -335,7 +335,7 @@ Transform:
   m_GameObject: {fileID: 1287942461507737535}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -16, y: -2, z: 0}
+  m_LocalPosition: {x: -16, y: -3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -797,7 +797,7 @@ Transform:
   m_GameObject: {fileID: 2413045821005553389}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12, y: -2, z: 0}
+  m_LocalPosition: {x: 12, y: -3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1902,7 +1902,7 @@ Transform:
   m_GameObject: {fileID: 7739958313403896101}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12, y: -2.5, z: 0}
+  m_LocalPosition: {x: 12, y: -0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2411,6 +2411,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2168590787986126325, guid: cf54254752b2acf4ebdd30abcf736a67,
         type: 2}
+    - target: {fileID: 545129694804395307, guid: 7fa3747485c5d784294c1a896a63b3a0,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3340635525092225523, guid: 7fa3747485c5d784294c1a896a63b3a0,
         type: 3}
       propertyPath: m_Name

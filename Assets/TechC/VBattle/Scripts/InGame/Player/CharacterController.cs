@@ -27,6 +27,8 @@ namespace TechC.Player
         [SerializeField] private AppealBase appealBase;
         [Header("反発設定")]
         [SerializeField] private float bounceStopTime = 0.5f;
+        [SerializeField] private float maxBounceForce = 30f;
+
         [SerializeField] private float addY = 1;
         [SerializeField] private float wallBounceMultiplier = 1.5f; // 壁からの反発倍率
         [SerializeField] private bool enableWallBounce = true; // 壁反発機能の有効/無効
@@ -646,35 +648,40 @@ namespace TechC.Player
         /// <param name="collision">衝突情報</param>
         private async UniTask ApplyWallBounce(Collision collision, Vector3 hitPos)
         {
-            // 現在の速度を取得
-            var inDirection = lastVelocity;
 
-            // 衝突した壁の法線ベクトルを取得
+            // 入射ベクトルを取得（ぶつかった直前の速度）
+            Vector3 inDirection = lastVelocity;
+
+            // 衝突面の法線ベクトル（接触点から取得）
             Vector3 wallNormal = collision.contacts[0].normal;
-            rb.velocity = Vector3.zero;
 
-            var debris = effectPool.GetObject(debrisPrefab, hitPos, debrisPrefab.transform.rotation);
+            // 反射ベクトルを物理法則に基づいて計算
+            Vector3 reflected = Vector3.Reflect(inDirection.normalized, wallNormal);
+
+            // 跳ね返り力（速度ベースで自然な力に）
+            float bounceForce = inDirection.magnitude * wallBounceMultiplier;
+            bounceForce = Mathf.Clamp(bounceForce, 0f, maxBounceForce); // ← クランプ
+
+            // 破片
+            var debris = effectPool.GetObject(debrisPrefab, hitPos, Quaternion.identity);
+            debris.GetComponent<ExplosionDebris>()?.Explode();
+
             await UniTask.Delay(TimeSpan.FromSeconds(bounceStopTime));
 
-            // 反射ベクトルを計算
-            Vector3 result = Vector3.Reflect(inDirection, wallNormal);
-            result.y = Mathf.Max(result.y, addY);
-
-            // 正規化
-            result.Normalize();
-
-            // 反発力を計算
-            float bounceForce = characterData.MoveSpeed * wallBounceMultiplier;
-
-            // 現在の速度をリセットして新しい力を加える
+            // 速度をゼロにしてから反発力を加える
             rb.velocity = Vector3.zero;
-            rb.AddForce(result * bounceForce, ForceMode.Impulse);
-            
+            rb.angularVelocity = Vector3.zero;
+            rb.AddForce(reflected * bounceForce, ForceMode.Impulse);
+
+            // 破片のリターン
             await UniTask.Delay(TimeSpan.FromSeconds(3f));
+            debris.GetComponent<ExplosionDebris>()?.ResetExplosion();
             effectPool.ReturnObject(debris);
 
-            // デバッグ情報
-            // Debug.Log($"Player {playerID}: 壁から反発しました。反射方向: {result}, 反発力: {bounceForce}");
+            // Debug: 反射方向の確認
+            // Debug.DrawRay(hitPos, wallNormal, Color.red, 2f);      // 法線
+            // Debug.DrawRay(hitPos, inDirection.normalized, Color.blue, 2f); // 入射
+            // Debug.DrawRay(hitPos, reflected, Color.green, 2f);     // 反射
         }
 
         private void OnDrawGizmos()

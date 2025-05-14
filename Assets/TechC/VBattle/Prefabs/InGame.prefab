@@ -630,6 +630,7 @@ MonoBehaviour:
   strongAttack: {fileID: 3696131618718618635}
   appealBase: {fileID: 3972972029339758841}
   bounceStopTime: 0.5
+  maxBounceForce: 30
   addY: 1
   wallBounceMultiplier: 1.5
   enableWallBounce: 1
@@ -1069,7 +1070,7 @@ GameObject:
   - component: {fileID: 5866744068133524393}
   - component: {fileID: 7176999774787797060}
   - component: {fileID: 1603696244343641990}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Wall (1)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1257,7 +1258,7 @@ GameObject:
   - component: {fileID: 7291868025559385847}
   - component: {fileID: 1606697072349052531}
   - component: {fileID: 7604123484299705724}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Wall
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1825,7 +1826,7 @@ GameObject:
   - component: {fileID: 2491202717524337503}
   - component: {fileID: 8712227424838074883}
   - component: {fileID: 5618967536900135823}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Wall (2)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1956,7 +1957,7 @@ MonoBehaviour:
   isTimeLimitEnabled: 0
   respawnInvincibleTime: 3
   players:
-  - playerPrefab: {fileID: 7627828736903395385, guid: a381c32573e781049b85ff8fd8ece1b6,
+  - playerPrefab: {fileID: 7627828736903395385, guid: 01e31a08014b679499c665bdfbef363f,
       type: 3}
     playerObject: {fileID: 7627828736903395385, guid: a381c32573e781049b85ff8fd8ece1b6,
       type: 3}
@@ -1967,7 +1968,7 @@ MonoBehaviour:
     respawnPosition: {x: 0, y: 0, z: 0}
     isInvincible: 1
     canAttack: 1
-  - playerPrefab: {fileID: 7627828736903395385, guid: a381c32573e781049b85ff8fd8ece1b6,
+  - playerPrefab: {fileID: 7627828736903395385, guid: 10f0ab4c65588784091056c4bbc13ba4,
       type: 3}
     playerObject: {fileID: 5692221464495195100, guid: 27341eb2040e33648a0fb5fa3a2fe781,
       type: 3}

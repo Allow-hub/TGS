@@ -2,17 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 namespace TechC
 {
-    [Serializable]
-    public class WeakAttack_BaseCharacter : WeakAttack
+    /// <summary>
+    /// キャラ１：あめの弱攻撃の実装
+    /// </summary>
+    public class Ame_WeakAttack : WeakAttack
     {
+        [SerializeField] private GameObject sword;
+
         public override void NeutralAttack()
         {
             base.NeutralAttack();
-
         }
 
         public override void LeftAttack()
@@ -38,15 +40,15 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
+
+            sword.SetActive(true);
+            StartCoroutine(SwordDisActive(attackData));
         }
 
-
-        public override void ForceFinish()
+        private IEnumerator SwordDisActive(AttackData attackData)
         {
-            base.ForceFinish();
-            StopAllCoroutines();
+            yield return new WaitForSeconds(attackData.attackDuration);
+            sword.SetActive(false);
         }
-
-
     }
 }

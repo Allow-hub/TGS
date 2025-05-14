@@ -22,29 +22,43 @@ namespace TechC
 
             if (other.CompareTag("Player"))
             {
-                
+                Debug.Log("Buffコメントにあたった");
+                BuffBase buff = BuffFactory.CreateBuff(buffType);
+
+                if (buff != null)
+                {
+                    BuffManager buffManager = other.GetComponentInParent<BuffManager>();
+                    if (buffManager != null)
+                    {
+                        Debug.Log("BuffがApplyされる予定");
+                        buffManager.ApplyBuff(buff);
+                    }
+                    else
+                    {
+                        Debug.LogError("BuffManagerが見つかりません");
+                        return;
+                    }
+                }
+
+
                 var controller = other.transform.parent.GetComponent<Player.CharacterController>();
                 int id = controller.PlayerID;
 
+                float effectTime = buff.remainingTime; /*バフのエフェクトの継続時間にバフの効果の時間を代入 */
+
                 /* バフの種類ごとに適用するエフェクトを変える */
-                if (buffType == BuffType.Speed)
+                switch (buffType)
                 {
-                    EffectFactory.I.PlayEffect("Speed", id, Quaternion.identity, 3.0f);
-                }
-                else if (buffType == BuffType.Attack)
-                {
-                    EffectFactory.I.PlayEffect("Attack", id, Quaternion.identity, 3.0f);
-                }
-
-
-                BuffBase buff = BuffFactory.CreateBuff(buffType);
-                if (buff != null)
-                {
-                    BuffManager buffManager = other.GetComponent<BuffManager>();
-                    if (buffManager != null)
-                    {
-                        buffManager.ApplyBuff(buff);
-                    }
+                    case BuffType.Speed:
+                        EffectFactory.I.PlayEffect("Speed", id, Quaternion.identity, effectTime);
+                        break;
+                    case BuffType.Attack:
+                        EffectFactory.I.PlayEffect("Attack", id, Quaternion.identity, effectTime);
+                        break;
+                    // 必要であれば他のバフタイプも追加できます
+                    default:
+                        Debug.LogWarning($"未対応のバフタイプ: {buffType}");
+                        break;
                 }
 
                 alreadyApplied = true;

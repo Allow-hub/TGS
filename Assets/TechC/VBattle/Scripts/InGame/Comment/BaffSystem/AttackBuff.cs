@@ -12,7 +12,6 @@ namespace TechC
     {
         [SerializeField] private float attackMultiplier = 1.5f; /*攻撃力上昇の倍率 */
 
-        [SerializeField] private GameObject effectPrefab; /* エフェクトの元となるPrefab */
         [SerializeField] private GameObject effectInstance; /* 実際にInstantiateで生成されたエフェクトのインスタンス */
         public AttackBuff()
         {
@@ -28,6 +27,8 @@ namespace TechC
         /// <param name="target"></param>
         public override void Apply(GameObject target)
         {
+            Debug.Log("アタックバフが適用されました。");
+
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
             if (characterController != null)
             {
@@ -53,12 +54,6 @@ namespace TechC
 
                 characterController.RemoveMultiplier(BuffType.Attack, attackMultiplier);
                 // Debug.Log($"<color=blue>[Remove後]</color>:攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
-                /* エフェクトを削除する */
-                if (effectInstance != null)
-                {
-                    UnityEngine.Object.Destroy(effectInstance);
-                    effectInstance = null;
-                }
             }
         }
     }

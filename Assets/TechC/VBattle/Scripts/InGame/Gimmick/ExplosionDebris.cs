@@ -134,7 +134,6 @@ namespace TechC
                 snapshot.ApplyTo(t);
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
-                rb.isKinematic = true;
             }
 
             hasExploded = false;

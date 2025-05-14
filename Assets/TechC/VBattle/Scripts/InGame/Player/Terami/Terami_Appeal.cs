@@ -1,52 +1,51 @@
-﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 namespace TechC
 {
-    [Serializable]
-    public class WeakAttack_BaseCharacter : WeakAttack
+    /// <summary>
+    /// キャラ２：照海のアピール実装
+    /// </summary>
+    public class Terami_Appeal : AppealBase
     {
-        public override void NeutralAttack()
+          public override void NeutralAttack()
         {
-            base.NeutralAttack();
-
+            ExecuteAttack(neutralAttackData);
         }
 
         public override void LeftAttack()
         {
-            base.LeftAttack();
+            ExecuteAttack(leftAttackData);
         }
 
         public override void RightAttack()
         {
-            base.RightAttack();
+            ExecuteAttack(rightAttackData);
         }
 
         public override void DownAttack()
         {
-            base.DownAttack();
+            ExecuteAttack(downAttackData);
         }
 
         public override void UpAttack()
         {
-            base.UpAttack();
+            ExecuteAttack(upAttackData);
         }
 
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
+
         }
 
-
+        /// <summary>
+        /// 強制終了時
+        /// </summary>
         public override void ForceFinish()
         {
-            base.ForceFinish();
-            StopAllCoroutines();
+            base .ForceFinish();
         }
-
-
     }
 }

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 namespace TechC
 {
-    [Serializable]
-    public class WeakAttack_BaseCharacter : WeakAttack
+    /// <summary>
+    ///　キャラ２：照海の弱攻撃の実装
+    /// </summary>
+    public class Terami_WeakAttack : WeakAttack
     {
         public override void NeutralAttack()
         {
@@ -38,15 +38,8 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
+            Debug.Log("オーバーライド," + attackData.damage);
         }
-
-
-        public override void ForceFinish()
-        {
-            base.ForceFinish();
-            StopAllCoroutines();
-        }
-
 
     }
 }

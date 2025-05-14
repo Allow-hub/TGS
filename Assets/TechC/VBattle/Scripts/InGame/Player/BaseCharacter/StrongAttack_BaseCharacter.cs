@@ -32,7 +32,6 @@ namespace TechC
             base.UpAttack();
         }
 
-        // ExecuteAttackメソッドもオーバーライド
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);

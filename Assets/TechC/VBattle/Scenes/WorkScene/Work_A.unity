@@ -507,6 +507,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 762708206987177613, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1947574187364501273, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -516,11 +521,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3660019480841295263, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_Layer
-      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3744901541791122058, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -537,11 +537,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4544061441486197058, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_Layer
-      value: 7
-      objectReference: {fileID: 0}
     - target: {fileID: 5547016823962536969, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -551,11 +546,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7392085185774715385, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_Layer
-      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7923638173486885026, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -607,18 +597,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7981336831571438261, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: players.Array.data[0].playerPrefab
-      value: 
-      objectReference: {fileID: 7627828736903395385, guid: a381c32573e781049b85ff8fd8ece1b6,
-        type: 3}
-    - target: {fileID: 7981336831571438261, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: players.Array.data[1].playerPrefab
-      value: 
-      objectReference: {fileID: 7627828736903395385, guid: 10f0ab4c65588784091056c4bbc13ba4,
-        type: 3}
     - target: {fileID: 8021778234465506351, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y

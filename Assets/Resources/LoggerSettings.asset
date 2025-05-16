@@ -54,6 +54,10 @@ MonoBehaviour:
     displayName: ComboClear
     color: {r: 1, g: 0.9600028, b: 0, a: 1}
     enabledByDefault: 1
+  - categoryId: window
+    displayName: Window
+    color: {r: 0.8113208, g: 0.5295526, b: 0.16456035, a: 1}
+    enabledByDefault: 1
   defaultCategory:
     categoryId: default
     displayName: Default
@@ -72,3 +76,4 @@ MonoBehaviour:
   - comboClear
   _disabledCategoryIds:
   - state
+  - window

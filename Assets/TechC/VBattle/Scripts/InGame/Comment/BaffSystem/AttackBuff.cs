@@ -27,8 +27,6 @@ namespace TechC
         /// <param name="target"></param>
         public override void Apply(GameObject target)
         {
-            Debug.Log("アタックバフが適用されました。");
-
             Player.CharacterController characterController = target.GetComponent<Player.CharacterController>();
             if (characterController != null)
             {

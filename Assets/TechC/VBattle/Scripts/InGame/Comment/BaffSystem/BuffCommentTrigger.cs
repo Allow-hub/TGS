@@ -22,7 +22,7 @@ namespace TechC
 
             if (other.CompareTag("Player"))
             {
-                Debug.Log("Buffコメントにあたった");
+                // Debug.Log("Buffコメントにあたった");
                 BuffBase buff = BuffFactory.CreateBuff(buffType);
 
                 if (buff != null)
@@ -30,13 +30,7 @@ namespace TechC
                     BuffManager buffManager = other.GetComponentInParent<BuffManager>();
                     if (buffManager != null)
                     {
-                        Debug.Log("BuffがApplyされる予定");
                         buffManager.ApplyBuff(buff);
-                    }
-                    else
-                    {
-                        Debug.LogError("BuffManagerが見つかりません");
-                        return;
                     }
                 }
 

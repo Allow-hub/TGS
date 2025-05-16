@@ -39,7 +39,7 @@ namespace TechC
         /// </summary>
         public void ChangeMap()
         {
-            Debug.Log("ChangeMapメソッドが呼ばれました。");
+            // Debug.Log("ChangeMapメソッドが呼ばれました。");
 
             // すべてのマップを非表示にする
             foreach (GameObject map in mapObjects)
@@ -47,19 +47,19 @@ namespace TechC
                 map.SetActive(false);
             }
 
-if(currentMapIndex >= mapObjects.Count)
-currentMapIndex=0;
+            if (currentMapIndex >= mapObjects.Count)
+                currentMapIndex = 0;
             // 指定されたマップのみ表示
             if (currentMapIndex >= 0 && currentMapIndex < mapObjects.Count)
             {
                 mapObjects[currentMapIndex].SetActive(true);
-                Debug.Log(mapObjects[currentMapIndex].name);
+                // Debug.Log(mapObjects[currentMapIndex].name);
             }
             else if (currentMapIndex != -1)
             {
-                Debug.LogWarning("無効なマップインデックスが指定されました: " + currentMapIndex);
+                // Debug.LogWarning("無効なマップインデックスが指定されました: " + currentMapIndex);
             }
-                            currentMapIndex++;
+            currentMapIndex++;
 
         }
 

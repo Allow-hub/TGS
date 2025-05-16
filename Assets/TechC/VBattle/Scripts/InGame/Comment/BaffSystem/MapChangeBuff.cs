@@ -25,7 +25,7 @@ namespace TechC
         public override void Apply(GameObject target)
         {
             base.Apply(target);
-            Debug.Log("マップ変化のバフを発動");
+            // Debug.Log("マップ変化のバフを発動");
 
             var manager = MapChangeManager.Instance;
             if (manager != null && manager.mapObjects != null && manager.mapObjects.Count > 0)
@@ -45,7 +45,7 @@ namespace TechC
         public override void Remove(GameObject target)
         {
             base.Remove(target);
-            Debug.Log("マップ変化バフが解除されました");
+            // Debug.Log("マップ変化バフが解除されました");
 
             var manager = MapChangeManager.Instance;
             if (manager != null)

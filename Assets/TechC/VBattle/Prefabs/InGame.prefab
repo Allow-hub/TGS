@@ -254,7 +254,7 @@ MonoBehaviour:
   mapChangePrefab: {fileID: 2865774595755681340, guid: 8e5cbdeb15c5cc74bbe7291afb8c8c04,
     type: 3}
   commentLayer: {fileID: 665420163132266930}
-  spawnInterval: 2
+  spawnInterval: 1
   speed: 2
   commentProvider: {fileID: 2355759554391007691}
   topRightSpawn: {fileID: 2413045821005553389}
@@ -293,7 +293,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 09a7fc4219b36294b935eeb862608990, type: 2}
   - {fileID: 11400000, guid: b893081f989efd54cb2b0989f70a2ca2, type: 2}
   - {fileID: 11400000, guid: efb77ce6fd583934f90278662409542c, type: 2}
-  normalChance: 0
+  normalChance: 1
   speedBuffChance: 0.3
   attackBuffChance: 0.3
   mapChangeChance: 0
@@ -335,7 +335,7 @@ Transform:
   m_GameObject: {fileID: 1287942461507737535}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -16, y: -2, z: 0}
+  m_LocalPosition: {x: -16, y: -3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -630,6 +630,7 @@ MonoBehaviour:
   strongAttack: {fileID: 3696131618718618635}
   appealBase: {fileID: 3972972029339758841}
   bounceStopTime: 0.5
+  maxBounceForce: 30
   addY: 1
   wallBounceMultiplier: 1.5
   enableWallBounce: 1
@@ -796,7 +797,7 @@ Transform:
   m_GameObject: {fileID: 2413045821005553389}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12, y: -2, z: 0}
+  m_LocalPosition: {x: 12, y: -3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1069,7 +1070,7 @@ GameObject:
   - component: {fileID: 5866744068133524393}
   - component: {fileID: 7176999774787797060}
   - component: {fileID: 1603696244343641990}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Wall (1)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1257,7 +1258,7 @@ GameObject:
   - component: {fileID: 7291868025559385847}
   - component: {fileID: 1606697072349052531}
   - component: {fileID: 7604123484299705724}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Wall
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1825,7 +1826,7 @@ GameObject:
   - component: {fileID: 2491202717524337503}
   - component: {fileID: 8712227424838074883}
   - component: {fileID: 5618967536900135823}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Wall (2)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1901,7 +1902,7 @@ Transform:
   m_GameObject: {fileID: 7739958313403896101}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12, y: -2.5, z: 0}
+  m_LocalPosition: {x: 12, y: -0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1956,7 +1957,7 @@ MonoBehaviour:
   isTimeLimitEnabled: 0
   respawnInvincibleTime: 3
   players:
-  - playerPrefab: {fileID: 7627828736903395385, guid: a381c32573e781049b85ff8fd8ece1b6,
+  - playerPrefab: {fileID: 7627828736903395385, guid: 01e31a08014b679499c665bdfbef363f,
       type: 3}
     playerObject: {fileID: 7627828736903395385, guid: a381c32573e781049b85ff8fd8ece1b6,
       type: 3}
@@ -1967,7 +1968,7 @@ MonoBehaviour:
     respawnPosition: {x: 0, y: 0, z: 0}
     isInvincible: 1
     canAttack: 1
-  - playerPrefab: {fileID: 7627828736903395385, guid: a381c32573e781049b85ff8fd8ece1b6,
+  - playerPrefab: {fileID: 7627828736903395385, guid: 10f0ab4c65588784091056c4bbc13ba4,
       type: 3}
     playerObject: {fileID: 5692221464495195100, guid: 27341eb2040e33648a0fb5fa3a2fe781,
       type: 3}
@@ -2410,6 +2411,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2168590787986126325, guid: cf54254752b2acf4ebdd30abcf736a67,
         type: 2}
+    - target: {fileID: 545129694804395307, guid: 7fa3747485c5d784294c1a896a63b3a0,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3340635525092225523, guid: 7fa3747485c5d784294c1a896a63b3a0,
         type: 3}
       propertyPath: m_Name

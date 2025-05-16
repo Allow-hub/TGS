@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -113,6 +114,8 @@ namespace TechC
         {
             yield return new WaitForSeconds(attackData.attackDuration);
             characterController.ChangeCanCharge(true);
+            yield return new WaitForSeconds(canChargeDuration);
+            characterController.ChangeCanCharge(false);
         }
         /// <summary>
         /// 強制終了時

@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using System.IO;
+using System.Collections.Generic;
 
 namespace TechC
 {
@@ -187,6 +188,8 @@ namespace TechC
         #endregion
 
         #region メンバー変数
+        private float speed =100;
+        private float elapsedTime =0;
 
         // インスタンス変数
         private IntPtr hWnd = IntPtr.Zero;
@@ -195,6 +198,8 @@ namespace TechC
         private bool isInitialized = false;
         private WndProcDelegate wndProcDelegate;
         private IntPtr defaultWndProc = IntPtr.Zero;
+
+        private List<IntPtr> windows;
 
         #endregion
 
@@ -213,13 +218,56 @@ namespace TechC
             iconPath = iconPath.Replace('/', '\\'); 
             string tooltipText = "V-LinkBattle"; // ツールチップテキスト
             CreateNotificationIcon(iconPath, tooltipText);
+            // var w = WindowUtility.CreateWebWindow("https://www.youtube.com/");
+            // windows.Add(w);
+            // SpawnWindows(100);
         }
+        void SpawnWindows(int count)
+        {
+            const int WindowWidth = 300;
+            const int WindowHeight = 300;
+            System.Random rand = new System.Random();
+            windows =new List<IntPtr>();
+
+            // 画面のサイズ取得
+            int screenWidth = Screen.currentResolution.width;
+            int screenHeight = Screen.currentResolution.height;
+
+            for (int i = 0; i < count; i++)
+            {
+                int x = rand.Next(0, screenWidth - WindowWidth);
+                int y = rand.Next(0, screenHeight - WindowHeight);
+
+                IntPtr hWnd = WindowUtility.CreateWindow(
+                    "STATIC",
+                    $"Window {i + 1}",
+                    WS_OVERLAPPEDWINDOW, // or WS_POPUP | WS_VISIBLE
+                    0,
+                    x, y,
+                    WindowWidth, WindowHeight,
+                    IntPtr.Zero
+                );
+
+                if (hWnd != IntPtr.Zero)
+                {
+                    windows.Add(hWnd);
+                    WindowUtility.ShowWindowHandle(hWnd);
+                }
+            }
+        }
+            private const uint WS_OVERLAPPEDWINDOW = 0x00CF0000;
+
 
         /// <summary>
         /// コンポーネントが破棄されるときに呼ばれるUnityイベント
         /// </summary>
         private void OnDestroy()
         {
+            foreach(var w in windows){
+                            Debug.Log(windows.Count);
+
+                WindowUtility.DestroyWindowHandle(w);
+            }
             // アイコンとウィンドウの破棄
             RemoveNotificationIcon();
         }
@@ -622,6 +670,19 @@ namespace TechC
             {
                 RefreshIcon();
             }
+            foreach (var w in windows)
+            {
+                Debug.Log(w);
+                // int centerX = Screen.currentResolution.width / 2;
+                // int centerY = Screen.currentResolution.height / 2;
+
+                // var move = WindowUtility.MoveWindowToTargetPosition(w, centerX, 0, 1000f);
+                // var reSize = WindowUtility.AnimateResizeWindow(w, 10, Screen.currentResolution.height, 1000f);
+                WindowUtility.SetWindowToForeground(w);
+                WindowUtility.MoveWindow(w,speed,"up");
+                WindowUtility.MoveWindow(w, speed, "right");
+            }
+
         }
 
         #endregion

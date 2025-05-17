@@ -12,6 +12,18 @@ namespace TechC
         public BuffType buffType;
         private bool alreadyApplied = false;
 
+        private ObjectPool objectPool;
+
+        /// <summary>
+        /// 疑似的なコンストラクタ
+        /// </summary>
+        /// <param name="objectPool"></param>
+        public void Init(ObjectPool objectPool)
+        {
+            this.objectPool = objectPool;
+            Debug.Log("Init");
+        }
+
         /// <summary>
         /// コメントにPlayerが当たったときにバフの効果とエフェクトを発動する
         /// </summary>
@@ -56,7 +68,7 @@ namespace TechC
                 }
 
                 alreadyApplied = true;
-                gameObject.SetActive(false);
+                objectPool.ReturnObject(gameObject);
             }
         }
     }

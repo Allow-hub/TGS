@@ -60,38 +60,21 @@ namespace TechC
         public void SpawnComment()
         {
             var commentData = commentProvider.GetRandomComment();
-
-            TMP_Text prefab;
-            switch (commentData.type)
+            if (commentData == null)
             {
-                case CommentType.Normal:
-                    prefab = commentPrefab;
-                    break;
-                case CommentType.SpeedBuff:
-                    prefab = SpeedBuffPrefab;
-                    break;
-                case CommentType.AttackBuff:
-                    prefab = AttackBuffPrefab;
-                    break;
-                case CommentType.MapChange:
-                    prefab = mapChangePrefab;
-                    break;
-                default:
-                    prefab = commentPrefab;
-                    break;
+                Debug.LogWarning("commentData is null");
+                return;
             }
 
-            TMP_Text comment = Instantiate(prefab, commentLayer);
-            comment.text = commentData.text;
-
-            if (commentData.buffType.HasValue)
+            TMP_Text comment = CommentFactory.I.GetComment(commentData,GetCommentPrefab(commentData), commentLayer);
+            if (comment == null)
             {
-                BuffCommentTrigger trigger = comment.GetComponent<BuffCommentTrigger>();
-                if (trigger != null)
-                {
-                    trigger.buffType = commentData.buffType.Value;
-                }
+                Debug.LogWarning("GetComment returned null for " + commentData.text);
+                return;
             }
+
+
+            if (comment == null) return;
 
             RectTransform rect = comment.GetComponent<RectTransform>();
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
@@ -99,6 +82,7 @@ namespace TechC
 
             StartCoroutine(MoveComment(rect));
         }
+
 
         IEnumerator MoveComment(RectTransform rect)
         {
@@ -108,6 +92,7 @@ namespace TechC
                 yield return null; /* 次のフレームまで待機 */
             }
             rect.gameObject.SetActive(false);
+            CommentFactory.I.ReturnComment(rect.gameObject);
         }
 
         /* 最初にコメントを表示 / 非表示にする座標を取得する */
@@ -122,6 +107,24 @@ namespace TechC
             topLeftDespawnPosY = topLeftDespawn.transform.position.y;
             buttonLeftDespawnPosY = buttonLeftDespawn.transform.position.y;
             despawnPosX = topLeftDespawn.transform.position.x;
+        }
+
+        private GameObject GetCommentPrefab(CommentData commentData)
+        {
+            switch (commentData.type)
+            {
+                case CommentType.Normal:
+                    return commentPrefab.gameObject;
+
+                case CommentType.AttackBuff:
+                    return AttackBuffPrefab.gameObject;
+                case CommentType.MapChange:
+                    return mapChangePrefab.gameObject;
+                case CommentType.SpeedBuff:
+                    return SpeedBuffPrefab.gameObject;
+                default:
+                    return null;
+            }
         }
     }
 }

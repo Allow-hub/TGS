@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 namespace TechC
 {
@@ -9,9 +10,39 @@ namespace TechC
         [SerializeField]
         private ObjectPool commentPool;
 
-        public void PlayComment()
+        public TMP_Text GetComment(CommentData commentData,GameObject commentPrefab ,Transform parent)
         {
-            // commentPool.GetObjectByName()
+            // string key = commentData.type.ToString(); // 例: "Normal", "SpeedBuff", ...
+            GameObject obj = commentPool.GetObject(commentPrefab);
+            var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
+            // Debug.Log(commentTrigger);
+            commentTrigger?.Init(commentPool);
+
+            if (obj != null)
+            {
+                TMP_Text text = obj.GetComponent<TMP_Text>();
+                text.text = commentData.text;
+                obj.SetActive(true);
+
+                if (commentData.buffType.HasValue)
+                {
+                    BuffCommentTrigger trigger = obj.GetComponent<BuffCommentTrigger>();
+                    if (trigger != null)
+                    {
+                        trigger.buffType = commentData.buffType.Value;
+                    }
+                }
+
+                return text;
+            }
+
+            return null;
         }
+
+        public void ReturnComment(GameObject comment)
+        {
+            commentPool.ReturnObject(comment);
+        }
+
     }
 }

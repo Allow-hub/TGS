@@ -220,7 +220,7 @@ namespace TechC
             CreateNotificationIcon(iconPath, tooltipText);
             // var w = WindowUtility.CreateWebWindow("https://www.youtube.com/");
             // windows.Add(w);
-            // SpawnWindows(1);
+            // SpawnWindows(100);
         }
         void SpawnWindows(int count)
         {
@@ -674,11 +674,11 @@ namespace TechC
             // foreach (var w in windows)
             // {
             //     Debug.Log(w);
-            //     int centerX = Screen.currentResolution.width / 2;
-            //     int centerY = Screen.currentResolution.height / 2;
+            //     // int centerX = Screen.currentResolution.width / 2;
+            //     // int centerY = Screen.currentResolution.height / 2;
 
-            //     var move = WindowUtility.MoveWindowToTargetPosition(w, centerX, 0, 1000f);
-            //     var reSize = WindowUtility.AnimateResizeWindow(w, 10, Screen.currentResolution.height, 1000f);
+            //     // var move = WindowUtility.MoveWindowToTargetPosition(w, centerX, 0, 1000f);
+            //     // var reSize = WindowUtility.AnimateResizeWindow(w, 10, Screen.currentResolution.height, 1000f);
             //     WindowUtility.SetWindowToForeground(w);
             //     WindowUtility.MoveWindow(w,speed,"up");
             //     WindowUtility.MoveWindow(w, speed, "right");

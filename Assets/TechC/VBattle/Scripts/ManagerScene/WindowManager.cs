@@ -220,7 +220,7 @@ namespace TechC
             CreateNotificationIcon(iconPath, tooltipText);
             // var w = WindowUtility.CreateWebWindow("https://www.youtube.com/");
             // windows.Add(w);
-            // SpawnWindows(100);
+            // SpawnWindows(1);
         }
         void SpawnWindows(int count)
         {
@@ -263,11 +263,12 @@ namespace TechC
         /// </summary>
         private void OnDestroy()
         {
-            foreach(var w in windows){
-                            Debug.Log(windows.Count);
+            // foreach (var w in windows)
+            // {
+            //     Debug.Log(windows.Count);
 
-                WindowUtility.DestroyWindowHandle(w);
-            }
+            //     WindowUtility.DestroyWindowHandle(w);
+            // }
             // アイコンとウィンドウの破棄
             RemoveNotificationIcon();
         }
@@ -670,18 +671,18 @@ namespace TechC
             {
                 RefreshIcon();
             }
-            foreach (var w in windows)
-            {
-                Debug.Log(w);
-                // int centerX = Screen.currentResolution.width / 2;
-                // int centerY = Screen.currentResolution.height / 2;
+            // foreach (var w in windows)
+            // {
+            //     Debug.Log(w);
+            //     int centerX = Screen.currentResolution.width / 2;
+            //     int centerY = Screen.currentResolution.height / 2;
 
-                // var move = WindowUtility.MoveWindowToTargetPosition(w, centerX, 0, 1000f);
-                // var reSize = WindowUtility.AnimateResizeWindow(w, 10, Screen.currentResolution.height, 1000f);
-                WindowUtility.SetWindowToForeground(w);
-                WindowUtility.MoveWindow(w,speed,"up");
-                WindowUtility.MoveWindow(w, speed, "right");
-            }
+            //     var move = WindowUtility.MoveWindowToTargetPosition(w, centerX, 0, 1000f);
+            //     var reSize = WindowUtility.AnimateResizeWindow(w, 10, Screen.currentResolution.height, 1000f);
+            //     WindowUtility.SetWindowToForeground(w);
+            //     WindowUtility.MoveWindow(w,speed,"up");
+            //     WindowUtility.MoveWindow(w, speed, "right");
+            // }
 
         }
 

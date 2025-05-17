@@ -81,10 +81,6 @@ namespace TechC.Player
         // ジャンプ入力処理
         public void OnJump(InputAction.CallbackContext context)
         {
-
-            // var uri = new System.Uri("https://www.youtube.com/");
-            // Application.OpenURL(uri.AbsoluteUri);
-
             bool started = context.started;
             bool canceled = context.canceled;
 

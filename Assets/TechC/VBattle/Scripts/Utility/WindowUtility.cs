@@ -839,7 +839,9 @@ namespace TechC
             }
             return rect;
         }
+
         
+
         #endregion
 
         #region ウィンドウ検索

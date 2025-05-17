@@ -11,10 +11,17 @@ namespace TechC
     public class Ame_WeakAttack : WeakAttack
     {
         [SerializeField] private GameObject sword;
+        [SerializeField] private GameObject slash;
+        [SerializeField] private GameObject flyingSlash;
 
-        public override void NeutralAttack()
+        public override async void NeutralAttack()
         {
             base.NeutralAttack();
+            // var slObj=CharaEffectFactory.I.GetEffectObj(slash, sword.transform.position, Quaternion.identity);
+            // await DelayUtility.RunAfterDelay(3f, () =>
+            // {
+            //     CharaEffectFactory.I.ReturnEffectObj(slObj);
+            // });
         }
 
         public override void LeftAttack()

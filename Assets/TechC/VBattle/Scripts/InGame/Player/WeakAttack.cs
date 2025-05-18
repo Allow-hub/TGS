@@ -62,6 +62,14 @@ namespace TechC
             RegisterAttackData(AttackType.Up, upAttackData);
         }
 
+        public AttackData CheckNeutralCombo()
+        {
+            AttackData nextAttack = neutralComboChecker.GetNextNeutralAttackData(
+            neutralAttackData_1,
+            neutralAttackData_2,
+            neutralAttackData_3);
+            return nextAttack;
+        }
         public override void NeutralAttack()
         {
             // ニュートラルコンボチェッカーに次の攻撃データを取得
@@ -70,7 +78,7 @@ namespace TechC
                 neutralAttackData_2,
                 neutralAttackData_3
             );
-            CustomLogger.Info("ニュートラル番号"+nextAttack.name,"comboCheck");
+            CustomLogger.Info("ニュートラル番号" + nextAttack.name, "comboCheck");
             ExecuteAttack(nextAttack);
         }
 

@@ -14,14 +14,15 @@ namespace TechC
         [SerializeField] private GameObject slash;
         [SerializeField] private GameObject flyingSlash;
 
-        public override async void NeutralAttack()
+        public override  void NeutralAttack()
         {
             base.NeutralAttack();
-            // var slObj=CharaEffectFactory.I.GetEffectObj(slash, sword.transform.position, Quaternion.identity);
-            // await DelayUtility.RunAfterDelay(3f, () =>
-            // {
-            //     CharaEffectFactory.I.ReturnEffectObj(slObj);
-            // });
+            var slObj = CharaEffectFactory.I.GetEffectObj(slash, sword.transform.position, sword.transform.rotation);
+
+            DelayUtility.StartDelayedAction(this, 3f, () =>
+            {
+                CharaEffectFactory.I.ReturnEffectObj(slObj);
+            });
         }
 
         public override void LeftAttack()

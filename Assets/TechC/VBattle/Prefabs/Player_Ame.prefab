@@ -353,7 +353,8 @@ MonoBehaviour:
   upAttackData: {fileID: 11400000, guid: 5dccbb77c623467498465bb8b2f1a3fd, type: 2}
   sword: {fileID: 5456214866192646022}
   slash: {fileID: 1088245378690188311, guid: 6a3deabea98e2b448a2b20a9ac3edfd6, type: 3}
-  flyingSlash: {fileID: 0}
+  flyingSlash: {fileID: 1088245378690188311, guid: 6a3deabea98e2b448a2b20a9ac3edfd6,
+    type: 3}
 --- !u!114 &465988328092469450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -586,7 +587,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: ee81a76b01e372846aa8b2e4f3fac31b, type: 2}
+      objectReference: {fileID: 9100000, guid: 4ce435df7a46db644aa4d544ee5cb58c, type: 2}
     - target: {fileID: 7079368333751177568, guid: f0d2f52e1a5c3e141aa4c578a9abbdf0,
         type: 3}
       propertyPath: m_Name

@@ -18,8 +18,8 @@ MonoBehaviour:
   data:
     attackType: 0
     attackStrength: 0
-  animationTrigger: IsNormalWeakAttack_1
-  animationSpeed: 1.5
+  animationTrigger: IsNormalWeakAttack_3
+  animationSpeed: 1.4
   attackDuration: 0.6
   damage: 10
   knockback: 2

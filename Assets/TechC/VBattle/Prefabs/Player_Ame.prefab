@@ -273,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 6455736973200020084}
-  characterData: {fileID: 11400000, guid: 2f8f9795b85e3e64babbdd0fcfc65a02, type: 2}
+  characterData: {fileID: 11400000, guid: 1e0c358320259ca49a99334feb4b7bef, type: 2}
   anim: {fileID: 6312422701497316807}
   commandHistory: {fileID: 3455362588810788779}
   effectPool: {fileID: 0}
@@ -314,12 +314,12 @@ MonoBehaviour:
   comboSystem: {fileID: 2764965064054818122}
   hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
     type: 3}
-  attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
-  neutralAttackData: {fileID: 11400000, guid: 8d2104333482b54429548c7136d5d182, type: 2}
-  leftAttackData: {fileID: 11400000, guid: c8335dd7c6c33ea46b1f54962334acf2, type: 2}
-  rightAttackData: {fileID: 11400000, guid: 77b8573078c4dfc40addcd780f1e2e2a, type: 2}
-  downAttackData: {fileID: 11400000, guid: ebed5bf1f02784f4ea26b13f7cbaf5ba, type: 2}
-  upAttackData: {fileID: 11400000, guid: 9babdb7dcadae81489b1460971521193, type: 2}
+  attackSet: {fileID: 11400000, guid: 39a29be2c52e6e04d81ad15576cb5513, type: 2}
+  neutralAttackData: {fileID: 11400000, guid: 16497d6d11368c846b855596280065e5, type: 2}
+  leftAttackData: {fileID: 11400000, guid: d9e2ee322cf4b7f4d9c40e0fff43b266, type: 2}
+  rightAttackData: {fileID: 11400000, guid: 4860b3839fc60684ea088f15f0764bea, type: 2}
+  downAttackData: {fileID: 11400000, guid: 701b30260febc674b938c054bff32e43, type: 2}
+  upAttackData: {fileID: 11400000, guid: 76c05fcb9a3836341b5ef7637409d006, type: 2}
 --- !u!114 &9141137595621075143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -340,21 +340,25 @@ MonoBehaviour:
   comboSystem: {fileID: 2764965064054818122}
   hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
     type: 3}
-  attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
-  neutralAttackData_1: {fileID: 11400000, guid: 1177b74adfb8c274fb3d7a6f684de930,
+  attackSet: {fileID: 11400000, guid: 39a29be2c52e6e04d81ad15576cb5513, type: 2}
+  neutralAttackData_1: {fileID: 11400000, guid: b881478d9bb990d45900352a39d5e45e,
     type: 2}
-  neutralAttackData_2: {fileID: 11400000, guid: d41428c96ac295d48b2d8b6674005883,
+  neutralAttackData_2: {fileID: 11400000, guid: 2a60a10691bf42449bd9cda3ebc80448,
     type: 2}
-  neutralAttackData_3: {fileID: 11400000, guid: 58714b9130199ee44a3b4e0da4a4d09e,
+  neutralAttackData_3: {fileID: 11400000, guid: 6e1da5fd787648b4fb0c5e187a5b3f1e,
     type: 2}
-  leftAttackData: {fileID: 11400000, guid: 0887aa2ca1096ce4a8a665a4574d63fc, type: 2}
-  rightAttackData: {fileID: 11400000, guid: ab6836e8cfce6a14dbb0a8183535e7d2, type: 2}
-  downAttackData: {fileID: 11400000, guid: a15eb21c80d84594ca0db08ece37afce, type: 2}
-  upAttackData: {fileID: 11400000, guid: 5dccbb77c623467498465bb8b2f1a3fd, type: 2}
+  leftAttackData: {fileID: 11400000, guid: 7227077ffb4121a4fac040e7c65254b0, type: 2}
+  rightAttackData: {fileID: 11400000, guid: f91b55d3335a4594fac42ab41866e12d, type: 2}
+  downAttackData: {fileID: 11400000, guid: 00346c49c68554f4f83b1cbd4f709ba1, type: 2}
+  upAttackData: {fileID: 11400000, guid: b4913a5484cda7344a9dccbf3f637fa0, type: 2}
   sword: {fileID: 5456214866192646022}
   slash: {fileID: 1088245378690188311, guid: 6a3deabea98e2b448a2b20a9ac3edfd6, type: 3}
   flyingSlash: {fileID: 1088245378690188311, guid: 6a3deabea98e2b448a2b20a9ac3edfd6,
     type: 3}
+  slashEffectDistance: 2
+  n1Rot: {x: 0, y: 0, z: 0, w: 0}
+  n2Rot: {x: 0, y: 0, z: 0, w: 0}
+  n3Rot: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &465988328092469450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,12 +372,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 7797085845215521307}
-  attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
-  neutralAttackData: {fileID: 11400000, guid: 3fcedbbd66127104681bb1377676723b, type: 2}
-  leftAttackData: {fileID: 11400000, guid: 308936b8f368b0f469e9c32b656dfa79, type: 2}
-  rightAttackData: {fileID: 11400000, guid: 44fd3f1e079315745b6039883adc7d85, type: 2}
-  downAttackData: {fileID: 11400000, guid: 5ee8e9dc7d9c5eb4e8f6884ed748c6fb, type: 2}
-  upAttackData: {fileID: 11400000, guid: 017c8e2e8638cef49ab16133bc650355, type: 2}
+  attackSet: {fileID: 11400000, guid: 39a29be2c52e6e04d81ad15576cb5513, type: 2}
+  neutralAttackData: {fileID: 11400000, guid: 81cf7f7ee93a02446bd66f97ea4c9f20, type: 2}
+  leftAttackData: {fileID: 11400000, guid: 8a6e109b581571447adf127c74fab283, type: 2}
+  rightAttackData: {fileID: 11400000, guid: 2ac302e623505fd4d9d4045f07752577, type: 2}
+  downAttackData: {fileID: 11400000, guid: 81cfe34a1ef064849937a951a7cf394e, type: 2}
+  upAttackData: {fileID: 11400000, guid: f0c1833b3f73b6843a0da95d4af76ddc, type: 2}
   inputManager: {fileID: 6455736973200020084}
   canChargeDuration: 10
 --- !u!114 &3455362588810788779

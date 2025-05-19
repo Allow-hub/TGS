@@ -28,10 +28,11 @@ namespace TechC
         private AttackProcessor attackProcessor;
         private NeutralComboChecker neutralComboChecker;
 
+        protected AttackData currentNeutral;
         protected override void Awake()
         {
             base.Awake();
-            attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool,hitEffectPrefab,battleJudge);
+            attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool, hitEffectPrefab, battleJudge);
             neutralComboChecker = new NeutralComboChecker(commandHistory);
         }
 
@@ -62,14 +63,7 @@ namespace TechC
             RegisterAttackData(AttackType.Up, upAttackData);
         }
 
-        public AttackData CheckNeutralCombo()
-        {
-            AttackData nextAttack = neutralComboChecker.GetNextNeutralAttackData(
-            neutralAttackData_1,
-            neutralAttackData_2,
-            neutralAttackData_3);
-            return nextAttack;
-        }
+      
         public override void NeutralAttack()
         {
             // ニュートラルコンボチェッカーに次の攻撃データを取得
@@ -78,6 +72,8 @@ namespace TechC
                 neutralAttackData_2,
                 neutralAttackData_3
             );
+            
+            currentNeutral = nextAttack;
             CustomLogger.Info("ニュートラル番号" + nextAttack.name, "comboCheck");
             ExecuteAttack(nextAttack);
         }

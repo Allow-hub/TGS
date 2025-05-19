@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 6455736973200020084}
-  characterData: {fileID: 11400000, guid: 2f8f9795b85e3e64babbdd0fcfc65a02, type: 2}
+  characterData: {fileID: 11400000, guid: a951c919dd94f2a4894dbfb6ad1795a2, type: 2}
   anim: {fileID: 5840886228969503664}
   commandHistory: {fileID: 3455362588810788779}
   effectPool: {fileID: 0}

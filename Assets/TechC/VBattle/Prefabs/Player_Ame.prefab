@@ -287,6 +287,7 @@ MonoBehaviour:
   wallBounceMultiplier: 3
   enableWallBounce: 1
   playerID: 1
+  hitCollider: {fileID: 6296229147825448347}
   hpPresenter: {fileID: 0}
   defaultAnimSpeed: 1
   gaugePresenter: {fileID: 0}
@@ -353,12 +354,17 @@ MonoBehaviour:
   upAttackData: {fileID: 11400000, guid: b4913a5484cda7344a9dccbf3f637fa0, type: 2}
   sword: {fileID: 5456214866192646022}
   slash: {fileID: 1088245378690188311, guid: 6a3deabea98e2b448a2b20a9ac3edfd6, type: 3}
-  flyingSlash: {fileID: 1088245378690188311, guid: 6a3deabea98e2b448a2b20a9ac3edfd6,
+  flyingSlash: {fileID: 3682691298139770513, guid: 275400ab36e1ddc41aa64a7293900ddb,
     type: 3}
+  flower: {fileID: 3682691298139770513, guid: 4703b6914a4ab9043a44c257de39c539, type: 3}
   slashEffectDistance: 2
-  n1Rot: {x: 0, y: 0, z: 0, w: 0}
-  n2Rot: {x: 0, y: 0, z: 0, w: 0}
+  n1Rot: {x: 0.3826835, y: 0, z: 0, w: -0.9238795}
+  n2Rot: {x: 0.5686695, y: 0.10692081, z: -0.07486677, w: 0.81214404}
   n3Rot: {x: 0, y: 0, z: 0, w: 0}
+  flyingSlashSpeed: 5
+  changeHitBox: {x: 0.3, y: 0.8, z: 0}
+  chageColliderSpeed: 10
+  slidingSpeed: 7
 --- !u!114 &465988328092469450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,7 +451,7 @@ PrefabInstance:
     - target: {fileID: 8471852384633192301, guid: 1157485f5f26da945b324c8fb584b0f0,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8471852384633192301, guid: 1157485f5f26da945b324c8fb584b0f0,
         type: 3}
@@ -470,22 +476,22 @@ PrefabInstance:
     - target: {fileID: 8471852384633192301, guid: 1157485f5f26da945b324c8fb584b0f0,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 0.69627476
       objectReference: {fileID: 0}
     - target: {fileID: 8471852384633192301, guid: 1157485f5f26da945b324c8fb584b0f0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.7071068
+      value: 0.69627446
       objectReference: {fileID: 0}
     - target: {fileID: 8471852384633192301, guid: 1157485f5f26da945b324c8fb584b0f0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.123294964
       objectReference: {fileID: 0}
     - target: {fileID: 8471852384633192301, guid: 1157485f5f26da945b324c8fb584b0f0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.1232957
       objectReference: {fileID: 0}
     - target: {fileID: 8471852384633192301, guid: 1157485f5f26da945b324c8fb584b0f0,
         type: 3}
@@ -500,7 +506,7 @@ PrefabInstance:
     - target: {fileID: 8471852384633192301, guid: 1157485f5f26da945b324c8fb584b0f0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -20.084
       objectReference: {fileID: 0}
     - target: {fileID: 9140548537085011415, guid: 1157485f5f26da945b324c8fb584b0f0,
         type: 3}

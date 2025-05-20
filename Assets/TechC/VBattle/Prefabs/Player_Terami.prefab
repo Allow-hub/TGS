@@ -263,6 +263,7 @@ MonoBehaviour:
   wallBounceMultiplier: 3
   enableWallBounce: 1
   playerID: 1
+  hitCollider: {fileID: 1348013153893102447}
   hpPresenter: {fileID: 0}
   defaultAnimSpeed: 1
   gaugePresenter: {fileID: 0}

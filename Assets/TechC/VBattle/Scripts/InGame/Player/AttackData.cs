@@ -57,7 +57,9 @@ namespace TechC
         public Vector3 knockbackDirection = Vector3.forward;
 
         [Tooltip("カスタム方向を使用するかのフラグ")]
-        public bool useCustomKnockbackDirection = false; 
+        public bool useCustomKnockbackDirection = false;
+        public bool useSelfColliderForHitCheck = false;
+
 
         [Header("エフェクト")]
         public CharacterSEType characterSEType;

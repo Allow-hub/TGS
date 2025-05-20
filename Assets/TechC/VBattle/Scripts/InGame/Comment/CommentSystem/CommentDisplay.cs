@@ -13,8 +13,8 @@ namespace TechC
     {
         [Header("コメントのテキスト用Prefab")]
         [SerializeField] private TMP_Text commentPrefab;
-        [SerializeField] private TMP_Text SpeedBuffPrefab;
-        [SerializeField] private TMP_Text AttackBuffPrefab;
+        [SerializeField] private TMP_Text speedBuffPrefab;
+        [SerializeField] private TMP_Text attackBuffPrefab;
         [SerializeField] private TMP_Text mapChangePrefab;
 
         [Header("コメントが流れるエリア")]
@@ -60,11 +60,9 @@ namespace TechC
         public void SpawnComment()
         {
             var commentData = commentProvider.GetRandomComment();
-            if (commentData == null)
-            {
-                Debug.LogWarning("commentData is null");
-                return;
-            }
+
+            CharacterHelper.ProcessCommentText(commentData.text, this.transform);
+            Debug.Log(commentData.text);
 
             TMP_Text comment = CommentFactory.I.GetComment(commentData,GetCommentPrefab(commentData), commentLayer);
             if (comment == null)
@@ -117,11 +115,11 @@ namespace TechC
                     return commentPrefab.gameObject;
 
                 case CommentType.AttackBuff:
-                    return AttackBuffPrefab.gameObject;
+                    return attackBuffPrefab.gameObject;
                 case CommentType.MapChange:
                     return mapChangePrefab.gameObject;
                 case CommentType.SpeedBuff:
-                    return SpeedBuffPrefab.gameObject;
+                    return speedBuffPrefab.gameObject;
                 default:
                     return null;
             }

@@ -12,10 +12,10 @@ namespace TechC
 
         public TMP_Text GetComment(CommentData commentData,GameObject commentPrefab ,Transform parent)
         {
-            // string key = commentData.type.ToString(); // 例: "Normal", "SpeedBuff", ...
             GameObject obj = commentPool.GetObject(commentPrefab);
+            Debug.Log($"現在のcommentPrefabは{commentPrefab}");
             var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
-            // Debug.Log(commentTrigger);
+            Debug.Log(commentTrigger);
             commentTrigger?.Init(commentPool);
 
             if (obj != null)

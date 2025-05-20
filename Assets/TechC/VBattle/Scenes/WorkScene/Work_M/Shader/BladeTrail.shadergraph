@@ -791,7 +791,7 @@
     "hlslDeclarationOverride": 0,
     "m_Hidden": false,
     "m_Value": {
-        "x": -0.10000000149011612,
+        "x": -0.5,
         "y": 0.0,
         "z": 0.0,
         "w": 0.0
@@ -2181,7 +2181,7 @@
     "hlslDeclarationOverride": 0,
     "m_Hidden": false,
     "m_Value": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":10300,\"guid\":\"0000000000000000f000000000000000\",\"type\":0}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"6a3c8385eead5074abede8d42cdf942a\",\"type\":3}}",
         "m_Guid": ""
     },
     "isMainTexture": false,
@@ -2489,7 +2489,7 @@
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
     "m_Hidden": false,
-    "m_Value": 35.0,
+    "m_Value": 50.0,
     "m_FloatType": 0,
     "m_RangeValues": {
         "x": 0.0,
@@ -2530,10 +2530,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1579.0001220703125,
-            "y": -933.0000610351563,
-            "width": 133.0,
-            "height": 34.0
+            "x": -1579.333251953125,
+            "y": -935.3333129882813,
+            "width": 134.0,
+            "height": 36.0
         }
     },
     "m_Slots": [
@@ -3012,7 +3012,7 @@
     "hlslDeclarationOverride": 0,
     "m_Hidden": false,
     "m_Value": {
-        "x": -0.5,
+        "x": -0.10000000149011612,
         "y": 0.0,
         "z": 0.0,
         "w": 0.0
@@ -3312,10 +3312,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1581.0001220703125,
-            "y": -879.0000610351563,
-            "width": 135.0,
-            "height": 34.0
+            "x": -1579.3333740234375,
+            "y": -879.3333740234375,
+            "width": 136.0,
+            "height": 36.0
         }
     },
     "m_Slots": [
@@ -3450,7 +3450,7 @@
     "m_Value": {
         "r": 0.0,
         "g": 1.0,
-        "b": 0.9510724544525147,
+        "b": 0.8587489128112793,
         "a": 1.0
     },
     "isMainColor": false,
@@ -3833,8 +3833,8 @@
     "hlslDeclarationOverride": 0,
     "m_Hidden": false,
     "m_Value": {
-        "r": 0.0,
-        "g": 0.004273891448974609,
+        "r": 0.35473060607910159,
+        "g": 0.0,
         "b": 1.0,
         "a": 1.0
     },

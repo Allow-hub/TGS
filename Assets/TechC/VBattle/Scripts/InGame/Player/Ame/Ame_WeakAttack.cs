@@ -71,7 +71,7 @@ namespace TechC
         public override void RightAttack()
         {
             base.RightAttack();
-            var slObj = CharaEffectFactory.I.GetEffectObj(flyingSlash, transform.forward, Quaternion.identity);
+            var slObj = CharaEffectFactory.I.GetEffectObj(flyingSlash, transform.position, Quaternion.identity);
             var rb = slObj.GetComponent<Rigidbody>();
             //斬撃をrbで飛ばす
             rb.velocity = transform.forward * flyingSlashSpeed;

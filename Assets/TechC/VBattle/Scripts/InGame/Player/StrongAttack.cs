@@ -20,7 +20,7 @@ namespace TechC
         [SerializeField, ReadOnly] protected AttackData upAttackData;
 
         // コンポジション - 処理を委譲するコンポーネント
-        private AttackProcessor attackProcessor;
+        protected AttackProcessor attackProcessor;
 
         protected override void Awake()
         {
@@ -86,13 +86,13 @@ namespace TechC
                 DelayUtility.StartRepeatedAction(this, attackData.repeatDuration, attackData.repeatInterval, () =>
                 {
                     // 攻撃処理をAttackProcessorに委譲
-                    StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+                    StartCoroutine(attackProcessor.ProcessAttack(attackData));
                 });
             }
             else
             {
                 // 攻撃処理をAttackProcessorに委譲
-                StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+                StartCoroutine(attackProcessor.ProcessAttack(attackData));
             }
         }
     }

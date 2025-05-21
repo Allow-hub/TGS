@@ -36,14 +36,19 @@ namespace TechC
             this.hitEffectPrefab = hitEffectPrefab;
             this.battleJudge = battleJudge;
         }
-
+        public void HandleAttack(AttackData attackData, Collider hitCollider)
+        {
+            if (TryProcessHit(hitCollider, attackData))
+            {
+                HitConfirmed(hitCollider.transform.position);
+            }
+        }
         /// <summary>
         /// 攻撃処理を実行する
         /// </summary>
-        public IEnumerator ProcessAttack(AttackData attackData, MonoBehaviour coroutineRunner)
+        public IEnumerator ProcessAttack(AttackData attackData)
         {
             yield return new WaitForSeconds(attackData.hitTiming);
-
             // ヒットチェックを実行し、ヒットした場合にヒットストップを発生させる
             if (PerformAttackHitCheck(attackData))
             {
@@ -58,6 +63,7 @@ namespace TechC
         private bool PerformAttackHitCheck(AttackData attackData)
         {
             bool hitConfirmed = false;
+            Vector3 hitPosition = Vector3.zero;
 
             if (attackData.useSelfColliderForHitCheck)
             {
@@ -80,19 +86,10 @@ namespace TechC
                 {
                     if (IsOwnCollider(hitCollider)) continue;
 
-                    var targetController = GetOpponentController(hitCollider);
-                    if (targetController == null) continue;
-
-                    if (TryProcessGuard(targetController, hitCollider, attackData))
+                    if (TryProcessHit(hitCollider, attackData))
                     {
                         hitConfirmed = true;
-                        continue;
-                    }
-
-                    if (TryProcessDamage(hitCollider, attackData))
-                    {
-                        hitConfirmed = true;
-                        ProcessHitStun(hitCollider, attackData);
+                        hitPosition = hitCollider.transform.position; 
                     }
                 }
             }
@@ -107,20 +104,10 @@ namespace TechC
                 {
                     if (IsOwnCollider(hitCollider))
                         continue;
-
-                    var targetController = GetOpponentController(hitCollider);
-                    if (targetController == null) continue;
-
-                    if (TryProcessGuard(targetController, hitCollider, attackData))
+                    if (TryProcessHit(hitCollider, attackData))
                     {
                         hitConfirmed = true;
-                        continue;
-                    }
-
-                    if (TryProcessDamage(hitCollider, attackData))
-                    {
-                        hitConfirmed = true;
-                        ProcessHitStun(hitCollider, attackData);
+                        hitPosition = hitCollider.transform.position; 
                     }
                 }
             }
@@ -128,14 +115,7 @@ namespace TechC
             //攻撃が成功したとき
             if (hitConfirmed)
             {
-                currentHitEffect = objectPool.GetObject(hitEffectPrefab);
-                if (currentHitEffect != null)
-                {
-                    currentHitEffect.transform.position = characterController.transform.position;
-                    ReturnEffect().Forget();
-                }
-
-                comboSystem?.CheckCombos();
+                HitConfirmed(hitPosition);
             }
 
             //可視化
@@ -144,22 +124,56 @@ namespace TechC
 
             return hitConfirmed;
         }
+        private void HitConfirmed(Vector3 pos)
+        {
+            currentHitEffect = objectPool.GetObject(hitEffectPrefab);
+            if (currentHitEffect != null)
+            {
+                currentHitEffect.transform.position = pos;
+                ReturnEffect(currentHitEffect).Forget();
+            }
+
+            comboSystem?.CheckCombos();
+        }
+
+        /// <summary>
+        /// 対象のコライダーに対して、ガード・ダメージ・ヒットスタンなどを処理する
+        /// </summary>
+        /// <returns>攻撃がヒットしたかどうか</returns>
+        private bool TryProcessHit(Collider hitCollider, AttackData attackData)
+        {
+            var targetController = GetOpponentController(hitCollider);
+            if (targetController == null) return false;
+
+            if (TryProcessGuard(targetController, hitCollider, attackData))
+            {
+                return true;
+            }
+
+            if (TryProcessDamage(hitCollider, attackData))
+            {
+                ProcessHitStun(hitCollider, attackData);
+                return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// ヒットエフェクトを一定時間後にプールに戻す非同期メソッド
         /// </summary>
-        private async UniTask ReturnEffect()
+        private async UniTask ReturnEffect(GameObject retrunObj)
         {
-            if (currentHitEffect == null) return;
+            if (retrunObj == null) return;
 
             // 指定された時間待機
             await UniTask.Delay(TimeSpan.FromSeconds(hitEffectDuration));
 
             // エフェクトをプールに戻す
-            if (currentHitEffect != null)
+            if (retrunObj != null)
             {
-                objectPool.ReturnObject(currentHitEffect);
-                currentHitEffect = null;
+                objectPool.ReturnObject(retrunObj);
+                retrunObj = null;
                 Debug.Log("ヒットエフェクトをプールに返却しました");
             }
         }
@@ -199,9 +213,6 @@ namespace TechC
         /// <summary>
         /// 対戦相手のコントローラーを取得
         /// </summary>
-        /// <summary>
-        /// 対戦相手のコントローラーを取得
-        /// </summary>
         private Player.CharacterController GetOpponentController(Collider collider)
         {
             // nullチェック
@@ -231,8 +242,6 @@ namespace TechC
                 return null;
             }
 
-            // オプションとして、毎回新しいコンポーネントを取得する代わりにキャッシュを活用
-            // これは呼び出し元のコンテキストに依存するため、慎重に実装する必要があります
             return opponentController;
         }
 
@@ -303,32 +312,6 @@ namespace TechC
                     hitConfirmed ? Color.red : hitboxColor // ヒット時は赤く表示
                 );
             }
-        }
-
-        /// <summary>
-        /// ゲージ増加処理
-        /// </summary>
-        public void CheckAndAddGauge(AttackData attackData)
-        {
-            // チャージ可能状態かチェック
-            if (characterController.IsChargeEnabled())
-            {
-                // 基本チャージ量（攻撃の種類や威力に応じて変動可能）
-                float chargeAmount = attackData.damage * 0.5f;
-
-                // ゲージ増加処理
-                characterController.NotBoolAddSpecialGauge(chargeAmount);
-
-                // 必要に応じてエフェクト表示
-                ShowChargeEffect(attackData.damage);
-            }
-        }
-
-        // エフェクト表示用
-        private void ShowChargeEffect(float amount)
-        {
-            // チャージエフェクトを表示するコード
-            Debug.Log($"ゲージチャージ! +{amount * 0.5f}");
         }
     }
 }

@@ -12,6 +12,7 @@ namespace TechC
         [SerializeField] private AttackData attackData;
         /// 自分が所属するオブジェクトプール
         private ObjectPool objectPool;
+        private AttackProcessor attackProcessor;
         private int ownerId;
 
         /// <summary>
@@ -28,12 +29,13 @@ namespace TechC
         /// </summary>
         /// <param name="id">Player.CharacterControllerのPlayerId</param>
         public void SetOwnerId(int id) => ownerId = id;
+        public void SetAttackProcessor(AttackProcessor attackProcessor) => this.attackProcessor = attackProcessor;
         private void OnTriggerEnter(Collider other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
             var opponentId = other.gameObject.GetComponentInParent<Player.CharacterController>().PlayerID;
-            if (ownerId != opponentId) return;
-            
+            if (ownerId == opponentId) return;
+            attackProcessor.HandleAttack(attackData, other);
         }
     }
 }

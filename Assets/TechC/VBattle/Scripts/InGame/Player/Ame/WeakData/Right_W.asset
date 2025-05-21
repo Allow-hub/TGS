@@ -31,12 +31,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   hitboxOffset: {x: 0, y: 1, z: 1}
-  hitTiming: 0.3
+  hitTiming: 0
   hitStopDuration: 0.9
   hitStopTimeScale: 0.8
   knockbackDirection: {x: 0, y: 1, z: 1}
   useCustomKnockbackDirection: 1
-  useSelfColliderForHitCheck: 0
+  useSelfColliderForHitCheck: 1
   characterSEType: 0
   characterVoiceType: 0
   effectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,

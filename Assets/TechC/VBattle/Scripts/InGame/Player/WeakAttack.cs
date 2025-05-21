@@ -28,10 +28,11 @@ namespace TechC
         private AttackProcessor attackProcessor;
         private NeutralComboChecker neutralComboChecker;
 
+        protected AttackData currentNeutral;
         protected override void Awake()
         {
             base.Awake();
-            attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool,hitEffectPrefab,battleJudge);
+            attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool, hitEffectPrefab, battleJudge);
             neutralComboChecker = new NeutralComboChecker(commandHistory);
         }
 
@@ -62,6 +63,7 @@ namespace TechC
             RegisterAttackData(AttackType.Up, upAttackData);
         }
 
+      
         public override void NeutralAttack()
         {
             // ニュートラルコンボチェッカーに次の攻撃データを取得
@@ -70,7 +72,9 @@ namespace TechC
                 neutralAttackData_2,
                 neutralAttackData_3
             );
-            CustomLogger.Info("ニュートラル番号"+nextAttack.name,"comboCheck");
+            
+            currentNeutral = nextAttack;
+            CustomLogger.Info("ニュートラル番号" + nextAttack.name, "comboCheck");
             ExecuteAttack(nextAttack);
         }
 
@@ -97,8 +101,19 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
-            // 攻撃処理をAttackProcessorに委譲
-            StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+            if (attackData.canRepeat)
+            {
+                DelayUtility.StartRepeatedAction(this, attackData.repeatDuration, attackData.repeatInterval, () =>
+                {
+                    // 攻撃処理をAttackProcessorに委譲
+                    StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+                });
+            }
+            else
+            {
+                // 攻撃処理をAttackProcessorに委譲
+                StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+            }
         }
 
 

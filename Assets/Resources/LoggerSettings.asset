@@ -73,7 +73,7 @@ MonoBehaviour:
   - physics
   - default
   - comboCheck
-  - comboClear
   _disabledCategoryIds:
   - state
   - window
+  - comboClear

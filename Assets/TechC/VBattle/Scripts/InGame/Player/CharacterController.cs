@@ -34,6 +34,8 @@ namespace TechC.Player
         [SerializeField] private bool enableWallBounce = true; // 壁反発機能の有効/無効
         [Header("プレイヤー設定")]
         [SerializeField] private int playerID = 1; // 1Pか2Pかを識別するID
+        [SerializeField] private CapsuleCollider hitCollider;
+
 
         [Header("HP設定")]
         [SerializeField] private HPPresenter hpPresenter;
@@ -72,6 +74,11 @@ namespace TechC.Player
 
         // 戦闘関連
         private HitData lastHitData;
+        private Coroutine sizeChangeRoutine;
+        private Vector3 defaultSize;     // x=radius, y=height
+        private Vector3 defaultCenter;   // centerを戻すために保存
+
+
         #endregion
 
         #region プロパティ
@@ -94,6 +101,8 @@ namespace TechC.Player
 
             // パラメータ初期化
             currentGuardPower = characterData.GuardPower;
+            defaultSize = new Vector3(hitCollider.radius, hitCollider.height, 0f);
+            defaultCenter = hitCollider.center;
 
         }
 
@@ -292,6 +301,56 @@ namespace TechC.Player
                 rb.AddForce(Vector3.down * characterData.FastFallSpeed, ForceMode.Acceleration);
             }
         }
+
+        public void ChangeColliderTrigger(bool b) => hitCollider.isTrigger = b;
+
+        /// <summary>
+        /// 当たり判定を変化させる
+        /// </summary>
+        /// <param name="newSize">x=radius, y=height, z=未使用 or 将来拡張</param>
+        /// <param name="transitionSpeed">補間速度（1以上で推奨）</param>
+        public void ChangeHitCollider(Vector3 newSize, float transitionSpeed, Vector3? newCenter = null)
+        {
+            if (sizeChangeRoutine != null)
+                StopCoroutine(sizeChangeRoutine);
+
+            Vector3 targetCenter = newCenter ?? new Vector3(0, newSize.y / 2f, 0);
+            sizeChangeRoutine = StartCoroutine(ResizeColliderRoutine(newSize, transitionSpeed, targetCenter));
+        }
+        public void ResetHitCollider(float transitionSpeed = 5f)
+        {
+            ChangeHitCollider(defaultSize, transitionSpeed, defaultCenter);
+        }
+
+
+        private IEnumerator ResizeColliderRoutine(Vector3 targetSize, float speed, Vector3 targetCenter)
+        {
+            float t = 0f;
+
+            float startRadius = hitCollider.radius;
+            float startHeight = hitCollider.height;
+            Vector3 startCenter = hitCollider.center;
+
+            float targetRadius = targetSize.x;
+            float targetHeight = targetSize.y;
+
+            while (t < 1f)
+            {
+                t += Time.deltaTime * speed;
+
+                hitCollider.radius = Mathf.Lerp(startRadius, targetRadius, t);
+                hitCollider.height = Mathf.Lerp(startHeight, targetHeight, t);
+                hitCollider.center = Vector3.Lerp(startCenter, targetCenter, t);
+
+                yield return null;
+            }
+
+            // 最終補正
+            hitCollider.radius = targetRadius;
+            hitCollider.height = targetHeight;
+            hitCollider.center = targetCenter;
+        }
+
         #endregion
 
         #region ジャンプ関連メソッド
@@ -618,6 +677,8 @@ namespace TechC.Player
         /// キャラクターデータを取得
         /// </summary>
         public CharacterData GetCharacterData() => characterData;
+
+        public Collider GetCollider() => hitCollider;
         #endregion
 
         #region Unity内部コールバック

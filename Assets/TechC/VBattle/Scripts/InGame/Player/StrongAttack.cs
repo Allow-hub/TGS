@@ -25,7 +25,7 @@ namespace TechC
         protected override void Awake()
         {
             base.Awake();
-            attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool, hitEffectPrefab,battleJudge);
+            attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool, hitEffectPrefab, battleJudge);
         }
 
         public void OnValidate()
@@ -81,12 +81,19 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
-
-            // ログ出力（元のStrongAttackの処理）
-            Debug.Log($"強攻撃を実行: {attackData.attackName}, ダメージ: {attackData.damage}");
-
-            // 攻撃処理をAttackProcessorに委譲
-            StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+            if (attackData.canRepeat)
+            {
+                DelayUtility.StartRepeatedAction(this, attackData.repeatDuration, attackData.repeatInterval, () =>
+                {
+                    // 攻撃処理をAttackProcessorに委譲
+                    StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+                });
+            }
+            else
+            {
+                // 攻撃処理をAttackProcessorに委譲
+                StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+            }
         }
     }
 }

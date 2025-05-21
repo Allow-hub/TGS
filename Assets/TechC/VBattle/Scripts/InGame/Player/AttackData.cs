@@ -32,6 +32,12 @@ namespace TechC
         public int damage;
 
         public float knockback;
+        [Tooltip("繰り返し攻撃の間隔")]
+        public bool canRepeat;
+        [Tooltip("繰り返し攻撃の間隔")]
+        public float repeatInterval;
+        [Tooltip("繰り返し攻撃の時間")]
+        public float repeatDuration;
 
         [Tooltip("攻撃の半径")]
         public float radius;
@@ -57,7 +63,9 @@ namespace TechC
         public Vector3 knockbackDirection = Vector3.forward;
 
         [Tooltip("カスタム方向を使用するかのフラグ")]
-        public bool useCustomKnockbackDirection = false; 
+        public bool useCustomKnockbackDirection = false;
+        public bool useSelfColliderForHitCheck = false;
+
 
         [Header("エフェクト")]
         public CharacterSEType characterSEType;

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7760075852823559747}
   - component: {fileID: 8106234677022096083}
-  - component: {fileID: 2645167056380359738}
+  - component: {fileID: 2086342043553265806}
   m_Layer: 0
   m_Name: EffectPool
   m_TagString: EffectPool
@@ -26,13 +26,16 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3086193423111936143}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7788974714555831937}
   - {fileID: 2156814656098673068}
+  - {fileID: 3265254626724855524}
+  - {fileID: 2048542758016301631}
+  - {fileID: 8506848275812203219}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8106234677022096083
@@ -48,24 +51,574 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolItems:
-  - name: HItEffect
-    prefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+  - name: NormalComment
+    prefab: {fileID: 3340635525092225523, guid: 7fa3747485c5d784294c1a896a63b3a0,
       type: 3}
     parent: {fileID: 8174553201560779350}
     initialSize: 20
-  - name: Debris
-    prefab: {fileID: 5164942412983795581, guid: 59e062bc7fca5e642979a693de18b225,
+  - name: AttackComment
+    prefab: {fileID: 6856130345347563706, guid: 9d8b38e2e9afd0b4f941ec35abc9625d,
       type: 3}
     parent: {fileID: 3113341864262424346}
     initialSize: 20
-  - name: Speed
+  - name: SpeedComment
     prefab: {fileID: 6856130345347563706, guid: 52a7950d530170d47a73fa47a3e01232,
       type: 3}
-    parent: {fileID: 3113341864262424346}
+    parent: {fileID: 4264720970493812899}
     initialSize: 20
+  - name: MapChangeComment
+    prefab: {fileID: 5478339931453205564, guid: 8e5cbdeb15c5cc74bbe7291afb8c8c04,
+      type: 3}
+    parent: {fileID: 3379213151937128818}
+    initialSize: 20
+  - name: a_jp
+    prefab: {fileID: 5083775759929195693, guid: d6b6bc717e40984458901071142c8cc0,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ba_jp
+    prefab: {fileID: 8751098186752251141, guid: ec0f8b42b05180d45ae56e5ab395e17e,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: be_jp
+    prefab: {fileID: 4354920597626143520, guid: d20a8f99989b8314a9b66952b4e09883,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: bi_jp
+    prefab: {fileID: 6458586124767807867, guid: a6aa7102e8fd2f24bac9596f46ebaf7c,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: bo_jp
+    prefab: {fileID: 338032236945793854, guid: 672ea88bc6fbc6f47b879f1e5d78f818, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: bu_jp
+    prefab: {fileID: 2563440448937158897, guid: 6a95e3dc1e039eb47bf0a0741318cb05,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: bya_jp
+    prefab: {fileID: 702551328823815094, guid: ae475602faeddd04f9cea7630ea49dab, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: byo_jp
+    prefab: {fileID: 3398327907534885044, guid: b62645f2366c31145bc85e84d8c404ab,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: byu_jp
+    prefab: {fileID: 8211049866012613792, guid: 786379fd2e86fbe4a83e2cb49dbf953e,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: cha_jp
+    prefab: {fileID: 8496888138194667421, guid: 8e41bd6bf906c1a4b947a39394843129,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: chi_jp
+    prefab: {fileID: 5113097468340372859, guid: efa779eb1bcc6eb42b91058d8e1ec62b,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: cho_jp
+    prefab: {fileID: 8841149127364099976, guid: 0b48aaff069c9b146bd091e0ea645851,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: chu_jp
+    prefab: {fileID: 7260298909973377737, guid: 7272d70b7399f2c478c07d0ce2e00f0b,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: da_jp
+    prefab: {fileID: 8532094567005500952, guid: ac79e094716b9d94a961f3ca7d418520,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: de_jp
+    prefab: {fileID: 6618172458869300415, guid: f6680569d8b23174db13ed4d266b4a17,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: di_jp
+    prefab: {fileID: 3687585370559190661, guid: f5305d1956e624f48b4ad8718450a750,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: do_jp
+    prefab: {fileID: 2142920064555555989, guid: bcc1d788bd2d349468dd52b2151323f8,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: du_jp
+    prefab: {fileID: 6719395908816085712, guid: 47bd7c51be0718f47befca40394b0059,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: e_jp
+    prefab: {fileID: 3385720067286437586, guid: 9f5a9e8bb52027248aa897df331d9e4b,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: fu_jp
+    prefab: {fileID: 6930364911339297951, guid: 6a074cf40cd47e9458eb92cc42a12099,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ga_jp
+    prefab: {fileID: 3267289234447451177, guid: c05d394e26a98074caec2fa91a113639,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ge_jp
+    prefab: {fileID: 3804969453143401817, guid: c2443ea2d32c4c546af19149b08ba5ec,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: gi_jp
+    prefab: {fileID: 7646856280720656322, guid: 85b526ff407e6f54394c86eb4307c0f8,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: go_jp
+    prefab: {fileID: 5845959180383996355, guid: 41cf2258d488ecc449e8262b4aa72481,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: gu_jp
+    prefab: {fileID: 343865510042448083, guid: f6c4210219367d044a567c6070c3519e, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: gya_jp
+    prefab: {fileID: 6174132170293079532, guid: 8f44f3d8c9f76a54689e95301ab97451,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: gyo_jp
+    prefab: {fileID: 4517250123482854366, guid: 93c3d4fc17320794cbb31d4cb3d43d2b,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: gyu_jp
+    prefab: {fileID: 1155566892968317075, guid: 99089845fdc055d42b5e0833edc2667e,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ha_jp
+    prefab: {fileID: 3141161681705710232, guid: 5e633d79267d7484d873480a7ad4c93a,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: he_jp
+    prefab: {fileID: 8399893036952444581, guid: 6f7373e0aa474e44e9569c8ddf10c36a,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: hi_jp
+    prefab: {fileID: 3423694803346398849, guid: e9c389c2018a8a549aa31fb28443b327,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ho_jp
+    prefab: {fileID: 2695859516118011702, guid: 6c48197933b15a3478853c36c213973a,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: hya_jp
+    prefab: {fileID: 1790214260821850521, guid: 31ffffb3eb5568f4ab6a10c132c04e22,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: hyo_jp
+    prefab: {fileID: 878917705217715035, guid: 4c5e733d6e217d345a6dc9cd9a1e818d, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: hyu_jp
+    prefab: {fileID: 1110250155244809509, guid: a3e9861b4bbb48e498c1606af16f1850,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: i_jp
+    prefab: {fileID: 580392529432660326, guid: ad67998b7cd658d4389210d2db84e43d, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ja_jp
+    prefab: {fileID: 6221948143402299567, guid: 8387c48c744a3994c9dd84a5b775e4cc,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ji_jp
+    prefab: {fileID: 4390716448859099646, guid: 105451300b3cfe3498cc1b534d22a1a4,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: jo_jp
+    prefab: {fileID: 7532198657283252255, guid: adf113c777350e246b7f17a68133ad2a,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ju_jp
+    prefab: {fileID: 4148447713855054097, guid: 02e148cbd989726468465722a3d592a9,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ka_jp
+    prefab: {fileID: 4477529972498714248, guid: 4924769de302b644487fafcd98e0945a,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ke_jp
+    prefab: {fileID: 2356830860202209748, guid: 03a2033d532a4c04e986cb6d428f57bc,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ki_jp
+    prefab: {fileID: 3584760905879046719, guid: 6faf66b66406c914ea1ecff1be0f80e7,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ko_jp
+    prefab: {fileID: 2049370647817534947, guid: d92292167ec2e2d47a1b9a9bcac89248,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ku_jp
+    prefab: {fileID: 1531455257981745825, guid: 3b3d1f04d5d856c49a124fdfc7655b34,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: kya_jp
+    prefab: {fileID: 7547230250803034815, guid: dc015d5ea50e2e146a87780e891fa360,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: kyo_jp
+    prefab: {fileID: 629197111842340584, guid: fab3d77e0aefa6e4e88e1530f90cd2fe, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: kyu_jp
+    prefab: {fileID: 4149232212397692568, guid: 21ab8bba7b7164a4b94ac1539636d938,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ma_jp
+    prefab: {fileID: 5063420604134201773, guid: d77e6bcdb5c18da42ba9773fd3db370f,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: me_jp
+    prefab: {fileID: 2193569443759000385, guid: 08e090a4103d3c541afcbebd9af07ccd,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: mi_jp
+    prefab: {fileID: 8716893266714125279, guid: c71f859c590e5ad4eb5399fb6e9cca39,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: mo_jp
+    prefab: {fileID: 3359929169624781481, guid: f70b84bbe8a16fe4baa2680391c5f04c,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: mu_jp
+    prefab: {fileID: 7323192547854404665, guid: deb353b51648abf4686f08e4ce32418e,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: mya_jp
+    prefab: {fileID: 7995196407268568566, guid: f0b630788f1682a44a45931aebbb5cbd,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: myo_jp
+    prefab: {fileID: 7332404969863676286, guid: dec6834bad142ed4b9f54e1e22dfff1f,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: myu_jp
+    prefab: {fileID: 2216826028459421267, guid: cfece42a39378c242805658f5fb1666d,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: na_jp
+    prefab: {fileID: 1428767699495875276, guid: 19a4657ec7f22a2439f78c8269d46c1a,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ne_jp
+    prefab: {fileID: 7784321177355004315, guid: 3ab2a779193385944a9ad9dfb813d9d1,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ni_jp
+    prefab: {fileID: 6570152053462431676, guid: 53b0ec72db700844ca8d4d5d0fa0ecb4,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: no_jp
+    prefab: {fileID: 8961014593505911553, guid: 0f31900035632be4bba1b657e58d503e,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: nu_jp
+    prefab: {fileID: 8073076288952858507, guid: 102e2a3f42a74a04eb957d2bd549ad91,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: nya_jp
+    prefab: {fileID: 9007532862190905375, guid: 1e29d757500a89242a93bccd184ec159,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: nyo_jp
+    prefab: {fileID: 5161908592395669686, guid: 8e4cbe4ed73576543b3471c3436707f6,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: nyu_jp
+    prefab: {fileID: 4536448340916409165, guid: e21820f888311f44aa10deef480f0924,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: n_jp
+    prefab: {fileID: 104508853916800770, guid: 97353480c43041b4c8259b54db28ef5a, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: o_jp
+    prefab: {fileID: 8698886106197154443, guid: 68d1e7c986d7d664ca725e3143868e3a,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: pa_jp
+    prefab: {fileID: 6498311469748662538, guid: 780b8cf38a603fe418db30018d77ef59,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: pe_jp
+    prefab: {fileID: 8725954918241787248, guid: 11b42b7c403100247948e6a3ee7663d7,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: pi_jp
+    prefab: {fileID: 4850138835271812377, guid: b1dacd65c21527a4dbf4169390a11a82,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: po_jp
+    prefab: {fileID: 7213520045781656133, guid: d84a7867749f54f4897df4f59e7a0671,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: pu_jp
+    prefab: {fileID: 5884138405294784891, guid: 1b6442b888ca6ec4aa2d15806b53b616,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: pya_jp
+    prefab: {fileID: 509297592014430564, guid: 3eba00cf34093414d8f76264f0cffefe, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: pyo_jp
+    prefab: {fileID: 5258080571640683626, guid: 08f0db99b1d6d2e468b7ba11f5204ba4,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: pyu_jp
+    prefab: {fileID: 7876270658563459060, guid: 78a613dfb8048064f9beb5c1f5cdd84b,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ra_jp
+    prefab: {fileID: 202842376131032346, guid: d4ae959d7ae80d74ba49fbb0ad79d89b, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: re_jp
+    prefab: {fileID: 1270675732995819064, guid: 2f7ebf7f0d231104fa0a52a181721bbb,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ri_jp
+    prefab: {fileID: 4825216327866943388, guid: c35732c0e581e2c4a9bbb6d05630e39f,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ro_jp
+    prefab: {fileID: 440106744319564721, guid: 25d5582a157017d47a8ec7348f62e736, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ru_jp
+    prefab: {fileID: 1746743991613374458, guid: 66f9693f965cbdc478da529eb1982fc1,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: rya_jp
+    prefab: {fileID: 3128856444970494765, guid: 1e86e3be15be16f4b9ab6b7257d4e066,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ryo_jp
+    prefab: {fileID: 415318630814842653, guid: bdb23a372b1e43f459c3f5df8d5c0152, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ryu_jp
+    prefab: {fileID: 2032302224149073663, guid: 97ac09ead7c7e3344b6e193db0bf50e2,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: sa_jp
+    prefab: {fileID: 6143849824838279545, guid: a216a04b4819dbd4aa61248fa4cd1f7a,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: se_jp
+    prefab: {fileID: 1932026461692466020, guid: a31a16d6795512f499c1c44aa5dc5445,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: sha_jp
+    prefab: {fileID: 3308067714814586754, guid: 4a3c430cd8d644449a5a66f06238f129,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: shi_jp
+    prefab: {fileID: 1687841185689181772, guid: 67d1b733d68384843913cef84cb8d90b,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: sho_jp
+    prefab: {fileID: 4933739415146929077, guid: b39bee3698c4b554aaebedf7aaa122ff,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: shu_jp
+    prefab: {fileID: 5009307872077238475, guid: 79885cda7e4b3f449aac8655b50704a3,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: so_jp
+    prefab: {fileID: 4729599590533552096, guid: f8de791b18354fb48b04415fbb472d15,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: su_jp
+    prefab: {fileID: 3021091026390518235, guid: a1e49540b7d140840befadbe6e46bbdd,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ta_jp
+    prefab: {fileID: 3575705052027015368, guid: 4e4036e5b8a184c44bdb369878a51623,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: te_jp
+    prefab: {fileID: 3382314766098243422, guid: bb678a6276d05ea47ad80c0057aef6e0,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: to_jp
+    prefab: {fileID: 6801640602658250638, guid: 9c771fd78bb74354e8f6824acfc10a3e,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: tsu_jp
+    prefab: {fileID: 4841620099176950390, guid: c9dfae872151759438d8ce7aae968ac9,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: u_jp
+    prefab: {fileID: 2395271698618362865, guid: e89273ca0f86e92468f21ca69c209e43,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: wa_jp
+    prefab: {fileID: 321134467532303617, guid: 6acf16be7be27734bb2d19b2c4404e7a, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: wo_jp
+    prefab: {fileID: 331453271400364859, guid: b5ec6ac53f54047488fba95875d68b64, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: xa_jp
+    prefab: {fileID: 2759168667442068132, guid: bca2b34166b35a74c92d28fd02f507ba,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: xe_jp
+    prefab: {fileID: 6835103843764321582, guid: 9ecf2b8d0fb2aa245b7882e2285673cc,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: xi_jp
+    prefab: {fileID: 6964652863300948681, guid: 18b9195882ccfe64188c746e2f667396,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: xo_jp
+    prefab: {fileID: 2878039398936299823, guid: 51760e7507d63574d85cdbd36427104b,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: xu_jp
+    prefab: {fileID: 3088846711944415493, guid: c1d8d4713474928418308d3e3a84f9ec,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: xya_jp
+    prefab: {fileID: 3815242949128283412, guid: 6f67c53ec9dee6b41a0f0246e7c5cc22,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: xyo_jp
+    prefab: {fileID: 6477643795226727382, guid: 2290772ae0851674791340cbcda28c86,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: xyu_jp
+    prefab: {fileID: 1497061864853859712, guid: 54044404dbaf0164c902634075703108,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ya_jp
+    prefab: {fileID: 5567999828092590665, guid: 56cb7d6fe12357d41b294ce06ed1f5ae,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: yo_jp
+    prefab: {fileID: 7411365599174565789, guid: 41d7f73365239f94d9c40d0fc788a48e,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: yu_jp
+    prefab: {fileID: 6905955083860620577, guid: 13082a056ecd89b45898c85a82828ebd,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: za_jp
+    prefab: {fileID: 4512378014868371107, guid: f114ffe5009cf0043a808b7a95417228,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: ze_jp
+    prefab: {fileID: 137193975347296647, guid: a4d10387354002c449e9a3c4709237ce, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: zo_jp
+    prefab: {fileID: 264355739292844052, guid: ac5e3f70ca7993d46814654c0ac95d59, type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
+  - name: zu_jp
+    prefab: {fileID: 4043900670220861142, guid: ad05787e56c7b094cab96da90a8158ec,
+      type: 3}
+    parent: {fileID: 7143140406354947253}
+    initialSize: 5
   autoExpand: 1
   expandSize: 5
---- !u!114 &2645167056380359738
+--- !u!114 &2086342043553265806
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -74,10 +627,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3086193423111936143}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 461a000059b397d40ba54357a5e475e8, type: 3}
+  m_Script: {fileID: 11500000, guid: 6ca191b84e0b68c4fb9fca8a9b02f894, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectPool: {fileID: 8106234677022096083}
+  commentPool: {fileID: 8106234677022096083}
 --- !u!1 &3113341864262424346
 GameObject:
   m_ObjectHideFlags: 0
@@ -88,7 +641,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2156814656098673068}
   m_Layer: 0
-  m_Name: Debris
+  m_Name: AttackComment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,6 +662,99 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7760075852823559747}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3379213151937128818
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2048542758016301631}
+  m_Layer: 0
+  m_Name: MapChangeComment
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2048542758016301631
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3379213151937128818}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7760075852823559747}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4264720970493812899
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3265254626724855524}
+  m_Layer: 0
+  m_Name: SppedComment
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3265254626724855524
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4264720970493812899}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7760075852823559747}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7143140406354947253
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8506848275812203219}
+  m_Layer: 0
+  m_Name: 3DText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8506848275812203219
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7143140406354947253}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7760075852823559747}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8174553201560779350
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,7 +765,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7788974714555831937}
   m_Layer: 0
-  m_Name: HitEffect
+  m_Name: NormalComment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -13,8 +13,8 @@ namespace TechC
     {
         [Header("コメントのテキスト用Prefab")]
         [SerializeField] private TMP_Text commentPrefab;
-        [SerializeField] private TMP_Text SpeedBuffPrefab;
-        [SerializeField] private TMP_Text AttackBuffPrefab;
+        [SerializeField] private TMP_Text speedBuffPrefab;
+        [SerializeField] private TMP_Text attackBuffPrefab;
         [SerializeField] private TMP_Text mapChangePrefab;
 
         [Header("コメントが流れるエリア")]
@@ -61,37 +61,34 @@ namespace TechC
         {
             var commentData = commentProvider.GetRandomComment();
 
-            TMP_Text prefab;
+            TMP_Text comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData), commentLayer);
+
+            Color commentColor = Color.white;
             switch (commentData.type)
             {
-                case CommentType.Normal:
-                    prefab = commentPrefab;
+                case CommentType.AttackBuff:
+                    commentColor = Color.red;
                     break;
                 case CommentType.SpeedBuff:
-                    prefab = SpeedBuffPrefab;
-                    break;
-                case CommentType.AttackBuff:
-                    prefab = AttackBuffPrefab;
+                    commentColor = Color.blue;
                     break;
                 case CommentType.MapChange:
-                    prefab = mapChangePrefab;
-                    break;
-                default:
-                    prefab = commentPrefab;
+                    commentColor = Color.yellow;
                     break;
             }
 
-            TMP_Text comment = Instantiate(prefab, commentLayer);
-            comment.text = commentData.text;
+            CharacterHelper.ProcessCommentText(commentData.text, comment.transform, commentColor);
 
-            if (commentData.buffType.HasValue)
+
+            if (comment == null)
             {
-                BuffCommentTrigger trigger = comment.GetComponent<BuffCommentTrigger>();
-                if (trigger != null)
-                {
-                    trigger.buffType = commentData.buffType.Value;
-                }
+                Debug.LogWarning("GetComment returned null for " + commentData.text);
+                return;
             }
+
+            // Debug.Log(comment);
+
+            if (comment == null) return;
 
             RectTransform rect = comment.GetComponent<RectTransform>();
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
@@ -99,6 +96,7 @@ namespace TechC
 
             StartCoroutine(MoveComment(rect));
         }
+
 
         IEnumerator MoveComment(RectTransform rect)
         {
@@ -108,6 +106,7 @@ namespace TechC
                 yield return null; /* 次のフレームまで待機 */
             }
             rect.gameObject.SetActive(false);
+            CommentFactory.I.ReturnComment(rect.gameObject);
         }
 
         /* 最初にコメントを表示 / 非表示にする座標を取得する */
@@ -122,6 +121,23 @@ namespace TechC
             topLeftDespawnPosY = topLeftDespawn.transform.position.y;
             buttonLeftDespawnPosY = buttonLeftDespawn.transform.position.y;
             despawnPosX = topLeftDespawn.transform.position.x;
+        }
+
+        private GameObject GetCommentPrefab(CommentData commentData)
+        {
+            switch (commentData.type)
+            {
+                case CommentType.Normal:
+                    return commentPrefab.gameObject;
+                case CommentType.AttackBuff:
+                    return attackBuffPrefab.gameObject;
+                case CommentType.MapChange:
+                    return mapChangePrefab.gameObject;
+                case CommentType.SpeedBuff:
+                    return speedBuffPrefab.gameObject;
+                default:
+                    return null;
+            }
         }
     }
 }

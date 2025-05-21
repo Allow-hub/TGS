@@ -12,10 +12,23 @@ namespace TechC
         public BuffType buffType;
         private bool alreadyApplied = false;
 
+        private ObjectPool objectPool;
+
+        /// <summary>
+        /// 疑似的なコンストラクタ
+        /// </summary>
+        /// <param name="objectPool"></param>
+        public void Init(ObjectPool objectPool)
+        {
+            this.objectPool = objectPool;
+            // Debug.Log("Init");
+        }
+
         /// <summary>
         /// コメントにPlayerが当たったときにバフの効果とエフェクトを発動する
         /// </summary>
         /// <param name="other"></param>
+
         private void OnTriggerEnter(Collider other)
         {
             if (alreadyApplied) return;
@@ -40,14 +53,19 @@ namespace TechC
 
                 float effectTime = buff.remainingTime; /*バフのエフェクトの継続時間にバフの効果の時間を代入 */
 
+                // Debug.Log(id);
                 /* バフの種類ごとに適用するエフェクトを変える */
+                Debug.Log(buffType);
                 switch (buffType)
                 {
                     case BuffType.Speed:
-                        EffectFactory.I.PlayEffect("Speed", id, Quaternion.identity, effectTime);
+                        EffectFactory.I.PlayEffect("SpeedComment", id, Quaternion.identity, effectTime);
+                        Debug.Log("SpeedBuffが適用");
                         break;
                     case BuffType.Attack:
-                        EffectFactory.I.PlayEffect("Attack", id, Quaternion.identity, effectTime);
+                        EffectFactory.I.PlayEffect("AttackComment", id, Quaternion.identity, effectTime);
+                        Debug.Log("AttackBuffが適用");
+
                         break;
                     // 必要であれば他のバフタイプも追加できます
                     default:
@@ -56,7 +74,7 @@ namespace TechC
                 }
 
                 alreadyApplied = true;
-                gameObject.SetActive(false);
+                objectPool.ReturnObject(gameObject);
             }
         }
     }

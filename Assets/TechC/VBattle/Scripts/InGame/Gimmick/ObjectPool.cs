@@ -89,12 +89,12 @@ namespace TechC
 
             GameObject newObject = Instantiate(poolItem.prefab);
             newObject.SetActive(false);
-            
+
             if (poolItem.parent != null)
             {
                 newObject.transform.SetParent(poolItem.parent.transform);
             }
-            
+
             instanceToPoolItemMap[newObject] = poolItem;
             return newObject;
         }
@@ -143,7 +143,7 @@ namespace TechC
             if (objectPools.TryGetValue(prefab, out Queue<GameObject> pool) && pool.Count > 0)
             {
                 GameObject pooledObject = pool.Dequeue();
-                
+
                 // nullチェック（破棄されたオブジェクトの対応）
                 if (pooledObject == null)
                 {
@@ -154,7 +154,7 @@ namespace TechC
                         pooledObject = CreateNewInstance(poolItem);
                     }
                 }
-                
+
                 pooledObject.SetActive(true);
                 return pooledObject;
             }
@@ -168,7 +168,7 @@ namespace TechC
                     {
                         // プールの自動拡張
                         ExpandPool(poolItem, expandSize);
-                        
+
                         // 拡張後に再度オブジェクトを取得
                         if (objectPools[prefab].Count > 0)
                         {
@@ -177,7 +177,7 @@ namespace TechC
                             return pooledObject;
                         }
                     }
-                    
+
                     // 拡張しない場合または拡張後もプールが空の場合は新しいインスタンスを作成
                     GameObject newObject = CreateNewInstance(poolItem);
                     newObject.SetActive(true);
@@ -227,8 +227,8 @@ namespace TechC
             {
                 return GetObject(poolItem.prefab);
             }
-            
-            Debug.LogWarning($"名前 '{poolName}' のプールが見つかりません。");
+
+            // Debug.LogWarning($"名前 '{poolName}' のプールが見つかりません。");
             return null;
         }
 
@@ -250,8 +250,8 @@ namespace TechC
                 GameObject newObject = CreateNewInstance(poolItem);
                 objectPools[poolItem.prefab].Enqueue(newObject);
             }
-            
-            Debug.Log($"プール '{poolItem.name}' を {expandCount} 個拡張しました。現在のサイズ: {objectPools[poolItem.prefab].Count}");
+
+            // Debug.Log($"プール '{poolItem.name}' を {expandCount} 個拡張しました。現在のサイズ: {objectPools[poolItem.prefab].Count}");
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace TechC
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localRotation = Quaternion.identity;
             obj.transform.localScale = Vector3.one;
-            
+
             obj.SetActive(false);
 
             if (instanceToPoolItemMap.TryGetValue(obj, out ObjectPoolItem poolItem))
@@ -279,7 +279,7 @@ namespace TechC
                 {
                     obj.transform.SetParent(poolItem.parent.transform);
                 }
-                
+
                 if (objectPools.ContainsKey(poolItem.prefab))
                 {
                     objectPools[poolItem.prefab].Enqueue(obj);
@@ -306,7 +306,7 @@ namespace TechC
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             sb.AppendLine("Object Pool 統計:");
-            
+
             foreach (var poolItem in poolItems)
             {
                 if (poolItem.prefab != null && objectPools.ContainsKey(poolItem.prefab))
@@ -314,7 +314,7 @@ namespace TechC
                     sb.AppendLine($"プール '{poolItem.name}': {objectPools[poolItem.prefab].Count} オブジェクト");
                 }
             }
-            
+
             return sb.ToString();
         }
 
@@ -334,14 +334,23 @@ namespace TechC
                     }
                 }
             }
-            
+
             objectPools.Clear();
             instanceToPoolItemMap.Clear();
-            
+
             // プールを再初期化
             InitializeAllPools();
-            
+
             Debug.Log("すべてのオブジェクトプールをクリアしました。");
+        }
+
+        /// <summary>
+        /// 自動でプールの配列内にアイテムをセットします
+        /// </summary>
+        /// <param name="item"></param>
+        public void AddPoolItem(ObjectPoolItem item)
+        {
+            poolItems.Add(item);
         }
         
         /// <summary>

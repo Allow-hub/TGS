@@ -20,8 +20,8 @@ MonoBehaviour:
     attackStrength: 0
   animationTrigger: IsNormalWeakAttack_1
   animationSpeed: 1.5
-  attackDuration: 0.7
-  damage: 50
+  attackDuration: 0.3
+  damage: 10
   knockback: 2
   radius: 1
   targetLayers:

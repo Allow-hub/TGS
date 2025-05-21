@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 6455736973200020084}
-  characterData: {fileID: 11400000, guid: 2f8f9795b85e3e64babbdd0fcfc65a02, type: 2}
+  characterData: {fileID: 11400000, guid: a951c919dd94f2a4894dbfb6ad1795a2, type: 2}
   anim: {fileID: 5840886228969503664}
   commandHistory: {fileID: 3455362588810788779}
   effectPool: {fileID: 0}
@@ -263,6 +263,7 @@ MonoBehaviour:
   wallBounceMultiplier: 3
   enableWallBounce: 1
   playerID: 1
+  hitCollider: {fileID: 1348013153893102447}
   hpPresenter: {fileID: 0}
   defaultAnimSpeed: 1
   gaugePresenter: {fileID: 0}
@@ -514,7 +515,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: ee81a76b01e372846aa8b2e4f3fac31b, type: 2}
+      objectReference: {fileID: 9100000, guid: 3e78bb95f85701d4eb5e07897a740bd7, type: 2}
     - target: {fileID: 3398081967955415766, guid: ec31cf3449def3a47ae71d8d31cabe22,
         type: 3}
       propertyPath: m_ApplyRootMotion

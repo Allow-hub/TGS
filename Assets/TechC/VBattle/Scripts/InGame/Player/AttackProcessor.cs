@@ -24,11 +24,11 @@ namespace TechC
         private ComboSystem comboSystem;
 
         // ヒットエフェクトの持続時間（秒）
-         private float hitEffectDuration = 1.5f;
+        private float hitEffectDuration = 1.5f;
         private GameObject currentHitEffect;
         private ObjectPool objectPool;
         private BattleJudge battleJudge;
-       public AttackProcessor(Player.CharacterController controller, ComboSystem comboSystem, ObjectPool objectPool, GameObject hitEffectPrefab, BattleJudge battleJudge)
+        public AttackProcessor(Player.CharacterController controller, ComboSystem comboSystem, ObjectPool objectPool, GameObject hitEffectPrefab, BattleJudge battleJudge)
         {
             this.characterController = controller;
             this.comboSystem = comboSystem;
@@ -57,67 +57,91 @@ namespace TechC
         /// </summary>
         private bool PerformAttackHitCheck(AttackData attackData)
         {
-            // 攻撃位置の計算
-            Vector3 attackPosition = CalculateAttackPosition(attackData);
-            // デバッグ用に情報を保存
-            UpdateDebugInfo(attackPosition, attackData.radius);
-
-            // 攻撃範囲内のコライダーを検出
-            Collider[] hitColliders = Physics.OverlapSphere(attackPosition, attackData.radius, attackData.targetLayers);
-
             bool hitConfirmed = false;
-            foreach (var hitCollider in hitColliders)
+
+            if (attackData.useSelfColliderForHitCheck)
             {
-                // 自分自身は除外
-                if (IsOwnCollider(hitCollider))
-                    continue;
-
-                // 対戦相手のコントローラーを取得
-                Player.CharacterController targetController = GetOpponentController(hitCollider);
-                if (targetController == null) continue;
-                // BattleJudgeを通じて攻撃対象が有効かどうかを確認
-                // if (battleJudge != null && !battleJudge.IsValidAttackTarget(targetController.PlayerID))
-                // {
-                //     Debug.Log($"Player {targetController.PlayerID} は現在攻撃対象として無効です");
-                //     continue;
-                // }
-
-                // ガード処理
-                if (TryProcessGuard(targetController, hitCollider, attackData))
+                Collider selfCollider = characterController.GetCollider();
+                if (selfCollider == null)
                 {
-                    hitConfirmed = true;
-                    continue;
+                    Debug.LogWarning("自キャラのコライダーが取得できませんでした");
+                    return false;
                 }
 
-                // ダメージ処理
-                if (TryProcessDamage(hitCollider, attackData))
+                // 自分のコライダーと接触しているコライダーを取得
+                Collider[] overlaps = Physics.OverlapBox(
+                    selfCollider.bounds.center,
+                    selfCollider.bounds.extents,
+                    selfCollider.transform.rotation,
+                    attackData.targetLayers
+                );
+
+                foreach (var hitCollider in overlaps)
                 {
-                    hitConfirmed = true;
-                    // ヒットスタン処理
-                    ProcessHitStun(hitCollider, attackData);
+                    if (IsOwnCollider(hitCollider)) continue;
+
+                    var targetController = GetOpponentController(hitCollider);
+                    if (targetController == null) continue;
+
+                    if (TryProcessGuard(targetController, hitCollider, attackData))
+                    {
+                        hitConfirmed = true;
+                        continue;
+                    }
+
+                    if (TryProcessDamage(hitCollider, attackData))
+                    {
+                        hitConfirmed = true;
+                        ProcessHitStun(hitCollider, attackData);
+                    }
+                }
+            }
+            else
+            {
+                // 通常の OverlapSphere チェック
+                Vector3 attackPosition = CalculateAttackPosition(attackData);
+                UpdateDebugInfo(attackPosition, attackData.radius);
+
+                Collider[] hitColliders = Physics.OverlapSphere(attackPosition, attackData.radius, attackData.targetLayers);
+                foreach (var hitCollider in hitColliders)
+                {
+                    if (IsOwnCollider(hitCollider))
+                        continue;
+
+                    var targetController = GetOpponentController(hitCollider);
+                    if (targetController == null) continue;
+
+                    if (TryProcessGuard(targetController, hitCollider, attackData))
+                    {
+                        hitConfirmed = true;
+                        continue;
+                    }
+
+                    if (TryProcessDamage(hitCollider, attackData))
+                    {
+                        hitConfirmed = true;
+                        ProcessHitStun(hitCollider, attackData);
+                    }
                 }
             }
 
+            //攻撃が成功したとき
             if (hitConfirmed)
             {
-                // ヒットエフェクトを生成し、変数に保存
                 currentHitEffect = objectPool.GetObject(hitEffectPrefab);
-                // Debug.Log(currentHitEffect);
-                // ヒット位置にエフェクトを配置
                 if (currentHitEffect != null)
                 {
-                    currentHitEffect.transform.position = attackPosition;
-                    
-                    // 非同期でエフェクトを返却
+                    currentHitEffect.transform.position = characterController.transform.position;
                     ReturnEffect().Forget();
                 }
-                
+
                 comboSystem?.CheckCombos();
             }
 
-            // ヒットボックスの可視化
-            VisualizeHitbox(attackPosition, attackData.radius, hitConfirmed);
-            
+            //可視化
+            if (!attackData.useSelfColliderForHitCheck)
+                VisualizeHitbox(CalculateAttackPosition(attackData), attackData.radius, hitConfirmed);
+
             return hitConfirmed;
         }
 
@@ -127,10 +151,10 @@ namespace TechC
         private async UniTask ReturnEffect()
         {
             if (currentHitEffect == null) return;
-            
+
             // 指定された時間待機
             await UniTask.Delay(TimeSpan.FromSeconds(hitEffectDuration));
-            
+
             // エフェクトをプールに戻す
             if (currentHitEffect != null)
             {

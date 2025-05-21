@@ -67,7 +67,8 @@ namespace TechC
             Debug.Log("ガードが強制終了しました");
             isForceFinished = true;
             playerInputManager.ResetInput();
-
+            characterController.SetAnim(guardAnim, false);
+            guardObj.SetActive(false);
         }
     }
 }

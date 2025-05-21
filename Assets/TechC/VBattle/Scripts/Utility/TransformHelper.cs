@@ -49,5 +49,20 @@ namespace TechC
             if (direction.sqrMagnitude > 0.0001f)
                 transform.rotation = Quaternion.LookRotation(direction);
         }
+
+        // 値を置き換える系
+        public static Vector3 WithX(this Vector3 v, float x) => new Vector3(x, v.y, v.z);
+        public static Vector3 WithY(this Vector3 v, float y) => new Vector3(v.x, y, v.z);
+        public static Vector3 WithZ(this Vector3 v, float z) => new Vector3(v.x, v.y, z);
+
+        // 値を加算する系
+        public static Vector3 AddX(this Vector3 v, float x) => new Vector3(v.x + x, v.y, v.z);
+        public static Vector3 AddY(this Vector3 v, float y) => new Vector3(v.x, v.y + y, v.z);
+        public static Vector3 AddZ(this Vector3 v, float z) => new Vector3(v.x, v.y, v.z + z);
+
+        // 値を乗算する系
+        public static Vector3 MulX(this Vector3 v, float x) => new Vector3(v.x * x, v.y, v.z);
+        public static Vector3 MulY(this Vector3 v, float y) => new Vector3(v.x, v.y * y, v.z);
+        public static Vector3 MulZ(this Vector3 v, float z) => new Vector3(v.x, v.y, v.z * z);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Cysharp.Threading.Tasks;
+using System.Collections;
 using System.Collections.Generic;
 using TechC.Player;
 using UnityEngine;
@@ -23,8 +24,8 @@ namespace TechC
         {
             isForceFinished = false;
             characterController.SetAnim(crouchAnim, true);
-            if(IsFinished) 
-                characterController.SetAnim(crouchAnim,false);
+            if (IsFinished)
+                characterController.SetAnim(crouchAnim, false);
         }
 
         public void Undo()
@@ -34,7 +35,16 @@ namespace TechC
         public void ForceFinish()
         {
             isForceFinished = true;
-            characterController.SetAnim(crouchAnim, false);
+            ForceFinishAsync().Forget();
         }
+        public async UniTask ForceFinishAsync()
+        {
+            isForceFinished = true;
+            await DelayUtility.RunAfterDelay(0.3f, () =>
+            {
+                characterController.SetAnim(crouchAnim, false);
+            });
+        }
+
     }
 }

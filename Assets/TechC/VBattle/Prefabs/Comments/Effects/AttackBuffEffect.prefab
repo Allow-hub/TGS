@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5224400622287813177}
   m_Layer: 0
-  m_Name: PowerBuffEffect
+  m_Name: AttackBuffEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

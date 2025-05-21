@@ -494,6 +494,17 @@ PrefabInstance:
       propertyPath: poolItems.Array.size
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 1002689830977185266, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[1].prefab
+      value: 
+      objectReference: {fileID: 971276580557662903, guid: fd7e8cca3ad2cad4a94b3beb2a7b6fa2,
+        type: 3}
+    - target: {fileID: 1002689830977185266, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[2].parent
+      value: 
+      objectReference: {fileID: 1972585137}
     - target: {fileID: 1947574187364501273, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -502,22 +513,22 @@ PrefabInstance:
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: normalChance
-      value: 0.232
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: mapChangeChance
-      value: 0
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: speedBuffChance
-      value: 0
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: attackBuffChance
-      value: 0.338
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 2357770565247420618, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -1160,6 +1171,7 @@ MonoBehaviour:
   wallBounceMultiplier: 1.5
   enableWallBounce: 1
   playerID: 1
+  hitCollider: {fileID: 0}
   hpPresenter: {fileID: 0}
   defaultAnimSpeed: 1
   gaugePresenter: {fileID: 0}
@@ -2625,6 +2637,7 @@ MonoBehaviour:
   wallBounceMultiplier: 1.5
   enableWallBounce: 1
   playerID: 1
+  hitCollider: {fileID: 0}
   hpPresenter: {fileID: 0}
   defaultAnimSpeed: 1
   gaugePresenter: {fileID: 0}
@@ -2710,6 +2723,12 @@ MonoBehaviour:
   rightAttackData: {fileID: 0}
   downAttackData: {fileID: 0}
   upAttackData: {fileID: 0}
+--- !u!1 &1972585137 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5096440128107265922, guid: c2ba8867f924fc444b667e30e329ad17,
+    type: 3}
+  m_PrefabInstance: {fileID: 913436213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

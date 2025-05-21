@@ -35,7 +35,7 @@ namespace TechC
 
             if (other.CompareTag("Player"))
             {
-                Debug.Log("Buffコメントにあたった");
+                // Debug.Log("Buffコメントにあたった");
                 BuffBase buff = BuffFactory.CreateBuff(buffType);
 
                 if (buff != null)
@@ -53,15 +53,19 @@ namespace TechC
 
                 float effectTime = buff.remainingTime; /*バフのエフェクトの継続時間にバフの効果の時間を代入 */
 
-                Debug.Log(id);
+                // Debug.Log(id);
                 /* バフの種類ごとに適用するエフェクトを変える */
+                Debug.Log(buffType);
                 switch (buffType)
                 {
                     case BuffType.Speed:
                         EffectFactory.I.PlayEffect("SpeedComment", id, Quaternion.identity, effectTime);
+                        Debug.Log("SpeedBuffが適用");
                         break;
                     case BuffType.Attack:
                         EffectFactory.I.PlayEffect("AttackComment", id, Quaternion.identity, effectTime);
+                        Debug.Log("AttackBuffが適用");
+
                         break;
                     // 必要であれば他のバフタイプも追加できます
                     default:

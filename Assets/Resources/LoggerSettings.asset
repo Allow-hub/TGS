@@ -72,8 +72,8 @@ MonoBehaviour:
   - gamePlay
   - physics
   - default
-  - comboCheck
   _disabledCategoryIds:
   - state
   - window
   - comboClear
+  - comboCheck

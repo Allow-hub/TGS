@@ -202,6 +202,10 @@ namespace TechC.Player
 
         #region 物理・移動関連メソッド
         /// <summary>
+        /// 速度を0にする
+        /// </summary>
+        public void StopVelocity() => rb.velocity = Vector3.zero;
+        /// <summary>
         /// キャラクターに力を加える
         /// </summary>
         public void AddForcePlayer(Vector3 dir, float force, ForceMode forceMode)

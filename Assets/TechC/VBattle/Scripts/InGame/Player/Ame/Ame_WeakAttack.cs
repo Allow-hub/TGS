@@ -81,9 +81,11 @@ namespace TechC
             GameObject slObj = null;
             DelayUtility.StartDelayedAction(this, rightAttackData.hitTiming, () =>
             {
+                //飛び道具の処理
                 var pos = transform.position.AddX(xOffset);
                 slObj = CharaEffectFactory.I.GetEffectObj(flyingSlash, pos, Quaternion.identity);
                 var effectSetting = slObj.GetComponent<CharaEffect>();
+                effectSetting.SetAttackProcessor(attackProcessor);
                 effectSetting.SetOwnerId(characterController.PlayerID); 
                 var rb = slObj.GetComponent<Rigidbody>();
                 //斬撃をrbで飛ばす
@@ -100,6 +102,7 @@ namespace TechC
         public override void DownAttack()
         {
             base.DownAttack();
+            characterController.StopVelocity();
             characterController.AddForcePlayer(transform.forward, slidingSpeed, ForceMode.Impulse);
             characterController.ChangeHitCollider(changeHitBox, chageColliderSpeed);
             characterController.ChangeColliderTrigger(true);

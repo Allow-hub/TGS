@@ -1886,37 +1886,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!1 &7220439533584347898
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 147702121567416218}
-  m_Layer: 0
-  m_Name: AttackEffect
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &147702121567416218
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7220439533584347898}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1595461415625433442}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7392085185774715385
 GameObject:
   m_ObjectHideFlags: 0
@@ -2181,37 +2150,6 @@ MonoBehaviour:
   OnTimeUpdate:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &8558821948797655967
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4248357018838241112}
-  m_Layer: 0
-  m_Name: SppedEffect
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4248357018838241112
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8558821948797655967}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1595461415625433442}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8642237108516521616
 GameObject:
   m_ObjectHideFlags: 0
@@ -4539,12 +4477,12 @@ PrefabInstance:
     - target: {fileID: 8106234677022096083, guid: 77a5a9e8854ab8c458cf408de51653f5,
         type: 3}
       propertyPath: poolItems.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8106234677022096083, guid: 77a5a9e8854ab8c458cf408de51653f5,
         type: 3}
       propertyPath: poolItems.Array.data[3].name
-      value: Attack
+      value: SpeedComment
       objectReference: {fileID: 0}
     - target: {fileID: 8106234677022096083, guid: 77a5a9e8854ab8c458cf408de51653f5,
         type: 3}
@@ -4567,12 +4505,12 @@ PrefabInstance:
         type: 3}
       propertyPath: poolItems.Array.data[3].parent
       value: 
-      objectReference: {fileID: 7220439533584347898}
+      objectReference: {fileID: 5096440128107265922}
     - target: {fileID: 8106234677022096083, guid: 77a5a9e8854ab8c458cf408de51653f5,
         type: 3}
       propertyPath: poolItems.Array.data[3].prefab
       value: 
-      objectReference: {fileID: 971276580557662903, guid: fd7e8cca3ad2cad4a94b3beb2a7b6fa2,
+      objectReference: {fileID: 5164942412983795581, guid: 59e062bc7fca5e642979a693de18b225,
         type: 3}
     - target: {fileID: 8106234677022096083, guid: 77a5a9e8854ab8c458cf408de51653f5,
         type: 3}
@@ -4582,15 +4520,7 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 2086342043553265806, guid: 77a5a9e8854ab8c458cf408de51653f5, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 7760075852823559747, guid: 77a5a9e8854ab8c458cf408de51653f5,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4248357018838241112}
-    - targetCorrespondingSourceObject: {fileID: 7760075852823559747, guid: 77a5a9e8854ab8c458cf408de51653f5,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 147702121567416218}
+    m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3086193423111936143, guid: 77a5a9e8854ab8c458cf408de51653f5,
         type: 3}

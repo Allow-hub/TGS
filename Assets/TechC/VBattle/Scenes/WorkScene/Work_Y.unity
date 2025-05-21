@@ -466,32 +466,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1002689830977185266, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1002689830977185266, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[3].name
-      value: SpeedComment
-      objectReference: {fileID: 0}
-    - target: {fileID: 1002689830977185266, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[3].parent
-      value: 
-      objectReference: {fileID: 954459038}
-    - target: {fileID: 1002689830977185266, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[3].prefab
-      value: 
-      objectReference: {fileID: 5164942412983795581, guid: 59e062bc7fca5e642979a693de18b225,
-        type: 3}
-    - target: {fileID: 1002689830977185266, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[3].initialSize
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 1947574187364501273, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -563,18 +537,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 7220439533584347898, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
-    - {fileID: 8558821948797655967, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
---- !u!1 &954459038 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5096440128107265922, guid: c2ba8867f924fc444b667e30e329ad17,
-    type: 3}
-  m_PrefabInstance: {fileID: 913436213}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0

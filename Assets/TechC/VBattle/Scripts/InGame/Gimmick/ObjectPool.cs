@@ -251,7 +251,7 @@ namespace TechC
                 objectPools[poolItem.prefab].Enqueue(newObject);
             }
 
-            Debug.Log($"プール '{poolItem.name}' を {expandCount} 個拡張しました。現在のサイズ: {objectPools[poolItem.prefab].Count}");
+            // Debug.Log($"プール '{poolItem.name}' を {expandCount} 個拡張しました。現在のサイズ: {objectPools[poolItem.prefab].Count}");
         }
 
         /// <summary>

@@ -28,13 +28,14 @@ namespace TechC
         /// コメントにPlayerが当たったときにバフの効果とエフェクトを発動する
         /// </summary>
         /// <param name="other"></param>
+
         private void OnTriggerEnter(Collider other)
         {
             if (alreadyApplied) return;
 
             if (other.CompareTag("Player"))
             {
-                // Debug.Log("Buffコメントにあたった");
+                Debug.Log("Buffコメントにあたった");
                 BuffBase buff = BuffFactory.CreateBuff(buffType);
 
                 if (buff != null)
@@ -52,14 +53,15 @@ namespace TechC
 
                 float effectTime = buff.remainingTime; /*バフのエフェクトの継続時間にバフの効果の時間を代入 */
 
+                Debug.Log(id);
                 /* バフの種類ごとに適用するエフェクトを変える */
                 switch (buffType)
                 {
                     case BuffType.Speed:
-                        EffectFactory.I.PlayEffect("Speed", id, Quaternion.identity, effectTime);
+                        EffectFactory.I.PlayEffect("SpeedComment", id, Quaternion.identity, effectTime);
                         break;
                     case BuffType.Attack:
-                        EffectFactory.I.PlayEffect("Attack", id, Quaternion.identity, effectTime);
+                        EffectFactory.I.PlayEffect("AttackComment", id, Quaternion.identity, effectTime);
                         break;
                     // 必要であれば他のバフタイプも追加できます
                     default:

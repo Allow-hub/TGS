@@ -12,7 +12,9 @@ namespace TechC
         public static void ProcessCommentText(string text, Transform parent)
         {
             float xOffset = 0f;         
-            float spacing = 2.5f;
+            float spacing = 0.5f;
+
+            const float PLAYER_TOP_OFFSET = -5.3f;
 
             const float ROTATE_X_DEGREE = 90f;
             const float ROTATE_Z_DEGREE = 180f;
@@ -32,6 +34,7 @@ namespace TechC
                     xOffset += spacing;
 
                     prefab.transform.Rotate(ROTATE_X_DEGREE, 0, ROTATE_Z_DEGREE);
+                    prefab.transform.position = new Vector3(xOffset, parent.transform.position.y, PLAYER_TOP_OFFSET);
 
                     // Debug.Log($"文字 '{c}' → プレハブ '{prefabName}' を生成しました");
                 }
@@ -43,40 +46,28 @@ namespace TechC
         }
 
         /// <summary>
-        /// かな文字とローマ字の対応表
+        /// 文字とPrefab名の辞書化対応表
         /// </summary>
-        private static readonly (string kana, string roman)[] kanaPairs = new (string, string)[]
+        private static readonly System.Collections.Generic.Dictionary<char, string> charToPrefabName = new System.Collections.Generic.Dictionary<char, string>
         {
-            ("あ", "a"), ("い", "i"), ("う", "u"), ("え", "e"), ("お", "o"),
-            ("か", "ka"), ("き", "ki"), ("く", "ku"), ("け", "ke"), ("こ", "ko"),
-            ("が", "ga"), ("ぎ", "gi"), ("ぐ", "gu"), ("げ", "ge"), ("ご", "go"),
-            ("さ", "sa"), ("し", "shi"), ("す", "su"), ("せ", "se"), ("そ", "so"),
-            ("ざ", "za"), ("じ", "ji"), ("ず", "zu"), ("ぜ", "ze"), ("ぞ", "zo"),
-            ("た", "ta"), ("ち", "chi"), ("つ", "tsu"), ("て", "te"), ("と", "to"),
-            ("だ", "da"), ("ぢ", "di"), ("づ", "du"), ("で", "de"), ("ど", "do"),
-            ("な", "na"), ("に", "ni"), ("ぬ", "nu"), ("ね", "ne"), ("の", "no"),
-            ("は", "ha"), ("ひ", "hi"), ("ふ", "fu"), ("へ", "he"), ("ほ", "ho"),
-            ("ば", "ba"), ("び", "bi"), ("ぶ", "bu"), ("べ", "be"), ("ぼ", "bo"),
-            ("ぱ", "pa"), ("ぴ", "pi"), ("ぷ", "pu"), ("ぺ", "pe"), ("ぽ", "po"),
-            ("ま", "ma"), ("み", "mi"), ("む", "mu"), ("め", "me"), ("も", "mo"),
-            ("や", "ya"), ("ゆ", "yu"), ("よ", "yo"),
-            ("ら", "ra"), ("り", "ri"), ("る", "ru"), ("れ", "re"), ("ろ", "ro"),
-            ("わ", "wa"), ("を", "wo"), ("ん", "n"),
-            ("ぁ", "xa"), ("ぃ", "xi"), ("ぅ", "xu"), ("ぇ", "xe"), ("ぉ", "xo"),
-            ("ゃ", "xya"), ("ゅ", "xyu"), ("ょ", "xyo"),
-            ("きゃ", "kya"), ("きゅ", "kyu"), ("きょ", "kyo"),
-            ("ぎゃ", "gya"), ("ぎゅ", "gyu"), ("ぎょ", "gyo"),
-            ("しゃ", "sha"), ("しゅ", "shu"), ("しょ", "sho"),
-            ("じゃ", "ja"), ("じゅ", "ju"), ("じょ", "jo"),
-            ("ちゃ", "cha"), ("ちゅ", "chu"), ("ちょ", "cho"),
-            ("にゃ", "nya"), ("にゅ", "nyu"), ("にょ", "nyo"),
-            ("ひゃ", "hya"), ("ひゅ", "hyu"), ("ひょ", "hyo"),
-            ("びゃ", "bya"), ("びゅ", "byu"), ("びょ", "byo"),
-            ("ぴゃ", "pya"), ("ぴゅ", "pyu"), ("ぴょ", "pyo"),
-            ("みゃ", "mya"), ("みゅ", "myu"), ("みょ", "myo"),
-            ("りゃ", "rya"), ("りゅ", "ryu"), ("りょ", "ryo"),
+            { 'あ', "a_jp" }, { 'い', "i_jp" }, { 'う', "u_jp" }, { 'え', "e_jp" }, { 'お', "o_jp" },
+            { 'か', "ka_jp" }, { 'き', "ki_jp" }, { 'く', "ku_jp" }, { 'け', "ke_jp" }, { 'こ', "ko_jp" },
+            { 'が', "ga_jp" }, { 'ぎ', "gi_jp" }, { 'ぐ', "gu_jp" }, { 'げ', "ge_jp" }, { 'ご', "go_jp" },
+            { 'さ', "sa_jp" }, { 'し', "shi_jp" }, { 'す', "su_jp" }, { 'せ', "se_jp" }, { 'そ', "so_jp" },
+            { 'ざ', "za_jp" }, { 'じ', "ji_jp" }, { 'ず', "zu_jp" }, { 'ぜ', "ze_jp" }, { 'ぞ', "zo_jp" },
+            { 'た', "ta_jp" }, { 'ち', "chi_jp" }, { 'つ', "tsu_jp" }, { 'て', "te_jp" }, { 'と', "to_jp" },
+            { 'だ', "da_jp" }, { 'ぢ', "di_jp" }, { 'づ', "du_jp" }, { 'で', "de_jp" }, { 'ど', "do_jp" },
+            { 'な', "na_jp" }, { 'に', "ni_jp" }, { 'ぬ', "nu_jp" }, { 'ね', "ne_jp" }, { 'の', "no_jp" },
+            { 'は', "ha_jp" }, { 'ひ', "hi_jp" }, { 'ふ', "fu_jp" }, { 'へ', "he_jp" }, { 'ほ', "ho_jp" },
+            { 'ば', "ba_jp" }, { 'び', "bi_jp" }, { 'ぶ', "bu_jp" }, { 'べ', "be_jp" }, { 'ぼ', "bo_jp" },
+            { 'ぱ', "pa_jp" }, { 'ぴ', "pi_jp" }, { 'ぷ', "pu_jp" }, { 'ぺ', "pe_jp" }, { 'ぽ', "po_jp" },
+            { 'ま', "ma_jp" }, { 'み', "mi_jp" }, { 'む', "mu_jp" }, { 'め', "me_jp" }, { 'も', "mo_jp" },
+            { 'や', "ya_jp" }, { 'ゆ', "yu_jp" }, { 'よ', "yo_jp" },
+            { 'ら', "ra_jp" }, { 'り', "ri_jp" }, { 'る', "ru_jp" }, { 'れ', "re_jp" }, { 'ろ', "ro_jp" },
+            { 'わ', "wa_jp" }, { 'を', "wo_jp" }, { 'ん', "n_jp" },
+            { 'ぁ', "xa_jp" }, { 'ぃ', "xi_jp" }, { 'ぅ', "xu_jp" }, { 'ぇ', "xe_jp" }, { 'ぉ', "xo_jp" },
+            { 'ゃ', "xya_jp" }, { 'ゅ', "xyu_jp" }, { 'ょ', "xyo_jp" },
         };
-
 
         /// <summary>
         /// 文字列とPrefabを対応させる
@@ -85,89 +76,13 @@ namespace TechC
         /// <returns></returns>
         private static string ConvertCharToPrefabName(char c)
         {
-            switch (c)
+            if (charToPrefabName.TryGetValue(c, out string prefabName))
             {
-                case 'あ': return "a_jp";
-                case 'い': return "i_jp";
-                case 'う': return "u_jp";
-                case 'え': return "e_jp";
-                case 'お': return "o_jp";
-                case 'か': return "ka_jp";
-                case 'き': return "ki_jp";
-                case 'く': return "ku_jp";
-                case 'け': return "ke_jp";
-                case 'こ': return "ko_jp";
-                case 'が': return "ga_jp";
-                case 'ぎ': return "gi_jp";
-                case 'ぐ': return "gu_jp";
-                case 'げ': return "ge_jp";
-                case 'ご': return "go_jp";
-                case 'さ': return "sa_jp";
-                case 'し': return "shi_jp";
-                case 'す': return "su_jp";
-                case 'せ': return "se_jp";
-                case 'そ': return "so_jp";
-                case 'ざ': return "za_jp";
-                case 'じ': return "ji_jp";
-                case 'ず': return "zu_jp";
-                case 'ぜ': return "ze_jp";
-                case 'ぞ': return "zo_jp";
-                case 'た': return "ta_jp";
-                case 'ち': return "chi_jp";
-                case 'つ': return "tsu_jp";
-                case 'て': return "te_jp";
-                case 'と': return "to_jp";
-                case 'だ': return "da_jp";
-                case 'ぢ': return "di_jp";
-                case 'づ': return "du_jp";
-                case 'で': return "de_jp";
-                case 'ど': return "do_jp";
-                case 'な': return "na_jp";
-                case 'に': return "ni_jp";
-                case 'ぬ': return "nu_jp";
-                case 'ね': return "ne_jp";
-                case 'の': return "no_jp";
-                case 'は': return "ha_jp";
-                case 'ひ': return "hi_jp";
-                case 'ふ': return "fu_jp";
-                case 'へ': return "he_jp";
-                case 'ほ': return "ho_jp";
-                case 'ば': return "ba_jp";
-                case 'び': return "bi_jp";
-                case 'ぶ': return "bu_jp";
-                case 'べ': return "be_jp";
-                case 'ぼ': return "bo_jp";
-                case 'ぱ': return "pa_jp";
-                case 'ぴ': return "pi_jp";
-                case 'ぷ': return "pu_jp";
-                case 'ぺ': return "pe_jp";
-                case 'ぽ': return "po_jp";
-                case 'ま': return "ma_jp";
-                case 'み': return "mi_jp";
-                case 'む': return "mu_jp";
-                case 'め': return "me_jp";
-                case 'も': return "mo_jp";
-                case 'や': return "ya_jp";
-                case 'ゆ': return "yu_jp";
-                case 'よ': return "yo_jp";
-                case 'ら': return "ra_jp";
-                case 'り': return "ri_jp";
-                case 'る': return "ru_jp";
-                case 'れ': return "re_jp";
-                case 'ろ': return "ro_jp";
-                case 'わ': return "wa_jp";
-                case 'を': return "wo_jp";
-                case 'ん': return "n_jp";
-                case 'ぁ': return "xa_jp";
-                case 'ぃ': return "xi_jp";
-                case 'ぅ': return "xu_jp";
-                case 'ぇ': return "xe_jp";
-                case 'ぉ': return "xo_jp";
-                case 'ゃ': return "xya_jp";
-                case 'ゅ': return "xyu_jp";
-                case 'ょ': return "xyo_jp";
-                default:
-                    return $"unknown_{(int)c}";
+                return prefabName;
+            }
+            else
+            {
+                return $"unknown_{(int)c}";
             }
         }
     }

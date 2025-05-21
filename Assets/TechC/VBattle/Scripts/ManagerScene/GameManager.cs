@@ -20,6 +20,7 @@ namespace TechC
         protected override void Init()
         {
             base.Init();
+            Application.runInBackground = true;
 
             // VSyncCount を Dont Sync に変更
             QualitySettings.vSyncCount = 0;

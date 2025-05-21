@@ -352,6 +352,8 @@ MonoBehaviour:
   downAttackData: {fileID: 11400000, guid: a15eb21c80d84594ca0db08ece37afce, type: 2}
   upAttackData: {fileID: 11400000, guid: 5dccbb77c623467498465bb8b2f1a3fd, type: 2}
   sword: {fileID: 5456214866192646022}
+  slash: {fileID: 1088245378690188311, guid: 6a3deabea98e2b448a2b20a9ac3edfd6, type: 3}
+  flyingSlash: {fileID: 0}
 --- !u!114 &465988328092469450
 MonoBehaviour:
   m_ObjectHideFlags: 0

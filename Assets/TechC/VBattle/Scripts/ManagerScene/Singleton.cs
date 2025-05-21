@@ -1,16 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TechC
 {
     public class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
+        /// <summary>
+        /// 派生クラスでこの値を変更して、DontDestroyOnLoad を使うかどうかを制御する
+        /// </summary>
+        protected virtual bool UseDontDestroyOnLoad => true;
+
+        /// <summary>
+        /// 重複時に GameObject ごと破壊するか（false だとこのコンポーネントだけ破壊）
+        /// </summary>
         protected virtual bool DestroyTargetGameObject => false;
 
         public static T I { get; private set; } = null;
 
-        // Singletonが有効か
         public static bool IsValid() => I != null;
 
         private void Awake()
@@ -19,6 +24,11 @@ namespace TechC
             {
                 I = this as T;
                 I.Init();
+
+                if (UseDontDestroyOnLoad)
+                {
+                    DontDestroyOnLoad(this.gameObject);
+                }
             }
             else
             {
@@ -42,16 +52,14 @@ namespace TechC
             }
         }
 
-        // 派生クラス用の初期化メソッド
-        protected virtual void Init()
-        {
-            DontDestroyOnLoad(this.gameObject);
-        }
+        /// <summary>
+        /// 派生クラス用の初期化メソッド
+        /// </summary>
+        protected virtual void Init() { }
 
-        // 派生クラス用のOnDestroy
-        protected virtual void OnRelease()
-        {
-        }
-
+        /// <summary>
+        /// 派生クラス用の破棄処理
+        /// </summary>
+        protected virtual void OnRelease() { }
     }
 }

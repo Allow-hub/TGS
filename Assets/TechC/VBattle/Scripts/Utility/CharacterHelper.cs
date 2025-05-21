@@ -9,10 +9,10 @@ namespace TechC
         /// </summary>
         /// <param name="text">表示したい文字列</param>
         /// <param name="parent">生成された文字を入れる親オブジェクト</param>
-        public static void ProcessCommentText(string text, Transform parent)
+        public static void ProcessCommentText(string text, Transform parent, Color color)
         {
-            float xOffset = 0f;         
-            float spacing = 0.5f;
+            float xOffset = 0f;
+            float spacing = 0.35f;
 
             const float PLAYER_TOP_OFFSET = -5.3f;
 
@@ -36,12 +36,14 @@ namespace TechC
                     prefab.transform.Rotate(ROTATE_X_DEGREE, 0, ROTATE_Z_DEGREE);
                     prefab.transform.position = new Vector3(xOffset, parent.transform.position.y, PLAYER_TOP_OFFSET);
 
-                    // Debug.Log($"文字 '{c}' → プレハブ '{prefabName}' を生成しました");
+                    var meshRenderer = prefab.GetComponent<MeshRenderer>();
+                    if (meshRenderer != null)
+                    {
+                        meshRenderer.material.color = color;
+                    }
                 }
-                else
-                {
-                    // Debug.LogWarning($"文字 '{c}' に対応するプレハブ '{prefabName}' が見つかりませんでした");
-                }
+
+
             }
         }
 

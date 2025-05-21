@@ -61,9 +61,23 @@ namespace TechC
         {
             var commentData = commentProvider.GetRandomComment();
 
-            TMP_Text comment = CommentFactory.I.GetComment(commentData,GetCommentPrefab(commentData), commentLayer);
-            
-            CharacterHelper.ProcessCommentText(commentData.text, comment.transform);
+            TMP_Text comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData), commentLayer);
+
+            Color commentColor = Color.white;
+            switch (commentData.type)
+            {
+                case CommentType.AttackBuff:
+                    commentColor = Color.red;
+                    break;
+                case CommentType.SpeedBuff:
+                    commentColor = Color.blue;
+                    break;
+                case CommentType.MapChange:
+                    commentColor = Color.yellow;
+                    break;
+            }
+
+            CharacterHelper.ProcessCommentText(commentData.text, comment.transform, commentColor);
 
 
             if (comment == null)
@@ -115,7 +129,6 @@ namespace TechC
             {
                 case CommentType.Normal:
                     return commentPrefab.gameObject;
-
                 case CommentType.AttackBuff:
                     return attackBuffPrefab.gameObject;
                 case CommentType.MapChange:

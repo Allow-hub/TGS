@@ -21,7 +21,7 @@ namespace TechC
         public void Init(ObjectPool objectPool)
         {
             this.objectPool = objectPool;
-            Debug.Log("Init");
+            // Debug.Log("Init");
         }
 
         /// <summary>

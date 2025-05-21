@@ -228,7 +228,7 @@ namespace TechC
                 return GetObject(poolItem.prefab);
             }
 
-            Debug.LogWarning($"名前 '{poolName}' のプールが見つかりません。");
+            // Debug.LogWarning($"名前 '{poolName}' のプールが見つかりません。");
             return null;
         }
 

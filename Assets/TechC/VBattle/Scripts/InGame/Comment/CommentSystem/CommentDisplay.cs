@@ -61,16 +61,18 @@ namespace TechC
         {
             var commentData = commentProvider.GetRandomComment();
 
-            CharacterHelper.ProcessCommentText(commentData.text, this.transform);
-            Debug.Log(commentData.text);
-
             TMP_Text comment = CommentFactory.I.GetComment(commentData,GetCommentPrefab(commentData), commentLayer);
+            
+            CharacterHelper.ProcessCommentText(commentData.text, comment.transform);
+
+
             if (comment == null)
             {
                 Debug.LogWarning("GetComment returned null for " + commentData.text);
                 return;
             }
 
+            // Debug.Log(comment);
 
             if (comment == null) return;
 

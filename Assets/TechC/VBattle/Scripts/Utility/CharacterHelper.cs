@@ -11,19 +11,33 @@ namespace TechC
         /// <param name="parent">生成された文字を入れる親オブジェクト</param>
         public static void ProcessCommentText(string text, Transform parent)
         {
+            float xOffset = 0f;         
+            float spacing = 2.5f;
+
+            const float ROTATE_X_DEGREE = 90f;
+            const float ROTATE_Z_DEGREE = 180f;
+
             foreach (char c in text)
             {
                 string prefabName = ConvertCharToPrefabName(c);
-                GameObject prefab = Resources.Load<GameObject>($"CommentPrefabs/{prefabName}");
+                var prefab = CommentFactory.I.GetChar(prefabName);
 
                 if (prefab != null)
                 {
-                    GameObject instance = Object.Instantiate(prefab, parent);
-                    Debug.Log($"文字 '{c}' → プレハブ '{prefabName}' を生成しました");
+                    prefab.transform.SetParent(parent);
+                    // Debug.Log(parent);
+
+                    prefab.transform.localPosition = new Vector3(xOffset, 0f, 0f);
+
+                    xOffset += spacing;
+
+                    prefab.transform.Rotate(ROTATE_X_DEGREE, 0, ROTATE_Z_DEGREE);
+
+                    // Debug.Log($"文字 '{c}' → プレハブ '{prefabName}' を生成しました");
                 }
                 else
                 {
-                    Debug.LogWarning($"文字 '{c}' に対応するプレハブ '{prefabName}' が見つかりませんでした");
+                    // Debug.LogWarning($"文字 '{c}' に対応するプレハブ '{prefabName}' が見つかりませんでした");
                 }
             }
         }
@@ -63,6 +77,12 @@ namespace TechC
             ("りゃ", "rya"), ("りゅ", "ryu"), ("りょ", "ryo"),
         };
 
+
+        /// <summary>
+        /// 文字列とPrefabを対応させる
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         private static string ConvertCharToPrefabName(char c)
         {
             switch (c)

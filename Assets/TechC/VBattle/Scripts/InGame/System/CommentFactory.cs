@@ -10,12 +10,12 @@ namespace TechC
         [SerializeField]
         private ObjectPool commentPool;
 
-        public TMP_Text GetComment(CommentData commentData,GameObject commentPrefab ,Transform parent)
+        public TMP_Text GetComment(CommentData commentData, GameObject commentPrefab, Transform parent)
         {
             GameObject obj = commentPool.GetObject(commentPrefab);
-            Debug.Log($"現在のcommentPrefabは{commentPrefab}");
+            // Debug.Log($"現在のcommentPrefabは{commentPrefab}");
             var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
-            Debug.Log(commentTrigger);
+            // Debug.Log(commentTrigger);
             commentTrigger?.Init(commentPool);
 
             if (obj != null)
@@ -39,10 +39,13 @@ namespace TechC
             return null;
         }
 
+
         public void ReturnComment(GameObject comment)
         {
             commentPool.ReturnObject(comment);
         }
 
+        public GameObject GetChar(string charName) =>
+            commentPool.GetObjectByName(charName);
     }
 }

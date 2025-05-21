@@ -22,16 +22,19 @@ MonoBehaviour:
   animationSpeed: 1.5
   attackDuration: 1
   damage: 10
-  knockback: 4
-  radius: 2
+  knockback: 3
+  canRepeat: 1
+  repeatInterval: 0.01
+  repeatDuration: 1.6
+  radius: 3
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
   hitboxOffset: {x: 0, y: 1, z: 0}
-  hitTiming: 0.3
+  hitTiming: 0
   hitStopDuration: 0.9
   hitStopTimeScale: 0.8
-  knockbackDirection: {x: 0, y: 0, z: 1}
+  knockbackDirection: {x: 0, y: 1, z: 1}
   useCustomKnockbackDirection: 1
   useSelfColliderForHitCheck: 1
   characterSEType: 0

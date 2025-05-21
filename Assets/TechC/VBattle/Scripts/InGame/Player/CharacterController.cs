@@ -302,6 +302,8 @@ namespace TechC.Player
             }
         }
 
+        public void ChangeColliderTrigger(bool b) => hitCollider.isTrigger = b;
+
         /// <summary>
         /// 当たり判定を変化させる
         /// </summary>

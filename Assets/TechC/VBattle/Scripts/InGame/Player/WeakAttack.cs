@@ -101,8 +101,19 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
-            // 攻撃処理をAttackProcessorに委譲
-            StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+            if (attackData.canRepeat)
+            {
+                DelayUtility.StartRepeatedAction(this, attackData.repeatDuration, attackData.repeatInterval, () =>
+                {
+                    // 攻撃処理をAttackProcessorに委譲
+                    StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+                });
+            }
+            else
+            {
+                // 攻撃処理をAttackProcessorに委譲
+                StartCoroutine(attackProcessor.ProcessAttack(attackData, this));
+            }
         }
 
 

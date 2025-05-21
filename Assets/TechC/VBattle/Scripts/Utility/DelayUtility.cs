@@ -10,7 +10,7 @@ namespace TechC
         // ================================
         // UniTask版
         // ================================
-        
+
         /// <summary>
         /// 数秒おいてメソッドを発火
         /// </summary>
@@ -41,7 +41,7 @@ namespace TechC
         // ================================
         // コルーチン版
         // ================================
-        
+
         /// <summary>
         /// 数秒おいてメソッドを発火（コルーチン版）
         /// </summary>
@@ -92,5 +92,35 @@ namespace TechC
         {
             return monoBehaviour.StartCoroutine(RunAfterDelayCoroutine(delaySeconds, coroutineCallback));
         }
+        /// <summary>
+        /// 一定間隔で処理を繰り返す（コルーチン版）
+        /// </summary>
+        /// <param name="duration">繰り返す合計時間（秒）</param>
+        /// <param name="interval">実行間隔（秒）</param>
+        /// <param name="callback">繰り返し実行する処理</param>
+        public static IEnumerator RunRepeatedly(float duration, float interval, Action callback)
+        {
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                callback?.Invoke();
+                yield return new WaitForSeconds(interval);
+                elapsed += interval;
+            }
+        }
+
+        /// <summary>
+        /// MonoBehaviour を使って一定間隔で処理を繰り返すコルーチンを開始する
+        /// </summary>
+        /// <param name="monoBehaviour">コルーチンを開始する対象</param>
+        /// <param name="duration">繰り返す合計時間（秒）</param>
+        /// <param name="interval">実行間隔（秒）</param>
+        /// <param name="callback">繰り返し実行する処理</param>
+        /// <returns>開始されたコルーチン</returns>
+        public static Coroutine StartRepeatedAction(MonoBehaviour monoBehaviour, float duration, float interval, Action callback)
+        {
+            return monoBehaviour.StartCoroutine(RunRepeatedly(duration, interval, callback));
+        }
+
     }
 }

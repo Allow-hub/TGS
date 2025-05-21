@@ -26,6 +26,7 @@ namespace TechC
         [Header("左弱")]
 
         [Header("右弱")]
+        [SerializeField] private float xOffset = 3f;
         [SerializeField] private float flyingSlashSpeed = 5f;
         private float returnRightEffectTime = 3f;
 
@@ -52,7 +53,13 @@ namespace TechC
                 currentSlashRot = n2Rot;
             else if (currentNeutral == neutralAttackData_3)
                 currentSlashRot = n3Rot;
-            var slObjPos = new Vector3(transform.position.x, transform.position.y + slashEffectDistance, transform.position.z);
+            var slObjPos = transform.position.AddY(slashEffectDistance);
+            // 向きに応じて回転反転
+            if (transform.forward.x < 0) 
+            {
+                currentSlashRot = Quaternion.Euler(0, 180, 0) * currentSlashRot;
+            }
+
             //slashEffectの取得。各段階の回転を反映
             var slObj = CharaEffectFactory.I.GetEffectObj(slash, slObjPos, currentSlashRot);
 
@@ -71,11 +78,18 @@ namespace TechC
         public override void RightAttack()
         {
             base.RightAttack();
-            var slObj = CharaEffectFactory.I.GetEffectObj(flyingSlash, transform.position, Quaternion.identity);
-            var rb = slObj.GetComponent<Rigidbody>();
-            //斬撃をrbで飛ばす
-            rb.velocity = transform.forward * flyingSlashSpeed;
-
+            GameObject slObj = null;
+            DelayUtility.StartDelayedAction(this, rightAttackData.hitTiming, () =>
+            {
+                var pos = transform.position.AddX(xOffset);
+                slObj = CharaEffectFactory.I.GetEffectObj(flyingSlash, pos, Quaternion.identity);
+                var effectSetting = slObj.GetComponent<CharaEffect>();
+                effectSetting.SetOwnerId(characterController.PlayerID); 
+                var rb = slObj.GetComponent<Rigidbody>();
+                //斬撃をrbで飛ばす
+                rb.velocity = transform.forward * flyingSlashSpeed;
+            });
+            
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, returnRightEffectTime, () =>
             {
@@ -88,20 +102,22 @@ namespace TechC
             base.DownAttack();
             characterController.AddForcePlayer(transform.forward, slidingSpeed, ForceMode.Impulse);
             characterController.ChangeHitCollider(changeHitBox, chageColliderSpeed);
+            characterController.ChangeColliderTrigger(true);
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, returnDownEffectTime, () =>
             {
                 // CharaEffectFactory.I.ReturnEffectObj(flowerEffect);
                 characterController.ResetHitCollider(chageColliderSpeed);
-
+                characterController.ChangeColliderTrigger(false);
             });
         }
+
 
         public override void UpAttack()
         {
             base.UpAttack();
             var flowerEffect = CharaEffectFactory.I.GetEffectObj(flower, transform.up, Quaternion.identity);
-            
+
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, returnUpEffectTime, () =>
             {

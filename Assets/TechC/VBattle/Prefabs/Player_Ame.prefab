@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6664128526604510556}
   - component: {fileID: 1137434721546333802}
-  - component: {fileID: 926933305645414986}
   - component: {fileID: 6152056106492449882}
   - component: {fileID: 6455736973200020084}
   - component: {fileID: 7797085845215521307}
@@ -20,6 +19,7 @@ GameObject:
   - component: {fileID: 3455362588810788779}
   - component: {fileID: 2764965064054818122}
   - component: {fileID: 4029775971515787939}
+  - component: {fileID: 4385075981276524633}
   m_Layer: 0
   m_Name: Player_Ame
   m_TagString: Player
@@ -71,29 +71,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 0
---- !u!136 &926933305645414986
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7627828736903395385}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.17751078
-  m_Height: 1.8161497
-  m_Direction: 1
-  m_Center: {x: 7.618754e-17, y: 0.9145248, z: -0.02588877}
 --- !u!114 &6152056106492449882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,7 +338,8 @@ MonoBehaviour:
   n1Rot: {x: 0.3826835, y: 0, z: 0, w: -0.9238795}
   n2Rot: {x: 0.5686695, y: 0.10692081, z: -0.07486677, w: 0.81214404}
   n3Rot: {x: 0, y: 0, z: 0, w: 0}
-  flyingSlashSpeed: 5
+  xOffset: 1
+  flyingSlashSpeed: 7
   changeHitBox: {x: 0.3, y: 0.8, z: 0}
   chageColliderSpeed: 10
   slidingSpeed: 7
@@ -440,6 +418,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a42e09dcf65ed7547ac3bb9829f46fd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!136 &4385075981276524633
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7627828736903395385}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 384
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 55
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!1001 &3846530327706409553
 PrefabInstance:
   m_ObjectHideFlags: 0

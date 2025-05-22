@@ -41,7 +41,9 @@ namespace TechC
         [Header("上弱")]
         private float returnUpEffectTime = 3f;
         
-
+        /// <summary>
+        /// 剣を振る、前方への軽い攻撃。３回まで派生
+        /// </summary>
         public override void NeutralAttack()
         {
             base.NeutralAttack();
@@ -70,11 +72,17 @@ namespace TechC
             });
         }
 
+        /// <summary>
+        /// カウンターの予定だが後回し
+        /// </summary>
         public override void LeftAttack()
         {
             base.LeftAttack();
         }
 
+        /// <summary>
+        /// 氷の斬撃を飛ばす、飛び道具側の攻撃はCharaEffectが行う
+        /// </summary>
         public override void RightAttack()
         {
             base.RightAttack();
@@ -86,12 +94,12 @@ namespace TechC
                 slObj = CharaEffectFactory.I.GetEffectObj(flyingSlash, pos, Quaternion.identity);
                 var effectSetting = slObj.GetComponent<CharaEffect>();
                 effectSetting.SetAttackProcessor(attackProcessor);
-                effectSetting.SetOwnerId(characterController.PlayerID); 
+                effectSetting.SetOwnerId(characterController.PlayerID);
                 var rb = slObj.GetComponent<Rigidbody>();
                 //斬撃をrbで飛ばす
                 rb.velocity = transform.forward * flyingSlashSpeed;
             });
-            
+
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, returnRightEffectTime, () =>
             {
@@ -99,6 +107,10 @@ namespace TechC
             });
         }
 
+        /// <summary>
+        /// スライディング攻撃、canRepeatがtrueにしてあるので多段ヒット
+        /// スライディング中は敵との物理衝突をなくし貫通させる
+        /// </summary>
         public override void DownAttack()
         {
             base.DownAttack();
@@ -115,7 +127,9 @@ namespace TechC
             });
         }
 
-
+        /// <summary>
+        /// 軽く剣を振り上げる、エフェクトの中身未実装
+        /// </summary>
         public override void UpAttack()
         {
             base.UpAttack();

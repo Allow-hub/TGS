@@ -9,6 +9,16 @@ namespace TechC
     /// </summary>
     public class Ame_StrongAttack : StrongAttack
     {
+        [Header("プレハブの参照")]
+        [SerializeField] private GameObject swordObj;
+        [SerializeField] private GameObject iceRosePrefab;
+        // [Header("ニュートラル強")]
+        // [Header("左強")]
+        // [Header("右強")]
+        // [Header("下強")]
+        // [Header("上強")]
+
+
         /// <summary>
         /// 数秒前の自分が氷で実体化し、攻撃も記録通りなぞってくれる
         /// </summary>
@@ -41,6 +51,7 @@ namespace TechC
         public override void DownAttack()
         {
             base.DownAttack();
+            ActiveSword(downAttackData.attackDuration);
         }
 
         /// <summary>
@@ -54,6 +65,15 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
+        }
+
+        private void ActiveSword(float duration)
+        {
+            swordObj.gameObject.SetActive(true);
+            DelayUtility.StartDelayedAction(this, duration, () =>
+            {
+                swordObj.gameObject.SetActive(false);
+            });
         }
     }
 }

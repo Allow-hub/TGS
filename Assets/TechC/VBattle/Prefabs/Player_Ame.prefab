@@ -298,6 +298,8 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: 4860b3839fc60684ea088f15f0764bea, type: 2}
   downAttackData: {fileID: 11400000, guid: 701b30260febc674b938c054bff32e43, type: 2}
   upAttackData: {fileID: 11400000, guid: 76c05fcb9a3836341b5ef7637409d006, type: 2}
+  swordObj: {fileID: 5456214866192646022}
+  iceRosePrefab: {fileID: 0}
 --- !u!114 &9141137595621075143
 MonoBehaviour:
   m_ObjectHideFlags: 0

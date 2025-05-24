@@ -293,17 +293,17 @@ MonoBehaviour:
   comboSystem: {fileID: 2764965064054818122}
   hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
     type: 3}
-  attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
-  neutralAttackData_1: {fileID: 11400000, guid: 1177b74adfb8c274fb3d7a6f684de930,
+  attackSet: {fileID: 11400000, guid: 64b841d1b5f1856448bf978412865898, type: 2}
+  neutralAttackData_1: {fileID: 11400000, guid: 225b3cc80c050b14c862e5e22b9a43b6,
     type: 2}
-  neutralAttackData_2: {fileID: 11400000, guid: d41428c96ac295d48b2d8b6674005883,
+  neutralAttackData_2: {fileID: 11400000, guid: c0be7a95cfbbf8d4ea5c1fea1419cf06,
     type: 2}
-  neutralAttackData_3: {fileID: 11400000, guid: 58714b9130199ee44a3b4e0da4a4d09e,
+  neutralAttackData_3: {fileID: 11400000, guid: c813c52def7240e40b5f09218d2badfd,
     type: 2}
-  leftAttackData: {fileID: 11400000, guid: 0887aa2ca1096ce4a8a665a4574d63fc, type: 2}
-  rightAttackData: {fileID: 11400000, guid: ab6836e8cfce6a14dbb0a8183535e7d2, type: 2}
-  downAttackData: {fileID: 11400000, guid: a15eb21c80d84594ca0db08ece37afce, type: 2}
-  upAttackData: {fileID: 11400000, guid: 5dccbb77c623467498465bb8b2f1a3fd, type: 2}
+  leftAttackData: {fileID: 11400000, guid: a53e4649521ae0444ae761b0928a0706, type: 2}
+  rightAttackData: {fileID: 11400000, guid: 14f825b05369d6d4fab0e5c5a5452db4, type: 2}
+  downAttackData: {fileID: 11400000, guid: 1d93a74787792f94696394ef57dc9670, type: 2}
+  upAttackData: {fileID: 11400000, guid: 36ce767f9a6d1954bb4864c661447591, type: 2}
 --- !u!114 &8035457019798965900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,12 +322,12 @@ MonoBehaviour:
   comboSystem: {fileID: 2764965064054818122}
   hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
     type: 3}
-  attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
-  neutralAttackData: {fileID: 11400000, guid: 8d2104333482b54429548c7136d5d182, type: 2}
-  leftAttackData: {fileID: 11400000, guid: c8335dd7c6c33ea46b1f54962334acf2, type: 2}
-  rightAttackData: {fileID: 11400000, guid: 77b8573078c4dfc40addcd780f1e2e2a, type: 2}
-  downAttackData: {fileID: 11400000, guid: ebed5bf1f02784f4ea26b13f7cbaf5ba, type: 2}
-  upAttackData: {fileID: 11400000, guid: 9babdb7dcadae81489b1460971521193, type: 2}
+  attackSet: {fileID: 11400000, guid: 64b841d1b5f1856448bf978412865898, type: 2}
+  neutralAttackData: {fileID: 11400000, guid: 27b7e1c33ff4ebf449baff72cd34e04b, type: 2}
+  leftAttackData: {fileID: 11400000, guid: a3e3c7d8e634ad74b843879041432130, type: 2}
+  rightAttackData: {fileID: 11400000, guid: fdb591d7d3483bc4f9939990fb4eab86, type: 2}
+  downAttackData: {fileID: 11400000, guid: b3608f888284a9643b2ba99c68a26871, type: 2}
+  upAttackData: {fileID: 11400000, guid: a3945e9d3c847ab4bbf6e961fdca22ba, type: 2}
 --- !u!114 &465988328092469450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,12 +341,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 7797085845215521307}
-  attackSet: {fileID: 11400000, guid: 4007ad16acd841d44b810db7bfd62d8f, type: 2}
-  neutralAttackData: {fileID: 11400000, guid: 3fcedbbd66127104681bb1377676723b, type: 2}
-  leftAttackData: {fileID: 11400000, guid: 308936b8f368b0f469e9c32b656dfa79, type: 2}
-  rightAttackData: {fileID: 11400000, guid: 44fd3f1e079315745b6039883adc7d85, type: 2}
-  downAttackData: {fileID: 11400000, guid: 5ee8e9dc7d9c5eb4e8f6884ed748c6fb, type: 2}
-  upAttackData: {fileID: 11400000, guid: 017c8e2e8638cef49ab16133bc650355, type: 2}
+  attackSet: {fileID: 11400000, guid: 64b841d1b5f1856448bf978412865898, type: 2}
+  neutralAttackData: {fileID: 11400000, guid: 89e20779a56fb1b43b78eb0c992254bf, type: 2}
+  leftAttackData: {fileID: 11400000, guid: e81e307b2d7c9e24384a7d0929cc1436, type: 2}
+  rightAttackData: {fileID: 11400000, guid: e7e4a03968a8200449bbef4f555a73e9, type: 2}
+  downAttackData: {fileID: 11400000, guid: 18fe219210c607448ac18367853f23b0, type: 2}
+  upAttackData: {fileID: 11400000, guid: 8da43db3a69ed79489fc747be28d637f, type: 2}
   inputManager: {fileID: 6455736973200020084}
   canChargeDuration: 10
 --- !u!114 &3455362588810788779

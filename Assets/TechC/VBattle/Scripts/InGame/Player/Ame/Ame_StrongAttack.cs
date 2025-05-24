@@ -11,9 +11,15 @@ namespace TechC
     {
         [Header("プレハブの参照")]
         [SerializeField] private GameObject swordObj;
+        [SerializeField] private GameObject iceDataPrefab;
         [SerializeField] private GameObject iceRosePrefab;
         // [Header("ニュートラル強")]
-        // [Header("左強")]
+        [Header("左強")]
+        [SerializeField] private float leftStrongVelocity;
+        private float elapsedTime;
+        private const int MAXCOUNT = 2;
+        private int currentCount;
+        private bool OnleftStrong = false;  
         // [Header("右強")]
         // [Header("下強")]
         // [Header("上強")]
@@ -35,6 +41,14 @@ namespace TechC
         public override void LeftAttack()
         {
             base.LeftAttack();
+            currentCount++;
+            if (currentCount < MAXCOUNT)
+            {
+                var obj = CharaEffectFactory.I.GetEffectObj(iceDataPrefab);
+                var rb = obj.GetComponent<Rigidbody>();
+                rb.velocity = Vector3.zero;
+                rb.velocity = transform.forward * leftStrongVelocity;
+            }
         }
 
         /// <summary>

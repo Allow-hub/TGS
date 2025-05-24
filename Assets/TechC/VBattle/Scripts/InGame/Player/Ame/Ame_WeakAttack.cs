@@ -145,13 +145,12 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
-
-            sword.SetActive(true);
             StartCoroutine(SwordDisActive(attackData));
         }
 
         private IEnumerator SwordDisActive(AttackData attackData)
         {
+            sword.SetActive(true);
             yield return new WaitForSeconds(attackData.attackDuration);
             sword.SetActive(false);
         }

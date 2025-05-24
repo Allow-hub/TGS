@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7797085845215521307}
   - component: {fileID: 8130153437828902626}
   - component: {fileID: 9141137595621075143}
-  - component: {fileID: 465988328092469450}
+  - component: {fileID: 7473302580277039693}
   - component: {fileID: 3455362588810788779}
   - component: {fileID: 2764965064054818122}
   - component: {fileID: 4029775971515787939}
@@ -257,7 +257,7 @@ MonoBehaviour:
   characterType: 1
   weakAttack: {fileID: 9141137595621075143}
   strongAttack: {fileID: 8130153437828902626}
-  appealBase: {fileID: 465988328092469450}
+  appealBase: {fileID: 7473302580277039693}
   bounceStopTime: 0.05
   maxBounceForce: 15
   addY: 1
@@ -299,7 +299,8 @@ MonoBehaviour:
   downAttackData: {fileID: 11400000, guid: 701b30260febc674b938c054bff32e43, type: 2}
   upAttackData: {fileID: 11400000, guid: 76c05fcb9a3836341b5ef7637409d006, type: 2}
   swordObj: {fileID: 5456214866192646022}
-  iceRosePrefab: {fileID: 0}
+  iceRosePrefab: {fileID: 5485823413112826855, guid: 5ceed32c05f19214bbf0711b0dcfab69,
+    type: 3}
 --- !u!114 &9141137595621075143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -345,7 +346,7 @@ MonoBehaviour:
   changeHitBox: {x: 0.3, y: 0.8, z: 0}
   chageColliderSpeed: 10
   slidingSpeed: 7
---- !u!114 &465988328092469450
+--- !u!114 &7473302580277039693
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -354,7 +355,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7627828736903395385}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6e9d0b051e0e36429f35db6bdec097b, type: 3}
+  m_Script: {fileID: 11500000, guid: 65e3f5b67940cb74e8ed299027b8763c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 7797085845215521307}
@@ -401,7 +402,7 @@ MonoBehaviour:
   upwardOffset: 2
   horizontalRandomRange: 0.5
   effectActiveTime: 3
-  characterType: 0
+  characterType: 1
   combos:
   - {fileID: 11400000, guid: 7f458afe5f1ef4d49ab15f646e263cb7, type: 2}
   lastDetectedCombo: "\u306A\u3057"
@@ -519,7 +520,7 @@ PrefabInstance:
     - target: {fileID: 9140548537085011415, guid: 1157485f5f26da945b324c8fb584b0f0,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

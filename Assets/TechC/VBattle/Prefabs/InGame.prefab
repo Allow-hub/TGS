@@ -394,6 +394,8 @@ Transform:
   - {fileID: 8059910128869713942}
   - {fileID: 1938361644517515383}
   - {fileID: 2575086304899408266}
+  - {fileID: 4678655981357327251}
+  - {fileID: 7034213163845644225}
   m_Father: {fileID: 7923638173486885026}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8058803600275324131
@@ -428,6 +430,15 @@ MonoBehaviour:
     prefab: {fileID: 5485823413112826855, guid: 5ceed32c05f19214bbf0711b0dcfab69,
       type: 3}
     parent: {fileID: 3097403994962674794}
+    initialSize: 3
+  - name: Ame_IceData
+    prefab: {fileID: 978021217508277832, guid: 8f736e9f4d432bd44a1dddd014cee959, type: 3}
+    parent: {fileID: 4376409560756094055}
+    initialSize: 3
+  - name: Ame_IceExplosion
+    prefab: {fileID: 8851317272703853198, guid: 60dc8d00d5ec29a4f858b2997fa86c05,
+      type: 3}
+    parent: {fileID: 5684834577768148458}
     initialSize: 3
   autoExpand: 1
   expandSize: 5
@@ -931,6 +942,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &4376409560756094055
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4678655981357327251}
+  m_Layer: 0
+  m_Name: Ame_IceData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4678655981357327251
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4376409560756094055}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5139287414882454690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4544061441486197058
 GameObject:
   m_ObjectHideFlags: 0
@@ -1139,6 +1181,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &5684834577768148458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7034213163845644225}
+  m_Layer: 0
+  m_Name: Ame_IceExplosion
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7034213163845644225
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5684834577768148458}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5139287414882454690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5822215135524719117
 GameObject:
   m_ObjectHideFlags: 0

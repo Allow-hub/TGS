@@ -11,15 +11,22 @@ namespace TechC
     {
         [Header("プレハブの参照")]
         [SerializeField] private GameObject swordObj;
+        [SerializeField] private GameObject magicCircle;
         [SerializeField] private GameObject iceDataPrefab;
+        [SerializeField] private GameObject iceExplosionPrefab;
         [SerializeField] private GameObject iceRosePrefab;
         // [Header("ニュートラル強")]
         [Header("左強")]
+        [SerializeField] private float magicDuration = 2f;
+        [SerializeField] private float yOffset = 2;
         [SerializeField] private float leftStrongVelocity;
+        [SerializeField] private float explosionDuration = 3f;
+        private GameObject currentIceObj;
         private float elapsedTime;
         private const int MAXCOUNT = 2;
         private int currentCount;
         private bool OnleftStrong = false;  
+
         // [Header("右強")]
         // [Header("下強")]
         // [Header("上強")]
@@ -42,12 +49,34 @@ namespace TechC
         {
             base.LeftAttack();
             currentCount++;
+
             if (currentCount < MAXCOUNT)
             {
-                var obj = CharaEffectFactory.I.GetEffectObj(iceDataPrefab);
-                var rb = obj.GetComponent<Rigidbody>();
+                magicCircle.SetActive(true);
+                DelayUtility.StartDelayedAction(this, magicDuration, () =>
+                {
+                    magicCircle.SetActive(false);
+                });
+                var pos = transform.position.AddY(yOffset);
+                currentIceObj = CharaEffectFactory.I.GetEffectObj(iceDataPrefab, pos, Quaternion.identity);
+                var rb = currentIceObj.GetComponent<Rigidbody>();
                 rb.velocity = Vector3.zero;
                 rb.velocity = transform.forward * leftStrongVelocity;
+            }
+            else
+            {
+
+                var createPos = currentIceObj.transform.position;
+                CharaEffectFactory.I.ReturnEffectObj(currentIceObj);
+                var explosionObj = CharaEffectFactory.I.GetEffectObj(iceExplosionPrefab, createPos, Quaternion.identity);
+                var charaEffectSetting = explosionObj.GetComponent<CharaEffect>();
+                charaEffectSetting.SetOwnerId(characterController.PlayerID);
+                charaEffectSetting.SetAttackProcessor(attackProcessor);
+                DelayUtility.StartDelayedAction(this, explosionDuration, () =>
+                {
+                    CharaEffectFactory.I.ReturnEffectObj(explosionObj);
+                });
+                currentCount = 0;
             }
         }
 

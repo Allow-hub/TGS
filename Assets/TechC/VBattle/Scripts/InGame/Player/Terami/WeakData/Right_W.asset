@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d62277a4cf745c43bcaa0408b92a2f2, type: 3}
   m_Name: Right_W
   m_EditorClassIdentifier: 
-  characterType: 1
+  characterType: 2
   attackName: Right_W
   description: 
   data:
@@ -23,6 +23,9 @@ MonoBehaviour:
   attackDuration: 0.7
   damage: 10
   knockback: 3
+  canRepeat: 0
+  repeatInterval: 0
+  repeatDuration: 0
   radius: 2
   targetLayers:
     serializedVersion: 2
@@ -33,6 +36,7 @@ MonoBehaviour:
   hitStopTimeScale: 0
   knockbackDirection: {x: 0, y: 0, z: 1}
   useCustomKnockbackDirection: 0
+  useSelfColliderForHitCheck: 0
   characterSEType: 0
   characterVoiceType: 0
   effectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,

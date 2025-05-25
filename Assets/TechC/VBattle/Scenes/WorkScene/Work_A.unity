@@ -122,6 +122,55 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &162475014
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 162475015}
+  - component: {fileID: 162475016}
+  m_Layer: 0
+  m_Name: StageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &162475015
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162475014}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1350197807}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &162475016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162475014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 856fc5e48a95f704e9d8ea93f41233bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageRenderer: {fileID: 1056183464}
+  stageDataList:
+  - {fileID: 11400000, guid: 3585e679861d05e4bb6c838fcaf9b704, type: 2}
+  - {fileID: 11400000, guid: 736a7d2cfeb73eb4bba237adf68730b6, type: 2}
+  currentStageIndex: 0
 --- !u!1 &203844586
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,8 +708,28 @@ MonoBehaviour:
   maxDistance: 40
   minFOV: 50
   maxFOV: 120
-  zoomSpeed: 5
+  zoomSpeed: 10
+  zoomMargin: 2
+  followSmoothTime: 0.5
+  cameraOffset: {x: 0, y: 0, z: 0}
+  enableYAxisFollow: 0
+  constrainToStage: 1
+  stageBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 25, y: 25, z: 25}
+  enableCameraShake: 1
+  defaultShakeIntensity: 1
+  defaultShakeDuration: 0.2
+  deadZone: 2
+  adaptToPlayerSpeed: 1
+  anticipationFactor: 0.5
   players: []
+--- !u!212 &1056183464 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4744322111783576921, guid: c2ba8867f924fc444b667e30e329ad17,
+    type: 3}
+  m_PrefabInstance: {fileID: 2523554890568117842}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1160234425
 GameObject:
   m_ObjectHideFlags: 0
@@ -955,6 +1024,10 @@ PrefabInstance:
         type: 3}
       insertIndex: 1
       addedObject: {fileID: 1160234427}
+    - targetCorrespondingSourceObject: {fileID: 7923638173486885026, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 162475015}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
 --- !u!1660057539 &9223372036854775807

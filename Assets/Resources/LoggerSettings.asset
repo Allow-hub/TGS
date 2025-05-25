@@ -58,6 +58,14 @@ MonoBehaviour:
     displayName: Window
     color: {r: 0.8113208, g: 0.5295526, b: 0.16456035, a: 1}
     enabledByDefault: 1
+  - categoryId: camera
+    displayName: Camera
+    color: {r: 0.86484987, g: 0.9150943, b: 0.75538445, a: 1}
+    enabledByDefault: 0
+  - categoryId: stage
+    displayName: Stage
+    color: {r: 0.75686276, g: 0.9137255, b: 0.85642296, a: 1}
+    enabledByDefault: 1
   defaultCategory:
     categoryId: default
     displayName: Default

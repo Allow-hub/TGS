@@ -20,6 +20,7 @@ namespace TechC
         }
 
         private List<HitboxInfo> activeHitboxes = new List<HitboxInfo>();
+        protected override InitPhase GetInitPhase() => InitPhase.Early;
 
    
 

@@ -13,6 +13,7 @@ namespace TechC
     public class CameraManager : Singleton<CameraManager>
     {
         protected override bool UseDontDestroyOnLoad => false;
+        protected override InitPhase GetInitPhase() => InitPhase.MiddleEarly;
 
         [Header("Cinemachine References")]
         public CinemachineVirtualCamera vcam;

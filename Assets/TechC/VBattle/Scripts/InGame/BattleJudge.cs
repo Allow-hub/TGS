@@ -58,6 +58,7 @@ namespace TechC
         private bool isBattleOngoing = false;   // バトル進行中フラグ
         private int alivePlayerCount = 0;       // 生存プレイヤー数
         protected override bool UseDontDestroyOnLoad => false;
+        protected override InitPhase GetInitPhase() => InitPhase.Early;
         #endregion
 
 

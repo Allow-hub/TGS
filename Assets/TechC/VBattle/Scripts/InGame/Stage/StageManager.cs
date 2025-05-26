@@ -30,7 +30,8 @@ namespace TechC
         public string CurrentStageName => currentStageData?.stageName ?? "No Stage";
         
         protected override bool UseDontDestroyOnLoad => false;
-        
+
+        // protected override InitPhase GetInitPhase() => InitPhase.Late;
         protected override void Init()
         {
             base.Init();

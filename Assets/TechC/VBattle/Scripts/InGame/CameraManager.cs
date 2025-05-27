@@ -71,7 +71,7 @@ namespace TechC
             base.Init();
             InitializeCamera();
             RegisterPlayers();
-            StartShake(defaultShakeProfile,1000, 10);
+            // StartShake(defaultShakeProfile,1000, 10);
         }
 
         void Update()

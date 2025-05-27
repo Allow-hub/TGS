@@ -8,7 +8,6 @@ namespace TechC
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField] private int targetFrameRate = 144;
-        protected override InitPhase GetInitPhase() => InitPhase.Early;
 
         public enum GameState
         {

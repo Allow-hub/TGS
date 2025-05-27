@@ -5,7 +5,6 @@ namespace TechC
 {
     public class HitStopManager : Singleton<HitStopManager>
     {
-        protected override InitPhase GetInitPhase() => InitPhase.Early;
 
         [SerializeField] private float defaultHitStopDuration = 0.1f;
         [SerializeField] private float defaultTimeScale = 0.05f;

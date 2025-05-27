@@ -13,7 +13,6 @@ namespace TechC
     public class CameraManager : Singleton<CameraManager>
     {
         protected override bool UseDontDestroyOnLoad => false;
-        protected override InitPhase GetInitPhase() => InitPhase.MiddleEarly;
 
         [Header("Cinemachine References")]
         public CinemachineVirtualCamera vcam;
@@ -70,7 +69,6 @@ namespace TechC
             base.Init();
             InitializeCamera();
             RegisterPlayers();
-            StartShake(300f, 10f);
         }
 
         void Update()
@@ -342,6 +340,20 @@ namespace TechC
             }
         }
 
+        public void SetCameraDistance(float value)
+        {
+            var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
+            if (transposer == null)
+            {
+                CustomLogger.Warning("CameraManager: FramingTransposer が見つかりません", LOGTAG);
+                return;
+            }
+
+            transposer.m_CameraDistance = value;
+            CustomLogger.Info($"CameraManager: カメラ距離を {value} に設定しました", LOGTAG);
+        }
+
+
         /// <summary>
         /// 全プレイヤーとターゲットグループを初期化
         /// </summary>
@@ -406,8 +418,15 @@ namespace TechC
             this.maxFOV = Mathf.Max(this.minFOV, maxFOV);
             this.minDistance = Mathf.Max(0.1f, minDist);
             this.maxDistance = Mathf.Max(this.minDistance, maxDist);
-        }
 
+            var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
+            Debug.Log(transposer);
+            if (transposer != null)
+            {
+                transposer.m_MinimumFOV = this.minFOV;
+                transposer.m_MaximumFOV = this.maxFOV;
+            }
+        }
         /// <summary>
         /// ステージ境界を設定
         /// </summary>
@@ -444,6 +463,40 @@ namespace TechC
                 }
             }
         }
+        /// <summary>
+        /// カメラのオフセットを設定
+        /// </summary>
+        public void SetCameraOffset(Vector3 offset)
+        {
+            if (vcam == null)
+            {
+                CustomLogger.Warning("CameraManager: vcam が設定されていません", LOGTAG);
+                return;
+            }
+
+            var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
+            if (transposer == null)
+            {
+                CustomLogger.Warning("CameraManager: FramingTransposer が見つかりません", LOGTAG);
+                return;
+            }
+
+            transposer.m_ScreenX = Mathf.Clamp01(offset.x);
+            transposer.m_ScreenY = Mathf.Clamp01(offset.y);
+
+            CustomLogger.Info($"CameraManager: Screen位置を X={offset.x}, Y={offset.y} に設定しました", LOGTAG);
+        }
+
+
+        /// <summary>
+        /// デッドゾーンを設定
+        /// </summary>
+        public void SetDeadZone(Vector2 zone)
+        {
+            deadZone = Mathf.Max(zone.x, zone.y);
+            CustomLogger.Info($"CameraManager: デッドゾーンを {deadZone} に設定しました", LOGTAG);
+        }
+
 
         #endregion
 

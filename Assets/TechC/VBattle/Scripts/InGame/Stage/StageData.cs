@@ -10,7 +10,7 @@ namespace TechC
         [Header("基本情報")]
         public string stageName = "New Stage";
         public Sprite stageSprite;
-
+        public Vector2 spriteScale = new Vector2(10, 10);
         [Header("カメラの設定")]
         public bool overrideCameraPosition = false;
         public Vector3 cameraOffset = Vector3.zero;
@@ -26,7 +26,7 @@ namespace TechC
         public float maxFOV = 60f;
         public float minCameraDistance = 5f;
         public float maxCameraDistance = 20f;
-
+        public float cameraDistance;
         [Header("Stage Bounds")]
         public bool useCustomBounds = false;
         public Bounds customBounds = new Bounds(Vector3.zero, Vector3.one * 20f);

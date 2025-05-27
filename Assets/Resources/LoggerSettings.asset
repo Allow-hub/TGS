@@ -80,6 +80,7 @@ MonoBehaviour:
   - gamePlay
   - physics
   - default
+  - camera
   _disabledCategoryIds:
   - state
   - window

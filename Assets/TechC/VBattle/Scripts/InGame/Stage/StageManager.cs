@@ -35,9 +35,12 @@ namespace TechC
         protected override void Init()
         {
             base.Init();
-            InitializeStage();
+            DelayUtility.StartDelayedAction(this, 0.1f, () =>
+            {
+                InitializeStage();
+            });
         }
-        
+
         /// <summary>
         /// ステージの初期化
         /// </summary>
@@ -52,7 +55,7 @@ namespace TechC
                     CustomLogger.Warning("SpriteRendererが見つかりません。ステージスプライトの変更ができません。", LOGTAG);
                 }
             }
-            
+
             // 現在のステージを適用
             if (stageDataList != null && stageDataList.Length > 0)
             {
@@ -90,7 +93,7 @@ namespace TechC
             
             CustomLogger.Info($"ステージ '{stageData.stageName}' を適用しました", LOGTAG);
         }
-        
+
         /// <summary>
         /// ステージスプライトを適用
         /// </summary>
@@ -101,18 +104,27 @@ namespace TechC
                 CustomLogger.Warning("SpriteRendererが設定されていません", LOGTAG);
                 return;
             }
-            
+
             if (stageData.stageSprite != null)
             {
                 stageRenderer.sprite = stageData.stageSprite;
                 CustomLogger.Info($"ステージスプライトを '{stageData.stageSprite.name}' に変更しました", LOGTAG);
+
+                // スプライトサイズの適用
+                if (stageData.spriteScale != Vector2.zero)
+                {
+                    stageRenderer.transform.localScale = new Vector3(
+                        stageData.spriteScale.x,
+                        stageData.spriteScale.y, 
+                        1f
+                    );
+                }
             }
             else
             {
                 CustomLogger.Warning($"ステージ '{stageData.stageName}' にスプライトが設定されていません", LOGTAG);
             }
         }
-        
         /// <summary>
         /// カメラ設定をCameraManagerに適用
         /// </summary>
@@ -133,6 +145,7 @@ namespace TechC
                     stageData.minCameraDistance, 
                     stageData.maxCameraDistance
                 );
+                CameraManager.I.SetCameraDistance(stageData.cameraDistance);
                 CustomLogger.Info($"カメラのズーム設定を変更しました (FOV: {stageData.minFOV}-{stageData.maxFOV}, Distance: {stageData.minCameraDistance}-{stageData.maxCameraDistance})", LOGTAG);
             }
             
@@ -150,27 +163,34 @@ namespace TechC
                 SetCameraDeadZone(stageData.cameraDeadZone);
             }
         }
-        
+
         /// <summary>
-        /// カメラオフセットを設定（CameraManagerの拡張が必要）
+        /// カメラのオフセットを設定
         /// </summary>
+        /// <param name="offset"></param>
         private void SetCameraOffset(Vector3 offset)
         {
-            // TODO: CameraManagerにSetCameraOffsetメソッドを追加する必要があります
-            CustomLogger.Info($"カメラオフセット設定 {offset} (未実装)", LOGTAG);
+            if (CameraManager.I != null)
+                CameraManager.I.SetCameraOffset(offset);
+            else
+                CustomLogger.Warning("CameraManagerが見つかりません。カメラオフセット設定に失敗しました。", LOGTAG);
         }
-        
+
         /// <summary>
-        /// カメラデッドゾーンを設定（CameraManagerの拡張が必要）
+        /// カメラのデッドゾーンを設定
         /// </summary>
+        /// <param name="deadZone"></param>
         private void SetCameraDeadZone(Vector2 deadZone)
         {
-            // TODO: CameraManagerにSetDeadZoneメソッドを追加する必要があります
-            CustomLogger.Info($"カメラデッドゾーン設定 {deadZone} (未実装)", LOGTAG);
+            if (CameraManager.I != null)
+                CameraManager.I.SetDeadZone(deadZone);
+            else
+                CustomLogger.Warning("CameraManagerが見つかりません。デッドゾーン設定に失敗しました。", LOGTAG);
         }
-        
+
+
         #region パブリックメソッド
-        
+
         /// <summary>
         /// ステージを変更する（インデックス指定）
         /// </summary>

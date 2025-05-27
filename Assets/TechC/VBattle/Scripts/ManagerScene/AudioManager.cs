@@ -9,8 +9,6 @@ namespace TechC
     /// </summary>
     public class AudioManager : Singleton<AudioManager>
     {
-        protected override InitPhase GetInitPhase() => InitPhase.Early;
-
         [SerializeField] private AudioData audioData;
         [SerializeField] private List<CharacterAudioData> characterAudioDataList = new List<CharacterAudioData>();
 

@@ -5,6 +5,7 @@ namespace TechC
 {
     public class HitStopManager : Singleton<HitStopManager>
     {
+
         [SerializeField] private float defaultHitStopDuration = 0.1f;
         [SerializeField] private float defaultTimeScale = 0.05f;
 

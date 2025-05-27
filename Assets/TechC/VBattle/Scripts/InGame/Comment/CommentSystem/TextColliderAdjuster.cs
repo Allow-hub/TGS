@@ -4,13 +4,10 @@ using TMPro;
 namespace TechC
 {
     /// <summary>
-    /// テキストの長さに応じてboxColliderを生成する
+    /// テキストの長さに応じてBoxColliderを生成する（負のサイズは除外）
     /// </summary>
-    
-    /* BoxColliderとTextMeshProUGUIを必須にする */
     [RequireComponent(typeof(BoxCollider))]
     [RequireComponent(typeof(TextMeshProUGUI))]
-    
     public class TextColliderAdjuster : MonoBehaviour
     {
         private TextMeshProUGUI textMeshProUGUI;
@@ -29,10 +26,21 @@ namespace TechC
 
         private void UpdateColliderSize()
         {
-            textMeshProUGUI.ForceMeshUpdate(); /* テキストのサイズを最新の状態にする */
+            textMeshProUGUI.ForceMeshUpdate(); // テキストのサイズを更新
             Bounds bounds = textMeshProUGUI.textBounds;
-            boxCollider.size = bounds.size; /* コライダーの大きさをテキストの大きさに合わせる */
-            boxCollider.center = bounds.center; /* コライダーの中心位置を、テキストの中心に合わせる */
+
+            Vector3 size = bounds.size;
+            Vector3 center = bounds.center;
+
+            // 各軸のサイズを絶対値化（負のサイズを防止）
+            size = new Vector3(
+                Mathf.Abs(size.x),
+                Mathf.Abs(size.y),
+                Mathf.Abs(size.z)
+            );
+
+            boxCollider.size = size;
+            boxCollider.center = center;
         }
     }
 }

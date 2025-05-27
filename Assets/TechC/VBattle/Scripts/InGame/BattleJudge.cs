@@ -12,7 +12,7 @@ namespace TechC
     /// <summary>
     /// バトルの勝敗を管理する調停者
     /// </summary>
-    public class BattleJudge : MonoBehaviour
+    public class BattleJudge : Singleton<BattleJudge>
     {
         #region クラス定義
         [System.Serializable]
@@ -39,6 +39,7 @@ namespace TechC
 
         [Header("プレイヤー設定")]
         [SerializeField] private List<PlayerData> players = new List<PlayerData>();
+        public List<PlayerData> Players => players;
         #endregion
 
         #region イベント
@@ -56,39 +57,14 @@ namespace TechC
         private float currentTime;              // 現在の経過時間
         private bool isBattleOngoing = false;   // バトル進行中フラグ
         private int alivePlayerCount = 0;       // 生存プレイヤー数
+        protected override bool UseDontDestroyOnLoad => false;
         #endregion
 
-        #region インスタンス
-        // シングルトンインスタンス
-        private static BattleJudge _instance;
-        public static BattleJudge Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = FindObjectOfType<BattleJudge>();
-                }
-                return _instance;
-            }
-        }
-        #endregion
 
         #region Unity ライフサイクル
-        private void Awake()
+        protected override void Init()
         {
-            if (_instance == null)
-            {
-                _instance = this;
-            }
-            else if (_instance != this)
-            {
-                Destroy(gameObject);
-            }
-        }
-
-        private void Start()
-        {
+            base.Init();
             // バトルの初期化
             InitializeBattle();
         }

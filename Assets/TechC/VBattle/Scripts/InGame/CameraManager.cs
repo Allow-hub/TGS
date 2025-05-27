@@ -50,6 +50,8 @@ namespace TechC
         [SerializeField, ReadOnly] private List<Transform> players = new List<Transform>();
         private Dictionary<Transform, PlayerCameraData> playerDataMap = new Dictionary<Transform, PlayerCameraData>();
         private CinemachineBasicMultiChannelPerlin noiseComponent;
+
+        [SerializeField]private NoiseSettings defaultShakeProfile;
         private float shakeTimer;
         private Vector3 lastTargetPosition;
         private float lastUpdateTime;
@@ -69,6 +71,7 @@ namespace TechC
             base.Init();
             InitializeCamera();
             RegisterPlayers();
+            StartShake(defaultShakeProfile,1000, 10);
         }
 
         void Update()
@@ -89,20 +92,16 @@ namespace TechC
                 return;
             }
 
-            // ノイズコンポーネントを取得または追加
             noiseComponent = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
             if (noiseComponent == null && enableCameraShake)
             {
                 noiseComponent = vcam.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
             }
 
-            // TargetGroupの設定
             if (targetGroup != null)
             {
                 vcam.Follow = targetGroup.transform;
                 vcam.LookAt = targetGroup.transform;
-
-                // TargetGroupの設定を最適化
                 targetGroup.m_PositionMode = CinemachineTargetGroup.PositionMode.GroupCenter;
                 targetGroup.m_RotationMode = CinemachineTargetGroup.RotationMode.Manual;
                 targetGroup.m_UpdateMethod = CinemachineTargetGroup.UpdateMethod.LateUpdate;
@@ -110,7 +109,6 @@ namespace TechC
 
             lastUpdateTime = Time.time;
         }
-
         /// <summary>
         /// BattleJudgeからプレイヤーを登録
         /// </summary>
@@ -377,24 +375,24 @@ namespace TechC
         }
 
         /// <summary>
-        /// カメラシェイクを開始
+        /// カメラシェイクを開始,CM Vcam1->Noise->NoiseProfileの歯車からEditで
+        /// Shakeのデータを拾えます
         /// </summary>
-        public void StartShake(float intensity = -1f, float duration = -1f)
+        public void StartShake(NoiseSettings noiseSettings,float intensity = -1f, float duration = -1f)
         {
             if (!enableCameraShake) return;
 
             float shakeIntensity = intensity > 0f ? intensity : defaultShakeIntensity;
             float shakeDuration = duration > 0f ? duration : defaultShakeDuration;
 
-            // より強いシェイクの場合は上書き
-            if (shakeTimer <= 0f || intensity > defaultShakeIntensity)
+            if (noiseComponent == null)
             {
-                shakeTimer = shakeDuration;
-                if (noiseComponent != null)
-                {
-                    noiseComponent.m_AmplitudeGain = shakeIntensity;
-                }
+                noiseComponent = vcam.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
             }
+            noiseComponent.m_NoiseProfile = noiseSettings;
+            noiseComponent.m_AmplitudeGain = shakeIntensity;
+            noiseComponent.m_FrequencyGain = 1.0f; // 任意
+            shakeTimer = shakeDuration;
         }
 
         /// <summary>
@@ -420,7 +418,6 @@ namespace TechC
             this.maxDistance = Mathf.Max(this.minDistance, maxDist);
 
             var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
-            Debug.Log(transposer);
             if (transposer != null)
             {
                 transposer.m_MinimumFOV = this.minFOV;

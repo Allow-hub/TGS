@@ -9,13 +9,28 @@ namespace TechC
     /// </summary>
     public class Terami_WeakAttack : WeakAttack
     {
+        [Header("エフェクトのプレハブや参照")]
+        [SerializeField] private GameObject cookie;
+        //     [SerializeField] private GameObject ;
+        //     [SerializeField] private GameObject ;
+        //    [SerializeField] private GameObject ;
+
+        [Header("ニュートラルアタックの設定")]
+        private float returnNeutralEffectTime = 3f;
+
+        [Header("下弱")]
+        private float returnRightEffectTime = 3.0f;
+
+
+
+
         /// <summary>
         /// ゴムベラを前に振る、前方への軽い攻撃。3回目で派生
         /// </summary>
         public override void NeutralAttack()
         {
             base.NeutralAttack();
-
+            // if (currentNeutral == neutralAttackData_1)
         }
 
         /// <summary>
@@ -27,11 +42,12 @@ namespace TechC
         }
 
         /// <summary>
-        /// 高速で後ろに下がる
+        /// 未定
         /// </summary>
         public override void RightAttack()
         {
             base.RightAttack();
+
         }
 
         /// <summary>
@@ -41,6 +57,16 @@ namespace TechC
         public override void DownAttack()
         {
             base.DownAttack();
+
+            var cookieObjPos = characterController.transform.position;
+
+            var cookieEffect = CharaEffectFactory.I.GetEffectObj(cookie, cookieObjPos, Quaternion.identity);
+            Debug.Log("クッキーエフェクトが出ました");
+            //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
+            DelayUtility.StartDelayedAction(this, returnRightEffectTime, () =>
+            {
+                CharaEffectFactory.I.ReturnEffectObj(cookieEffect);
+            });
         }
 
         /// <summary>

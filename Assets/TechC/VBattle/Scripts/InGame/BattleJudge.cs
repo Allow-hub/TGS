@@ -429,6 +429,25 @@ namespace TechC
             return currentTime;
         }
         #endregion
-        public GameObject GetPlayerObjById(int id)=>players[id-1].playerObject;
+        public GameObject GetPlayerObjById(int id) => players[id - 1].playerObject;
+        /// <summary>
+        /// 指定したプレイヤーID以外の全プレイヤーのGameObjectを取得する
+        /// </summary>
+        /// <param name="excludePlayerID">除外したいプレイヤーID</param>
+        /// <returns>除外対象以外のプレイヤーGameObjectのリスト</returns>
+        public List<GameObject> GetOtherPlayerObjects(int excludePlayerID)
+        {
+            List<GameObject> result = new List<GameObject>();
+
+            foreach (var player in players)
+            {
+                if (player.playerID != excludePlayerID && player.playerObject != null)
+                {
+                    result.Add(player.playerObject);
+                }
+            }
+
+            return result;
+        }
     }
 }

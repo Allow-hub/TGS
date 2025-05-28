@@ -240,6 +240,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &210092405 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 921649179348610202, guid: c2ba8867f924fc444b667e30e329ad17,
+    type: 3}
+  m_PrefabInstance: {fileID: 913436213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &403992548 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5139287414882454690, guid: c2ba8867f924fc444b667e30e329ad17,
@@ -356,6 +362,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7627828736903395385, guid: 01e31a08014b679499c665bdfbef363f,
         type: 3}
+    - target: {fileID: 7981336831571438261, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: players.Array.data[0].initialPosition
+      value: 
+      objectReference: {fileID: 210092405}
+    - target: {fileID: 7981336831571438261, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: players.Array.data[1].initialPosition
+      value: 
+      objectReference: {fileID: 1701513900}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: poolItems.Array.size
@@ -826,6 +842,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 403992548}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1701513900 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1832820432141741491, guid: c2ba8867f924fc444b667e30e329ad17,
+    type: 3}
+  m_PrefabInstance: {fileID: 913436213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

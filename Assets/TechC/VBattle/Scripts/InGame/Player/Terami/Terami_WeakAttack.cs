@@ -19,14 +19,15 @@ namespace TechC
         private float returnNeutralEffectTime = 3f;
 
         [Header("左弱")]
-        [SerializeField] private float xOffset = 3f;
+        [SerializeField] private float LeftXOffset = 3f;
+        [SerializeField] private float LeftYOffset = 1f;
 
         [SerializeField] private float marshmallowThrowSpeed = 10f;
         [SerializeField] private float returnLeftEffectTime = 3.0f;
 
 
         [Header("右弱")]
-        
+
         [SerializeField] private float returnRightEffectTime = 3.0f;
 
 
@@ -34,7 +35,7 @@ namespace TechC
         [SerializeField] private float returnDownEffectTime = 3.0f;
 
         [Header("上弱")]
-        [SerializeField] private float yOffset = 5f;
+        [SerializeField] private float UpYOffset = 5f;
         [SerializeField] private float chocolateFallSpeed = 10f;
         [SerializeField] private float returnUpEffectTime = 5.0f;
 
@@ -55,17 +56,25 @@ namespace TechC
             base.LeftAttack();
 
             GameObject marshObj = null;
-             DelayUtility.StartDelayedAction(this, rightAttackData.hitTiming, () =>
+            DelayUtility.StartDelayedAction(this, rightAttackData.hitTiming, () =>
             {
-                //飛び道具の処理
-                var marshPos = transform.position.AddX(xOffset);
+                /* マシュマロの処理 */
+                var marshPos = transform.position;
+                marshPos = transform.position.AddY(LeftYOffset);
+                Debug.Log($"変更前の座標の位置：{marshPos}");
                 marshObj = CharaEffectFactory.I.GetEffectObj(marshmallow, marshPos, Quaternion.identity);
                 var effectSetting = marshObj.GetComponent<CharaEffect>();
                 effectSetting.SetAttackProcessor(attackProcessor);
                 effectSetting.SetOwnerId(characterController.PlayerID);
                 var rb = marshObj.GetComponent<Rigidbody>();
-                //斬撃をrbで飛ばす
+                /* マシュマロをrbで飛ばす */
                 rb.velocity = transform.forward * marshmallowThrowSpeed;
+            });
+
+            //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
+            DelayUtility.StartDelayedAction(this, returnLeftEffectTime, () =>
+            {
+                CharaEffectFactory.I.ReturnEffectObj(marshObj);
             });
         }
 
@@ -108,7 +117,7 @@ namespace TechC
             {
                 /* 相手の座標を取得 */
                 var otherPlayerPos = BattleJudge.I.GetOtherPlayerObjects(characterController.PlayerID)[0].transform.position; /* [0]を取得しているのは1vs1限定 */
-                otherPlayerPos = otherPlayerPos.AddY(yOffset); /* 高さを追加 */
+                otherPlayerPos = otherPlayerPos.AddY(UpYOffset); /* 高さを追加 */
 
                 /* お菓子の処理 */
                 chocolateObj = CharaEffectFactory.I.GetEffectObj(chocolate, otherPlayerPos, Quaternion.identity);

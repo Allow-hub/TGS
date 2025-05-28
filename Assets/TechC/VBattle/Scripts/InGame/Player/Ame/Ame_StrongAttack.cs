@@ -15,6 +15,10 @@ namespace TechC
         [SerializeField] private GameObject iceDataPrefab;
         [SerializeField] private GameObject iceExplosionPrefab;
         [SerializeField] private GameObject iceRosePrefab;
+
+        [Header("エフェクトのプレハブや参照")]
+        [SerializeField] private GameObject BladedStorm;
+
         // [Header("ニュートラル強")]
         [Header("左強")]
         [SerializeField] private float magicDuration = 2f;
@@ -25,11 +29,15 @@ namespace TechC
         private float elapsedTime;
         private const int MAXCOUNT = 2;
         private int currentCount;
-        private bool OnleftStrong = false;  
+        private bool OnleftStrong = false;
 
         // [Header("右強")]
         // [Header("下強")]
         // [Header("上強")]
+        [Header("上強")]
+
+        private float returnStrongUpEffectTime = 3f;
+        
 
 
         /// <summary>
@@ -103,11 +111,19 @@ namespace TechC
         public override void UpAttack()
         {
             base.UpAttack();
+            ActiveSword(upAttackData.attackDuration);
         }
 
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
+            ActiveSword(upAttackData.attackDuration);
+            var StormObj = CharaEffectFactory.I.GetEffectObj(BladedStorm, transform.position, Quaternion.identity);
+            
+            DelayUtility.StartDelayedAction(this, returnStrongUpEffectTime, () =>
+            {
+                CharaEffectFactory.I.ReturnEffectObj(StormObj);
+            });
         }
 
         private void ActiveSword(float duration)

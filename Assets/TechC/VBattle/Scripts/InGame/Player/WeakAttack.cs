@@ -63,7 +63,6 @@ namespace TechC
             RegisterAttackData(AttackType.Up, upAttackData);
         }
 
-      
         public override void NeutralAttack()
         {
             // ニュートラルコンボチェッカーに次の攻撃データを取得

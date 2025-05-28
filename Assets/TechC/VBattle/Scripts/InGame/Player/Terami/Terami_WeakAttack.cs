@@ -69,7 +69,7 @@ namespace TechC
         {
             base.DownAttack();
 
-            var cookieObjPos = characterController.transform.position;
+            var cookieObjPos = transform.position;
 
             var cookieEffect = CharaEffectFactory.I.GetEffectObj(cookie, cookieObjPos, Quaternion.identity);
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
@@ -92,7 +92,7 @@ namespace TechC
             DelayUtility.StartDelayedAction(this, rightAttackData.hitTiming, () =>
             {
                 /* 相手の座標を取得 */
-                var otherPlayerPos = BattleJudge.I.GetOtherPlayerObjects(characterController.PlayerID)[0].transform.position;
+                var otherPlayerPos = BattleJudge.I.GetOtherPlayerObjects(characterController.PlayerID)[0].transform.position; /* [0]を取得しているのは1vs1限定 */
                 otherPlayerPos = otherPlayerPos.AddY(yOffset); /* 高さを追加 */
 
                 /* お菓子の処理 */

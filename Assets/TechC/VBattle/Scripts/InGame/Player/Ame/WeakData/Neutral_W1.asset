@@ -23,6 +23,9 @@ MonoBehaviour:
   attackDuration: 0.3
   damage: 10
   knockback: 2
+  canRepeat: 0
+  repeatInterval: 0
+  repeatDuration: 0
   radius: 1
   targetLayers:
     serializedVersion: 2
@@ -30,9 +33,10 @@ MonoBehaviour:
   hitboxOffset: {x: 0, y: 1, z: 1.2}
   hitTiming: 0.3
   hitStopDuration: 0.01
-  hitStopTimeScale: 0.2
+  hitStopTimeScale: 0.1
   knockbackDirection: {x: 0, y: 1, z: -0.1}
   useCustomKnockbackDirection: 1
+  useSelfColliderForHitCheck: 0
   characterSEType: 0
   characterVoiceType: 0
   effectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,

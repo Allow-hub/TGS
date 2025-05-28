@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace TechC
@@ -25,17 +26,26 @@ namespace TechC
         public override void Apply(GameObject target)
         {
             base.Apply(target);
-            // Debug.Log("マップ変化のバフを発動");
+            var stageManager = StageManager.I;
+            if (stageManager == null) return;
+            int currentIndex = stageManager.CurrentStageIndex;
+            int stageCount = stageManager.StageCount;
 
-            var manager = MapChangeManager.Instance;
-            if (manager != null && manager.mapObjects != null && manager.mapObjects.Count > 0)
+            // 候補のインデックスをリストにする（現在のインデックスを除く）
+            List<int> indices = new List<int>();
+            for (int i = 0; i < stageCount; i++)
             {
-                // currentMapIndex = Random.Range(0, manager.mapObjects.Count);
-                manager.SetMapIndex();
+                if (i != currentIndex) indices.Add(i);
+            }
+
+            if (indices.Count > 0)
+            {
+                int randomIndex = indices[Random.Range(0, indices.Count)];
+                stageManager.ChangeStage(randomIndex);
             }
             else
             {
-                Debug.LogError("MapChangeManager または mapObjects が未設定です。");
+                Debug.LogWarning("ステージが1つしかありません。変更できません。");
             }
         }
 
@@ -45,16 +55,6 @@ namespace TechC
         public override void Remove(GameObject target)
         {
             base.Remove(target);
-            // Debug.Log("マップ変化バフが解除されました");
-
-            var manager = MapChangeManager.Instance;
-            if (manager != null)
-            {
-                // -1を渡してすべて非表示にする場合
-                manager.SetMapIndex();
-            }
-
-            currentMapIndex = -1;
         }
 
         /// <summary>

@@ -72,7 +72,8 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cf54254752b2acf4ebdd30abcf736a67, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2168590787986126325, guid: cf54254752b2acf4ebdd30abcf736a67,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -157,8 +158,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4.0672607, y: 1.0806885, z: 1}
-  m_Center: {x: -0.00579834, y: -0.04034424, z: 0}
+  m_Size: {x: 4, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &3896079844249705921
 Rigidbody:
   m_ObjectHideFlags: 0

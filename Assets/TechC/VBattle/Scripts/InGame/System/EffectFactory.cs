@@ -38,7 +38,7 @@ namespace TechC
 
             /* エフェクトの位置を回転を設定 */
             // effect.transform.position = position; /* 位置を設定 */
-            var obj = BattleJudge.Instance.GetPlayerObjById(playerID);
+            var obj = BattleJudge.I.GetPlayerObjById(playerID);
             Debug.Log(effect);
             effect.transform.position = obj.transform.position;
             effect.transform.SetParent(obj.transform);

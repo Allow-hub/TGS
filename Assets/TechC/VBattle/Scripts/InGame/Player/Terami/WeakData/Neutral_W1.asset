@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Neutral_W1
   m_EditorClassIdentifier: 
   characterType: 2
+  characterType: 2
   attackName: Neutral_W1
   description: 
   data:

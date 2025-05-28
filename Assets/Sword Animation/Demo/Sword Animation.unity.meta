@@ -1,6 +1,11 @@
 fileFormatVersion: 2
-guid: e086528bbd4f5f14eb5d86587948285a
+<<<<<<<< HEAD:Assets/Sword Animation/Demo/Sword Animation.unity.meta
+guid: e2153c833ce0979449081853b5d97155
 DefaultImporter:
+========
+guid: 1e42eb48370129e449789e635cd697ff
+VisualEffectImporter:
+>>>>>>>> 6677f2bb9c05fecf17e086cd1155fb99b6b68122:Assets/TechC/VBattle/Scenes/WorkScene/Work_M/VFXGraph/SugarSlash.vfx.meta
   externalObjects: {}
   userData: 
   assetBundleName: 

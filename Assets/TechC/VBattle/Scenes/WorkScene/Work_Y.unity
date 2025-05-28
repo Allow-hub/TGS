@@ -359,7 +359,7 @@ PrefabInstance:
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: poolItems.Array.size
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -370,6 +370,11 @@ PrefabInstance:
         type: 3}
       propertyPath: poolItems.Array.data[7].name
       value: Terami_Chocolate
+      objectReference: {fileID: 0}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[8].name
+      value: Terami_Marshmallow
       objectReference: {fileID: 0}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -395,12 +400,28 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
+      propertyPath: poolItems.Array.data[8].parent
+      value: 
+      objectReference: {fileID: 955647596}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[8].prefab
+      value: 
+      objectReference: {fileID: 334557491047361281, guid: b9489cdf188fa04408c913018c989731,
+        type: 3}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
       propertyPath: poolItems.Array.data[6].initialSize
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: poolItems.Array.data[7].initialSize
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[8].initialSize
       value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -414,8 +435,43 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1066780698}
+    - targetCorrespondingSourceObject: {fileID: 5139287414882454690, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 955647597}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
+--- !u!1 &955647596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 955647597}
+  m_Layer: 0
+  m_Name: Terami_Marshmallow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &955647597
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955647596}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 403992548}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,30 +10,33 @@ namespace TechC
     public class Terami_WeakAttack : WeakAttack
     {
         [Header("エフェクトのプレハブや参照")]
+        [SerializeField] private GameObject marshmallow; /* 右弱用 */
         [SerializeField] private GameObject cookie; /* 下弱用 */
         [SerializeField] private GameObject chocolate; /* 上弱用(CharaEffect,BoxColliderをつけること) */
-        //     [SerializeField] private GameObject ;
         //    [SerializeField] private GameObject ;
 
         [Header("ニュートラルアタックの設定")]
         private float returnNeutralEffectTime = 3f;
 
         [Header("左弱")]
+        [SerializeField] private float xOffset = 3f;
+
+        [SerializeField] private float marshmallowThrowSpeed = 10f;
+        [SerializeField] private float returnLeftEffectTime = 3.0f;
+
 
         [Header("右弱")]
+        
+        [SerializeField] private float returnRightEffectTime = 3.0f;
 
 
         [Header("下弱")]
-        private float returnDownEffectTime = 3.0f;
+        [SerializeField] private float returnDownEffectTime = 3.0f;
 
         [Header("上弱")]
         [SerializeField] private float yOffset = 5f;
         [SerializeField] private float chocolateFallSpeed = 10f;
         [SerializeField] private float returnUpEffectTime = 5.0f;
-
-
-
-
 
         /// <summary>
         /// ゴムベラを前に振る、前方への軽い攻撃。3回目で派生
@@ -45,26 +48,38 @@ namespace TechC
         }
 
         /// <summary>
-        /// 前方をロールして相手を蹴る
+        /// 未定
         /// </summary>
         public override void LeftAttack()
         {
             base.LeftAttack();
+
+            GameObject marshObj = null;
+             DelayUtility.StartDelayedAction(this, rightAttackData.hitTiming, () =>
+            {
+                //飛び道具の処理
+                var marshPos = transform.position.AddX(xOffset);
+                marshObj = CharaEffectFactory.I.GetEffectObj(marshmallow, marshPos, Quaternion.identity);
+                var effectSetting = marshObj.GetComponent<CharaEffect>();
+                effectSetting.SetAttackProcessor(attackProcessor);
+                effectSetting.SetOwnerId(characterController.PlayerID);
+                var rb = marshObj.GetComponent<Rigidbody>();
+                //斬撃をrbで飛ばす
+                rb.velocity = transform.forward * marshmallowThrowSpeed;
+            });
         }
 
         /// <summary>
-        /// 未定
+        /// マシュマロを投げて相手に当たったら爆発する、飛び道具側の攻撃はCharaEffectが行う
         /// </summary>
         public override void RightAttack()
         {
             base.RightAttack();
-
         }
 
         /// <summary>
         /// 地面を叩いて、周囲にダメージを与える
         /// </summary>
-
         public override void DownAttack()
         {
             base.DownAttack();
@@ -73,7 +88,7 @@ namespace TechC
 
             var cookieEffect = CharaEffectFactory.I.GetEffectObj(cookie, cookieObjPos, Quaternion.identity);
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
-            DelayUtility.StartDelayedAction(this, returnUpEffectTime, () =>
+            DelayUtility.StartDelayedAction(this, returnDownEffectTime, () =>
             {
                 CharaEffectFactory.I.ReturnEffectObj(cookieEffect);
             });
@@ -104,7 +119,7 @@ namespace TechC
 
                 rb.velocity = -transform.up * chocolateFallSpeed; /* チョコを落下 */
             });
-            
+
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, returnUpEffectTime, () =>
             {

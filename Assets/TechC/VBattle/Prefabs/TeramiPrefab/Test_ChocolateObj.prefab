@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1142814367428800773}
   - component: {fileID: 4234139174797502206}
   m_Layer: 0
-  m_Name: TestChocolateObj
+  m_Name: Test_ChocolateObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

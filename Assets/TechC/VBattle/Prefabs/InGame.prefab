@@ -656,6 +656,37 @@ MonoBehaviour:
   players: []
   defaultShakeProfile: {fileID: 11400000, guid: 9732ea7bbbbb1b94095361c051dd9db6,
     type: 2}
+--- !u!1 &1548230418690227064
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7633542047233854343}
+  m_Layer: 0
+  m_Name: Ame_BladeStorm
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7633542047233854343
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548230418690227064}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -8.996726, y: 14.588392, z: -20.480394}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5139287414882454690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1832820432141741491
 GameObject:
   m_ObjectHideFlags: 0
@@ -727,6 +758,7 @@ Transform:
   - {fileID: 4411205907171792604}
   - {fileID: 3176878784267590532}
   - {fileID: 3865933630028530092}
+  - {fileID: 7633542047233854343}
   m_Father: {fileID: 7923638173486885026}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8058803600275324131
@@ -771,19 +803,10 @@ MonoBehaviour:
       type: 3}
     parent: {fileID: 5684834577768148458}
     initialSize: 3
-  - name: Terami_Cookie
-    prefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+  - name: Ame_BladeStorm
+    prefab: {fileID: 7371667505975298854, guid: c80a682fb7c79e14593541978e10212b,
       type: 3}
-    parent: {fileID: 2772601669467763559}
-    initialSize: 3
-  - name: Terami_Chocolate
-    prefab: {fileID: 2097352013274177404, guid: 908fefc6c9e1d92478ec55fc1cc1ea77,
-      type: 3}
-    parent: {fileID: 6633335111945378574}
-    initialSize: 3
-  - name: Terami_Marshmallow
-    prefab: {fileID: 334557491047361281, guid: b9489cdf188fa04408c913018c989731, type: 3}
-    parent: {fileID: 623580594457748494}
+    parent: {fileID: 1548230418690227064}
     initialSize: 3
   autoExpand: 1
   expandSize: 5

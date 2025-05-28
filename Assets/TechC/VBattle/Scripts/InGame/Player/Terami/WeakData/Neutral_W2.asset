@@ -19,8 +19,8 @@ MonoBehaviour:
     attackType: 0
     attackStrength: 0
   animationTrigger: IsNormalWeakAttack_2
-  animationSpeed: 1.6
-  attackDuration: 0.7
+  animationSpeed: 1.5
+  attackDuration: 0.6
   damage: 10
   knockback: 2
   canRepeat: 0

@@ -305,10 +305,11 @@ MonoBehaviour:
   downAttackData: {fileID: 11400000, guid: 1d93a74787792f94696394ef57dc9670, type: 2}
   upAttackData: {fileID: 11400000, guid: 36ce767f9a6d1954bb4864c661447591, type: 2}
   cookie: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c, type: 3}
-  chocolate: {fileID: 3682691298139770513, guid: 4703b6914a4ab9043a44c257de39c539,
+  chocolate: {fileID: 2097352013274177404, guid: 908fefc6c9e1d92478ec55fc1cc1ea77,
     type: 3}
-  xOffset: 3
-  flyingSlashSpeed: 5
+  yOffset: 4
+  chocolateFallSpeed: 1
+  returnUpEffectTime: 10
 --- !u!114 &1133027494191793631
 MonoBehaviour:
   m_ObjectHideFlags: 0

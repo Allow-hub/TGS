@@ -27,9 +27,9 @@ namespace TechC
         private float returnDownEffectTime = 3.0f;
 
         [Header("上弱")]
-        [SerializeField] private float yOffset = 10f;
-        [SerializeField] private float chocolateFallSpeed = 3f;
-        private float returnUpEffectTime = 100.0f;
+        [SerializeField] private float yOffset = 5f;
+        [SerializeField] private float chocolateFallSpeed = 10f;
+        [SerializeField] private float returnUpEffectTime = 5.0f;
 
 
 
@@ -80,34 +80,31 @@ namespace TechC
         }
 
         /// <summary>
-        /// 相手の上部からお菓子を落とす、お菓子側の攻撃はCharaEffectが行う
+        /// 相手の上部からチョコを落とす、チョコの攻撃はCharaEffectが行う
         /// </summary>
         public override void UpAttack()
         {
             base.UpAttack();
 
-            /* お菓子を上から降らせる処理 */
-            GameObject chocolateObj = null;
-            var otherPlayer = BattleJudge.Instance.GetOtherPlayerObjects(characterController.PlayerID)[0];
+            /* チョコを上から降らせる処理 */
+            GameObject chocolateObj = null; /* チョコのPrefabの初期化 */
 
             DelayUtility.StartDelayedAction(this, rightAttackData.hitTiming, () =>
             {
-                /* お菓子の処理 */
-                Debug.Log($"相手の座標の位置：{otherPlayer.transform.position}");
-                var otherPlayerPos = transform.position.AddY(yOffset);
-                Debug.Log($"変更後の座標：{otherPlayer.transform.position}");
+                /* 相手の座標を取得 */
+                var otherPlayerPos = BattleJudge.I.GetOtherPlayerObjects(characterController.PlayerID)[0].transform.position;
+                otherPlayerPos = otherPlayerPos.AddY(yOffset); /* 高さを追加 */
 
+                /* お菓子の処理 */
                 chocolateObj = CharaEffectFactory.I.GetEffectObj(chocolate, otherPlayerPos, Quaternion.identity);
                 var effectSetting = chocolateObj.GetComponent<CharaEffect>();
                 effectSetting.SetAttackProcessor(attackProcessor);
                 effectSetting.SetOwnerId(characterController.PlayerID);
                 var rb = chocolateObj.GetComponent<Rigidbody>();
-                //斬撃をrbで飛ばす
-                rb.velocity = transform.forward * chocolateFallSpeed;
 
-                Debug.Log("チョコレートのエフェクトが出ました");
-
+                rb.velocity = -transform.up * chocolateFallSpeed; /* チョコを落下 */
             });
+            
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, returnUpEffectTime, () =>
             {

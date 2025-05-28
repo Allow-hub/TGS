@@ -143,6 +143,10 @@ namespace TechC
 
         // ウィンドウ列挙用デリゲート
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+        public delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+        private static WndProcDelegate wndProcDelegate;
+
 
         #endregion
 
@@ -228,9 +232,34 @@ namespace TechC
         private static extern bool RegisterClassEx(ref WNDCLASSEX lpwcx);
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool MoveWindow(IntPtr hWnd,int X,int Y,int nWidth,int nHeight,bool bRepaint);
-
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr DefWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         #endregion
+
+        static WindowUtility()
+        {
+            wndProcDelegate = CustomWndProc;
+        }
+        public static void SubclassWindow(IntPtr hWnd)
+        {
+            IntPtr funcPtr = Marshal.GetFunctionPointerForDelegate(wndProcDelegate);
+            SetWindowLongPtr(hWnd, GWLP_WNDPROC, funcPtr);
+        }
+
+        private static IntPtr CustomWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+        {
+            const uint WM_PAINT = 0x000F;
+
+            if (msg == WM_PAINT)
+            {
+                // 再描画処理
+                DrawWindowUtility.DrawTextureToWindow(hWnd, /* テクスチャ渡す場合は管理が必要 */ null);
+                return IntPtr.Zero;
+            }
+
+            return DefWindowProc(hWnd, msg, wParam, lParam);
+        }
 
         #region ウィンドウ作成と管理
 
@@ -441,13 +470,13 @@ namespace TechC
         /// <param name="flags">フラグ（SWP_NOSIZEなど）</param>
         /// <returns>成功したかどうか</returns>
         public static bool SetWindowPositionAndSize(
-            IntPtr hWnd, int x, int y, int width, int height, uint flags = 0)
+            IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int width, int height, uint flags = 0)
         {
             if (hWnd == IntPtr.Zero) return false;
 
             try
             {
-                return SetWindowPos(hWnd, IntPtr.Zero, x, y, width, height, flags);
+                return SetWindowPos(hWnd, hWndInsertAfter, x, y, width, height, flags);
             }
             catch (Exception ex)
             {
@@ -456,29 +485,6 @@ namespace TechC
             }
         }
 
-        /// <summary>
-        /// ウィンドウの位置のみを設定します
-        /// </summary>
-        /// <param name="hWnd">ウィンドウハンドル</param>
-        /// <param name="x">X座標</param>
-        /// <param name="y">Y座標</param>
-        /// <returns>成功したかどうか</returns>
-        public static bool SetWindowPosition(IntPtr hWnd, int x, int y)
-        {
-            return SetWindowPositionAndSize(hWnd, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-        }
-
-        /// <summary>
-        /// ウィンドウのサイズのみを設定します
-        /// </summary>
-        /// <param name="hWnd">ウィンドウハンドル</param>
-        /// <param name="width">幅</param>
-        /// <param name="height">高さ</param>
-        /// <returns>成功したかどうか</returns>
-        public static bool SetWindowSize(IntPtr hWnd, int width, int height)
-        {
-            return SetWindowPositionAndSize(hWnd, 0, 0, width, height, SWP_NOMOVE | SWP_NOZORDER);
-        }
 
         /// <summary>
         /// ウィンドウを最前面に設定します
@@ -667,6 +673,7 @@ namespace TechC
         #endregion
 
         #region ウィンドウプロパティ取得
+        
 
         /// <summary>
         /// ウィンドウのタイトルを取得します
@@ -766,7 +773,7 @@ namespace TechC
 
             try
             {
-                return SetWindowLongPtr(hWnd, (int)GWL_STYLE, new IntPtr(style));
+                return SetWindowLongPtr(hWnd, GWL_STYLE, new IntPtr(style));
             }
             catch (Exception ex)
             {

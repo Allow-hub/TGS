@@ -10,9 +10,9 @@ namespace TechC
     public class Terami_WeakAttack : WeakAttack
     {
         [Header("エフェクトのプレハブや参照")]
-        [SerializeField] private GameObject marshmallow; /* 右弱用 */
-        [SerializeField] private GameObject cookie; /* 下弱用 */
-        [SerializeField] private GameObject chocolate; /* 上弱用(CharaEffect,BoxColliderをつけること) */
+        [SerializeField] private GameObject marshmallow; // 右弱用 
+        [SerializeField] private GameObject cookie; // 下弱用 
+        [SerializeField] private GameObject chocolate; // 上弱用
         //    [SerializeField] private GameObject ;
 
         [Header("ニュートラルアタックの設定")]
@@ -58,16 +58,15 @@ namespace TechC
             GameObject marshObj = null;
             DelayUtility.StartDelayedAction(this, rightAttackData.hitTiming, () =>
             {
-                /* マシュマロの処理 */
+                // マシュマロの処理 
                 var marshPos = transform.position;
                 marshPos = transform.position.AddY(LeftYOffset);
-                Debug.Log($"変更前の座標の位置：{marshPos}");
                 marshObj = CharaEffectFactory.I.GetEffectObj(marshmallow, marshPos, Quaternion.identity);
                 var effectSetting = marshObj.GetComponent<CharaEffect>();
                 effectSetting.SetAttackProcessor(attackProcessor);
                 effectSetting.SetOwnerId(characterController.PlayerID);
                 var rb = marshObj.GetComponent<Rigidbody>();
-                /* マシュマロをrbで飛ばす */
+                // マシュマロをrbで飛ばす 
                 rb.velocity = transform.forward * marshmallowThrowSpeed;
             });
 
@@ -110,23 +109,23 @@ namespace TechC
         {
             base.UpAttack();
 
-            /* チョコを上から降らせる処理 */
-            GameObject chocolateObj = null; /* チョコのPrefabの初期化 */
+            // チョコを上から降らせる処理 
+            GameObject chocolateObj = null; // チョコのPrefabの初期化 
 
             DelayUtility.StartDelayedAction(this, rightAttackData.hitTiming, () =>
             {
-                /* 相手の座標を取得 */
-                var otherPlayerPos = BattleJudge.I.GetOtherPlayerObjects(characterController.PlayerID)[0].transform.position; /* [0]を取得しているのは1vs1限定 */
-                otherPlayerPos = otherPlayerPos.AddY(UpYOffset); /* 高さを追加 */
+                // 相手の座標を取得 
+                var otherPlayerPos = BattleJudge.I.GetOtherPlayerObjects(characterController.PlayerID)[0].transform.position; // [0]を取得しているのは1vs1限定 
+                otherPlayerPos = otherPlayerPos.AddY(UpYOffset); // 高さを追加 
 
-                /* お菓子の処理 */
+                // お菓子の処理 
                 chocolateObj = CharaEffectFactory.I.GetEffectObj(chocolate, otherPlayerPos, Quaternion.identity);
                 var effectSetting = chocolateObj.GetComponent<CharaEffect>();
                 effectSetting.SetAttackProcessor(attackProcessor);
                 effectSetting.SetOwnerId(characterController.PlayerID);
                 var rb = chocolateObj.GetComponent<Rigidbody>();
 
-                rb.velocity = -transform.up * chocolateFallSpeed; /* チョコを落下 */
+                rb.velocity = -transform.up * chocolateFallSpeed; // チョコを落下 
             });
 
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで

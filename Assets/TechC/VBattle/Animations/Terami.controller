@@ -10,8 +10,7 @@ AnimatorState:
   m_Name: NormalWeakAttack_3
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -6273051050906075033}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -528,7 +527,8 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: dee7adec5e960634596041f22a430de7, type: 2}
+  m_Motion: {fileID: -203655887218126122, guid: 13e7f4aff4bb8e14f88340785e44a5cf,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -764,8 +764,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 13e7f4aff4bb8e14f88340785e44a5cf,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: dee7adec5e960634596041f22a430de7, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -831,8 +830,7 @@ AnimatorState:
   m_Name: NormalWeakAttack_2
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: 6363328669919634205}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0

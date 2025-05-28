@@ -88,6 +88,8 @@ namespace TechC
         public const int GWLP_WNDPROC = -4;
         public const int GWLP_HINSTANCE = -6;
         public const int GWLP_HWNDPARENT = -8;
+        private const int WM_SETREDRAW = 0x000B;
+
         public const int GWL_ID = -12;
 
         #endregion
@@ -234,6 +236,12 @@ namespace TechC
         private static extern bool MoveWindow(IntPtr hWnd,int X,int Y,int nWidth,int nHeight,bool bRepaint);
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr DefWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        private static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
+
+        [DllImport("user32.dll")]
+        private static extern bool UpdateWindow(IntPtr hWnd);
 
         #endregion
 
@@ -999,6 +1007,18 @@ namespace TechC
                 return 0;
             }
         }
+        public static void SetRedraw(IntPtr hWnd, bool enable)
+        {
+            SendMessage(hWnd, WM_SETREDRAW, (IntPtr)(enable ? 1 : 0), IntPtr.Zero);
+
+            if (enable)
+            {
+                // 再描画を有効にした後は無効期間中の変化を反映するために Invalidate & UpdateWindow
+                InvalidateRect(hWnd, IntPtr.Zero, true);
+                UpdateWindow(hWnd);
+            }
+        }
+
 
         /// <summary>
         /// ウィンドウを閉じるメッセージを送信します

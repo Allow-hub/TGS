@@ -22,18 +22,20 @@ namespace TechC
         {
             base.Init();
             windows = new List<IntPtr>();
-            // SpawnWindows(1);
+            SpawnWindows(1);
         }
 
         private void Update()
         {
             // Debug.Log(Screen.width + "+" + Screen.height);
-            // foreach (var hWnd in windows)
-            // {
-            //     int centerX = Screen.width / 2;
-                // var move = WindowUtility.MoveWindowToTargetPosition(hWnd, 0, Screen.height/2, 1000f);
-                // var resize = WindowUtility.AnimateResizeWindow(hWnd, 100, Screen.currentResolution.height, 1000f);
-            // }
+            foreach (var hWnd in windows)
+            {
+                int centerX = Screen.width / 2;
+                int centerY = Screen.height / 2;
+
+                var move = WindowUtility.MoveWindowToTargetPosition(hWnd, centerX, centerY, 100f);
+                var resize = WindowUtility.AnimateResizeWindow(hWnd, 300, Screen.currentResolution.height, 1000f);
+            }
         }
 
         protected override void OnRelease()
@@ -72,11 +74,12 @@ namespace TechC
 
                 if (hWnd != IntPtr.Zero)
                 {
-                    // WindowUtility.SubclassWindow(hWnd); 
+                    WindowUtility.SubclassWindow(hWnd); 
                     WindowUtility.SetWindowVisibility(hWnd, SW_SHOWNOACTIVATE);
                     WindowUtility.SetWindowPositionAndSize(hWnd, WindowUtility.HWND_TOPMOST, x, y, WindowWidth, WindowHeight, SWP_NOACTIVATE | SWP_SHOWWINDOW);
                     windows.Add(hWnd);
-                    // DrawWindowUtility.DrawTextureToWindow(windows[0], tex.texture);
+                    DrawWindowUtility.DrawTextureToWindow(windows[0], tex.texture);
+                    WindowUtility.SetRedraw(hWnd, false);
 
                 }
             }

@@ -22,7 +22,7 @@ namespace TechC
         {
             base.Init();
             windows = new List<IntPtr>();
-            SpawnWindows(1);
+            // SpawnWindows(1);
         }
 
         private void Update()

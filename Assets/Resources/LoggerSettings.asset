@@ -80,9 +80,10 @@ MonoBehaviour:
   - gamePlay
   - physics
   - default
-  - camera
+  - window
   _disabledCategoryIds:
   - state
-  - window
   - comboClear
   - comboCheck
+  - stage
+  - camera

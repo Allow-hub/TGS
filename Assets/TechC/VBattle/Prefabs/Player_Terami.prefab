@@ -304,9 +304,10 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: 14f825b05369d6d4fab0e5c5a5452db4, type: 2}
   downAttackData: {fileID: 11400000, guid: 1d93a74787792f94696394ef57dc9670, type: 2}
   upAttackData: {fileID: 11400000, guid: 36ce767f9a6d1954bb4864c661447591, type: 2}
-  swing: {fileID: 3927160232506487374, guid: 49a5b7d066ec76a45aca1c18ea494f86, type: 3}
+  swing: {fileID: 6124907978801703374, guid: 52c9ff992f2aab54790aef11e1c11183, type: 3}
   marshmallow: {fileID: 334557491047361281, guid: b9489cdf188fa04408c913018c989731,
     type: 3}
+  spin: {fileID: 6124907978801703374, guid: 52c9ff992f2aab54790aef11e1c11183, type: 3}
   cookie: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c, type: 3}
   chocolate: {fileID: 2097352013274177404, guid: 908fefc6c9e1d92478ec55fc1cc1ea77,
     type: 3}

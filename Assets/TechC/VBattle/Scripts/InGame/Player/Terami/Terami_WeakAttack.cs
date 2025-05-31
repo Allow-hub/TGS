@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace TechC
@@ -11,7 +12,8 @@ namespace TechC
     {
         [Header("エフェクトのプレハブや参照")]
         [SerializeField] private GameObject swing; // 通常攻撃
-        [SerializeField] private GameObject marshmallow; // 右弱用 
+        [SerializeField] private GameObject marshmallow; // 左弱用 
+        [SerializeField] private GameObject spin; // 右弱用 
         [SerializeField] private GameObject cookie; // 下弱用 
         [SerializeField] private GameObject chocolate; // 上弱用
         //    [SerializeField] private GameObject ;
@@ -33,7 +35,7 @@ namespace TechC
 
 
         [Header("右弱")]
-
+        [SerializeField] private float RightYOffset = 2f;
         [SerializeField] private float returnRightEffectTime = 3.0f;
 
 
@@ -106,11 +108,20 @@ namespace TechC
         }
 
         /// <summary>
-        /// 1回転して敵を蹴る（一旦このまま）
+        /// 1回転して敵を蹴る
         /// </summary>
         public override void RightAttack()
         {
             base.RightAttack();
+
+            var spinObjPos = transform.position.AddY(RightYOffset);
+
+            var spinEffect = CharaEffectFactory.I.GetEffectObj(spin, spinObjPos, Quaternion.identity);
+            //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
+            DelayUtility.StartDelayedAction(this, returnDownEffectTime, () =>
+            {
+                CharaEffectFactory.I.ReturnEffectObj(spinEffect);
+            });
         }
 
         /// <summary>

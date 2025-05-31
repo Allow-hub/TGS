@@ -106,7 +106,7 @@ namespace TechC
         }
 
         /// <summary>
-        /// 未定
+        /// 上に剣を振り上げて、ブレードストームを発生させる
         /// </summary>
         public override void UpAttack()
         {

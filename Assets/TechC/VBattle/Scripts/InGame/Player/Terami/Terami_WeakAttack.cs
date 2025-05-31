@@ -10,13 +10,19 @@ namespace TechC
     public class Terami_WeakAttack : WeakAttack
     {
         [Header("エフェクトのプレハブや参照")]
+        [SerializeField] private GameObject swing; // 通常攻撃
         [SerializeField] private GameObject marshmallow; // 右弱用 
         [SerializeField] private GameObject cookie; // 下弱用 
         [SerializeField] private GameObject chocolate; // 上弱用
         //    [SerializeField] private GameObject ;
 
         [Header("ニュートラルアタックの設定")]
-        private float returnNeutralEffectTime = 3f;
+        [SerializeField] private float swingEffectDistance = 5f;
+        [SerializeField] private Quaternion n1Rot;
+        [SerializeField] private Quaternion n2Rot;
+        [SerializeField] private Quaternion n3Rot;
+        private float returnNeutralEffectTime = 1f;
+        private Quaternion currentSwingRot;
 
         [Header("左弱")]
         [SerializeField] private float LeftXOffset = 3f;
@@ -45,11 +51,33 @@ namespace TechC
         public override void NeutralAttack()
         {
             base.NeutralAttack();
-            // if (currentNeutral == neutralAttackData_1)
+
+            //ニュートラルが何段階目かを確かめる
+            if (currentNeutral == neutralAttackData_1)
+                currentSwingRot = n1Rot;
+            else if (currentNeutral == neutralAttackData_2)
+                currentSwingRot = n2Rot;
+            else if (currentNeutral == neutralAttackData_3)
+                currentSwingRot = n3Rot;
+            var swObjPos = transform.position.AddY(swingEffectDistance);
+            // 向きに応じて回転反転
+            if (transform.forward.x < 0) 
+            {
+                currentSwingRot = Quaternion.Euler(0, 180, 0) * currentSwingRot;
+            }
+
+            //slashEffectの取得。各段階の回転を反映
+            var swObj = CharaEffectFactory.I.GetEffectObj(swing, swObjPos, currentSwingRot);
+
+            //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
+            DelayUtility.StartDelayedAction(this, returnNeutralEffectTime, () =>
+            {
+                CharaEffectFactory.I.ReturnEffectObj(swObj);
+            });
         }
 
         /// <summary>
-        /// 未定
+        /// マシュマロを投げて相手に当たったら爆発する、飛び道具側の攻撃はCharaEffectが行う
         /// </summary>
         public override void LeftAttack()
         {
@@ -78,7 +106,7 @@ namespace TechC
         }
 
         /// <summary>
-        /// マシュマロを投げて相手に当たったら爆発する、飛び道具側の攻撃はCharaEffectが行う
+        /// 
         /// </summary>
         public override void RightAttack()
         {

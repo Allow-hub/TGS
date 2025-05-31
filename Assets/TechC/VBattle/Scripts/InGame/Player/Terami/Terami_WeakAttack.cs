@@ -106,7 +106,7 @@ namespace TechC
         }
 
         /// <summary>
-        /// 
+        /// 1回転して敵を蹴る（一旦このまま）
         /// </summary>
         public override void RightAttack()
         {

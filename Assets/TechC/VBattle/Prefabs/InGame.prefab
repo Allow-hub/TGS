@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &623580594457748494
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3865933630028530092}
-  m_Layer: 0
-  m_Name: Terami_Marshmallow
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3865933630028530092
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 623580594457748494}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5139287414882454690}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &641917492957077217
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,6 +89,37 @@ Transform:
   - {fileID: 7949685390345201028}
   - {fileID: 1435526046161030121}
   m_Father: {fileID: 7923638173486885026}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &842960440236436153
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4015757439989936149}
+  m_Layer: 0
+  m_Name: Terami_Chocolate
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4015757439989936149
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842960440236436153}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5139287414882454690}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &921649179348610202
 GameObject:
@@ -718,6 +718,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7252366309168374964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2302490509131554190
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6779516412692481613}
+  m_Layer: 0
+  m_Name: Terami_Marshmallow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6779516412692481613
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2302490509131554190}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5139287414882454690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2318970259498012266
 GameObject:
   m_ObjectHideFlags: 0
@@ -755,10 +786,11 @@ Transform:
   - {fileID: 2575086304899408266}
   - {fileID: 4678655981357327251}
   - {fileID: 7034213163845644225}
-  - {fileID: 4411205907171792604}
-  - {fileID: 3176878784267590532}
-  - {fileID: 3865933630028530092}
   - {fileID: 7633542047233854343}
+  - {fileID: 8420837861511638930}
+  - {fileID: 1459028091108547707}
+  - {fileID: 4015757439989936149}
+  - {fileID: 6779516412692481613}
   m_Father: {fileID: 7923638173486885026}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8058803600275324131
@@ -803,10 +835,24 @@ MonoBehaviour:
       type: 3}
     parent: {fileID: 5684834577768148458}
     initialSize: 3
-  - name: Ame_BladeStorm
-    prefab: {fileID: 7371667505975298854, guid: c80a682fb7c79e14593541978e10212b,
+  - name: Terami_Swing
+    prefab: {fileID: 3927160232506487374, guid: 49a5b7d066ec76a45aca1c18ea494f86,
       type: 3}
-    parent: {fileID: 1548230418690227064}
+    parent: {fileID: 2863903122966259450}
+    initialSize: 3
+  - name: Terami_Cookie
+    prefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+      type: 3}
+    parent: {fileID: 3811735150483103356}
+    initialSize: 3
+  - name: Terami_Chocolate
+    prefab: {fileID: 2097352013274177404, guid: 908fefc6c9e1d92478ec55fc1cc1ea77,
+      type: 3}
+    parent: {fileID: 842960440236436153}
+    initialSize: 3
+  - name: Terami_Marshmallow
+    prefab: {fileID: 334557491047361281, guid: b9489cdf188fa04408c913018c989731, type: 3}
+    parent: {fileID: 2302490509131554190}
     initialSize: 3
   autoExpand: 1
   expandSize: 5
@@ -934,7 +980,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3585e679861d05e4bb6c838fcaf9b704, type: 2}
   - {fileID: 11400000, guid: 736a7d2cfeb73eb4bba237adf68730b6, type: 2}
   currentStageIndex: 0
---- !u!1 &2772601669467763559
+--- !u!1 &2863903122966259450
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -942,21 +988,21 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4411205907171792604}
+  - component: {fileID: 8420837861511638930}
   m_Layer: 0
-  m_Name: Terami_Cookie
+  m_Name: Terami_Swing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4411205907171792604
+--- !u!4 &8420837861511638930
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2772601669467763559}
+  m_GameObject: {fileID: 2863903122966259450}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1365,6 +1411,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 5, y: 3, z: 1}
   m_Center: {x: 0, y: 0, z: -10}
+--- !u!1 &3811735150483103356
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1459028091108547707}
+  m_Layer: 0
+  m_Name: Terami_Cookie
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1459028091108547707
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3811735150483103356}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5139287414882454690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3941735983991716030
 GameObject:
   m_ObjectHideFlags: 0
@@ -2130,37 +2207,6 @@ Transform:
   - {fileID: 7252421850142395656}
   - {fileID: 5804590608266562998}
   m_Father: {fileID: 7923638173486885026}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6633335111945378574
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3176878784267590532}
-  m_Layer: 0
-  m_Name: Terami_Chocolate
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3176878784267590532
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6633335111945378574}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5139287414882454690}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6967472345373115648
 GameObject:

@@ -17,3 +17,12 @@ WM_APP
 WM_COMMAND
 WM_LBUTTONDOWN
 WM_RBUTTONDOWN
+WNDCLASSEXW
+LoadCursor
+RegisterClassEx
+IDC_ARROW
+UnregisterClass
+ShowWindow
+AppendMenu
+WM_NULL
+MessageBox

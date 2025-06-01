@@ -37,3 +37,14 @@ C:\Users\student\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.csproj.C
 C:\Users\student\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.sourcelink.json
 C:\Users\student\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.dll
 C:\Users\student\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.pdb
+C:\Users\PC_User\Documents\TGS\Assets\Plugins\netstandard2.0\PInvoke.deps.json
+C:\Users\PC_User\Documents\TGS\Assets\Plugins\netstandard2.0\PInvoke.dll
+C:\Users\PC_User\Documents\TGS\Assets\Plugins\netstandard2.0\PInvoke.pdb
+C:\Users\PC_User\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.csproj.AssemblyReference.cache
+C:\Users\PC_User\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\PC_User\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.AssemblyInfoInputs.cache
+C:\Users\PC_User\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.AssemblyInfo.cs
+C:\Users\PC_User\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.csproj.CoreCompileInputs.cache
+C:\Users\PC_User\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.sourcelink.json
+C:\Users\PC_User\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.dll
+C:\Users\PC_User\Documents\TGS\PInvoke\obj\Debug\netstandard2.0\PInvoke.pdb

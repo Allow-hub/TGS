@@ -24,7 +24,11 @@ namespace TechC
 
         public virtual void Show() => WindowUtility.SetWindowVisibility(Hwnd, (int)SHOW_WINDOW_CMD.SW_SHOWNOACTIVATE);
         public virtual void Hide() => WindowUtility.SetWindowVisibility(Hwnd, (int)SHOW_WINDOW_CMD.SW_HIDE);
-        public virtual void Destroy() => WindowUtility.DestroyWindowHandle(Hwnd);
+        public virtual void Destroy()
+        {
+            WindowUtility.DestroyWindowHandle(Hwnd);
+            Debug.Log(Hwnd);
+        }
         public virtual void MoveWindowToTargetPosition(IntPtr hWnd, int targetX, int targetY, float speed) => WindowUtility.MoveWindowToTargetPosition(hWnd, targetX, targetY, speed);
         public virtual void ResizeWindow(IntPtr hWnd, int targetWidth, int targetHeight, float speed) => WindowUtility.AnimateResizeWindow(Hwnd, targetWidth, targetHeight, speed);
     }

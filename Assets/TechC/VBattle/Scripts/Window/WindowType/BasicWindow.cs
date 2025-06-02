@@ -1,21 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
 {
-    public class BasicWindow : MonoBehaviour
+    /// <summary>
+    /// 通常のウィンドウ
+    /// </summary>
+    public class BasicWindow : NativeWindow
     {
-        // Start is called before the first frame update
-        void Start()
+        public BasicWindow(IntPtr hwnd, int width, int height, WindowFactory.WindowType type) : base(hwnd, width, height, type)
         {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
         }
     }
 }

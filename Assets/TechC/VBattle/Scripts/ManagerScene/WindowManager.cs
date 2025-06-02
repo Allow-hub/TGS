@@ -2,51 +2,50 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Windows.Win32;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace TechC
 {
     public class WindowManager : Singleton<WindowManager>
     {
-        // [SerializeField] private Sprite tex;
-        // private const uint WS_POPUP = 0x80000000;
-        // private const uint WS_EX_NOACTIVATE = 0x08000000;
-        // private const uint WS_EX_TOPMOST = 0x00000008;
-        // private const uint WS_EX_TOOLWINDOW = 0x00000080;
-        // private const uint SWP_NOACTIVATE = 0x0010;
-        // private const uint SWP_SHOWWINDOW = 0x0040;
-        // private const int SW_SHOWNOACTIVATE = 4;
+        [SerializeField] private Sprite tex;
 
-        // private List<IntPtr> windows;
+        private const uint WS_POPUP = (uint)WINDOW_STYLE.WS_POPUP;
+        private const uint WS_EX_NOACTIVATE = (uint)WINDOW_EX_STYLE.WS_EX_NOACTIVATE;
+        private const uint WS_EX_TOPMOST = (uint)WINDOW_EX_STYLE.WS_EX_TOPMOST;
+        private const uint WS_EX_TOOLWINDOW = (uint)WINDOW_EX_STYLE.WS_EX_TOOLWINDOW;
+        private const uint SWP_NOACTIVATE = (uint)SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE;
+        private const uint SWP_SHOWWINDOW = (uint)SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW;
+        private const int SW_SHOWNOACTIVATE = (int)SHOW_WINDOW_CMD.SW_SHOWNOACTIVATE;
 
-        // protected override void Init()
-        // {
-        //     base.Init();
-        //     windows = new List<IntPtr>();
-        //     // SpawnWindows(1);
-        // }
 
-        // private void Update()
-        // {
-        //     // Debug.Log(Screen.width + "+" + Screen.height);
-        //     foreach (var hWnd in windows)
-        //     {
-        //         int centerX = Screen.width / 2;
-        //         int centerY = Screen.height / 2;
+        private List<IntPtr> windows;
 
-        //         var move = WindowUtility.MoveWindowToTargetPosition(hWnd, centerX, centerY, 100f);
-        //         var resize = WindowUtility.AnimateResizeWindow(hWnd, 300, Screen.currentResolution.height, 1000f);
-        //     }
-        // }
+        protected override void Init()
+        {
+            base.Init();
+            windows = new List<IntPtr>();
+            // SpawnWindows(1);
+        }
 
-        // protected override void OnRelease()
-        // {
-        //     base.OnRelease();
-        //     if (windows == null) return;
-        //     foreach (var hWnd in windows)
-        //     {
-        //         WindowUtility.DestroyWindowHandle(hWnd);
-        //     }
-        // }
+        private void Update()
+        {
+            // Debug.Log(Screen.width + "+" + Screen.height);
+            foreach (var hWnd in windows)
+            {
+                int centerX = Screen.width / 2;
+                int centerY = Screen.height / 2;
+
+                var move = WindowUtility.MoveWindowToTargetPosition(hWnd, centerX, centerY, 100f);
+                var resize = WindowUtility.AnimateResizeWindow(hWnd, 300, Screen.currentResolution.height, 1000f);
+            }
+        }
+
+        protected override void OnRelease()
+        {
+            base.OnRelease();
+        }
 
         // private void SpawnWindows(int count)
         // {

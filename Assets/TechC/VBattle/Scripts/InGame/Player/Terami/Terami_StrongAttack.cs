@@ -11,6 +11,7 @@ namespace TechC
     {
         // [Header("プレハブの参照")]
         [Header("ニュートラル強")]
+        
         // [SerializeField] private float 
         // [Header("左強")]
         // [Header("右強")]
@@ -37,16 +38,17 @@ namespace TechC
         private bool isGiant = false; // 巨大化かどうか
         private bool isGiantCooldown = false; // クールタイム中かどうか
 
-
-
         /// <summary>
         /// 回復アイテムをキャラ２の目の前に出す、一定期間経過後再利用可能
         /// </summary>
         public override void NeutralAttack()
         {
             base.NeutralAttack();
-            Debug.Log(characterController.Rb.velocity);
 
+            var player2Hp = BattleJudge.I.GetOtherPlayerObjects(1);
+
+
+            Debug.Log($"現在のHP：{player2Hp}");
         }
 
         /// <summary>
@@ -91,8 +93,8 @@ namespace TechC
             Debug.Log($"現在のスピード倍率：{characterController.GetMultipiler(BuffType.Speed)}");
             // Playerに効果を発動させる
             transform.localScale = transform.localScale * scaleMultiplier;
-            characterController.AddMultiplier(BuffType.Attack, 2f);
-            characterController.AddMultiplier(BuffType.Speed, 0.5f);
+            characterController.AddMultiplier(BuffType.Attack, BuffBase.VoidID, attackMultiplier);
+            characterController.AddMultiplier(BuffType.Speed, BuffBase.VoidID, moveSpeedMultiplier);
 
             Debug.Log($"<color=orange>巨大化後の攻撃力倍率：{characterController.GetMultipiler(BuffType.Attack)}</color>");
             Debug.Log($"<color=orange>巨大化後のスピード倍率：{characterController.GetMultipiler(BuffType.Speed)}</color>");
@@ -102,8 +104,8 @@ namespace TechC
             {
                 // Playerに効果を取り消す
                 transform.localScale = originalScale;
-                characterController.RemoveMultiplier(BuffType.Attack, 2f);
-                characterController.RemoveMultiplier(BuffType.Speed, 0.5f);
+                characterController.RemoveMultiplier(BuffType.Attack, BuffBase.VoidID, 2f);
+                characterController.RemoveMultiplier(BuffType.Speed, BuffBase.VoidID, 0.5f);
 
                 Debug.Log($"<color=#00BFFF>巨大化解除の攻撃力倍率：{characterController.GetMultipiler(BuffType.Attack)}</color>");
                 Debug.Log($"<color=#00BFFF>巨大化解除のスピード倍率：{characterController.GetMultipiler(BuffType.Speed)}</color>");

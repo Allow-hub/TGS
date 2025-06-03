@@ -70,7 +70,7 @@ namespace TechC.Player
             { BuffType.Speed, 1.0f },
             { BuffType.Attack, 1.0f }
         };
-        private Dictionary<BuffType, List<float>> multiplierEntries = new(); // 各バフに対して複数の倍率を保持する
+        private Dictionary<BuffType, Dictionary<int, float>> multiplierEntries = new(); // 各バフに対して複数の倍率を保持する
 
         // ジャンプ関連
         private bool hasDoubleJumped = false;
@@ -108,6 +108,11 @@ namespace TechC.Player
             defaultSize = new Vector3(hitCollider.radius, hitCollider.height, 0f);
             defaultCenter = hitCollider.center;
 
+            // バフ辞書の初期化
+            foreach (var e in Enum.GetValues(typeof(BuffType)))
+            {
+                multiplierEntries.Add((BuffType)e, new Dictionary<int, float>());
+            }
         }
 
         private void Start()
@@ -635,13 +640,14 @@ namespace TechC.Player
         /// </summary>
         /// <param name="type"></param>
         /// <param name="value"></param>
-        public void AddMultiplier(BuffType type, float value)
+        public void AddMultiplier(BuffType type, int buffId, float value)
         {
-            if (!multiplierEntries.ContainsKey(type))
-            {
-                multiplierEntries[type] = new List<float>();
-            }
-            multiplierEntries[type].Add(value);
+            var dic = multiplierEntries[type];
+
+            if (dic.ContainsKey(buffId))
+                dic[buffId] = value;
+            else
+                dic.Add(buffId, value);
 
             // multipliersの値を再計算
             UpdateMultiplier(type);
@@ -652,17 +658,20 @@ namespace TechC.Player
         /// </summary>
         /// <param name="type"></param>
         /// <param name="value"></param>
-        public void RemoveMultiplier(BuffType type, float value)
+        public void RemoveMultiplier(BuffType type, int buffId, float value)
         {
-            if (!multiplierEntries.ContainsKey(type)) return;
+            var dic = multiplierEntries[type];
 
-            var list = multiplierEntries[type];
-            if (list.Contains(value))
+            if (dic.ContainsKey(buffId))
+                dic.Remove(buffId);
+            else
             {
-                list.Remove(value);
-                // multipliersの値を再計算
-                UpdateMultiplier(type);
+                Debug.LogWarning($"登録されていないバフを失効しようとしました:{type}/{buffId}");
+                return;
             }
+
+            // multipliersの値を再計算
+            UpdateMultiplier(type);
         }
 
         /// <summary>
@@ -671,18 +680,13 @@ namespace TechC.Player
         /// <param name="type"></param>
         private void UpdateMultiplier(BuffType type)
         {
-            if (!multiplierEntries.ContainsKey(type) || multiplierEntries[type].Count == 0)
-            {
-                // バフが一つもない場合はデフォルト値
-                multipliers[type] = 1.0f;
-                return;
-            }
+            var dic = multiplierEntries[type];
 
             // すべてのバフを乗算で適用
             float finalMultiplier = 1.0f;
-            foreach (float buff in multiplierEntries[type])
+            foreach (var buff in dic.ToArray())
             {
-                finalMultiplier *= buff;
+                finalMultiplier *= buff.Value;
             }
 
             multipliers[type] = finalMultiplier;

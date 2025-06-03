@@ -1,4 +1,5 @@
 using UnityEngine;
+using Windows.Win32.Foundation;
 
 namespace TechC
 {
@@ -8,14 +9,10 @@ namespace TechC
     public class WindowManager : Singleton<WindowManager>
     {
         [SerializeField] private Sprite tex;
-
+        NativeWindow window;
         protected override void Init()
         {
             base.Init();
-            DelayUtility.StartDelayedAction(this, 0.1f, () =>
-            {
-                WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
-            });
         }
 
         private void Update()

@@ -10,8 +10,13 @@ namespace TechC
     /// </summary>
     public class BasicWindow : NativeWindow
     {
-        public BasicWindow(IntPtr hwnd, int width, int height, WindowFactory.WindowType type) : base(hwnd, width, height, type)
+        public BasicWindow(IntPtr hwnd, int width, int height) : base(hwnd, width, height, WindowFactory.WindowType.Basic)
         {
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
         }
     }
 }

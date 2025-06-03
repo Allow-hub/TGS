@@ -11,15 +11,15 @@ namespace TechC
     /// </summary>
     public class WindowFactory : Singleton<WindowFactory>
     {
-        public enum WindowType { Basic, Notification, Image }
+        public enum WindowType { Basic}
 
         private Dictionary<WindowType, Queue<NativeWindow>> poolByType = new();
-        private const int InitialPoolSize = 10;
+        private const int InitialPoolSize = 1;
 
         protected override void Init()
         {
             base.Init();
-
+            CustomWindowUtility.RegisterWindowClasses();
             foreach (WindowType type in Enum.GetValues(typeof(WindowType)))
             {
                 poolByType[type] = new Queue<NativeWindow>();
@@ -32,10 +32,16 @@ namespace TechC
             }
         }
 
-        protected override void OnRelease()
+        // protected override void OnRelease()
+        // {
+        //     base.OnRelease();
+        //     DisposeAll();
+        // }
+
+        private void OnApplicationQuit()
         {
-            base.OnRelease();
             DisposeAll();
+            CustomWindowUtility.UnregisterWindowClasses();
         }
 
         public NativeWindow GetWindow(WindowType type)
@@ -45,6 +51,7 @@ namespace TechC
             if (poolByType.TryGetValue(type, out var queue) && queue.Count > 0)
             {
                 window = queue.Dequeue(); // 再利用
+                Debug.Log(window);
             }
             else
             {
@@ -84,23 +91,29 @@ namespace TechC
         /// <returns></returns>
         public NativeWindow CreateNewWindow(WindowType type, string title, int width, int height, Texture2D tex = null)
         {
-            IntPtr hwnd = WindowUtility.CreateWindow(
-                "STATIC", title,
-                (uint)WINDOW_STYLE.WS_POPUP,
-                (uint)(WINDOW_EX_STYLE.WS_EX_NOACTIVATE | WINDOW_EX_STYLE.WS_EX_TOPMOST),
+            string className = type switch
+            {
+                // WindowType.Image => "WindowClass_Image",
+                _ => "WindowClass_Basic",
+            };
+            IntPtr hwnd = CustomWindowUtility.CreateWindow(
+                className,
+                title,
+                (uint)WINDOW_STYLE.WS_OVERLAPPEDWINDOW, // 普通のウィンドウスタイルに変更推奨
+                (uint)WINDOW_EX_STYLE.WS_EX_APPWINDOW,
                 100, 100, width, height,
                 IntPtr.Zero
-            );
+                );
 
             if (hwnd == IntPtr.Zero)
                 return null;
 
             switch (type)
             {
-                case WindowType.Image:
-                    return new ImageWindow(hwnd, width, height, tex);
-                // case WindowType.Notification:
-                //     return new NotificationWindow(hwnd, width, height, type);
+                case WindowType.Basic:
+                    return new BasicWindow(hwnd, width, height);
+                // case WindowType.Image:
+                //     return new ImageWindow(hwnd, width, height, tex);
                 default:
                     return new NativeWindow(hwnd, width, height, type);
             }
@@ -111,14 +124,22 @@ namespace TechC
         /// </summary>
         public void DisposeAll()
         {
-            foreach (var queue in poolByType.Values)
+            Debug.Log($"DisposeAll called. Pool count: {poolByType.Count}");
+
+            foreach (var kvp in poolByType)
             {
+                var type = kvp.Key;
+                var queue = kvp.Value;
+                Debug.Log($"Disposing windows of type: {type}, count: {queue.Count}");
+
                 foreach (var window in queue)
                 {
+                    Debug.Log($"Destroying window: HWND={window.Hwnd}, Type={window.Type}");
                     window.Destroy();
                 }
                 queue.Clear();
             }
         }
+
     }
 }

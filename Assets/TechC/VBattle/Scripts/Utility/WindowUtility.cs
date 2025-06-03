@@ -15,6 +15,7 @@ namespace TechC
     /// </summary>
     public static class WindowUtility
     {
+        
         #region ウィンドウ作成・取得
 
         /// <summary>
@@ -54,6 +55,7 @@ namespace TechC
         {
             return new HWND((IntPtr)PInvoke.FindWindow(null, windowTitle));
         }
+
 
         #endregion
 
@@ -224,9 +226,28 @@ namespace TechC
         /// </summary>
         /// <param name="hWnd">ウィンドウハンドル</param>
         /// <returns>成功した場合true</returns>
-        public static bool DestroyWindowHandle(IntPtr hWnd)
+        public static bool DestroyWindowHandle(IntPtr hwnd)
         {
-            return PInvoke.DestroyWindow(new HWND(hWnd));
+            if (hwnd == IntPtr.Zero)
+            {
+                Debug.LogWarning("DestroyWindowHandle: hwnd is null.");
+                return false;
+            }
+
+            if (!PInvoke.IsWindow((HWND)hwnd))
+            {
+                Debug.LogWarning("DestroyWindowHandle: hwnd is not a valid window.");
+                return false;
+            }
+
+            if (!PInvoke.DestroyWindow((HWND)hwnd))
+            {
+                int error = Marshal.GetLastWin32Error();
+                Debug.LogError($"DestroyWindowHandle failed with error code {error}");
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -245,6 +266,7 @@ namespace TechC
                 PInvoke.UpdateWindow(new HWND(hWnd));
             }
         }
+        
 
 
         #endregion
@@ -267,10 +289,10 @@ namespace TechC
             var rect = GetWindowRect(new HWND(hWnd));
             var currentX = rect.left;
             var currentY = rect.top;
-            
+
             var targetPos = new Vector2(targetX, targetY);
             var currentPos = new Vector2(currentX, currentY);
-            
+
             if (Vector2.Distance(currentPos, targetPos) < 1f)
             {
                 return true; // 到達済み
@@ -279,7 +301,7 @@ namespace TechC
             var direction = (targetPos - currentPos).normalized;
             var moveDistance = speed * Time.deltaTime;
             var newPos = currentPos + direction * moveDistance;
-            
+
             // 目標を超えないように調整
             if (Vector2.Distance(currentPos, targetPos) < moveDistance)
             {

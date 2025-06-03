@@ -27,8 +27,6 @@ namespace TechC
         [SerializeField] private float zoomMargin = 2f; // ズーム時の余白
 
         [Header("Follow Settings")]
-        [SerializeField] private float followSmoothTime = 0.5f;
-        [SerializeField] private Vector3 cameraOffset = Vector3.zero;
         [SerializeField] private bool enableYAxisFollow = true;
 
         [Header("Stage Bounds")]

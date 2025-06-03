@@ -73,16 +73,17 @@ MonoBehaviour:
     enabledByDefault: 1
   _enabledCategoryIds:
   - 
-  - network
-  - input
-  - ui
-  - audio
-  - gamePlay
-  - physics
   - default
-  - camera
   _disabledCategoryIds:
   - state
   - window
   - comboClear
   - comboCheck
+  - stage
+  - camera
+  - gamePlay
+  - physics
+  - network
+  - input
+  - audio
+  - ui

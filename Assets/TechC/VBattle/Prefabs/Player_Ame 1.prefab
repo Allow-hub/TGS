@@ -764,7 +764,7 @@ GameObject:
   - component: {fileID: 4029775971515787939}
   - component: {fileID: 4385075981276524633}
   m_Layer: 0
-  m_Name: Player_Ame
+  m_Name: Player_Ame 1
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -822,7 +822,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7627828736903395385}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
@@ -1054,8 +1054,7 @@ MonoBehaviour:
     type: 3}
   bladeStormPrefab: {fileID: 7371667505975298854, guid: c80a682fb7c79e14593541978e10212b,
     type: 3}
-  iceClonePrefab: {fileID: 7627828736903395385, guid: 6b889c8fe0373904a8d841c05431df6e,
-    type: 3}
+  iceClonePrefab: {fileID: 0}
   echoTimeWindow: 3
   maxEchoCount: 3
   magicDuration: 2

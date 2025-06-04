@@ -16,7 +16,7 @@ namespace TechC
         [SerializeField] private GameObject iceExplosionPrefab;
         [SerializeField] private GameObject iceRosePrefab;
         [SerializeField] private GameObject iceWallPrefab;
-        
+
 
         [Header("エフェクトのプレハブや参照")]
         [SerializeField] private GameObject bladeStormPrefab;
@@ -50,7 +50,7 @@ namespace TechC
 
         [SerializeField] private float returnStrongUpEffectTime = 3f;
         [SerializeField] private float upwardVelocity = 2.5f;
-        [SerializeField] private float backOffset = 0.5f;      
+        [SerializeField] private float backOffset = 0.5f;
         [SerializeField] private float scaleVariance = 0.3f;
 
 
@@ -58,40 +58,39 @@ namespace TechC
         /// <summary>
         /// 数秒前の自分が氷で実体化し、攻撃も記録通りなぞってくれる
         /// </summary>
-        
-
         public override void NeutralAttack()
         {
-        //    base.NeutralAttack();
+            base.NeutralAttack();
 
-        //    // CommandHistoryを取得（同階層で参照できるなら）
-        //    var commandHistory = GetComponent<CommandHistory>();
-        //    if (commandHistory == null) return;
+            var commandHistory = GetComponent<CommandHistory>();
+            if (commandHistory == null)
+            {
+                Debug.LogWarning("CommandHistoryが見つかりませんでした");
+                return;
+            }
 
-        //    // 最近の攻撃履歴を取得
-        //    List<CommandHistory.CommandRecord> recentAttacks = commandHistory.GetFullHistory()
-        //        .FindAll(r => r.commandInstance is AttackCommand && Time.time - r.executionTime <= echoTimeWindow);
+            List<CommandHistory.CommandRecord> recentAttacks = commandHistory.GetFullHistory()
+                .FindAll(r => r.commandInstance is AttackCommand && Time.time - r.executionTime <= echoTimeWindow);
 
-        //    int echoCount = 0;
+            int echoCount = 0;
 
-        //    foreach (var record in recentAttacks)
-        //    {
-        //        if (echoCount >= maxEchoCount) break;
+            foreach (var record in recentAttacks)
+            {
+                if (echoCount >= maxEchoCount) break;
 
-        //        Vector3 spawnPos = record.playerPosition + Vector3.up * 0.1f;
-        //        GameObject clone = Instantiate(iceClonePrefab, spawnPos, Quaternion.identity);
+                Vector3 spawnPos = record.playerPosition + Vector3.up * 0.1f;
+                GameObject clone = Instantiate(iceClonePrefab, spawnPos, Quaternion.identity);
 
-        //        // 攻撃の種類に応じてアニメーションまたは行動再現
-        //        var echo = clone.GetComponent<IceEcho>(); // 再現用スクリプト
-        //        if (echo != null)
-        //        {
-        //            echo.SetupFromRecord(record);
-        //        }
+                // 攻撃コマンドの再実行
+                if (record.commandInstance is AttackCommand atkCmd)
+                {
+                    // Clone の Transform や ID を使って攻撃の方向などを上書きしてもOK
+                    atkCmd.Execute();  // 通常はクローンに対してやりたい処理
+                }
 
-        //        echoCount++;
-        //    }
+                echoCount++;
+            }
         }
-
 
 
         /// <summary>
@@ -157,7 +156,7 @@ namespace TechC
                 charaEffect.SetAttackProcessor(attackProcessor);
             }
 
-            
+
 
             // 打ち上げ処理を一度だけ行う
             TryLaunchEnemy(iceWallObj);

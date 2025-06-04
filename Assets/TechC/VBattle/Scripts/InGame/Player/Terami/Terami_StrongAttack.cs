@@ -14,7 +14,10 @@ namespace TechC
         [SerializeField] private GameObject heal; // ニュートラ強：回復エフェクト
         // [SerializeField] private GameObject giant; // 上強：巨大化の際のエフェクト
         [Header("ニュートラル強")]
-        [SerializeField] private float healAmount = 50f;
+        // クラスのフィールドとして追加（マジックナンバーの定義）
+        private float cottonCandyOffsetX = 2f;
+        private float cottonCandyOffsetY = 1f;
+
         [SerializeField] private float healCooldown = 5;
         private float yRot;
         private bool isCanHeal = true;
@@ -58,8 +61,6 @@ namespace TechC
         {
             base.NeutralAttack();
 
-
-
             if (!isCanHeal) return;
             GameObject cottonCandyObj = null;
             isCanHeal = false;
@@ -70,20 +71,18 @@ namespace TechC
 
             if (Mathf.Approximately(yRot, 90f)) // 右向き
             {
-                cottonCandyPos = transform.position.AddX(2).AddY(1);
+                cottonCandyPos = transform.position.AddX(cottonCandyOffsetX).AddY(cottonCandyOffsetY);
                 cottonCandyObj = CharaEffectFactory.I.GetEffectObj(heal, cottonCandyPos, Quaternion.identity);
-                
+
             }
             else
             {
-                cottonCandyPos = transform.position.AddX(-2).AddY(1);
+                cottonCandyPos = transform.position.AddX(-cottonCandyOffsetX).AddY(cottonCandyOffsetY);
                 cottonCandyObj = CharaEffectFactory.I.GetEffectObj(heal, cottonCandyPos, Quaternion.identity);
             }
 
             var effectSetting = cottonCandyObj.GetComponent<CharaEffect>();
-                // effectSetting.SetAttackProcessor(attackProcessor);
-                effectSetting.SetOwnerId(characterController.PlayerID);
-
+            effectSetting.SetOwnerId(characterController.PlayerID);
 
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, returnNeutralEffectTime, () =>

@@ -772,7 +772,7 @@ namespace TechC.Player
             bounceForce = Mathf.Clamp(bounceForce, 0f, maxBounceForce); // ← クランプ
 
             // 破片
-            var debris = EffectFactory.I.GetEffectObj(debrisPrefab, hitPos, Quaternion.identity);
+            var debris = effectPool.GetObject(debrisPrefab, hitPos, Quaternion.identity);
             debris.GetComponent<ExplosionDebris>()?.Explode();
 
             await UniTask.Delay(TimeSpan.FromSeconds(bounceStopTime));

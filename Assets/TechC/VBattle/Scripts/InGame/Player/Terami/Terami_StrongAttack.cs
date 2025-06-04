@@ -18,7 +18,7 @@ namespace TechC
         [SerializeField] private float healCooldown = 5;
         private float yRot;
         private bool isCanHeal = true;
-        private float returnNeutralEffectTime = 1f;
+        [SerializeField] private float returnNeutralEffectTime = 1f;
 
         // [SerializeField] private float 
         // [Header("左強")]
@@ -58,6 +58,8 @@ namespace TechC
         {
             base.NeutralAttack();
 
+
+
             if (!isCanHeal) return;
             GameObject cottonCandyObj = null;
             isCanHeal = false;
@@ -65,20 +67,23 @@ namespace TechC
             // わたあめを生成する処理
             var cottonCandyPos = transform.position;
             yRot = transform.eulerAngles.y;
+
             if (Mathf.Approximately(yRot, 90f)) // 右向き
             {
-                cottonCandyPos = transform.position.AddX(1).AddY(1);
+                cottonCandyPos = transform.position.AddX(2).AddY(1);
                 cottonCandyObj = CharaEffectFactory.I.GetEffectObj(heal, cottonCandyPos, Quaternion.identity);
+                
             }
             else
             {
-                cottonCandyPos = transform.position.AddX(-1).AddY(1);
+                cottonCandyPos = transform.position.AddX(-2).AddY(1);
                 cottonCandyObj = CharaEffectFactory.I.GetEffectObj(heal, cottonCandyPos, Quaternion.identity);
             }
 
-            characterController.HealHp(healAmount); // 回復する
-            float currentHp = characterController.GetHp();
-            Debug.Log($"回復後のHPは：{currentHp} / 回復はできるか{isCanHeal}");
+            var effectSetting = cottonCandyObj.GetComponent<CharaEffect>();
+                // effectSetting.SetAttackProcessor(attackProcessor);
+                effectSetting.SetOwnerId(characterController.PlayerID);
+
 
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, returnNeutralEffectTime, () =>

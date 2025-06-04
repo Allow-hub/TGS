@@ -10,6 +10,8 @@ namespace TechC
     public class CharaEffect : MonoBehaviour
     {
         [SerializeField] private AttackData attackData;
+        [SerializeField] private bool canHeal;
+        private float healAmount = 50;
         /// 自分が所属するオブジェクトプール
         private ObjectPool objectPool;
         private AttackProcessor attackProcessor;
@@ -30,12 +32,25 @@ namespace TechC
         /// <param name="id">Player.CharacterControllerのPlayerId</param>
         public void SetOwnerId(int id) => ownerId = id;
         public void SetAttackProcessor(AttackProcessor attackProcessor) => this.attackProcessor = attackProcessor;
+
+        public void SetHealAmount(float value) => healAmount = value;
         private void OnTriggerEnter(Collider other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
-            var opponentId = other.gameObject.GetComponentInParent<Player.CharacterController>().PlayerID;
-            if (ownerId == opponentId) return;
-            attackProcessor.HandleAttack(attackData, other);
+            var opponentController = other.gameObject.GetComponentInParent<Player.CharacterController>();
+            var opponentId = opponentController.PlayerID;
+            Debug.Log($"自分：{ownerId} / わたあめ：{opponentId}");
+            if (ownerId == opponentId)
+            {
+                if (!canHeal) return;
+                opponentController.HealHp(healAmount);
+                Debug.Log($"{healAmount}回復しました");
+            }
+            else
+                // ドレイン系の攻撃が増える場合、拡張が必要
+                Debug.Log("回復してない");
+                attackProcessor.HandleAttack(attackData, other);
+
         }
     }
 }

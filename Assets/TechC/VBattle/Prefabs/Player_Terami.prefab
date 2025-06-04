@@ -352,6 +352,7 @@ MonoBehaviour:
   heal: {fileID: 6124907978801703374, guid: d78b6d0f8cdb9934ba3be5d9348efe2f, type: 3}
   healAmount: 50
   healCooldown: 5
+  returnNeutralEffectTime: 5
   scaleMultiplier: 2
   attackMultiplier: 2
   moveSpeedMultiplier: 0.5

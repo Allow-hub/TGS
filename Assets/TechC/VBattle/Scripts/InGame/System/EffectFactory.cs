@@ -51,6 +51,7 @@ namespace TechC
             }
         }
 
+        public GameObject GetEffectObj(GameObject prefab, Vector3 position, Quaternion rotation) => effectPool.GetObject(prefab, position, rotation);
         /// <summary>
         /// 指定時間後にエフェクトをプールに返却する
         /// </summary>

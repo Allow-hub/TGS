@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 namespace TechC.Player
 {
@@ -70,8 +69,6 @@ namespace TechC.Player
             { BuffType.Speed, 1.0f },
             { BuffType.Attack, 1.0f }
         };
-        private Dictionary<BuffType, Dictionary<int, float>> multiplierEntries = new(); // 各バフに対して複数の倍率を保持する
-
         // ジャンプ関連
         private bool hasDoubleJumped = false;
 
@@ -81,11 +78,10 @@ namespace TechC.Player
         private Vector3 defaultSize;     // x=radius, y=height
         private Vector3 defaultCenter;   // centerを戻すために保存
 
-        private Player.CharacterController opponentController;
+
         #endregion
 
         #region プロパティ
-        public Rigidbody Rb => rb;
         public float DefaultAnimSpeed => defaultAnimSpeed;
         public CharacterType CharacterType => characterType;
         public int PlayerID => playerID; // PlayerIDのゲッター
@@ -108,17 +104,12 @@ namespace TechC.Player
             defaultSize = new Vector3(hitCollider.radius, hitCollider.height, 0f);
             defaultCenter = hitCollider.center;
 
-            // バフ辞書の初期化
-            foreach (var e in Enum.GetValues(typeof(BuffType)))
-            {
-                multiplierEntries.Add((BuffType)e, new Dictionary<int, float>());
-            }
         }
 
         private void Start()
         {
             rb = GetComponent<Rigidbody>();
-            opponentController = BattleJudge.I.GetOtherPlayerObjects(PlayerID)[0].GetComponent<Player.CharacterController>();
+
             // HPPresenterがnullでないか確認してから購読
             if (hpPresenter != null)
             {
@@ -266,6 +257,7 @@ namespace TechC.Player
         {
             // 地上での移動速度
             float groundSpeed = characterData.MoveSpeed * controlMultiplier * GetMultipiler(BuffType.Speed);
+
             // 入力があれば移動方向に速度を設定
             if (Mathf.Abs(horizontalInput) > 0.1f)
             {
@@ -292,6 +284,7 @@ namespace TechC.Player
         {
             // 空中での移動速度（地上より制限される）
             float airSpeed = characterData.MoveSpeed * GetMultipiler(BuffType.Speed) * characterData.AirControlMultiplier;
+
             // 空中での水平移動（制限付き）
             if (Mathf.Abs(horizontalInput) > 0.1f)
             {
@@ -434,7 +427,7 @@ namespace TechC.Player
             Debug.LogWarning($"Player {playerID}: HPPresenterが見つかりません。デフォルト値を返します。");
             return 0f;
         }
-        public void HealHp(float value) => hpPresenter.Heal(value);
+
 
         /// <summary>
         /// ダメージを受ける処理
@@ -444,7 +437,7 @@ namespace TechC.Player
             // hpPresenterがnullでないことを確認
             if (hpPresenter != null)
             {
-                hpPresenter.TakeDamage(damage * opponentController.GetMultipiler(BuffType.Attack));
+                hpPresenter.TakeDamage(damage * GetMultipiler(BuffType.Attack));
             }
             else
             {
@@ -574,7 +567,7 @@ namespace TechC.Player
             return false;
         }
 
-        public void ResetSpecial() => gaugePresenter.ResetGauge();
+        public void ResetSpecial()=>gaugePresenter.ResetGauge();
 
         /// <summary>
         /// 必殺技ゲージの割合を取得（UI表示用など）
@@ -640,56 +633,20 @@ namespace TechC.Player
         /// </summary>
         /// <param name="type"></param>
         /// <param name="value"></param>
-        public void AddMultiplier(BuffType type, int buffId, float value)
+        public void AddMultiplier(BuffType type, float value)
         {
-            var dic = multiplierEntries[type];
-
-            if (dic.ContainsKey(buffId))
-                dic[buffId] = value;
-            else
-                dic.Add(buffId, value);
-
-            // multipliersの値を再計算
-            UpdateMultiplier(type);
+            if (multipliers.ContainsKey(type))
+                multipliers[type] *= value;
         }
-
         /// <summary>
-        /// バフの解除（バフの種類,除算の数値）
+        /// バフの適用（バフの種類,除算の数値）
         /// </summary>
         /// <param name="type"></param>
         /// <param name="value"></param>
-        public void RemoveMultiplier(BuffType type, int buffId, float value)
+        public void RemoveMultiplier(BuffType type, float value)
         {
-            var dic = multiplierEntries[type];
-
-            if (dic.ContainsKey(buffId))
-                dic.Remove(buffId);
-            else
-            {
-                Debug.LogWarning($"登録されていないバフを失効しようとしました:{type}/{buffId}");
-                return;
-            }
-
-            // multipliersの値を再計算
-            UpdateMultiplier(type);
-        }
-
-        /// <summary>
-        /// 指定されたバフタイプの最終倍率を計算して更新
-        /// </summary>
-        /// <param name="type"></param>
-        private void UpdateMultiplier(BuffType type)
-        {
-            var dic = multiplierEntries[type];
-
-            // すべてのバフを乗算で適用
-            float finalMultiplier = 1.0f;
-            foreach (var buff in dic.ToArray())
-            {
-                finalMultiplier *= buff.Value;
-            }
-
-            multipliers[type] = finalMultiplier;
+            if (multipliers.ContainsKey(type))
+                multipliers[type] /= value;
         }
 
         /// <summary>
@@ -700,7 +657,6 @@ namespace TechC.Player
         /// <returns></returns>
         public float GetMultipiler(BuffType type) =>
             multipliers.TryGetValue(type, out var value) ? value : 1.0f;
-
         #endregion
 
         #region アニメーション関連メソッド
@@ -772,7 +728,7 @@ namespace TechC.Player
             bounceForce = Mathf.Clamp(bounceForce, 0f, maxBounceForce); // ← クランプ
 
             // 破片
-            var debris = EffectFactory.I.GetEffectObj(debrisPrefab, hitPos, Quaternion.identity);
+            var debris = effectPool.GetObject(debrisPrefab, hitPos, Quaternion.identity);
             debris.GetComponent<ExplosionDebris>()?.Explode();
 
             await UniTask.Delay(TimeSpan.FromSeconds(bounceStopTime));

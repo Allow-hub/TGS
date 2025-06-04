@@ -253,7 +253,7 @@ MonoBehaviour:
   anim: {fileID: 5840886228969503664}
   commandHistory: {fileID: 3455362588810788779}
   effectPool: {fileID: 0}
-  characterType: 2
+  characterType: 0
   weakAttack: {fileID: 763011023873288309}
   strongAttack: {fileID: 1133027494191793631}
   appealBase: {fileID: 8178804244728934472}
@@ -319,7 +319,6 @@ MonoBehaviour:
   LeftYOffset: 1
   marshmallowThrowSpeed: 5
   returnLeftEffectTime: 3
-  RightYOffset: 2
   returnRightEffectTime: 3
   returnDownEffectTime: 3
   UpYOffset: 5
@@ -349,15 +348,6 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: fdb591d7d3483bc4f9939990fb4eab86, type: 2}
   downAttackData: {fileID: 11400000, guid: b3608f888284a9643b2ba99c68a26871, type: 2}
   upAttackData: {fileID: 11400000, guid: a3945e9d3c847ab4bbf6e961fdca22ba, type: 2}
-  heal: {fileID: 6124907978801703374, guid: d78b6d0f8cdb9934ba3be5d9348efe2f, type: 3}
-  healAmount: 50
-  healCooldown: 5
-  returnNeutralEffectTime: 5
-  scaleMultiplier: 2
-  attackMultiplier: 2
-  moveSpeedMultiplier: 0.5
-  giantDuration: 5
-  giantCooldown: 1
 --- !u!114 &8178804244728934472
 MonoBehaviour:
   m_ObjectHideFlags: 0

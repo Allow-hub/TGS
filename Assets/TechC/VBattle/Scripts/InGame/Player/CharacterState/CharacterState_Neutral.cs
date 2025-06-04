@@ -13,9 +13,6 @@ namespace TechC
         /// </summary>
         private class NeutralState : ImtStateMachine<CharacterState>.State
         {
-            private bool isJumping = false;
-            private float jumpCooldown = 0.5f;
-            private float elapsedTime = 0;
 
 
 
@@ -38,9 +35,6 @@ namespace TechC
             protected internal override void Exit()
             {
                 base.Exit();
-                isJumping = false;
-                elapsedTime = 0;
-                //currentCommand = null;
             }
         }
     }

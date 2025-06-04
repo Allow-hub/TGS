@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
@@ -39,7 +38,7 @@ namespace TechC
             /* エフェクトの位置を回転を設定 */
             // effect.transform.position = position; /* 位置を設定 */
             var obj = BattleJudge.I.GetPlayerObjById(playerID);
-            // Debug.Log(effect);
+            Debug.Log(effect);
             effect.transform.position = obj.transform.position;
             effect.transform.SetParent(obj.transform);
             effect.transform.rotation = rotation; /* 回転を設定 */
@@ -51,7 +50,6 @@ namespace TechC
             }
         }
 
-        public GameObject GetEffectObj(GameObject prefab, Vector3 position, Quaternion rotation) => effectPool.GetObject(prefab, position, rotation);
         /// <summary>
         /// 指定時間後にエフェクトをプールに返却する
         /// </summary>

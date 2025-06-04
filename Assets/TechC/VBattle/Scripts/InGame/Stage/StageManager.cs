@@ -400,57 +400,6 @@ namespace TechC
         }
         
         #endregion
-        
-        #region デバッグ用
-        
-        private void OnDrawGizmosSelected()
-        {
-            // 現在のステージの境界を描画
-            if (currentStageData != null && currentStageData.useCustomBounds)
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireCube(currentStageData.customBounds.center, currentStageData.customBounds.size);
-                
-                // ラベルを表示
-                UnityEditor.Handles.Label(
-                    currentStageData.customBounds.center, 
-                    $"Stage: {currentStageData.stageName}\nBounds: {currentStageData.customBounds.size}"
-                );
-            }
-            
-            // カメラオフセットとデッドゾーンを描画
-            if (currentStageData != null && currentStageData.overrideCameraPosition)
-            {
-                Vector3 centerPos = transform.position + currentStageData.cameraOffset;
-                
-                Gizmos.color = Color.blue;
-                Gizmos.DrawWireSphere(centerPos, 0.5f);
-                
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawWireCube(centerPos, new Vector3(currentStageData.cameraDeadZone.x, currentStageData.cameraDeadZone.y, 1f));
-            }
-        }
-        
-        /// <summary>
-        /// デバッグ情報を表示
-        /// </summary>
-        [System.Diagnostics.Conditional("UNITY_EDITOR")]
-        public void LogDebugInfo()
-        {
-            CustomLogger.Info("=== StageManager Debug Info ===", LOGTAG);
-            CustomLogger.Info($"Current Stage: {CurrentStageName} (Index: {currentStageIndex})", LOGTAG);
-            CustomLogger.Info($"Total Stages: {StageCount}", LOGTAG);
-            CustomLogger.Info($"Stage Renderer: {(stageRenderer != null ? stageRenderer.name : "Not Set")}", LOGTAG);
-            CustomLogger.Info($"Camera Manager: {(CameraManager.I != null ? "Available" : "Not Found")}", LOGTAG);
-            
-            if (currentStageData != null)
-            {
-                CustomLogger.Info($"Override Zoom: {currentStageData.overrideZoomSettings}", LOGTAG);
-                CustomLogger.Info($"Custom Bounds: {currentStageData.useCustomBounds}", LOGTAG);
-                CustomLogger.Info($"Override Camera Position: {currentStageData.overrideCameraPosition}", LOGTAG);
-            }
-        }
-        
-        #endregion
+      
     }
 }

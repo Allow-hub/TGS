@@ -19,6 +19,9 @@ namespace TechC
         private static readonly WNDPROC _basicWndProc = BasicWndProc;
         private static readonly WNDPROC _imageWndProc = ImageWndProc;
 
+        /// <summary>
+        /// ウィンドウクラスを登録する
+        /// </summary>
         public static void RegisterWindowClasses()
         {
             if (_classRegistered)
@@ -29,7 +32,12 @@ namespace TechC
             RegisterClassEx(_imageClassName, _imageWndProc, hInstance);
 
             _classRegistered = true;
+            CustomLogger.Info("Window classes registered.", WindowUtility.WINDOWLOGTAG);
         }
+
+        /// <summary>
+        /// ウィンドウクラスを登録解除する
+        /// </summary>
         public static void UnregisterWindowClasses()
         {
             if (!_classRegistered)
@@ -42,20 +50,26 @@ namespace TechC
                 fixed (char* basicName = _basicClassName)
                 {
                     if (!PInvoke.UnregisterClass(new PCWSTR(basicName), hInstance))
-                        Debug.LogError($"UnregisterClass failed for {_basicClassName}, error: {Marshal.GetLastWin32Error()}");
+                        CustomLogger.Error($"UnregisterClass failed for {_basicClassName}, error: {Marshal.GetLastWin32Error()}", WindowUtility.WINDOWLOGTAG);
                 }
 
                 fixed (char* imageName = _imageClassName)
                 {
                     if (!PInvoke.UnregisterClass(new PCWSTR(imageName), hInstance))
-                        Debug.LogError($"UnregisterClass failed for {_imageClassName}, error: {Marshal.GetLastWin32Error()}");
+                        CustomLogger.Error($"UnregisterClass failed for {_imageClassName}, error: {Marshal.GetLastWin32Error()}", WindowUtility.WINDOWLOGTAG);
                 }
             }
 
             _classRegistered = false;
-            Debug.Log("Window classes unregistered.");
+            CustomLogger.Info("Window classes unregistered.", WindowUtility.WINDOWLOGTAG);
         }
 
+        /// <summary>
+        /// ウィンドウクラスを登録する
+        /// </summary>
+        /// <param name="className">クラス名</param>
+        /// <param name="wndProc">ウィンドウプロシージャー</param>
+        /// <param name="hInstance">実行中のアプリやDLLを一位に識別するハンドル</param>
         private static void RegisterClassEx(string className, WNDPROC wndProc, HMODULE hInstance)
         {
             unsafe
@@ -80,14 +94,26 @@ namespace TechC
 
                     ushort atom = PInvoke.RegisterClassEx(wndClass);
                     if (atom == 0)
-                        Debug.LogError($"RegisterClassEx failed for {className}, error: {Marshal.GetLastWin32Error()}");
+                        CustomLogger.Error($"RegisterClassEx failed for {className}, error: {Marshal.GetLastWin32Error()}", WindowUtility.WINDOWLOGTAG);
                     else
-                        Debug.Log($"Window class '{className}' registered successfully.");
+                        CustomLogger.Info($"Window class '{className}' registered successfully.", WindowUtility.WINDOWLOGTAG);
                 }
             }
         }
 
-
+        /// <summary>
+        /// ウィンドウを作成する
+        /// </summary>
+        /// <param name="className">クラス名</param>
+        /// <param name="title">ウィンドウ名</param>
+        /// <param name="style">スタイル</param>
+        /// <param name="exStyle"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
         public static IntPtr CreateWindow(
             string className,
             string title,
@@ -106,8 +132,8 @@ namespace TechC
 
                     hwnd = PInvoke.CreateWindowEx(
                         (WINDOW_EX_STYLE)exStyle,
-                       new PCWSTR(cName),
-                       new PCWSTR(titleName),
+                        new PCWSTR(cName),
+                        new PCWSTR(titleName),
                         (WINDOW_STYLE)style,
                         x, y, width, height,
                         new HWND(parent),
@@ -117,34 +143,35 @@ namespace TechC
                     );
                 }
             }
-            Debug.Log($"CreateWindowEx success: hwnd = {hwnd}");
             if (hwnd == HWND.Null)
-                Debug.LogError($"CreateWindowEx failed, error: {Marshal.GetLastWin32Error()}");
+                CustomLogger.Error($"CreateWindowEx failed, error: {Marshal.GetLastWin32Error()}", WindowUtility.WINDOWLOGTAG);
+            else
+                CustomLogger.Info($"CreateWindowEx success: hwnd = {hwnd}", WindowUtility.WINDOWLOGTAG);
 
             return hwnd;
         }
 
         private static LRESULT BasicWndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
         {
-            switch (msg)
-            {
-                case PInvoke.WM_DESTROY:
-                    break;
-            }
+            // switch (msg)
+            // {
+            //     case PInvoke.WM_DESTROY:
+            //         break;
+            // }
 
             return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
         }
 
         private static LRESULT ImageWndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
         {
-            switch (msg)
-            {
-                case PInvoke.WM_PAINT:
-                    // 描画処理
-                    break;
-                case PInvoke.WM_DESTROY:
-                    break;
-            }
+            // switch (msg)
+            // {
+            //     case PInvoke.WM_PAINT:
+            //         // 描画処理
+            //         break;
+            //     case PInvoke.WM_DESTROY:
+            //         break;
+            // }
 
             return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
         }

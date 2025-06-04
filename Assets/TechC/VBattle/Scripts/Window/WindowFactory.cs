@@ -1,4 +1,3 @@
-using Microsoft.Unity.VisualStudio.Editor;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,10 +10,11 @@ namespace TechC
     /// </summary>
     public class WindowFactory : Singleton<WindowFactory>
     {
-        public enum WindowType { Basic}
+        public enum WindowType { Basic, Image, Web }
 
         private Dictionary<WindowType, Queue<NativeWindow>> poolByType = new();
-        private const int InitialPoolSize = 1;
+        private const int InitialPoolSize = 50;
+        private List<NativeWindow> activeWindows = new();
 
         protected override void Init()
         {
@@ -25,25 +25,19 @@ namespace TechC
                 poolByType[type] = new Queue<NativeWindow>();
                 for (int i = 0; i < InitialPoolSize; i++)
                 {
-                    var window = CreateNewWindow(type, $"{type} Window {i}", 100, 100);
+                    var window = CreateNewWindow(type, $"{type} Window {i}", 300, 300);
                     if (window != null)
                         poolByType[type].Enqueue(window);
                 }
             }
         }
 
-        // protected override void OnRelease()
-        // {
-        //     base.OnRelease();
-        //     DisposeAll();
-        // }
-
-        private void OnApplicationQuit()
+        protected override void OnRelease()
         {
+            base.OnRelease();
             DisposeAll();
             CustomWindowUtility.UnregisterWindowClasses();
         }
-
         public NativeWindow GetWindow(WindowType type)
         {
             NativeWindow window = null;
@@ -62,6 +56,8 @@ namespace TechC
             if (window != null)
             {
                 window.Show();
+                if (!activeWindows.Contains(window))
+                    activeWindows.Add(window);
             }
 
             return window;
@@ -74,6 +70,7 @@ namespace TechC
                 poolByType[window.Type] = new Queue<NativeWindow>();
             }
             poolByType[window.Type].Enqueue(window);
+            activeWindows.Remove(window);
         }
 
         public NativeWindow CreateNewWindow() =>
@@ -91,9 +88,11 @@ namespace TechC
         /// <returns></returns>
         public NativeWindow CreateNewWindow(WindowType type, string title, int width, int height, Texture2D tex = null)
         {
+            // ウィンドウクラス名を決定
+            //CustomWindowUtilityと同じ名前を使うこと
             string className = type switch
             {
-                // WindowType.Image => "WindowClass_Image",
+                WindowType.Image => "WindowClass_Image",
                 _ => "WindowClass_Basic",
             };
             IntPtr hwnd = CustomWindowUtility.CreateWindow(
@@ -112,8 +111,8 @@ namespace TechC
             {
                 case WindowType.Basic:
                     return new BasicWindow(hwnd, width, height);
-                // case WindowType.Image:
-                //     return new ImageWindow(hwnd, width, height, tex);
+                case WindowType.Image:
+                    return new ImageWindow(hwnd, width, height, tex);
                 default:
                     return new NativeWindow(hwnd, width, height, type);
             }
@@ -124,21 +123,36 @@ namespace TechC
         /// </summary>
         public void DisposeAll()
         {
-            Debug.Log($"DisposeAll called. Pool count: {poolByType.Count}");
+            CustomLogger.Info($"DisposeAll called. Pool count: {poolByType.Count}", WindowUtility.WINDOWLOGTAG);
 
+            // プール内
             foreach (var kvp in poolByType)
             {
                 var type = kvp.Key;
                 var queue = kvp.Value;
-                Debug.Log($"Disposing windows of type: {type}, count: {queue.Count}");
+                CustomLogger.Info($"Disposing windows of type: {type}, count: {queue.Count}", WindowUtility.WINDOWLOGTAG);
 
                 foreach (var window in queue)
                 {
-                    Debug.Log($"Destroying window: HWND={window.Hwnd}, Type={window.Type}");
-                    window.Destroy();
+                    CustomLogger.Info($"Destroying window: HWND={window.Hwnd}, Type={window.Type}", WindowUtility.WINDOWLOGTAG);
+                    if (window.Hwnd != IntPtr.Zero)
+                    {
+                        window.Destroy();
+                    }
                 }
                 queue.Clear();
             }
+
+            // アクティブウィンドウ
+            foreach (var window in activeWindows)
+            {
+                CustomLogger.Info($"Destroying active window: HWND={window.Hwnd}, Type={window.Type}", WindowUtility.WINDOWLOGTAG);
+                if (window.Hwnd != IntPtr.Zero)
+                {
+                    window.Destroy();
+                }
+            }
+            activeWindows.Clear();
         }
 
     }

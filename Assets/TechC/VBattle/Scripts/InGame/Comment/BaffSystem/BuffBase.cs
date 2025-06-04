@@ -8,14 +8,26 @@ namespace TechC
     /// <summary>
     /// 全てのバフの基本処理をまとめた基底クラス
     /// </summary>
-    
+
     public class BuffBase
     {
         public string buffName { get; protected set; }
         public string description { get; protected set; }
         public float buffDuration { get; protected set; }
         public float remainingTime { get; protected set; }
-        
+        public int id { get; private set; }
+
+        // これまでのバフの生成数、識別IDを作成するために使う
+        private static int totalBuffCount = VoidID + 1;
+        // 予約された無効ID
+        public static readonly int VoidID = 0; 
+
+        public BuffBase()
+        {
+            id = totalBuffCount;
+            totalBuffCount++;
+        }
+
         /// <summary>
         /// バフを適用する処理
         /// </summary>

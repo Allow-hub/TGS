@@ -13,12 +13,15 @@ namespace TechC.Player
     {
         // 入力判定設定
         [Header("入力判定設定")]
+        [SerializeField] private float intentionalMoveThreshold = 0.7f; // 意図的な移動と判断する閾値
+        [SerializeField] private float jumpButtonPriority = 0.9f; // ジャンプボタン優先度（高いほどボタン入力優先）
         [SerializeField] private float crouchButtonPriority = 0.9f; // しゃがみボタン優先度
         [SerializeField] private float inputDebounceDuration = 0.12f; // 入力の無効時間（秒）
 
         // スナップ方向入力用の設定
         [Header("スナップ方向設定")]
         [SerializeField] private float directionDeadzone = 0.3f; // 方向入力のデッドゾーン
+        [SerializeField] private bool restrictJumpToPureUp = true; // ジャンプを純粋な上方向のみに制限するか
         [SerializeField] private bool restrictCrouchToPureDown = true; // しゃがみを純粋な下方向のみに制限するか
 
         // 内部状態管理

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 133d51a2a1c84a4409b5ef5c95ca25d7, type: 3}
   m_Name: AmeSE
   m_EditorClassIdentifier: 
-  characterType: 1
+  characterType: 0
   seList:
   - seType: 0
     clip: {fileID: 0}

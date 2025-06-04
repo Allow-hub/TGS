@@ -15,11 +15,18 @@ namespace TechC
         [SerializeField] private GameObject iceDataPrefab;
         [SerializeField] private GameObject iceExplosionPrefab;
         [SerializeField] private GameObject iceRosePrefab;
+        [SerializeField] private GameObject iceWallPrefab;
+        
 
         [Header("エフェクトのプレハブや参照")]
-        [SerializeField] private GameObject BladedStorm;
+        [SerializeField] private GameObject bladeStormPrefab;
 
         // [Header("ニュートラル強")]
+        [Header("ニュートラル強")]
+        [SerializeField] private GameObject iceClonePrefab; // 分身のプレハブ
+        [SerializeField] private float echoTimeWindow = 3.0f; // 再現する時間幅
+        [SerializeField] private int maxEchoCount = 3;
+
         [Header("左強")]
         [SerializeField] private float magicDuration = 2f;
         [SerializeField] private float yOffset = 2;
@@ -32,22 +39,60 @@ namespace TechC
         private bool OnleftStrong = false;
 
         // [Header("右強")]
+        [Header("右強")]
+        [SerializeField] private float iceWallDuration = 5.0f;
+        [SerializeField] private float wallOffset = 1.5f;
+        [SerializeField] private AttackData rightAttackData;
+
         // [Header("下強")]
         // [Header("上強")]
         [Header("上強")]
 
-        private float returnStrongUpEffectTime = 3f;
-        
+        [SerializeField] private float returnStrongUpEffectTime = 3f;
+        [SerializeField] private float upwardVelocity = 2.5f;
+        [SerializeField] private float backOffset = 0.5f;      
+        [SerializeField] private float scaleVariance = 0.3f;
+
 
 
         /// <summary>
         /// 数秒前の自分が氷で実体化し、攻撃も記録通りなぞってくれる
         /// </summary>
+        
+
         public override void NeutralAttack()
         {
-            base.NeutralAttack();
+        //    base.NeutralAttack();
 
+        //    // CommandHistoryを取得（同階層で参照できるなら）
+        //    var commandHistory = GetComponent<CommandHistory>();
+        //    if (commandHistory == null) return;
+
+        //    // 最近の攻撃履歴を取得
+        //    List<CommandHistory.CommandRecord> recentAttacks = commandHistory.GetFullHistory()
+        //        .FindAll(r => r.commandInstance is AttackCommand && Time.time - r.executionTime <= echoTimeWindow);
+
+        //    int echoCount = 0;
+
+        //    foreach (var record in recentAttacks)
+        //    {
+        //        if (echoCount >= maxEchoCount) break;
+
+        //        Vector3 spawnPos = record.playerPosition + Vector3.up * 0.1f;
+        //        GameObject clone = Instantiate(iceClonePrefab, spawnPos, Quaternion.identity);
+
+        //        // 攻撃の種類に応じてアニメーションまたは行動再現
+        //        var echo = clone.GetComponent<IceEcho>(); // 再現用スクリプト
+        //        if (echo != null)
+        //        {
+        //            echo.SetupFromRecord(record);
+        //        }
+
+        //        echoCount++;
+        //    }
         }
+
+
 
         /// <summary>
         /// 氷の魔法を圧縮データにして飛ばす、二回目の入力で解凍
@@ -89,12 +134,83 @@ namespace TechC
         }
 
         /// <summary>
-        /// 未定
+        /// 前方に氷の壁を床から飛び出させる
         /// </summary>
         public override void RightAttack()
         {
             base.RightAttack();
+
+            // 氷の壁を生成
+            Vector3 wallPos = transform.position
+                + transform.forward * (wallOffset + 0.5f) // ← 少し前へ（+0.5fなど調整）
+                - Vector3.up * 0.5f;                      // ← 少し下へ（-0.5fなど調整）
+
+            Quaternion wallRot = Quaternion.LookRotation(-transform.forward);
+            GameObject iceWallObj = CharaEffectFactory.I.GetEffectObj(iceWallPrefab, wallPos, wallRot);
+            iceWallObj.transform.localScale = Vector3.one; // スケールリセット（前回の修正）
+
+            // 攻撃設定
+            var charaEffect = iceWallObj.GetComponent<CharaEffect>();
+            if (charaEffect != null)
+            {
+                charaEffect.SetOwnerId(characterController.PlayerID);
+                charaEffect.SetAttackProcessor(attackProcessor);
+            }
+
+            
+
+            // 打ち上げ処理を一度だけ行う
+            TryLaunchEnemy(iceWallObj);
+
+            // 一定時間後にエフェクト削除
+            DelayUtility.StartDelayedAction(this, iceWallDuration, () =>
+            {
+                CharaEffectFactory.I.ReturnEffectObj(iceWallObj);
+            });
         }
+        private void TryLaunchEnemy(GameObject wallObj)
+        {
+            Vector3 wallCenter = wallObj.transform.position;
+            float centerThreshold = 50f;
+
+            Collider[] hits = Physics.OverlapBox(
+                wallCenter,
+                wallObj.transform.localScale * 0.5f + Vector3.up * 0.5f,
+                wallObj.transform.rotation,
+                LayerMask.GetMask("Enemy")
+            );
+
+            foreach (var hit in hits)
+            {
+                Rigidbody targetRb = hit.attachedRigidbody;
+                if (targetRb == null) continue;
+
+                Vector3 flatDiff = hit.transform.position - wallCenter;
+                flatDiff.y = 0f;
+
+                float distance = flatDiff.magnitude;
+                Debug.Log($"[IceWall] Hit Enemy: {hit.name}, Distance from center: {distance}");
+
+                if (distance <= centerThreshold)
+                {
+                    Vector3 knockDir = rightAttackData.knockbackDirection;
+                    knockDir.y = 10f;
+                    knockDir.Normalize();
+
+                    Debug.Log($"[IceWall] Central Hit! Knockback Dir: {knockDir}, Force: {rightAttackData.knockback}");
+
+                    targetRb.velocity = Vector3.zero;
+                    targetRb.AddForce(knockDir * rightAttackData.knockback, ForceMode.Impulse);
+                    break;
+                }
+            }
+        }
+
+
+
+
+
+
 
         /// <summary>
         /// 下に剣を突き立てて周囲に氷の薔薇を咲かせて範囲攻撃
@@ -106,24 +222,53 @@ namespace TechC
         }
 
         /// <summary>
-        /// 未定
+        /// 上に剣を突き出し刃の竜巻を発生させる
         /// </summary>
         public override void UpAttack()
         {
             base.UpAttack();
-            ActiveSword(upAttackData.attackDuration);
+
+            Vector3 spawnPos = transform.position
+                             + Vector3.up * yOffset;
+
+            GameObject stormObj = CharaEffectFactory.I.GetEffectObj(bladeStormPrefab, spawnPos, Quaternion.identity);
+
+            // ランダムなスケールを適用（例：0.7〜1.3倍）
+            float scaleMultiplier = 1f;
+            float chance = Random.value;
+            if (chance < 0.3f) scaleMultiplier = 1.8f;     // 30%の確率で大きく
+            else if (chance < 0.5f) scaleMultiplier = 0.3f; // 20%の確率で小さく
+
+            // スケールの適用
+            stormObj.transform.localScale *= scaleMultiplier;
+
+            var rb = stormObj.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.velocity = Vector3.zero;
+                rb.velocity = transform.up * upwardVelocity;
+            }
+
+            var charaEffect = stormObj.GetComponent<CharaEffect>();
+            if (charaEffect != null)
+            {
+                charaEffect.SetOwnerId(characterController.PlayerID);
+                charaEffect.SetAttackProcessor(attackProcessor);
+            }
+
+            DelayUtility.StartDelayedAction(this, returnStrongUpEffectTime, () =>
+            {
+                CharaEffectFactory.I.ReturnEffectObj(stormObj);
+            });
         }
+
+
 
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
             ActiveSword(upAttackData.attackDuration);
-            var StormObj = CharaEffectFactory.I.GetEffectObj(BladedStorm, transform.position, Quaternion.identity);
-            
-            DelayUtility.StartDelayedAction(this, returnStrongUpEffectTime, () =>
-            {
-                CharaEffectFactory.I.ReturnEffectObj(StormObj);
-            });
+
         }
 
         private void ActiveSword(float duration)

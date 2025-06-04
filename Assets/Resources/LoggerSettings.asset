@@ -81,8 +81,8 @@ MonoBehaviour:
   - physics
   - default
   - camera
+  - comboCheck
+  - comboClear
   _disabledCategoryIds:
   - state
   - window
-  - comboClear
-  - comboCheck

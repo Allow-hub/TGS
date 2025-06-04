@@ -66,6 +66,10 @@ MonoBehaviour:
     displayName: Stage
     color: {r: 0.75686276, g: 0.9137255, b: 0.85642296, a: 1}
     enabledByDefault: 1
+  - categoryId: icon
+    displayName: Icon
+    color: {r: 0.05873976, g: 0.8301887, b: 0.54089534, a: 1}
+    enabledByDefault: 0
   defaultCategory:
     categoryId: default
     displayName: Default
@@ -80,9 +84,11 @@ MonoBehaviour:
   - gamePlay
   - physics
   - default
-  - camera
-  - comboCheck
-  - comboClear
+  - window
   _disabledCategoryIds:
   - state
-  - window
+  - comboClear
+  - comboCheck
+  - stage
+  - camera
+  - icon

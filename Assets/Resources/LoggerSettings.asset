@@ -76,13 +76,14 @@ MonoBehaviour:
   - network
   - input
   - ui
-  - audio
   - gamePlay
   - physics
   - default
-  - camera
+  - audio
   _disabledCategoryIds:
   - state
   - window
   - comboClear
   - comboCheck
+  - camera
+  - stage

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 133d51a2a1c84a4409b5ef5c95ca25d7, type: 3}
   m_Name: TeramiSE
   m_EditorClassIdentifier: 
-  characterType: 0
+  characterType: 2
   seList:
   - seType: 0
     clip: {fileID: 0}

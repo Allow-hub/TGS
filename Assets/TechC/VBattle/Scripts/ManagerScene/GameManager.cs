@@ -26,6 +26,7 @@ namespace TechC
             QualitySettings.vSyncCount = 0;
             // fps 144 を目標に設定
             Application.targetFrameRate = targetFrameRate;
+            AudioManager.I.PlayBGM(BGMID.Title);
         }
 
 

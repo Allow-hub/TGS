@@ -49,9 +49,8 @@ namespace TechC
         private Dictionary<Transform, PlayerCameraData> playerDataMap = new Dictionary<Transform, PlayerCameraData>();
         private CinemachineBasicMultiChannelPerlin noiseComponent;
 
-        [SerializeField]private NoiseSettings defaultShakeProfile;
+        [SerializeField] private NoiseSettings defaultShakeProfile;
         private float shakeTimer;
-        private Vector3 lastTargetPosition;
         private float lastUpdateTime;
 
         // プロパティ
@@ -66,14 +65,33 @@ namespace TechC
 
         protected override void Init()
         {
+            CustomLogger.Info("CameraManager.Init() called", LOGTAG);
             base.Init();
-            InitializeCamera();
-            RegisterPlayers();
-            // StartShake(defaultShakeProfile,1000, 10);
+
+            DelayUtility.StartDelayedAction(this, 0.11f, () =>
+            {
+                if (vcam != null)
+                {
+                    InitializeCamera();
+                    RegisterPlayers();
+                }
+                else
+                {
+                    CustomLogger.Error("CameraManager: vcam is not set in delayed action", LOGTAG);
+                }
+            });
         }
 
+        protected override void OnRelease()
+        {
+            CustomLogger.Info("CameraManager.OnRelease() called", LOGTAG);
+            base.OnRelease();
+
+            ClearTargets();
+        }
         void Update()
         {
+            CustomLogger.Info("CameraManager.Update() called", LOGTAG);
             UpdateCameraZoom();
             UpdateCameraShake();
             ValidatePlayers();
@@ -84,25 +102,44 @@ namespace TechC
         /// </summary>
         private void InitializeCamera()
         {
+            CustomLogger.Info("InitializeCamera() called", LOGTAG);
             if (vcam == null)
             {
                 CustomLogger.Error("CameraManager: VirtualCameraが設定されていません", LOGTAG);
                 return;
+            }
+            else
+            {
+                CustomLogger.Info("vcam is set: " + vcam.name, LOGTAG);
             }
 
             noiseComponent = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
             if (noiseComponent == null && enableCameraShake)
             {
                 noiseComponent = vcam.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+                CustomLogger.Info("noiseComponent was null, added new CinemachineBasicMultiChannelPerlin", LOGTAG);
+            }
+            else
+            {
+                CustomLogger.Info("noiseComponent is set", LOGTAG);
+            }
+            if (noiseComponent != null)
+            {
+                noiseComponent.m_AmplitudeGain = 0f;
             }
 
             if (targetGroup != null)
             {
+                CustomLogger.Info("targetGroup is set: " + targetGroup.name, LOGTAG);
                 vcam.Follow = targetGroup.transform;
                 vcam.LookAt = targetGroup.transform;
                 targetGroup.m_PositionMode = CinemachineTargetGroup.PositionMode.GroupCenter;
                 targetGroup.m_RotationMode = CinemachineTargetGroup.RotationMode.Manual;
                 targetGroup.m_UpdateMethod = CinemachineTargetGroup.UpdateMethod.LateUpdate;
+            }
+            else
+            {
+                CustomLogger.Error("CameraManager: targetGroupが設定されていません", LOGTAG);
             }
 
             lastUpdateTime = Time.time;
@@ -112,13 +149,23 @@ namespace TechC
         /// </summary>
         private void RegisterPlayers()
         {
-            if (BattleJudge.I?.Players == null) return;
+            CustomLogger.Info("RegisterPlayers() called", LOGTAG);
+            if (BattleJudge.I?.Players == null)
+            {
+                CustomLogger.Error("BattleJudge.I.Players is null", LOGTAG);
+                return;
+            }
 
             foreach (var playerInfo in BattleJudge.I.Players)
             {
                 if (playerInfo?.playerObject != null)
                 {
+                    CustomLogger.Info("Registering player: " + playerInfo.playerObject.name, LOGTAG);
                     AddPlayer(playerInfo.playerObject.transform);
+                }
+                else
+                {
+                    CustomLogger.Warning("playerInfo or playerObject is null", LOGTAG);
                 }
             }
         }
@@ -128,15 +175,23 @@ namespace TechC
         /// </summary>
         private void UpdateCameraZoom()
         {
+            CustomLogger.Info("UpdateCameraZoom() called", LOGTAG);
             var activePlayers = GetActivePlayers();
-            if (activePlayers.Count < 2) return;
+            CustomLogger.Info($"ActivePlayers count: {activePlayers.Count}", LOGTAG);
+            if (activePlayers.Count < 2)
+            {
+                CustomLogger.Warning("ActivePlayers less than 2, skipping zoom update", LOGTAG);
+                return;
+            }
 
             float maxDistanceBetweenPlayers = CalculateMaxDistance(activePlayers);
+            CustomLogger.Info($"maxDistanceBetweenPlayers: {maxDistanceBetweenPlayers}", LOGTAG);
 
             // 先読み機能：プレイヤーの移動速度を考慮
             if (adaptToPlayerSpeed)
             {
                 float anticipatedDistance = CalculateAnticipatedDistance(activePlayers, maxDistanceBetweenPlayers);
+                CustomLogger.Info($"anticipatedDistance: {anticipatedDistance}", LOGTAG);
                 maxDistanceBetweenPlayers = Mathf.Max(maxDistanceBetweenPlayers, anticipatedDistance);
             }
 
@@ -150,11 +205,14 @@ namespace TechC
             float currentFOV = vcam.m_Lens.FieldOfView;
             float newFOV = Mathf.Lerp(currentFOV, targetFOV, Time.deltaTime * zoomSpeed);
 
+            CustomLogger.Info($"currentFOV: {currentFOV}, targetFOV: {targetFOV}, newFOV: {newFOV}", LOGTAG);
+
             vcam.m_Lens.FieldOfView = newFOV;
 
             // ズーム変更イベント
             if (Mathf.Abs(newFOV - currentFOV) > 0.1f)
             {
+                CustomLogger.Info($"OnZoomChanged invoked: {newFOV}", LOGTAG);
                 OnZoomChanged?.Invoke(newFOV);
             }
         }
@@ -237,7 +295,12 @@ namespace TechC
         /// </summary>
         private void UpdateCameraShake()
         {
-            if (!enableCameraShake || noiseComponent == null) return;
+            CustomLogger.Info("UpdateCameraShake() called", LOGTAG);
+            if (!enableCameraShake || noiseComponent == null)
+            {
+                CustomLogger.Warning("Camera shake disabled or noiseComponent is null", LOGTAG);
+                return;
+            }
 
             if (shakeTimer > 0f)
             {
@@ -246,10 +309,12 @@ namespace TechC
                 // シェイクの強度を時間とともに減衰
                 float normalizedTime = Mathf.Clamp01(shakeTimer / defaultShakeDuration);
                 noiseComponent.m_AmplitudeGain = defaultShakeIntensity * normalizedTime;
+                CustomLogger.Info($"Shake active: amplitude={noiseComponent.m_AmplitudeGain}, timer={shakeTimer}", LOGTAG);
             }
             else
             {
                 noiseComponent.m_AmplitudeGain = 0f;
+                CustomLogger.Info("Shake ended", LOGTAG);
             }
         }
 
@@ -258,10 +323,12 @@ namespace TechC
         /// </summary>
         private void ValidatePlayers()
         {
+            CustomLogger.Info("ValidatePlayers() called", LOGTAG);
             for (int i = players.Count - 1; i >= 0; i--)
             {
                 if (players[i] == null || !players[i].gameObject.activeInHierarchy)
                 {
+                    CustomLogger.Warning($"Player at index {i} is null or inactive, removing", LOGTAG);
                     RemovePlayerAtIndex(i);
                 }
             }
@@ -376,7 +443,7 @@ namespace TechC
         /// カメラシェイクを開始,CM Vcam1->Noise->NoiseProfileの歯車からEditで
         /// Shakeのデータを拾えます
         /// </summary>
-        public void StartShake(NoiseSettings noiseSettings,float intensity = -1f, float duration = -1f)
+        public void StartShake(NoiseSettings noiseSettings, float intensity = -1f, float duration = -1f)
         {
             if (!enableCameraShake) return;
 

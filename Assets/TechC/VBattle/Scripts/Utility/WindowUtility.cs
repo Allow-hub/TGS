@@ -5,8 +5,6 @@ using UnityEngine;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
-using Windows.Win32.Graphics.Gdi;
-using System.Collections.Generic;
 
 namespace TechC
 {
@@ -15,7 +13,7 @@ namespace TechC
     /// </summary>
     public static class WindowUtility
     {
-        
+        public static string WINDOWLOGTAG = "window";
         #region ウィンドウ作成・取得
 
         /// <summary>
@@ -210,7 +208,7 @@ namespace TechC
         /// <param name="height">高さ</param>
         /// <param name="flags">フラグ</param>
         /// <returns>成功した場合true</returns>
-        public static bool SetWindowPositionAndSize(IntPtr hWnd, IntPtr insertAfter, int x, int y, 
+        public static bool SetWindowPositionAndSize(IntPtr hWnd, IntPtr insertAfter, int x, int y,
             int width, int height, uint flags)
         {
             return PInvoke.SetWindowPos(
@@ -257,16 +255,16 @@ namespace TechC
         /// <param name="redraw">再描画するかどうか</param>
         public static void SetRedraw(IntPtr hWnd, bool redraw)
         {
-            PInvoke.SendMessage(new HWND(hWnd), PInvoke.WM_SETREDRAW, 
+            PInvoke.SendMessage(new HWND(hWnd), PInvoke.WM_SETREDRAW,
                 new WPARAM((nuint)(redraw ? 1 : 0)), new LPARAM(0));
-            
+
             if (redraw)
             {
-                PInvoke.InvalidateRect(new HWND(hWnd),new  RECT(), true);
+                PInvoke.InvalidateRect(new HWND(hWnd), new RECT(), true);
                 PInvoke.UpdateWindow(new HWND(hWnd));
             }
         }
-        
+
 
 
         #endregion
@@ -327,10 +325,10 @@ namespace TechC
             var rect = GetWindowRect(new HWND(hWnd));
             var currentWidth = rect.right - rect.left;
             var currentHeight = rect.bottom - rect.top;
-            
+
             var targetSize = new Vector2(targetWidth, targetHeight);
             var currentSize = new Vector2(currentWidth, currentHeight);
-            
+
             if (Vector2.Distance(currentSize, targetSize) < 1f)
             {
                 return true; // 到達済み
@@ -339,7 +337,7 @@ namespace TechC
             var direction = (targetSize - currentSize).normalized;
             var resizeSpeed = speed * Time.deltaTime;
             var newSize = currentSize + direction * resizeSpeed;
-            
+
             // 目標を超えないように調整
             if (Vector2.Distance(currentSize, targetSize) < resizeSpeed)
             {

@@ -41,3 +41,7 @@ PostQuitMessage
 WM_DESTROY
 WM_PAINT
 GetClassInfoEx
+GetDC
+SetDIBitsToDevice
+ReleaseDC
+StretchDIBits

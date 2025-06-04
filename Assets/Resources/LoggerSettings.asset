@@ -84,11 +84,11 @@ MonoBehaviour:
   - gamePlay
   - physics
   - default
-  - window
   _disabledCategoryIds:
   - state
   - comboClear
   - comboCheck
   - stage
-  - camera
   - icon
+  - window
+  - camera

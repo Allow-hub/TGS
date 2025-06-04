@@ -434,7 +434,7 @@ namespace TechC.Player
             Debug.LogWarning($"Player {playerID}: HPPresenterが見つかりません。デフォルト値を返します。");
             return 0f;
         }
-
+        public void HealHp(float value) => hpPresenter.Heal(value);
 
         /// <summary>
         /// ダメージを受ける処理

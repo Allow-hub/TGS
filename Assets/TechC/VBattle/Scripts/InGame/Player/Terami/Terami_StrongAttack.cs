@@ -11,8 +11,9 @@ namespace TechC
     {
         [Header("プレハブの参照")]
 
-        [SerializeField] private GameObject heal; // ニュートラ強：回復エフェクト
-        [SerializeField] private GameObject popcorn; // 右強：ポップコーン
+        [SerializeField] private GameObject healPrefab; // ニュートラ強：回復エフェクト
+        [SerializeField] private GameObject popcornPrefab
+        ; // 右強：ポップコーン
         // [SerializeField] private GameObject giant; // 上強：巨大化の際のエフェクト
         [Header("ニュートラル強")]
         private float cottonCandyXOffset = 2f;
@@ -26,7 +27,6 @@ namespace TechC
         // [SerializeField] private float 
         // [Header("左強")]
         [Header("右強")]
-        private static readonly Vector3 POPCORN_SCALE = new Vector3(0.2f, 0.2f, 0.2f);
         private const int CENTER_INDEX_X_OFFSET = 1;
         private const int INITIAL_DELAY_MULTIPILIER = 1;
         private List<GameObject> generatedPopcorns = new List<GameObject>(); // 生成したポップコーンを管理するリスト
@@ -35,10 +35,11 @@ namespace TechC
         [SerializeField] private float popcornSpeed = 3f;
         [SerializeField] private float popcornSpacing = 0.5f;
         [SerializeField] private float rightAttackCooldown = 4f; // クールダウン時間
+        private Vector3 POPCORN_SCALE = new Vector3(0.2f, 0.2f, 0.2f);
         private int maxPopcornNum = 3;
         private float popcornFireInterval = 1f; // 発射間隔
         private float returnRightEffectTime = 5f;
-        private bool isCanFire = true;
+        private bool CanFire = true;
 
         // [Header("下強")]
         [Header("上強")]
@@ -86,13 +87,13 @@ namespace TechC
             if (Mathf.Approximately(yRot, 90f)) // 右向き
             {
                 cottonCandyPos = transform.position.AddX(cottonCandyXOffset).AddY(cottonCandyYOffset);
-                cottonCandyObj = CharaEffectFactory.I.GetEffectObj(heal, cottonCandyPos, Quaternion.identity);
+                cottonCandyObj = CharaEffectFactory.I.GetEffectObj(healPrefab, cottonCandyPos, Quaternion.identity);
 
             }
             else
             {
                 cottonCandyPos = transform.position.AddX(-cottonCandyXOffset).AddY(cottonCandyYOffset);
-                cottonCandyObj = CharaEffectFactory.I.GetEffectObj(heal, cottonCandyPos, Quaternion.identity);
+                cottonCandyObj = CharaEffectFactory.I.GetEffectObj(healPrefab, cottonCandyPos, Quaternion.identity);
             }
 
             var effectSetting = cottonCandyObj.GetComponent<CharaEffect>();
@@ -126,9 +127,9 @@ namespace TechC
         {
             base.RightAttack();
 
-            if (!isCanFire) return;
+            if (!CanFire) return;
 
-            isCanFire = false; // 連打防止開始
+            CanFire = false; // 連打防止開始
             GameObject popObj = null;
             generatedPopcorns.Clear();
 
@@ -140,7 +141,7 @@ namespace TechC
             for (int i = 0; i < maxPopcornNum; i++)
             {
                 var pos = transform.position.AddY(popcornYOffset).AddX((i - CENTER_INDEX_X_OFFSET) * popcornSpacing);
-                popObj = CharaEffectFactory.I.GetEffectObj(popcorn, pos, Quaternion.identity);
+                popObj = CharaEffectFactory.I.GetEffectObj(popcornPrefab, pos, Quaternion.identity);
 
                 // オブジェクト初期化
                 popObj.transform.localScale = POPCORN_SCALE; // Prefabの大きさを設定
@@ -196,7 +197,7 @@ namespace TechC
             // クールダウンタイマー（連打防止）
             DelayUtility.StartDelayedAction(this, rightAttackCooldown, () =>
             {
-                isCanFire = true;
+                CanFire = true;
             });
         }
 

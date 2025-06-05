@@ -21,7 +21,7 @@ namespace TechC
 
         [SerializeField] private float healCooldown = 5;
         private float yRot;
-        private bool isCanHeal = true;
+        private bool canHeal = true;
         [SerializeField] private float returnNeutralEffectTime = 1f;
 
         // [SerializeField] private float 
@@ -39,7 +39,7 @@ namespace TechC
         private int maxPopcornNum = 3;
         private float popcornFireInterval = 1f; // 発射間隔
         private float returnRightEffectTime = 5f;
-        private bool CanFire = true;
+        private bool canFire = true;
 
         // [Header("下強")]
         [Header("上強")]
@@ -76,9 +76,9 @@ namespace TechC
         {
             base.NeutralAttack();
 
-            if (!isCanHeal) return;
+            if (!canHeal) return;
             GameObject cottonCandyObj = null;
-            isCanHeal = false;
+            canHeal = false;
 
             // わたあめを生成する処理
             var cottonCandyPos = transform.position;
@@ -108,7 +108,7 @@ namespace TechC
             //わたあめが表示される時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, healCooldown, () =>
             {
-                isCanHeal = true;
+                canHeal = true;
             });
         }
 
@@ -124,9 +124,9 @@ namespace TechC
         {
             base.RightAttack();
 
-            if (!CanFire) return;
+            if (!canFire) return;
 
-            CanFire = false; // 連打防止開始
+            canFire = false; // 連打防止開始
             GameObject popObj = null;
             generatedPopcorns.Clear();
 
@@ -194,7 +194,7 @@ namespace TechC
             // クールダウンタイマー（連打防止）
             DelayUtility.StartDelayedAction(this, rightAttackCooldown, () =>
             {
-                CanFire = true;
+                canFire = true;
             });
         }
 

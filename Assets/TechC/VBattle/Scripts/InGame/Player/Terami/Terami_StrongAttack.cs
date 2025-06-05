@@ -12,11 +12,11 @@ namespace TechC
         [Header("プレハブの参照")]
 
         [SerializeField] private GameObject heal; // ニュートラ強：回復エフェクト
+    [SerializeField] private GameObject popcorn; // 右強：ポップコーン
         // [SerializeField] private GameObject giant; // 上強：巨大化の際のエフェクト
         [Header("ニュートラル強")]
-        // クラスのフィールドとして追加（マジックナンバーの定義）
-        private float cottonCandyOffsetX = 2f;
-        private float cottonCandyOffsetY = 1f;
+        private float cottonCandyXOffset = 2f;
+        private float cottonCandyYOffset = 1f;
 
         [SerializeField] private float healCooldown = 5;
         private float yRot;
@@ -25,31 +25,35 @@ namespace TechC
 
         // [SerializeField] private float 
         // [Header("左強")]
-        // [Header("右強")]
+        [Header("右強")]
+        [SerializeField] private float yOffset = 3f;
+        [SerializeField] private float popcornSpeed = 3f;
+        private float returnRightEffectTime = 3f;
+
         // [Header("下強")]
         [Header("上強")]
 
         [Tooltip("巨大化時の大きさ倍率")]
-        [SerializeField] private float scaleMultiplier = 2f; // 巨大化時の大きさ倍率
+        [SerializeField] private float scaleMultiplier = 2f;
 
+        [Tooltip("巨大化時の移動速度倍率（1未満で遅くなる）")]
+        [SerializeField] private float moveSpeedMultiplier = 0.5f;
         [Tooltip("巨大化時の攻撃力倍率")]
         [SerializeField] private float attackMultiplier = 2f; // 巨大化時の攻撃力倍率
 
-        [Tooltip("巨大化時の移動速度倍率（1未満で遅くなる）")]
-        [SerializeField] private float moveSpeedMultiplier = 0.5f; // 巨大化時の移動速度倍率（1未満で遅くなる）
-
         [Tooltip("巨大化の持続時間（秒）")]
-        [SerializeField] private float giantDuration = 2f; // 巨大化の持続時間（秒）
+        [SerializeField] private float giantDuration = 2f;
 
         [Tooltip("巨大化のクールダウン時間（秒）")]
-        [SerializeField] private float giantCooldown = 10f; // 巨大化のクールダウン時間（秒）
-
+        [SerializeField] private float giantCooldown = 10f;
         [Tooltip("プレイヤーの元の大きさ")]
         private Vector3 originalScale; // プレイヤーの元の大きさ
-        private bool isGiant = false; // 巨大化かどうか
-        private bool isGiantCooldown = false; // クールタイム中かどうか
-
+        private bool isGiant = false;
+        private bool isGiantCooldown = false;
         [ContextMenu("Test")]
+        /// <summary>
+        /// 自分にダメージを与えるテストメソッド(開発後に削除する)
+        /// </summary>
         public void Test()
         {
             characterController.TakeDamage(300);
@@ -71,13 +75,13 @@ namespace TechC
 
             if (Mathf.Approximately(yRot, 90f)) // 右向き
             {
-                cottonCandyPos = transform.position.AddX(cottonCandyOffsetX).AddY(cottonCandyOffsetY);
+                cottonCandyPos = transform.position.AddX(cottonCandyXOffset).AddY(cottonCandyYOffset);
                 cottonCandyObj = CharaEffectFactory.I.GetEffectObj(heal, cottonCandyPos, Quaternion.identity);
 
             }
             else
             {
-                cottonCandyPos = transform.position.AddX(-cottonCandyOffsetX).AddY(cottonCandyOffsetY);
+                cottonCandyPos = transform.position.AddX(-cottonCandyXOffset).AddY(cottonCandyYOffset);
                 cottonCandyObj = CharaEffectFactory.I.GetEffectObj(heal, cottonCandyPos, Quaternion.identity);
             }
 
@@ -106,11 +110,25 @@ namespace TechC
         }
 
         /// <summary>
-        /// 未定
+        /// 頭上にポップコーンを3つ生成し、一定期間後に相手に向かって発射
         /// </summary>
         public override void RightAttack()
         {
             base.RightAttack();
+            GameObject popObj = null;
+
+            DelayUtility.StartDelayedAction(this, returnRightEffectTime, () =>
+           {
+               //飛び道具の処理
+               var pos = transform.position.AddY(yOffset);
+               popObj = CharaEffectFactory.I.GetEffectObj(popcorn, pos, Quaternion.identity);
+               var effectSetting = popObj.GetComponent<CharaEffect>();
+               effectSetting.SetAttackProcessor(attackProcessor);
+               effectSetting.SetOwnerId(characterController.PlayerID);
+               var rb = popObj.GetComponent<Rigidbody>();
+               //斬撃をrbで飛ばす
+               rb.velocity = transform.forward * popcornSpeed;
+           });
         }
 
         /// <summary>

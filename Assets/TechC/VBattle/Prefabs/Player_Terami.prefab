@@ -350,12 +350,14 @@ MonoBehaviour:
   downAttackData: {fileID: 11400000, guid: b3608f888284a9643b2ba99c68a26871, type: 2}
   upAttackData: {fileID: 11400000, guid: a3945e9d3c847ab4bbf6e961fdca22ba, type: 2}
   heal: {fileID: 6124907978801703374, guid: d78b6d0f8cdb9934ba3be5d9348efe2f, type: 3}
-  healAmount: 50
+  popcorn: {fileID: 6045742034226300586, guid: b1b6ddd1c0ff2ac4898f19717c1c8c88, type: 3}
   healCooldown: 5
   returnNeutralEffectTime: 5
+  yOffset: 0
+  popcornSpeed: 3
   scaleMultiplier: 2
-  attackMultiplier: 2
   moveSpeedMultiplier: 0.5
+  attackMultiplier: 2
   giantDuration: 5
   giantCooldown: 1
 --- !u!114 &8178804244728934472

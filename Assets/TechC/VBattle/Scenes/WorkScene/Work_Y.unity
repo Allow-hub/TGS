@@ -364,12 +364,17 @@ PrefabInstance:
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: poolItems.Array.size
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: poolItems.Array.data[11].name
       value: Terami_Heal
+      objectReference: {fileID: 0}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[12].name
+      value: Terami_Popcorn
       objectReference: {fileID: 0}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -384,7 +389,23 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
+      propertyPath: poolItems.Array.data[12].parent
+      value: 
+      objectReference: {fileID: 1104481513}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[12].prefab
+      value: 
+      objectReference: {fileID: 6045742034226300586, guid: b1b6ddd1c0ff2ac4898f19717c1c8c88,
+        type: 3}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
       propertyPath: poolItems.Array.data[11].initialSize
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[12].initialSize
       value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -396,6 +417,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 956087048}
+    - targetCorrespondingSourceObject: {fileID: 5139287414882454690, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1104481514}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
 --- !u!1 &956087047
@@ -421,6 +446,37 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 956087047}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 586962500}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1104481513
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1104481514}
+  m_Layer: 0
+  m_Name: Terami_Popcorn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1104481514
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104481513}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}

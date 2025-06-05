@@ -35,7 +35,7 @@ namespace TechC
         [SerializeField] private float popcornSpeed = 3f;
         [SerializeField] private float popcornSpacing = 0.5f;
         [SerializeField] private float rightAttackCooldown = 4f; // クールダウン時間
-        private Vector3 POPCORN_SCALE = new Vector3(0.2f, 0.2f, 0.2f);
+        private Vector3 popcornScale = new Vector3(0.2f, 0.2f, 0.2f);
         private int maxPopcornNum = 3;
         private float popcornFireInterval = 1f; // 発射間隔
         private float returnRightEffectTime = 5f;
@@ -141,7 +141,7 @@ namespace TechC
                 popObj = CharaEffectFactory.I.GetEffectObj(popcornPrefab, pos, Quaternion.identity);
 
                 // オブジェクト初期化
-                popObj.transform.localScale = POPCORN_SCALE; // Prefabの大きさを設定
+                popObj.transform.localScale = popcornScale; // Prefabの大きさを設定
                 var rb = popObj.GetComponent<Rigidbody>();
                 if (rb != null)
                 {

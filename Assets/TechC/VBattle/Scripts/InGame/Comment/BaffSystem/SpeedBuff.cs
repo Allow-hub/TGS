@@ -35,7 +35,7 @@ namespace TechC
             if (characterController != null)
             {
                 // Debug.Log($"<color=orange>[Apply前]</color>攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
-                characterController.AddMultiplier(BuffType.Speed, id,speedMultiplier);
+                characterController.AddMultiplier(BuffType.Speed, speedMultiplier);
 
 
                 // Debug.Log($"<color=orange>[Apply後]</color>:攻撃の倍率は{characterController.GetCurrentAttackMultiplier()}");
@@ -54,7 +54,7 @@ namespace TechC
             /* 速度上昇のバフを解除 */
             if (characterController != null)
             {
-                characterController.RemoveMultiplier(BuffType.Speed, id,speedMultiplier);
+                characterController.RemoveMultiplier(BuffType.Speed, speedMultiplier);
             }
         }
     }

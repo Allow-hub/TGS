@@ -112,9 +112,6 @@ namespace TechC
             });
         }
 
-        /// <summary>
-        /// 未定
-        /// </summary>
         public override void LeftAttack()
         {
             base.LeftAttack();
@@ -201,17 +198,11 @@ namespace TechC
             });
         }
 
-        /// <summary>
-        /// 未定
-        /// </summary>
         public override void DownAttack()
         {
             base.DownAttack();
         }
 
-        /// <summary>
-        /// 大きさ、攻撃力、当たり判定が２倍になり、移動速度が1/2になる
-        /// </summary>
         public override void UpAttack()
         {
             base.UpAttack();

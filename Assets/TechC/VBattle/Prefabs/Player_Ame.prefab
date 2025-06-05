@@ -1050,10 +1050,25 @@ MonoBehaviour:
     type: 3}
   iceRosePrefab: {fileID: 5485823413112826855, guid: 5ceed32c05f19214bbf0711b0dcfab69,
     type: 3}
+  iceWallPrefab: {fileID: 7050212149494774861, guid: de5f91acb2e93ef4bb9d6b10077131e1,
+    type: 3}
+  bladeStormPrefab: {fileID: 7371667505975298854, guid: c80a682fb7c79e14593541978e10212b,
+    type: 3}
+  iceClonePrefab: {fileID: 7627828736903395385, guid: 6b889c8fe0373904a8d841c05431df6e,
+    type: 3}
+  echoTimeWindow: 3
+  maxEchoCount: 3
   magicDuration: 2
   yOffset: 1
   leftStrongVelocity: 5
   explosionDuration: 3
+  iceWallDuration: 5
+  wallOffset: 1.5
+  rightAttackData: {fileID: 11400000, guid: 4860b3839fc60684ea088f15f0764bea, type: 2}
+  returnStrongUpEffectTime: 3
+  upwardVelocity: 2.5
+  backOffset: 0.5
+  scaleVariance: 0.3
 --- !u!114 &9141137595621075143
 MonoBehaviour:
   m_ObjectHideFlags: 0

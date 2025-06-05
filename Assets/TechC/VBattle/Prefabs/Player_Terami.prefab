@@ -253,7 +253,7 @@ MonoBehaviour:
   anim: {fileID: 5840886228969503664}
   commandHistory: {fileID: 3455362588810788779}
   effectPool: {fileID: 0}
-  characterType: 2
+  characterType: 0
   weakAttack: {fileID: 763011023873288309}
   strongAttack: {fileID: 1133027494191793631}
   appealBase: {fileID: 8178804244728934472}
@@ -319,7 +319,6 @@ MonoBehaviour:
   LeftYOffset: 1
   marshmallowThrowSpeed: 5
   returnLeftEffectTime: 3
-  RightYOffset: 2
   returnRightEffectTime: 3
   returnDownEffectTime: 3
   UpYOffset: 5

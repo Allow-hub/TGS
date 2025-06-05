@@ -12,7 +12,7 @@ namespace TechC
         [Header("プレハブの参照")]
 
         [SerializeField] private GameObject heal; // ニュートラ強：回復エフェクト
-    [SerializeField] private GameObject popcorn; // 右強：ポップコーン
+        [SerializeField] private GameObject popcorn; // 右強：ポップコーン
         // [SerializeField] private GameObject giant; // 上強：巨大化の際のエフェクト
         [Header("ニュートラル強")]
         private float cottonCandyXOffset = 2f;
@@ -27,7 +27,11 @@ namespace TechC
         // [Header("左強")]
         [Header("右強")]
         [SerializeField] private float yOffset = 3f;
+        [SerializeField] private float opponentYOffset = 0.5f; // 相手のY方向の補正 
         [SerializeField] private float popcornSpeed = 3f;
+        private int maxPopcornNum = 3;
+        private float popcornFireInterval = 1f; // 発射間隔
+        private List<GameObject> generatedPopcorns = new List<GameObject>(); // 生成したポップコーンを管理するリスト
         private float returnRightEffectTime = 3f;
 
         // [Header("下強")]
@@ -115,20 +119,41 @@ namespace TechC
         public override void RightAttack()
         {
             base.RightAttack();
-            GameObject popObj = null;
 
-            DelayUtility.StartDelayedAction(this, returnRightEffectTime, () =>
-           {
-               //飛び道具の処理
-               var pos = transform.position.AddY(yOffset);
-               popObj = CharaEffectFactory.I.GetEffectObj(popcorn, pos, Quaternion.identity);
-               var effectSetting = popObj.GetComponent<CharaEffect>();
-               effectSetting.SetAttackProcessor(attackProcessor);
-               effectSetting.SetOwnerId(characterController.PlayerID);
-               var rb = popObj.GetComponent<Rigidbody>();
-               //斬撃をrbで飛ばす
-               rb.velocity = transform.forward * popcornSpeed;
-           });
+            GameObject popObj = null;
+            generatedPopcorns.Clear(); // 前回生成したポップコーンリストをクリア
+            // 相手の座標を取得 
+            var otherPlayerPos = BattleJudge.I.GetOtherPlayerObjects(characterController.PlayerID)[0].transform.position; // [0]を取得しているのは1vs1限定
+            otherPlayerPos += new Vector3(0, opponentYOffset, 0); // 相手の中心に向かうように調節
+
+            //飛び道具の処理
+            for (int i = 0; i < maxPopcornNum; i++)
+            {
+                var pos = transform.position.AddY(yOffset).AddX((i - 1) * 0.5f);
+                popObj = CharaEffectFactory.I.GetEffectObj(popcorn, pos, Quaternion.identity);
+                var effectSetting = popObj.GetComponent<CharaEffect>();
+                effectSetting.SetAttackProcessor(attackProcessor);
+                effectSetting.SetOwnerId(characterController.PlayerID);
+
+                generatedPopcorns.Add(popObj);
+            }
+
+            // 1秒おきに発射
+            for (int i = 0; i < maxPopcornNum; i++)
+            {
+                int index = i;
+                DelayUtility.StartDelayedAction(this, popcornFireInterval * (i + 1), () =>
+               {
+                   if (index < generatedPopcorns.Count && generatedPopcorns[index] != null)
+                   {
+                       var rb = generatedPopcorns[index].GetComponent<Rigidbody>();
+                       var currentPos = generatedPopcorns[index].transform.position;
+                       //相手に向かってrbで飛ばす
+                       Vector3 direction = (otherPlayerPos - currentPos).normalized;
+                       rb.velocity = direction * popcornSpeed;
+                   }
+               });
+            }
         }
 
         /// <summary>

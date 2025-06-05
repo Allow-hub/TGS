@@ -353,7 +353,7 @@ MonoBehaviour:
   popcorn: {fileID: 6045742034226300586, guid: b1b6ddd1c0ff2ac4898f19717c1c8c88, type: 3}
   healCooldown: 5
   returnNeutralEffectTime: 5
-  yOffset: 0
+  yOffset: 3
   popcornSpeed: 3
   scaleMultiplier: 2
   moveSpeedMultiplier: 0.5

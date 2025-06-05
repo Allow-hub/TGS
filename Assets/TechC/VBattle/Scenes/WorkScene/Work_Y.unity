@@ -267,7 +267,7 @@ PrefabInstance:
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: normalChance
-      value: 0
+      value: 0.147
       objectReference: {fileID: 0}
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -277,12 +277,12 @@ PrefabInstance:
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: speedBuffChance
-      value: 0.218
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: attackBuffChance
-      value: 0.177
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3744901541791122058, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}

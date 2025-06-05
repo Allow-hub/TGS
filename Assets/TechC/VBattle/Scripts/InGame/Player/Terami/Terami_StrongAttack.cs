@@ -26,13 +26,19 @@ namespace TechC
         // [SerializeField] private float 
         // [Header("左強")]
         [Header("右強")]
-        [SerializeField] private float yOffset = 3f;
+        private static readonly Vector3 POPCORN_SCALE = new Vector3(0.2f, 0.2f, 0.2f);
+        private const int CENTER_INDEX_X_OFFSET = 1;
+        private const int INITIAL_DELAY_MULTIPILIER = 1;
+        private List<GameObject> generatedPopcorns = new List<GameObject>(); // 生成したポップコーンを管理するリスト
+        [SerializeField] private float popcornYOffset = 3f;
         [SerializeField] private float opponentYOffset = 0.5f; // 相手のY方向の補正 
         [SerializeField] private float popcornSpeed = 3f;
+        [SerializeField] private float popcornSpacing = 0.5f;
+        [SerializeField] private float rightAttackCooldown = 4f; // クールダウン時間
         private int maxPopcornNum = 3;
         private float popcornFireInterval = 1f; // 発射間隔
-        private List<GameObject> generatedPopcorns = new List<GameObject>(); // 生成したポップコーンを管理するリスト
-        private float returnRightEffectTime = 3f;
+        private float returnRightEffectTime = 5f;
+        private bool isCanFire = true;
 
         // [Header("下強")]
         [Header("上強")]
@@ -120,21 +126,34 @@ namespace TechC
         {
             base.RightAttack();
 
-            GameObject popObj = null;
-            generatedPopcorns.Clear(); // 前回生成したポップコーンリストをクリア
-            // 相手の座標を取得 
-            var otherPlayerPos = BattleJudge.I.GetOtherPlayerObjects(characterController.PlayerID)[0].transform.position; // [0]を取得しているのは1vs1限定
-            otherPlayerPos += new Vector3(0, opponentYOffset, 0); // 相手の中心に向かうように調節
+            if (!isCanFire) return;
 
-            //飛び道具の処理
+            isCanFire = false; // 連打防止開始
+            GameObject popObj = null;
+            generatedPopcorns.Clear();
+
+            // 相手の座標を取得 
+            var otherPlayerPos = BattleJudge.I.GetOtherPlayerObjects(characterController.PlayerID)[0].transform.position;
+            otherPlayerPos += new Vector3(0, opponentYOffset, 0);
+
+            // 飛び道具の処理
             for (int i = 0; i < maxPopcornNum; i++)
             {
-                var pos = transform.position.AddY(yOffset).AddX((i - 1) * 0.5f);
+                var pos = transform.position.AddY(popcornYOffset).AddX((i - CENTER_INDEX_X_OFFSET) * popcornSpacing);
                 popObj = CharaEffectFactory.I.GetEffectObj(popcorn, pos, Quaternion.identity);
+
+                // オブジェクト初期化
+                popObj.transform.localScale = POPCORN_SCALE; // Prefabの大きさを設定
+                var rb = popObj.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.velocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                }
+
                 var effectSetting = popObj.GetComponent<CharaEffect>();
                 effectSetting.SetAttackProcessor(attackProcessor);
                 effectSetting.SetOwnerId(characterController.PlayerID);
-
                 generatedPopcorns.Add(popObj);
             }
 
@@ -142,18 +161,43 @@ namespace TechC
             for (int i = 0; i < maxPopcornNum; i++)
             {
                 int index = i;
-                DelayUtility.StartDelayedAction(this, popcornFireInterval * (i + 1), () =>
-               {
-                   if (index < generatedPopcorns.Count && generatedPopcorns[index] != null)
-                   {
-                       var rb = generatedPopcorns[index].GetComponent<Rigidbody>();
-                       var currentPos = generatedPopcorns[index].transform.position;
-                       //相手に向かってrbで飛ばす
-                       Vector3 direction = (otherPlayerPos - currentPos).normalized;
-                       rb.velocity = direction * popcornSpeed;
-                   }
-               });
+                DelayUtility.StartDelayedAction(this, popcornFireInterval * (i + INITIAL_DELAY_MULTIPILIER), () =>
+                {
+                    if (index < generatedPopcorns.Count && generatedPopcorns[index] != null)
+                    {
+                        var rb = generatedPopcorns[index].GetComponent<Rigidbody>();
+                        var currentPos = generatedPopcorns[index].transform.position;
+                        Vector3 direction = (otherPlayerPos - currentPos).normalized;
+                        rb.velocity = direction * popcornSpeed;
+                    }
+                });
             }
+
+            // エフェクトの返却処理
+            DelayUtility.StartDelayedAction(this, returnRightEffectTime, () =>
+            {
+                foreach (var popcornObj in generatedPopcorns)
+                {
+                    if (popcornObj != null)
+                    {
+                        // 返却前に物理演算を停止
+                        var rb = popcornObj.GetComponent<Rigidbody>();
+                        if (rb != null)
+                        {
+                            rb.velocity = Vector3.zero;
+                            rb.angularVelocity = Vector3.zero;
+                        }
+                        CharaEffectFactory.I.ReturnEffectObj(popcornObj);
+                    }
+                }
+                generatedPopcorns.Clear();
+            });
+
+            // クールダウンタイマー（連打防止）
+            DelayUtility.StartDelayedAction(this, rightAttackCooldown, () =>
+            {
+                isCanFire = true;
+            });
         }
 
         /// <summary>
@@ -189,8 +233,8 @@ namespace TechC
             {
                 // Playerに効果を取り消す
                 transform.localScale = originalScale;
-                characterController.RemoveMultiplier(BuffType.Attack, BuffBase.VoidID, 2f);
-                characterController.RemoveMultiplier(BuffType.Speed, BuffBase.VoidID, 0.5f);
+                characterController.RemoveMultiplier(BuffType.Attack, BuffBase.VoidID, attackMultiplier);
+                characterController.RemoveMultiplier(BuffType.Speed, BuffBase.VoidID, moveSpeedMultiplier);
 
                 isGiant = false;
             });

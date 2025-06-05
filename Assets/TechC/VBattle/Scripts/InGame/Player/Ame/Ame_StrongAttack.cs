@@ -42,7 +42,6 @@ namespace TechC
         [Header("右強")]
         [SerializeField] private float iceWallDuration = 5.0f;
         [SerializeField] private float wallOffset = 1.5f;
-        [SerializeField] private AttackData rightAttackData;
 
         // [Header("下強")]
         // [Header("上強")]

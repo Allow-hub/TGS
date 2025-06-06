@@ -113,6 +113,9 @@ namespace TechC
                     return new BasicWindow(hwnd, width, height);
                 case WindowType.Image:
                     return new ImageWindow(hwnd, width, height, tex);
+                case WindowType.Web:
+                    // WebWindowはURLを設定する必要があるため、初期URLを指定
+                    return new WebWindow(hwnd, width, height, "https://www.google.com");
                 default:
                     return new NativeWindow(hwnd, width, height, type);
             }

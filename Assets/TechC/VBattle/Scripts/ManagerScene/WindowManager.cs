@@ -1,5 +1,4 @@
 using UnityEngine;
-using Windows.Win32.Foundation;
 using System.Collections.Generic;
 
 namespace TechC
@@ -9,24 +8,27 @@ namespace TechC
     /// </summary>
     public class WindowManager : Singleton<WindowManager>
     {
+        public string initialUrl = "https://www.google.com";
+
         [SerializeField] private Sprite tex;
         private List<NativeWindow> windows = new();
 
         protected override void Init()
         {
+
             base.Init();
-            // DelayUtility.StartDelayedAction(this, 1.1f, () =>
-            // {
-            //     var screenWidth = Screen.currentResolution.width;
-            //     var screenHeight = Screen.currentResolution.height;
-            //     var rand = new System.Random();
-            //     var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
-            //     if (w is ImageWindow imageWindow && tex != null)
-            //     {
-            //         imageWindow.SetImage(tex.texture);
-            //     }
-            //     // StartCoroutine(ShowWindowsCoroutine(screenWidth, screenHeight, rand));
-            // });
+            DelayUtility.StartDelayedAction(this, 1.1f, () =>
+            {
+                var screenWidth = Screen.currentResolution.width;
+                var screenHeight = Screen.currentResolution.height;
+                var rand = new System.Random();
+                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
+                // if (w is WebWindow webWindow && initialUrl != null)
+                // {
+                //     webWindow.SetUrl(initialUrl);
+                // }
+                // StartCoroutine(ShowWindowsCoroutine(screenWidth, screenHeight, rand));
+            });
         }
 
         // private System.Collections.IEnumerator ShowWindowsCoroutine(int screenWidth, int screenHeight, System.Random rand)

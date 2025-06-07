@@ -346,9 +346,11 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: fdb591d7d3483bc4f9939990fb4eab86, type: 2}
   downAttackData: {fileID: 11400000, guid: b3608f888284a9643b2ba99c68a26871, type: 2}
   upAttackData: {fileID: 11400000, guid: a3945e9d3c847ab4bbf6e961fdca22ba, type: 2}
-  healPrefab: {fileID: 6045742034226300586, guid: b1b6ddd1c0ff2ac4898f19717c1c8c88,
+  healPrefab: {fileID: 6045742034226300586, guid: 0e5a31ba8fa5fb74bb167685359e7298,
     type: 3}
   popcornPrefab: {fileID: 6045742034226300586, guid: b1b6ddd1c0ff2ac4898f19717c1c8c88,
+    type: 3}
+  donutPrefab: {fileID: 2859310224410525622, guid: 5af418aab075f014783e38ab5a3b3347,
     type: 3}
   healCooldown: 5
   returnNeutralEffectTime: 5
@@ -357,6 +359,9 @@ MonoBehaviour:
   popcornSpeed: 3
   popcornSpacing: 0.5
   rightAttackCooldown: 4
+  donutLifetime: 5
+  donutCooldown: 5
+  donutYOffset: 0.01
   scaleMultiplier: 2
   moveSpeedMultiplier: 0.5
   attackMultiplier: 2

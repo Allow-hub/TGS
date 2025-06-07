@@ -12,17 +12,19 @@ namespace TechC
         [Header("プレハブの参照")]
 
         [SerializeField] private GameObject healPrefab; // ニュートラ強：回復エフェクト
-        [SerializeField] private GameObject popcornPrefab
-        ; // 右強：ポップコーン
+        [SerializeField] private GameObject popcornPrefab; // 右強：ポップコーン
+        [SerializeField] private GameObject donutPrefab; // 下強：ドーナツ
         // [SerializeField] private GameObject giant; // 上強：巨大化の際のエフェクト
         [Header("ニュートラル強")]
+        [SerializeField] private float healCooldown = 5;
+        [SerializeField] private float returnNeutralEffectTime = 1f;
+        private Vector3 cottonCandyScale = new Vector3(0.2f, 0.2f, 0.2f); // 仮の大きさのためモデルができたら調整する
+
         private float cottonCandyXOffset = 2f;
         private float cottonCandyYOffset = 1f;
 
-        [SerializeField] private float healCooldown = 5;
         private float yRot;
         private bool canHeal = true;
-        [SerializeField] private float returnNeutralEffectTime = 1f;
 
         // [SerializeField] private float 
         // [Header("左強")]
@@ -35,32 +37,29 @@ namespace TechC
         [SerializeField] private float popcornSpeed = 3f;
         [SerializeField] private float popcornSpacing = 0.5f;
         [SerializeField] private float rightAttackCooldown = 4f; // クールダウン時間
-        private Vector3 popcornScale = new Vector3(0.2f, 0.2f, 0.2f);
+        private Vector3 popcornScale = new Vector3(0.2f, 0.2f, 0.2f); // 仮の大きさのためモデルができたら調整する
         private int maxPopcornNum = 3;
         private float popcornFireInterval = 1f; // 発射間隔
         private float returnRightEffectTime = 5f;
         private bool canFire = true;
 
-        // [Header("下強")]
+        [Header("下強")]
+        [SerializeField] private float donutLifetime = 5f;
+        [SerializeField] private float donutCooldown = 5f;
+        [SerializeField] private float donutXOffset = 2f;
+        private Vector3 donutScale = new Vector3(1, 0.1f, 1); // 仮の大きさのためモデルができたら調整する
+        private bool canPlaceDonut = true;
+
         [Header("上強")]
-
-        [Tooltip("巨大化時の大きさ倍率")]
         [SerializeField] private float scaleMultiplier = 2f;
-
-        [Tooltip("巨大化時の移動速度倍率（1未満で遅くなる）")]
         [SerializeField] private float moveSpeedMultiplier = 0.5f;
-        [Tooltip("巨大化時の攻撃力倍率")]
         [SerializeField] private float attackMultiplier = 2f; // 巨大化時の攻撃力倍率
-
-        [Tooltip("巨大化の持続時間（秒）")]
         [SerializeField] private float giantDuration = 2f;
-
-        [Tooltip("巨大化のクールダウン時間（秒）")]
         [SerializeField] private float giantCooldown = 10f;
-        [Tooltip("プレイヤーの元の大きさ")]
         private Vector3 originalScale; // プレイヤーの元の大きさ
         private bool isGiant = false;
         private bool isGiantCooldown = false;
+
         [ContextMenu("Test")]
         /// <summary>
         /// 自分にダメージを与えるテストメソッド(開発後に削除する)
@@ -88,12 +87,13 @@ namespace TechC
             {
                 cottonCandyPos = transform.position.AddX(cottonCandyXOffset).AddY(cottonCandyYOffset);
                 cottonCandyObj = CharaEffectFactory.I.GetEffectObj(healPrefab, cottonCandyPos, Quaternion.identity);
-
+                cottonCandyObj.transform.localScale = cottonCandyScale;
             }
             else
             {
                 cottonCandyPos = transform.position.AddX(-cottonCandyXOffset).AddY(cottonCandyYOffset);
                 cottonCandyObj = CharaEffectFactory.I.GetEffectObj(healPrefab, cottonCandyPos, Quaternion.identity);
+                cottonCandyObj.transform.localScale = cottonCandyScale;
             }
 
             var effectSetting = cottonCandyObj.GetComponent<CharaEffect>();
@@ -112,6 +112,9 @@ namespace TechC
             });
         }
 
+        /// <summary>
+        /// 左強攻撃はWindowのギミックにするため、一旦保留
+        /// </summary>
         public override void LeftAttack()
         {
             base.LeftAttack();
@@ -198,11 +201,39 @@ namespace TechC
             });
         }
 
+        /// <summary>
+        /// 下にドーナツホールを設置し、相手が踏むとダメージを受ける
+        /// </summary>
         public override void DownAttack()
         {
             base.DownAttack();
+
+            if (!canPlaceDonut) return;
+
+            canFire = false; // 連打防止開始
+            GameObject donutObj = null;
+
+            // ドーナツのPrefabを設置
+            var donutPos = transform.position.AddX(donutXOffset);
+            donutObj = CharaEffectFactory.I.GetEffectObj(donutPrefab, donutPos, Quaternion.identity);
+            donutObj.transform.localScale = donutScale;
+            var effectSetting = donutObj.GetComponent<CharaEffect>();
+
+            effectSetting.SetAttackProcessor(attackProcessor);
+            effectSetting.SetOwnerId(characterController.PlayerID);
+                
+            // 巨大化クールタイム解除タイマー。実行はヘルパーメソッドで
+            DelayUtility.StartDelayedAction(this, donutCooldown, () =>
+            {
+                CharaEffectFactory.I.ReturnEffectObj(donutObj);
+
+                canPlaceDonut = true;
+            });
         }
 
+        /// <summary>
+        /// 巨大化して、攻撃力および当たり判定が2倍。移動速度が1/2倍
+        /// </summary>
         public override void UpAttack()
         {
             base.UpAttack();

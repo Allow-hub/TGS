@@ -13,7 +13,7 @@ namespace TechC
         public enum WindowType { Basic, Image, Web }
 
         private Dictionary<WindowType, Queue<NativeWindow>> poolByType = new();
-        private const int InitialPoolSize = 50;
+        private const int InitialPoolSize = 1;
         private List<NativeWindow> activeWindows = new();
 
         protected override void Init()
@@ -126,6 +126,7 @@ namespace TechC
         /// </summary>
         public void DisposeAll()
         {
+            WebView2Thread.Instance.Dispose(); // WebView2のスレッドを終了
             CustomLogger.Info($"DisposeAll called. Pool count: {poolByType.Count}", WindowUtility.WINDOWLOGTAG);
 
             // プール内

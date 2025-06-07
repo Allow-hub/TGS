@@ -8,7 +8,6 @@ namespace TechC
     /// </summary>
     public class WindowManager : Singleton<WindowManager>
     {
-        public string initialUrl = "https://www.google.com";
 
         [SerializeField] private Sprite tex;
         private List<NativeWindow> windows = new();
@@ -19,9 +18,9 @@ namespace TechC
             base.Init();
             DelayUtility.StartDelayedAction(this, 1.1f, () =>
             {
-                var screenWidth = Screen.currentResolution.width;
-                var screenHeight = Screen.currentResolution.height;
-                var rand = new System.Random();
+                // var screenWidth = Screen.currentResolution.width;
+                // var screenHeight = Screen.currentResolution.height;
+                // var rand = new System.Random();
                 var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
                 // if (w is WebWindow webWindow && initialUrl != null)
                 // {

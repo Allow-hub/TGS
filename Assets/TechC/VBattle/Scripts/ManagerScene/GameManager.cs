@@ -17,6 +17,7 @@ namespace TechC
             GameOver
         }
         public GameState currentState = GameState.Title;
+
         protected override void Init()
         {
             base.Init();

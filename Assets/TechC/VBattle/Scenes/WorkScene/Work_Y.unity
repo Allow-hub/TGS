@@ -122,6 +122,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &6734398 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2772601669467763559, guid: c2ba8867f924fc444b667e30e329ad17,
+    type: 3}
+  m_PrefabInstance: {fileID: 913436213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &203844586
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,6 +246,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &242092322 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 623580594457748494, guid: c2ba8867f924fc444b667e30e329ad17,
+    type: 3}
+  m_PrefabInstance: {fileID: 913436213}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &565504277
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 565504278}
+  m_Layer: 0
+  m_Name: Terami_Heal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &565504278
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565504277}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 913436214}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &913436213
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -362,6 +405,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
+      propertyPath: poolItems.Array.data[8].name
+      value: Terami_Cookie
+      objectReference: {fileID: 0}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[9].name
+      value: Terami_Chocolate
+      objectReference: {fileID: 0}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[10].name
+      value: Terami_Marshmallow
+      objectReference: {fileID: 0}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
       propertyPath: poolItems.Array.data[11].name
       value: Terami_Heal
       objectReference: {fileID: 0}
@@ -372,14 +430,47 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
+      propertyPath: poolItems.Array.data[8].parent
+      value: 
+      objectReference: {fileID: 6734398}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[8].prefab
+      value: 
+      objectReference: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+        type: 3}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[9].parent
+      value: 
+      objectReference: {fileID: 1122834443}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[9].prefab
+      value: 
+      objectReference: {fileID: 2097352013274177404, guid: 908fefc6c9e1d92478ec55fc1cc1ea77,
+        type: 3}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[10].parent
+      value: 
+      objectReference: {fileID: 242092322}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: poolItems.Array.data[10].prefab
+      value: 
+      objectReference: {fileID: 334557491047361281, guid: b9489cdf188fa04408c913018c989731,
+        type: 3}
+    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
       propertyPath: poolItems.Array.data[11].parent
       value: 
-      objectReference: {fileID: 956087047}
+      objectReference: {fileID: 565504277}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: poolItems.Array.data[11].prefab
       value: 
-      objectReference: {fileID: 6124907978801703374, guid: d78b6d0f8cdb9934ba3be5d9348efe2f,
+      objectReference: {fileID: 6045742034226300586, guid: 0e5a31ba8fa5fb74bb167685359e7298,
         type: 3}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -410,16 +501,19 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5139287414882454690, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 956087048}
+      addedObject: {fileID: 565504278}
     - targetCorrespondingSourceObject: {fileID: 5139287414882454690, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1104481514}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
+--- !u!4 &913436214 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5139287414882454690, guid: c2ba8867f924fc444b667e30e329ad17,
+    type: 3}
+  m_PrefabInstance: {fileID: 913436213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,8 +680,14 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 586962500}
+  m_Father: {fileID: 913436214}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1122834443 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6633335111945378574, guid: c2ba8867f924fc444b667e30e329ad17,
+    type: 3}
+  m_PrefabInstance: {fileID: 913436213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

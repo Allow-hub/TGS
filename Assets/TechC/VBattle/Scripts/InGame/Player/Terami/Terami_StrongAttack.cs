@@ -56,14 +56,6 @@ namespace TechC
         private bool isGiant = false;
         private bool isGiantCooldown = false;
 
-        [ContextMenu("Test")]
-        /// <summary>
-        /// 自分にダメージを与えるテストメソッド(開発後に削除する)
-        /// </summary>
-        public void Test()
-        {
-            characterController.TakeDamage(300);
-        }
         /// <summary>
         /// 回復アイテム（わたあめ）をキャラ２の目の前に出す、一定期間経過後再利用可能
         /// </summary>

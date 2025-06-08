@@ -17,7 +17,7 @@ namespace TechC
 
         [SerializeField] private bool canHeal;
         [SerializeField] private bool canSelfReturn;
-        [SerializeField] private float healAmount = 50f;
+        private float healAmount = 50f;
 
         /// <summary>
         /// ファクトリー側で呼ぶ初期化メソッド

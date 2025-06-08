@@ -1,5 +1,5 @@
-using System;
-using System.Runtime.InteropServices;
+using System.IO.Pipes;
+using System.IO;
 
 namespace TechC
 {
@@ -8,13 +8,17 @@ namespace TechC
     /// </summary>
     internal static class WebView2NativeMethods
     {
-        // [DllImport("WindowsFormsApp1.dll", CallingConvention = CallingConvention.Cdecl)]
-        // public static extern void Launch();
-
-        // [DllImport("WindowsFormsApp1.dll", CallingConvention = CallingConvention.Cdecl)]
-        // public static extern void Navigate([MarshalAs(UnmanagedType.LPStr)] string url);
-
-        // [DllImport("WindowsFormsApp1.dll", CallingConvention = CallingConvention.Cdecl)]
-        // public static extern void Close();
+        public static void SendUrlToWebView2(string url)
+        {
+            using (var pipe = new NamedPipeClientStream(".", "WebView2Pipe", PipeDirection.Out))
+            {
+                pipe.Connect(1000); // 1秒待つ
+                using (var writer = new StreamWriter(pipe))
+                {
+                    writer.WriteLine(url);
+                    writer.Flush();
+                }
+            }
+        }
     }
 }

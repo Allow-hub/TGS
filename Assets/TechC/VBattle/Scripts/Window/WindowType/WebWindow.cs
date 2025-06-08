@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -29,6 +30,7 @@ namespace TechC
         {
             base.Show();
             WindowUtility.SetWindowVisibility(webWindow, (int)SHOW_WINDOW_CMD.SW_SHOW);
+            WebView2NativeMethods.SendUrlToWebView2(Url);
         }
 
         public override void Destroy()
@@ -66,7 +68,7 @@ namespace TechC
                 DelayUtility.StartDelayedAction(mono, 0.1f, () =>
                 {
 
-                    webWindow = WindowUtility.GetWindowByProcessName("AA");
+                    webWindow = WindowUtility.GetWindowByProcessName("WebPage");
                     Debug.Log($"WebWindow process started: {webWindow}");
                     WindowUtility.SetWindowVisibility(webWindow, (int)SHOW_WINDOW_CMD.SW_HIDE);
                 });

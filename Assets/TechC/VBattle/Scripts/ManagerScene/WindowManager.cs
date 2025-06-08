@@ -21,7 +21,7 @@ namespace TechC
                 // var screenWidth = Screen.currentResolution.width;
                 // var screenHeight = Screen.currentResolution.height;
                 // var rand = new System.Random();
-                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
+                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
                 // if (w is WebWindow webWindow && initialUrl != null)
                 // {
                 //     webWindow.SetUrl(initialUrl);

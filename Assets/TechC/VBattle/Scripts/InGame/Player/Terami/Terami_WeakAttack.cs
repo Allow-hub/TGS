@@ -10,11 +10,11 @@ namespace TechC
     public class Terami_WeakAttack : WeakAttack
     {
         [Header("エフェクトのプレハブや参照")]
-        [SerializeField] private GameObject swing; // 通常攻撃
-        [SerializeField] private GameObject marshmallow; // 左弱用 
-        [SerializeField] private GameObject spin; // 右弱用 
-        [SerializeField] private GameObject cookie; // 下弱用 
-        [SerializeField] private GameObject chocolate; // 上弱用
+        [SerializeField] private GameObject swingPrefab; // 通常攻撃
+        [SerializeField] private GameObject marshmallowPrefab; // 左弱用 
+        [SerializeField] private GameObject spinPrefab; // 右弱用 
+        [SerializeField] private GameObject donutPrefab; // 下弱用
+        [SerializeField] private GameObject chocolatePrefab; // 上弱用
         //    [SerializeField] private GameObject ;
 
         [Header("ニュートラルアタックの設定")]
@@ -39,7 +39,11 @@ namespace TechC
 
 
         [Header("下弱")]
-        [SerializeField] private float returnDownEffectTime = 3.0f;
+        [SerializeField] private float donutLifetime = 5f;
+        [SerializeField] private float donutCooldown = 5f;
+        [SerializeField] private float donutXOffset = 2f;
+        private Vector3 donutScale = new Vector3(1, 0.1f, 1); // 仮の大きさのためモデルができたら調整する
+        private bool canPlaceDonut = true;
 
         [Header("上弱")]
         [SerializeField] private float UpYOffset = 5f;
@@ -68,7 +72,7 @@ namespace TechC
             }
 
             //slashEffectの取得。各段階の回転を反映
-            var swObj = CharaEffectFactory.I.GetEffectObj(swing, swObjPos, currentSwingRot);
+            var swObj = CharaEffectFactory.I.GetEffectObj(swingPrefab, swObjPos, currentSwingRot);
 
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, returnNeutralEffectTime, () =>
@@ -90,7 +94,7 @@ namespace TechC
                 // マシュマロの処理 
                 var marshPos = transform.position;
                 marshPos = transform.position.AddY(LeftYOffset);
-                marshObj = CharaEffectFactory.I.GetEffectObj(marshmallow, marshPos, Quaternion.identity);
+                marshObj = CharaEffectFactory.I.GetEffectObj(marshmallowPrefab, marshPos, Quaternion.identity);
                 var effectSetting = marshObj.GetComponent<CharaEffect>();
                 effectSetting.SetAttackProcessor(attackProcessor);
                 effectSetting.SetOwnerId(characterController.PlayerID);
@@ -115,28 +119,41 @@ namespace TechC
 
             var spinObjPos = transform.position.AddY(RightYOffset);
 
-            var spinEffect = CharaEffectFactory.I.GetEffectObj(spin, spinObjPos, Quaternion.identity);
+            var spinEffect = CharaEffectFactory.I.GetEffectObj(spinPrefab, spinObjPos, Quaternion.identity);
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
-            DelayUtility.StartDelayedAction(this, returnDownEffectTime, () =>
+            DelayUtility.StartDelayedAction(this, returnRightEffectTime, () =>
             {
                 CharaEffectFactory.I.ReturnEffectObj(spinEffect);
             });
         }
 
         /// <summary>
-        /// 地面を叩いて、周囲にダメージを与える
+        /// 下にドーナツホールを設置し、相手が踏むとダメージを受ける（強攻撃から移動）
         /// </summary>
         public override void DownAttack()
         {
             base.DownAttack();
 
-            var cookieObjPos = transform.position;
+            if (!canPlaceDonut) return;
 
-            var cookieEffect = CharaEffectFactory.I.GetEffectObj(cookie, cookieObjPos, Quaternion.identity);
-            //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
-            DelayUtility.StartDelayedAction(this, returnDownEffectTime, () =>
+            canPlaceDonut = false; // 連打防止開始
+            GameObject donutObj = null;
+
+            // ドーナツのPrefabを設置
+            var donutPos = transform.position.AddX(donutXOffset);
+            donutObj = CharaEffectFactory.I.GetEffectObj(donutPrefab, donutPos, Quaternion.identity);
+            donutObj.transform.localScale = donutScale;
+            var effectSetting = donutObj.GetComponent<CharaEffect>();
+
+            effectSetting.SetAttackProcessor(attackProcessor);
+            effectSetting.SetOwnerId(characterController.PlayerID);
+                
+            // ドーナツクールタイム解除タイマー。実行はヘルパーメソッドで
+            DelayUtility.StartDelayedAction(this, donutCooldown, () =>
             {
-                CharaEffectFactory.I.ReturnEffectObj(cookieEffect);
+                CharaEffectFactory.I.ReturnEffectObj(donutObj);
+
+                canPlaceDonut = true;
             });
         }
 
@@ -157,7 +174,7 @@ namespace TechC
                 otherPlayerPos = otherPlayerPos.AddY(UpYOffset); // 高さを追加 
 
                 // お菓子の処理 
-                chocolateObj = CharaEffectFactory.I.GetEffectObj(chocolate, otherPlayerPos, Quaternion.identity);
+                chocolateObj = CharaEffectFactory.I.GetEffectObj(chocolatePrefab, otherPlayerPos, Quaternion.identity);
                 var effectSetting = chocolateObj.GetComponent<CharaEffect>();
                 effectSetting.SetAttackProcessor(attackProcessor);
                 effectSetting.SetOwnerId(characterController.PlayerID);

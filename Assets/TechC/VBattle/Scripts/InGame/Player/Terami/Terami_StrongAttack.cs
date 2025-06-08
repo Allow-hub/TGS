@@ -13,7 +13,7 @@ namespace TechC
 
         [SerializeField] private GameObject healPrefab; // ニュートラ強：回復エフェクト
         [SerializeField] private GameObject popcornPrefab; // 右強：ポップコーン
-        [SerializeField] private GameObject donutPrefab; // 下強：ドーナツ
+        [SerializeField] private GameObject cookiePrefab; // 下強：クッキー
         // [SerializeField] private GameObject giant; // 上強：巨大化の際のエフェクト
         [Header("ニュートラル強")]
         [SerializeField] private float healCooldown = 5;
@@ -44,11 +44,7 @@ namespace TechC
         private bool canFire = true;
 
         [Header("下強")]
-        [SerializeField] private float donutLifetime = 5f;
-        [SerializeField] private float donutCooldown = 5f;
-        [SerializeField] private float donutXOffset = 2f;
-        private Vector3 donutScale = new Vector3(1, 0.1f, 1); // 仮の大きさのためモデルができたら調整する
-        private bool canPlaceDonut = true;
+        [SerializeField] private float returnDownEffectTime = 3.0f;
 
         [Header("上強")]
         [SerializeField] private float scaleMultiplier = 2f;
@@ -202,32 +198,19 @@ namespace TechC
         }
 
         /// <summary>
-        /// 下にドーナツホールを設置し、相手が踏むとダメージを受ける
+        /// 地面を叩いて、周囲にダメージを与える
         /// </summary>
         public override void DownAttack()
         {
             base.DownAttack();
 
-            if (!canPlaceDonut) return;
+            var cookieObjPos = transform.position;
 
-            canFire = false; // 連打防止開始
-            GameObject donutObj = null;
-
-            // ドーナツのPrefabを設置
-            var donutPos = transform.position.AddX(donutXOffset);
-            donutObj = CharaEffectFactory.I.GetEffectObj(donutPrefab, donutPos, Quaternion.identity);
-            donutObj.transform.localScale = donutScale;
-            var effectSetting = donutObj.GetComponent<CharaEffect>();
-
-            effectSetting.SetAttackProcessor(attackProcessor);
-            effectSetting.SetOwnerId(characterController.PlayerID);
-                
-            // 巨大化クールタイム解除タイマー。実行はヘルパーメソッドで
-            DelayUtility.StartDelayedAction(this, donutCooldown, () =>
+            var cookieEffect = CharaEffectFactory.I.GetEffectObj(cookiePrefab, cookieObjPos, Quaternion.identity);
+            //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
+            DelayUtility.StartDelayedAction(this, returnDownEffectTime, () =>
             {
-                CharaEffectFactory.I.ReturnEffectObj(donutObj);
-
-                canPlaceDonut = true;
+                CharaEffectFactory.I.ReturnEffectObj(cookieEffect);
             });
         }
 

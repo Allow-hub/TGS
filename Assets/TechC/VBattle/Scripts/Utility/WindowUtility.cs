@@ -265,6 +265,23 @@ namespace TechC
             }
         }
 
+        public static void UpdateWindow(HWND hwnd)
+        {
+            if (hwnd.IsNull)
+            {
+                Debug.LogWarning("UpdateWindow: hwnd is null.");
+                return;
+            }
+
+            if (!PInvoke.IsWindow(hwnd))
+            {
+                Debug.LogWarning("UpdateWindow: hwnd is not a valid window.");
+                return;
+            }
+
+            PInvoke.UpdateWindow(hwnd);
+        }
+
 
 
         #endregion
@@ -346,6 +363,23 @@ namespace TechC
 
             ResizeWindow(new HWND(hWnd), (int)newSize.x, (int)newSize.y);
             return Vector2.Distance(newSize, targetSize) < 1f;
+        }
+
+        /// <summary>
+        /// 子ウィンドウの親ウィンドウを設定
+        /// </summary>
+        /// <param name="childHwnd">子ウィンドウハンドル</param>
+        /// <param name="parentHwnd">親ウィンドウハンドル</param>
+        /// <returns>成功した場合true</returns>
+        public static bool SetParentWindow(IntPtr childHwnd, IntPtr parentHwnd)
+        {
+            if (childHwnd == IntPtr.Zero || parentHwnd == IntPtr.Zero)
+            {
+                Debug.LogWarning("SetParentWindow: childHwnd or parentHwnd is null.");
+                return false;
+            }
+            var result = PInvoke.SetParent((HWND)childHwnd,(HWND)parentHwnd);
+            return result != HWND.Null;
         }
 
         #endregion

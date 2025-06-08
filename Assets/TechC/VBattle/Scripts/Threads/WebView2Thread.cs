@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
-using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
+using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace TechC
@@ -10,66 +11,92 @@ namespace TechC
     /// <summary>
     /// WebView2の初期化要求をSTAスレッドで順次処理するシングルトン
     /// </summary>
-    public class WebView2Thread : IDisposable
+    public class WebView2Thread : StaThreadRunner, IDisposable
     {
         private static WebView2Thread _instance;
         /// <summary>
         /// インスタンスは最初にアクセスされたときに生成されるシングルトンパターン
         /// </summary>
-        /// <returns></returns>
         public static WebView2Thread Instance => _instance ??= new WebView2Thread();
 
         private readonly BlockingCollection<Action> _queue = new BlockingCollection<Action>();
-        private readonly Thread _staThread;
-
+        private HWND _hwnd;
         private WebView2Thread()
         {
-            _staThread = new Thread(ThreadLoop);
-            _staThread.SetApartmentState(ApartmentState.STA);
-            _staThread.IsBackground = true;
-            _staThread.Start();
+            // StaThreadRunnerのコンストラクタでスレッド生成・開始される想定
+            Init();
         }
 
         /// <summary>
         /// WebView2初期化要求をSTAスレッドで実行
         /// </summary>
-        public void InitWebView2(string urlOrHtml)
+        public void InitWebView2(string urlOrHtml, int x, int y, int width, int height)
         {
             _queue.Add(() =>
             {
-                const string className = "WebView2WindowClass";
-                const string title = "WebView2 Window";
-                IntPtr hwnd = CustomWindowUtility.CreateWindow(
-                className,
-                title,
-                (uint)WINDOW_EX_STYLE.WS_EX_OVERLAPPEDWINDOW, // 普通のウィンドウスタイルに変更推奨
-                (uint)WINDOW_EX_STYLE.WS_EX_APPWINDOW,
-                100, 100, 200, 200,
-                IntPtr.Zero
-                );
-                Debug.Log($"[WebView2Thread] 実行スレッドID: {Thread.CurrentThread.ManagedThreadId}");
-                CoInitializeEx(IntPtr.Zero, 2); // COINIT_APARTMENTTHREADED
-                int hr = WebView2NativeMethods.InitWebView2(hwnd, urlOrHtml);
-                Debug.Log(GetHResultMeaning(hr));
-                CoUninitialize();
+                // const string className = "WindowClass_Web";
+                // const string title = "WebView2 Window";
+                // // STAスレッド内でウィンドウ作成
+                // IntPtr hwnd = CustomWindowUtility.CreateWindow(
+                //     className,
+                //     title,
+                //     (uint)WINDOW_STYLE.WS_OVERLAPPEDWINDOW,
+                //     (uint)WINDOW_EX_STYLE.WS_EX_APPWINDOW,
+                //     x, y, width, height,
+                //     IntPtr.Zero
+                // );
+                // _hwnd = (HWND)hwnd;
+                // WindowUtility.ShowWindow((HWND)hwnd);
             });
         }
 
-        private void ThreadLoop()
+
+        /// <summary>
+        /// StaThreadRunnerのThreadMainをオーバーライドし、キューを処理
+        /// </summary>
+        protected override void ThreadMain()
         {
+            // _queue からアクションを取り出して順次実行
             foreach (var action in _queue.GetConsumingEnumerable())
             {
-                try { action(); }
-                catch (Exception ex) { Debug.LogError(ex); }
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"WebView2Thread action error: {ex}");
+                }
             }
         }
 
-        public void Dispose()
+        protected override void OnInit()
         {
-            _queue.CompleteAdding();
-            _staThread.Join();
+            int hr = CoInitializeEx(IntPtr.Zero, 2); // COINIT_APARTMENTTHREADED
+            if (hr != 0)
+                Debug.LogWarning($"CoInitializeEx failed: 0x{hr:X8}");
         }
 
+        protected override void OnStop()
+        {
+            try
+            {
+                Debug.Log("ShutdownWebView2 called.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"ShutdownWebView2 failed: {ex}");
+            }
+            if (WindowUtility.DestroyWindowHandle(_hwnd))
+            {
+                Debug.Log($"WebView2 window destroyed: {_hwnd}");
+            }
+            else
+            {
+                Debug.LogWarning($"Failed to destroy WebView2 window: {_hwnd}");
+            }
+            CoUninitialize(); // スレッド終了時に一度だけ
+        }
         public static string GetHResultMeaning(int hr)
         {
             switch ((uint)hr)
@@ -81,6 +108,7 @@ namespace TechC
                 default: return $"HRESULT: 0x{hr:X8} の意味は不明です。";
             }
         }
+
         [DllImport("ole32.dll")]
         private static extern int CoInitializeEx(IntPtr pvReserved, int dwCoInit);
 

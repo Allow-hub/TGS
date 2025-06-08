@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using UnityEngine;
 
 namespace TechC
 {
@@ -29,6 +30,7 @@ namespace TechC
             if (_running) return;
             _running = true;
             _thread.Start();
+            Debug.Log($"Thread started: {_thread.ManagedThreadId}");
         }
 
         /// <summary>

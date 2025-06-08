@@ -31,6 +31,7 @@ namespace TechC
             var hInstance = PInvoke.GetModuleHandle((PCWSTR)default);
             RegisterClassEx(_basicClassName, _basicWndProc, hInstance);
             RegisterClassEx(_imageClassName, _imageWndProc, hInstance);
+            RegisterClassEx(_webClassName, _webWndProc, hInstance);
 
             _classRegistered = true;
             CustomLogger.Info("Window classes registered.", WindowUtility.WINDOWLOGTAG);
@@ -58,6 +59,12 @@ namespace TechC
                 {
                     if (!PInvoke.UnregisterClass(new PCWSTR(imageName), hInstance))
                         CustomLogger.Error($"UnregisterClass failed for {_imageClassName}, error: {Marshal.GetLastWin32Error()}", WindowUtility.WINDOWLOGTAG);
+                }
+                
+                fixed (char* webName = _webClassName)
+                {
+                    if (!PInvoke.UnregisterClass(new PCWSTR(webName), hInstance))
+                        CustomLogger.Error($"UnregisterClass failed for {_webClassName}, error: {Marshal.GetLastWin32Error()}", WindowUtility.WINDOWLOGTAG);
                 }
             }
 
@@ -123,7 +130,6 @@ namespace TechC
             int x, int y, int width, int height,
             IntPtr parent)
         {
-
             HWND hwnd;
             unsafe
             {

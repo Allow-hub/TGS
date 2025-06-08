@@ -45,3 +45,4 @@ GetDC
 SetDIBitsToDevice
 ReleaseDC
 StretchDIBits
+SetParent

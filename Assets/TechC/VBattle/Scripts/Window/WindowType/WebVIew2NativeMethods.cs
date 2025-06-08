@@ -8,7 +8,13 @@ namespace TechC
     /// </summary>
     internal static class WebView2NativeMethods
     {
-        [DllImport("TestDll.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int InitWebView2(IntPtr hwnd, [MarshalAs(UnmanagedType.LPWStr)] string urlOrHtml);
+        // [DllImport("WindowsFormsApp1.dll", CallingConvention = CallingConvention.Cdecl)]
+        // public static extern void Launch();
+
+        // [DllImport("WindowsFormsApp1.dll", CallingConvention = CallingConvention.Cdecl)]
+        // public static extern void Navigate([MarshalAs(UnmanagedType.LPStr)] string url);
+
+        // [DllImport("WindowsFormsApp1.dll", CallingConvention = CallingConvention.Cdecl)]
+        // public static extern void Close();
     }
 }

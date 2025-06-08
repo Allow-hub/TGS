@@ -640,8 +640,6 @@ MonoBehaviour:
   maxFOV: 120
   zoomSpeed: 10
   zoomMargin: 2
-  followSmoothTime: 0.5
-  cameraOffset: {x: 0, y: 0, z: 0}
   enableYAxisFollow: 0
   constrainToStage: 1
   stageBounds:
@@ -791,6 +789,9 @@ Transform:
   - {fileID: 3865933630028530092}
   - {fileID: 7633542047233854343}
   - {fileID: 4701536903420164205}
+  - {fileID: 5448295165941177031}
+  - {fileID: 3894998809314759715}
+  - {fileID: 5664877709034209855}
   m_Father: {fileID: 7923638173486885026}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8058803600275324131
@@ -845,6 +846,45 @@ MonoBehaviour:
       type: 3}
     parent: {fileID: 1988473396422971085}
     initialSize: 3
+  - name: Terami_Swing
+    prefab: {fileID: 6124907978801703374, guid: 52c9ff992f2aab54790aef11e1c11183,
+      type: 3}
+    parent: {fileID: 3625215258795102645}
+    initialSize: 1
+  - name: Terami_Marshmallow
+    prefab: {fileID: 334557491047361281, guid: b9489cdf188fa04408c913018c989731, type: 3}
+    parent: {fileID: 623580594457748494}
+    initialSize: 0
+  - name: Terami_Spin
+    prefab: {fileID: 5595389053680503828, guid: d5a5a0e250635284996a2f50f77e4d4e,
+      type: 3}
+    parent: {fileID: 3625215258795102645}
+    initialSize: 1
+  - name: Terami_Donut
+    prefab: {fileID: 2859310224410525622, guid: 5af418aab075f014783e38ab5a3b3347,
+      type: 3}
+    parent: {fileID: 3625215258795102645}
+    initialSize: 1
+  - name: Terami_Chocolate
+    prefab: {fileID: 2097352013274177404, guid: 908fefc6c9e1d92478ec55fc1cc1ea77,
+      type: 3}
+    parent: {fileID: 6633335111945378574}
+    initialSize: 0
+  - name: Terami_Heal
+    prefab: {fileID: 6045742034226300586, guid: 0e5a31ba8fa5fb74bb167685359e7298,
+      type: 3}
+    parent: {fileID: 5621879941993404856}
+    initialSize: 1
+  - name: Terami_Popcorn
+    prefab: {fileID: 6045742034226300586, guid: b1b6ddd1c0ff2ac4898f19717c1c8c88,
+      type: 3}
+    parent: {fileID: 2664830981326178390}
+    initialSize: 3
+  - name: Terami_Cookie
+    prefab: {fileID: 6079553468376813958, guid: 4dda710bd940a44439b8a5e016faa2bc,
+      type: 3}
+    parent: {fileID: 2772601669467763559}
+    initialSize: 0
   autoExpand: 1
   expandSize: 5
 --- !u!114 &99004305181652529
@@ -971,6 +1011,37 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3585e679861d05e4bb6c838fcaf9b704, type: 2}
   - {fileID: 11400000, guid: 736a7d2cfeb73eb4bba237adf68730b6, type: 2}
   currentStageIndex: 0
+--- !u!1 &2664830981326178390
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3894998809314759715}
+  m_Layer: 0
+  m_Name: Terami_Popcorn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3894998809314759715
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2664830981326178390}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5139287414882454690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2772601669467763559
 GameObject:
   m_ObjectHideFlags: 0
@@ -1238,6 +1309,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &3625215258795102645
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5664877709034209855}
+  m_Layer: 0
+  m_Name: Terami_Donut
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5664877709034209855
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3625215258795102645}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5139287414882454690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3660019480841295263
 GameObject:
   m_ObjectHideFlags: 0
@@ -1880,6 +1982,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &5621879941993404856
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5448295165941177031}
+  m_Layer: 0
+  m_Name: Terami_Heal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5448295165941177031
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5621879941993404856}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5139287414882454690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5684834577768148458
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
@@ -15,7 +13,8 @@ namespace TechC
         private AttackProcessor attackProcessor;
         private int ownerId;
 
-        private bool canHeal;
+        [SerializeField] private bool canHeal;
+        [SerializeField] private bool canSelfReturn;
         private float healAmount = 50f;
 
         /// <summary>
@@ -40,12 +39,11 @@ namespace TechC
             if (!other.gameObject.CompareTag("Player")) return;
             var opponentController = other.gameObject.GetComponentInParent<Player.CharacterController>();
             var opponentId = opponentController.PlayerID;
-            Debug.Log($"自分：{ownerId} / わたあめ：{opponentId}");
+            
             if (ownerId == opponentId)
             {
                 if (!canHeal) return;
                 opponentController.HealHp(healAmount);
-                Debug.Log($"{healAmount}回復しました");
             }
             else
             {
@@ -53,6 +51,10 @@ namespace TechC
                 attackProcessor.HandleAttack(attackData, other);
             }
 
+            if (canSelfReturn)
+            {
+                CharaEffectFactory.I.ReturnEffectObj(gameObject);
+            }
         }
     }
 }

@@ -42,7 +42,7 @@ namespace TechC
         [SerializeField] private float donutLifetime = 5f;
         [SerializeField] private float donutCooldown = 5f;
         [SerializeField] private float donutXOffset = 2f;
-        private Vector3 donutScale = new Vector3(1, 0.1f, 1); // 仮の大きさのためモデルができたら調整する
+        private Vector3 donutScale = new Vector3(1f, 0.1f, 1f); // 仮の大きさのためモデルができたら調整する
         private bool canPlaceDonut = true;
 
         [Header("上弱")]

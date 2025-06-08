@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TechC
 {
@@ -15,7 +13,6 @@ namespace TechC
         [SerializeField] private GameObject spinPrefab; // 右弱用 
         [SerializeField] private GameObject donutPrefab; // 下弱用
         [SerializeField] private GameObject chocolatePrefab; // 上弱用
-        //    [SerializeField] private GameObject ;
 
         [Header("ニュートラルアタックの設定")]
         [SerializeField] private float swingEffectDistance = 5f;

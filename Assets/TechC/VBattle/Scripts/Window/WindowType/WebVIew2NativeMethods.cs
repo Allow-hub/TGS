@@ -20,5 +20,21 @@ namespace TechC
                 }
             }
         }
+
+        /// <summary>
+        /// WebView2のキャッシュ削除コマンドを送信
+        /// </summary>
+        public static void ClearWebView2Cache()
+        {
+            using (var pipe = new NamedPipeClientStream(".", "WebView2Pipe", PipeDirection.Out))
+            {
+                pipe.Connect(1000); // 1秒待つ
+                using (var writer = new StreamWriter(pipe))
+                {
+                    writer.WriteLine("CLEAR_CACHE");
+                    writer.Flush();
+                }
+            }
+        }
     }
 }

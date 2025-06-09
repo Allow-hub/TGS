@@ -53,6 +53,20 @@ namespace TechC
             }
         }
 
+        public void Move()
+        {
+            // Get current window position
+            int currentX = 0, currentY = 0;
+           var r=  WindowUtility.GetWindowRect(webWindow);
+           currentX = r.X;
+            currentY = r.Y;
+
+            if (Input.GetKey(KeyCode.LeftArrow)) WindowUtility.MoveWindow(webWindow,currentX - 30, currentY);
+            if (Input.GetKey(KeyCode.RightArrow)) WindowUtility.MoveWindow(webWindow,currentX + 30, currentY);
+            if (Input.GetKey(KeyCode.UpArrow)) WindowUtility.MoveWindow(webWindow,currentX, currentY - 30);
+            if (Input.GetKey(KeyCode.DownArrow)) WindowUtility.MoveWindow(webWindow,currentX, currentY + 30);
+        }
+
         /// <summary>
         /// 外部ブラウザを起動して指定URLを表示
         /// </summary>
@@ -60,8 +74,8 @@ namespace TechC
         {
             try
             {
-                // StreamingAssets内のEXEパスを組み立て
-                string exePath = System.IO.Path.Combine(Application.streamingAssetsPath, "WindowsFormsApp1.exe");
+                // Assets/WebApp/WindowsFormsApp1.exe を参照
+                string exePath = System.IO.Path.Combine(Application.dataPath, "WebApp", "WindowsFormsApp1.exe");
                 string args = $"\"{Url}\" {Hwnd} {Width} {Height}";
                 _browserProcess = System.Diagnostics.Process.Start(exePath, args);
 

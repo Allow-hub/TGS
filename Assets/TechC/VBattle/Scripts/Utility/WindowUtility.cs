@@ -219,6 +219,12 @@ namespace TechC
             );
         }
 
+        public static bool SetWindowPos(HWND hwnd, HWND insertAfter, int x, int y,
+            int width, int height, SET_WINDOW_POS_FLAGS flags)
+        {
+            return PInvoke.SetWindowPos(hwnd, insertAfter, x, y, width, height, flags);
+        }
+
         /// <summary>
         /// ウィンドウハンドルを破棄
         /// </summary>

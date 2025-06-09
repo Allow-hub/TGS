@@ -147,7 +147,6 @@ namespace TechC
         /// </summary>
         public void DisposeAll()
         {
-            // WebView2Thread.Instance.Dispose(); // WebView2のスレッドを終了
             CustomLogger.Info($"DisposeAll called. Pool count: {poolByType.Count}", WindowUtility.WINDOWLOGTAG);
 
             // プール内

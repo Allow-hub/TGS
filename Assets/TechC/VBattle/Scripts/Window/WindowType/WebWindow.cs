@@ -1,6 +1,7 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 
@@ -67,8 +68,16 @@ namespace TechC
 
                 DelayUtility.StartDelayedAction(mono, 0.1f, () =>
                 {
-
                     webWindow = WindowUtility.GetWindowByProcessName("WebPage");
+
+                    // ウィンドウを最前面にする
+                    WindowUtility.SetWindowPos(
+                        webWindow,
+                        HWND.HWND_TOPMOST,
+                        0, 0, 0, 0,
+                        SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE
+                    );
+
                     Debug.Log($"WebWindow process started: {webWindow}");
                     WindowUtility.SetWindowVisibility(webWindow, (int)SHOW_WINDOW_CMD.SW_HIDE);
                 });
@@ -76,6 +85,23 @@ namespace TechC
             catch (Exception ex)
             {
                 Debug.LogError($"Failed to launch external browser: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// URLを設定し、WebView2に送信
+        /// </summary>
+        /// <param name="url"></param>
+        public void SetUrl(string url)
+        {
+            Url = url;
+            if (webWindow != HWND.Null)
+            {
+                WebView2NativeMethods.SendUrlToWebView2(Url);
+            }
+            else
+            {
+                Debug.LogWarning("Web window is not initialized yet.");
             }
         }
 

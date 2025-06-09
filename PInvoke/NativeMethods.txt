@@ -46,3 +46,4 @@ SetDIBitsToDevice
 ReleaseDC
 StretchDIBits
 SetParent
+HWND_TOPMOST

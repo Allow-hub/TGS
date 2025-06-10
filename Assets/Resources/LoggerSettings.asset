@@ -83,7 +83,7 @@ MonoBehaviour:
   _disabledCategoryIds:
   - state
   - window
-  - comboClear
   - comboCheck
   - camera
   - stage
+  - comboClear

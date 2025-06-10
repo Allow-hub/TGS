@@ -6,23 +6,20 @@ namespace TechC
 {
     public class NormalTab : BaseTab
     {
-        void Start()
-        {
-            Show();
-        }
+        [ContextMenu("Show")]
         public override void Show()
         {
             base.Show();
-
         }
+
         public override void Hide()
         {
             base.Hide();
         }
+
         public override void Excute()
         {
             base.Excute();
         }
-
     }
 }

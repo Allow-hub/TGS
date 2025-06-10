@@ -1,35 +1,69 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
 {
-    /// <summary>
-    /// タブの基底クラス
-    /// </summary>
-    public class BaseTab : MonoBehaviour, ITab 
+    [RequireComponent(typeof(RectTransform))]
+    public class BaseTab : MonoBehaviour, ITab
     {
-        /// <summary>
-        /// タブを表示
-        /// </summary>
+        [SerializeField] protected float slideDuration = 0.5f;    // スライドアニメ時間
+        [SerializeField] protected float visibleTime = 3f;        // 表示持続時間
+
+        protected RectTransform rectTransform;
+        [SerializeField] protected Vector2 hiddenPos = new Vector2(0, 100);   // 画面外（上）
+        [SerializeField] protected Vector2 visiblePos = new Vector2(0, -50);  // 表示位置
+
+        protected virtual void Awake()
+        {
+            rectTransform = GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = hiddenPos;
+            gameObject.SetActive(false);
+        }
+
         public virtual void Show()
         {
-            Debug.Log("AAA");
+            gameObject.SetActive(true);
+            StopAllCoroutines();
+            StartCoroutine(SlideIn());
         }
-        /// <summary>
-        /// タブを隠す
-        /// </summary>
+
         public virtual void Hide()
         {
-
+            StopAllCoroutines();
+            StartCoroutine(SlideOut());
         }
 
-        /// <summary>
-        /// タブの能力
-        /// </summary>
         public virtual void Excute()
         {
+            Show();
+        }
 
+        protected IEnumerator SlideIn()
+        {
+            float time = 0f;
+            while (time < slideDuration)
+            {
+                rectTransform.anchoredPosition = Vector2.Lerp(hiddenPos, visiblePos, time / slideDuration);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            rectTransform.anchoredPosition = visiblePos;
+
+            yield return new WaitForSeconds(visibleTime);
+            Hide();
+        }
+
+        protected IEnumerator SlideOut()
+        {
+            float time = 0f;
+            while (time < slideDuration)
+            {
+                rectTransform.anchoredPosition = Vector2.Lerp(visiblePos, hiddenPos, time / slideDuration);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            rectTransform.anchoredPosition = hiddenPos;
+            gameObject.SetActive(false);
         }
     }
 }

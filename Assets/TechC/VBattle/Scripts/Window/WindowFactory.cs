@@ -14,16 +14,26 @@ namespace TechC
 
         private Dictionary<WindowType, Queue<NativeWindow>> poolByType = new();
         private const int InitialPoolSize = 1;
+        Dictionary<WindowType, int> initialPoolSizes = new Dictionary<WindowType, int>
+            {
+                { WindowType.Basic, 2 },
+                { WindowType.Image, 1 },
+                { WindowType.Web,   0 }
+            };
         private List<NativeWindow> activeWindows = new();
 
         protected override void Init()
         {
             base.Init();
             CustomWindowUtility.RegisterWindowClasses();
+
+            // ウィンドウタイプごとの初期プールサイズを定義
+
             foreach (WindowType type in Enum.GetValues(typeof(WindowType)))
             {
                 poolByType[type] = new Queue<NativeWindow>();
-                for (int i = 0; i < InitialPoolSize; i++)
+                int poolSize = initialPoolSizes.TryGetValue(type, out var size) ? size : InitialPoolSize;
+                for (int i = 0; i < poolSize; i++)
                 {
                     var window = CreateNewWindow(type, $"{type} Window {i}", 300, 300);
                     if (window != null)
@@ -113,7 +123,7 @@ namespace TechC
             {
                 // 通常ウィンドウ
                 style = (uint)WINDOW_STYLE.WS_OVERLAPPEDWINDOW;
-                exStyle = (uint)WINDOW_EX_STYLE.WS_EX_NOACTIVATE |(uint)WINDOW_EX_STYLE.WS_EX_TOPMOST;
+                exStyle = (uint)WINDOW_EX_STYLE.WS_EX_NOACTIVATE | (uint)WINDOW_EX_STYLE.WS_EX_TOPMOST;
             }
 
             IntPtr hwnd = CustomWindowUtility.CreateWindow(

@@ -75,7 +75,8 @@ namespace TechC
             try
             {
                 // Assets/WebApp/WindowsFormsApp1.exe を参照
-                string exePath = System.IO.Path.Combine(Application.dataPath, "WebApp", "WindowsFormsApp1.exe");
+                string exeName = "WindowsFormsApp1.exe";
+                string exePath = System.IO.Path.Combine(Application.streamingAssetsPath, exeName);
                 string args = $"\"{Url}\" {Hwnd} {Width} {Height}";
                 _browserProcess = System.Diagnostics.Process.Start(exePath, args);
                 int processId = _browserProcess.Id;

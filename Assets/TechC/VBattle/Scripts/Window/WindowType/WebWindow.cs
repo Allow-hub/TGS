@@ -78,11 +78,11 @@ namespace TechC
                 string exePath = System.IO.Path.Combine(Application.dataPath, "WebApp", "WindowsFormsApp1.exe");
                 string args = $"\"{Url}\" {Hwnd} {Width} {Height}";
                 _browserProcess = System.Diagnostics.Process.Start(exePath, args);
-
+                int processId = _browserProcess.Id;
 
                 DelayUtility.StartDelayedAction(mono, 0.1f, () =>
                 {
-                    webWindow = WindowUtility.GetWindowByProcessName("WebPage");
+                    webWindow = WindowUtility.GetWindowByProcessId(processId);
 
                     // ウィンドウを最前面にする
                     WindowUtility.SetWindowPos(

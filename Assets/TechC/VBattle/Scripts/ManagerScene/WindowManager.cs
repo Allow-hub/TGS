@@ -8,33 +8,40 @@ namespace TechC
     /// </summary>
     public class WindowManager : Singleton<WindowManager>
     {
-
         [SerializeField] private Sprite tex;
         private List<NativeWindow> windows = new();
 
         protected override void Init()
         {
-
             base.Init();
+            // ウィンドウ生成を遅延実行
             // DelayUtility.StartDelayedAction(this, 1.1f, () =>
             // {
             //     var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
-            //     windows.Add(w);
+            //     if (w != null)
+            //     {
+            //         windows.Add(w);
+            //     }
+            //     else
+            //     {
+            //         Debug.LogWarning("Webウィンドウの取得に失敗しました");
+            //     }
             // });
         }
 
         void Update()
         {
-            // if(windows[0] is WebWindow webWindow)
-            // {
-            //     webWindow.Move();
-            // }
+            // 配列範囲チェックと型チェック
+            if (windows.Count > 0 && windows[0] is WebWindow webWindow)
+            {
+                webWindow.Move();
+            }
         }
+
         protected override void OnRelease()
         {
-            {
-                base.OnRelease();
-            }
+            windows.Clear();
+            base.OnRelease();
         }
     }
 }

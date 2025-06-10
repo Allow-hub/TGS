@@ -33,7 +33,7 @@ namespace TechC
         {
             return PInvoke.GetActiveWindow();
         }
-
+    
         /// <summary>
         /// 指定したプロセス名のウィンドウハンドルを取得
         /// </summary>
@@ -45,6 +45,22 @@ namespace TechC
         }
 
         /// <summary>
+        /// 指定したウィンドウハンドルのプロセスIDを取得
+        /// </summary>
+        /// <param name="hwnd">ウィンドウハンドル</param>
+        /// <returns>プロセスID（失敗時は0）</returns>
+        public static int GetWindowProcessId(HWND hwnd)
+        {
+            uint pid = 0;
+            unsafe
+            {
+                PInvoke.GetWindowThreadProcessId(hwnd, &pid);
+            }
+            return (int)pid;
+        }
+
+
+        /// <summary>
         /// ウィンドウタイトルでウィンドウハンドルを取得
         /// </summary>
         /// <param name="windowTitle">ウィンドウタイトル</param>
@@ -54,6 +70,50 @@ namespace TechC
             return new HWND((IntPtr)PInvoke.FindWindow(null, windowTitle));
         }
 
+
+        /// <summary>
+        /// プロセスIDから最初に見つかったトップレベルウィンドウハンドルを取得
+        /// </summary>
+        /// <param name="processId">プロセスID</param>
+        /// <param name="className">ウィンドウクラス名（省略可）</param>
+        /// <returns>ウィンドウハンドル（見つからなければ HWND.Null）</returns>
+        public static HWND GetWindowByProcessId(int processId, string className = null)
+        {
+            HWND found = HWND.Null;
+            PInvoke.EnumWindows((hwnd, lParam) =>
+            {
+                uint pid = 0;
+                unsafe { PInvoke.GetWindowThreadProcessId(hwnd, &pid); }
+                if (pid == processId)
+                {
+                    if (className != null)
+                    {
+                        char[] buffer = new char[256];
+                        int len;
+                        unsafe
+                        {
+                            fixed (char* pBuffer = buffer)
+                            {
+                                len = PInvoke.GetClassName(hwnd, new PWSTR(pBuffer), buffer.Length);
+                            }
+                        }
+                        string winClass = new string(buffer, 0, len);
+                        if (winClass == className)
+                        {
+                            found = hwnd;
+                            return false; // stop enumeration
+                        }
+                    }
+                    else
+                    {
+                        found = hwnd;
+                        return false; // stop enumeration
+                    }
+                }
+                return true; // continue enumeration
+            }, 0);
+            return found;
+        }
 
         #endregion
 

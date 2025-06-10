@@ -6,7 +6,7 @@ namespace TechC
 {
     public class DebugLogDisplay : MonoBehaviour
     {
-        private const int MaxLogLines = 10; // 表示するログの最大行数
+        private const int MaxLogLines = 15; // 表示するログの最大行数
         private string logText = "";
         private GUIStyle guiStyle = new GUIStyle();
         private bool showLogInGame = false;
@@ -54,7 +54,7 @@ namespace TechC
         private void Update()
         {
             // ゲーム画面内のログ表示が有効な場合のみ、3秒ごとにログのテキストをクリア
-            if (showLogInGame && Time.time - lastLogTime > 3f)
+            if (showLogInGame && Time.time - lastLogTime > 5f)
             {
                 logText = "";
             }

@@ -35,7 +35,7 @@ public class TitleManager : MonoBehaviour
             }
             else
             {
-                SceneManager.LoadScene("InGame");
+                SceneManager.LoadScene(1);
             }
         }
     }

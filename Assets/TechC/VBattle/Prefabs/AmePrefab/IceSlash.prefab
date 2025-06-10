@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4923032584641568461}
+  - component: {fileID: 2892843454470339098}
   m_Layer: 0
   m_Name: IceSlash
   m_TagString: Untagged
@@ -32,6 +33,19 @@ Transform:
   - {fileID: 5436084832399177807}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2892843454470339098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088245378690188311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76b4bb3e3b96b2d4880f9939e27dda7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackData: {fileID: 11400000, guid: b4913a5484cda7344a9dccbf3f637fa0, type: 2}
 --- !u!1 &3977808271224849345
 GameObject:
   m_ObjectHideFlags: 0

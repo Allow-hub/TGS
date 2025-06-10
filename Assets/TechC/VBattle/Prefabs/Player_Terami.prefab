@@ -229,12 +229,9 @@ MonoBehaviour:
   inputLogId: input
   guardObj: {fileID: 5919897281684274840}
   dashTimeWindow: 0.5
-  intentionalMoveThreshold: 0.7
-  jumpButtonPriority: 0.9
   crouchButtonPriority: 0.9
   inputDebounceDuration: 0.12
   directionDeadzone: 0.3
-  restrictJumpToPureUp: 1
   restrictCrouchToPureDown: 1
 --- !u!114 &7797085845215521307
 MonoBehaviour:
@@ -304,10 +301,30 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: 14f825b05369d6d4fab0e5c5a5452db4, type: 2}
   downAttackData: {fileID: 11400000, guid: 1d93a74787792f94696394ef57dc9670, type: 2}
   upAttackData: {fileID: 11400000, guid: 36ce767f9a6d1954bb4864c661447591, type: 2}
-  cookie: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c, type: 3}
-  chocolate: {fileID: 2097352013274177404, guid: 908fefc6c9e1d92478ec55fc1cc1ea77,
+  swingPrefab: {fileID: 6124907978801703374, guid: 52c9ff992f2aab54790aef11e1c11183,
     type: 3}
-  yOffset: 4
+  marshmallowPrefab: {fileID: 334557491047361281, guid: b9489cdf188fa04408c913018c989731,
+    type: 3}
+  spinPrefab: {fileID: 5595389053680503828, guid: d5a5a0e250635284996a2f50f77e4d4e,
+    type: 3}
+  donutPrefab: {fileID: 2859310224410525622, guid: 5af418aab075f014783e38ab5a3b3347,
+    type: 3}
+  chocolatePrefab: {fileID: 2097352013274177404, guid: 908fefc6c9e1d92478ec55fc1cc1ea77,
+    type: 3}
+  swingEffectDistance: 2
+  n1Rot: {x: 0, y: 0, z: 0, w: 0}
+  n2Rot: {x: 0, y: 0, z: 0, w: 0}
+  n3Rot: {x: 0, y: 0, z: 0, w: 0}
+  LeftXOffset: 3
+  LeftYOffset: 1
+  marshmallowThrowSpeed: 5
+  returnLeftEffectTime: 3
+  RightYOffset: 2
+  returnRightEffectTime: 3
+  donutLifetime: 5
+  donutCooldown: 5
+  donutXOffset: 2
+  UpYOffset: 5
   chocolateFallSpeed: 1
   returnUpEffectTime: 10
 --- !u!114 &1133027494191793631
@@ -334,6 +351,25 @@ MonoBehaviour:
   rightAttackData: {fileID: 11400000, guid: fdb591d7d3483bc4f9939990fb4eab86, type: 2}
   downAttackData: {fileID: 11400000, guid: b3608f888284a9643b2ba99c68a26871, type: 2}
   upAttackData: {fileID: 11400000, guid: a3945e9d3c847ab4bbf6e961fdca22ba, type: 2}
+  healPrefab: {fileID: 6045742034226300586, guid: 0e5a31ba8fa5fb74bb167685359e7298,
+    type: 3}
+  popcornPrefab: {fileID: 6045742034226300586, guid: b1b6ddd1c0ff2ac4898f19717c1c8c88,
+    type: 3}
+  cookiePrefab: {fileID: 6079553468376813958, guid: 4dda710bd940a44439b8a5e016faa2bc,
+    type: 3}
+  healCooldown: 5
+  returnNeutralEffectTime: 5
+  popcornYOffset: 3
+  opponentYOffset: 0.5
+  popcornSpeed: 3
+  popcornSpacing: 0.5
+  rightAttackCooldown: 4
+  returnDownEffectTime: 3
+  scaleMultiplier: 2
+  moveSpeedMultiplier: 0.5
+  attackMultiplier: 2
+  giantDuration: 5
+  giantCooldown: 1
 --- !u!114 &8178804244728934472
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -60,7 +60,16 @@ namespace TechC
         }
 
         public virtual void MoveWindowToTargetPosition(IntPtr hWnd, int targetX, int targetY, float speed) => WindowUtility.MoveWindowToTargetPosition(hWnd, targetX, targetY, speed);
-        public virtual void ResizeWindow(IntPtr hWnd, int targetWidth, int targetHeight, float speed) => WindowUtility.AnimateResizeWindow(Hwnd, targetWidth, targetHeight, speed);
+        public virtual void ResizeWindow(int targetWidth, int targetHeight, float speed) => WindowUtility.AnimateResizeWindow(Hwnd, targetWidth, targetHeight, speed);
+
+        /// <summary>
+        /// ウィンドウの左上座標（スクリーン座標）を取得する
+        /// </summary>
+        public virtual (int x, int y) GetScreenPosition()
+        {
+            var rect = WindowUtility.GetWindowRect((HWND)Hwnd);
+            return (rect.X, rect.Y);
+        }
     }
 
 }

@@ -181,6 +181,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tex: {fileID: 21300000, guid: a98f108edc2015d47bab8b94efef5f9f, type: 3}
+  areaCenter: {x: 0, y: 0}
+  areaSize: {x: 10, y: 10}
 --- !u!114 &195722322
 MonoBehaviour:
   m_ObjectHideFlags: 0

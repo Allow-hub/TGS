@@ -13,12 +13,13 @@ namespace TechC
         private static bool _classRegistered = false;
         private static string _basicClassName = "WindowClass_Basic";
         private static string _imageClassName = "WindowClass_Image";
+        private static string _webClassName = "WindowClass_Web";
 
 
         // WndProcデリゲート保持（GC防止）
         private static readonly WNDPROC _basicWndProc = BasicWndProc;
         private static readonly WNDPROC _imageWndProc = ImageWndProc;
-
+        private static readonly WNDPROC _webWndProc = WebWndProc;
         /// <summary>
         /// ウィンドウクラスを登録する
         /// </summary>
@@ -30,6 +31,7 @@ namespace TechC
             var hInstance = PInvoke.GetModuleHandle((PCWSTR)default);
             RegisterClassEx(_basicClassName, _basicWndProc, hInstance);
             RegisterClassEx(_imageClassName, _imageWndProc, hInstance);
+            RegisterClassEx(_webClassName, _webWndProc, hInstance);
 
             _classRegistered = true;
             CustomLogger.Info("Window classes registered.", WindowUtility.WINDOWLOGTAG);
@@ -57,6 +59,12 @@ namespace TechC
                 {
                     if (!PInvoke.UnregisterClass(new PCWSTR(imageName), hInstance))
                         CustomLogger.Error($"UnregisterClass failed for {_imageClassName}, error: {Marshal.GetLastWin32Error()}", WindowUtility.WINDOWLOGTAG);
+                }
+                
+                fixed (char* webName = _webClassName)
+                {
+                    if (!PInvoke.UnregisterClass(new PCWSTR(webName), hInstance))
+                        CustomLogger.Error($"UnregisterClass failed for {_webClassName}, error: {Marshal.GetLastWin32Error()}", WindowUtility.WINDOWLOGTAG);
                 }
             }
 
@@ -122,7 +130,6 @@ namespace TechC
             int x, int y, int width, int height,
             IntPtr parent)
         {
-
             HWND hwnd;
             unsafe
             {
@@ -163,6 +170,19 @@ namespace TechC
         }
 
         private static LRESULT ImageWndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
+        {
+            // switch (msg)
+            // {
+            //     case PInvoke.WM_PAINT:
+            //         // 描画処理
+            //         break;
+            //     case PInvoke.WM_DESTROY:
+            //         break;
+            // }
+
+            return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+        }
+        private static LRESULT WebWndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
         {
             // switch (msg)
             // {

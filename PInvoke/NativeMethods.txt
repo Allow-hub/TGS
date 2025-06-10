@@ -45,3 +45,8 @@ GetDC
 SetDIBitsToDevice
 ReleaseDC
 StretchDIBits
+SetParent
+HWND_TOPMOST
+GetWindowThreadProcessId
+EnumWindows
+GetClassName

@@ -1,5 +1,4 @@
 using UnityEngine;
-using Windows.Win32.Foundation;
 using System.Collections.Generic;
 
 namespace TechC
@@ -15,38 +14,34 @@ namespace TechC
         protected override void Init()
         {
             base.Init();
+            // ウィンドウ生成を遅延実行
             // DelayUtility.StartDelayedAction(this, 1.1f, () =>
             // {
-            //     var screenWidth = Screen.currentResolution.width;
-            //     var screenHeight = Screen.currentResolution.height;
-            //     var rand = new System.Random();
-            //     var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
-            //     if (w is ImageWindow imageWindow && tex != null)
+            //     var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
+            //     if (w != null)
             //     {
-            //         imageWindow.SetImage(tex.texture);
+            //         windows.Add(w);
             //     }
-            //     // StartCoroutine(ShowWindowsCoroutine(screenWidth, screenHeight, rand));
+            //     else
+            //     {
+            //         Debug.LogWarning("Webウィンドウの取得に失敗しました");
+            //     }
             // });
         }
 
-        // private System.Collections.IEnumerator ShowWindowsCoroutine(int screenWidth, int screenHeight, System.Random rand)
-        // {
-        //     for (int i = 0; i < 40; i++)
-        //     {
-        //         var win = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
-        //         int x = rand.Next(0, screenWidth - 300);   // 200はウィンドウ幅の仮値
-        //         int y = rand.Next(0, screenHeight - 300);  // 200はウィンドウ高さの仮値
-        //         WindowUtility.MoveWindow((HWND)win.Hwnd, x, y);
-        //         windows.Add(win);
-        //         yield return new WaitForSeconds(0.05f);
-        //     }
-        // }
+        void Update()
+        {
+            // 配列範囲チェックと型チェック
+            if (windows.Count > 0 && windows[0] is WebWindow webWindow)
+            {
+                webWindow.Move();
+            }
+        }
 
         protected override void OnRelease()
         {
-            {
-                base.OnRelease();
-            }
+            windows.Clear();
+            base.OnRelease();
         }
     }
 }

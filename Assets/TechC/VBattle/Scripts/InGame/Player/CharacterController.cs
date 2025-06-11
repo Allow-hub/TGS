@@ -61,6 +61,7 @@ namespace TechC.Player
         private float currentGuardPower;
         private float lastGuardTime;
         private Vector3 lastVelocity;
+        private float lastAnimSpeed;
 
         // 移動・物理関連
         private Rigidbody rb;

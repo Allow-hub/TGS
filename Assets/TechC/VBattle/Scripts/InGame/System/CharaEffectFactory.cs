@@ -11,14 +11,20 @@ namespace TechC
     {
         [SerializeField] private ObjectPool objectPool;
         protected override bool UseDontDestroyOnLoad => false;
+        private const float InitDelaySeconds = 0.1f; // 初期化の遅延時間
         protected override void Init()
         {
             base.Init();
-            objectPool.ForEachInactiveInPool(obj =>
+            //中身が入るのを待ってから
+            DelayUtility.StartDelayedAction(this, InitDelaySeconds, () =>
             {
-                var charaEffect = obj.GetComponent<CharaEffect>();
-                charaEffect?.Init(objectPool);
+                objectPool.ForEachInactiveInPool(obj =>
+                {
+                    var charaEffect = obj.GetComponent<CharaEffect>();
+                    charaEffect?.Init(objectPool);
+                });
             });
+
         }
 
         /// <summary>

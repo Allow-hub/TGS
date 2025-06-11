@@ -54,6 +54,7 @@ namespace TechC
 
             protected internal override void Update()
             {
+                if (BattleJudge.I.IsPaused) return;
                 elapsedTime += Time.deltaTime;
                 if (elapsedTime > duration)
                 {
@@ -66,7 +67,7 @@ namespace TechC
             {
                 elapsedTime = 0;
                 AttackData data = Context.attackManager.GetAttackData(attackType, attackStrength);
-                Context.anim.speed = Context.characterController.DefaultAnimSpeed;
+                // Context.anim.speed = Context.characterController.DefaultAnimSpeed;
                 if (data != null)
                 {
                     Context.anim.SetBool(data.animHash, false);

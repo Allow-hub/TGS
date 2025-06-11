@@ -16,10 +16,10 @@ MonoBehaviour:
   - title: HealParticle
     position:
       serializedVersion: 2
-      x: 0
-      y: 0
-      width: 100
-      height: 100
+      x: 855
+      y: -316
+      width: 476
+      height: 2039
     contents:
     - model: {fileID: 8926484042661614606}
       id: 0
@@ -27,34 +27,10 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614608}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614611}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614613}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614621}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614636}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614643}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614646}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614652}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614672}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614616}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614721}
       id: 0
       isStickyNote: 0
   - title: HealCross
@@ -71,37 +47,10 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614813}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614828}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614835}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 0}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614844}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614864}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614805}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614808}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614894}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614900}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614867}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614871}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614906}
@@ -139,9 +88,9 @@ MonoBehaviour:
   uiBounds:
     serializedVersion: 2
     x: 646
-    y: -315
+    y: -316
     width: 3550
-    height: 2221
+    height: 2222
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -613,7 +562,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children:
   - {fileID: 8926484042661614721}
-  m_UIPosition: {x: 881, y: -256}
+  m_UIPosition: {x: 880, y: -257}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
@@ -6075,7 +6024,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661614927}
       inputSlot: {fileID: 8926484042661614719}
-    position: {x: 656.21497, y: -150.48666}
+    position: {x: 676.6667, y: -177.33333}
     expandedSlots: []
     expanded: 0
 --- !u!114 &8926484042661614927

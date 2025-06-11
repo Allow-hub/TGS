@@ -1,0 +1,19 @@
+body {
+    background-color: #f0f8ff;
+    font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 40px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3em;
+    color: #007acc;
+    margin-bottom: 0.3em;
+}
+
+p {
+    font-size: 1.2em;
+    color: #555;
+}

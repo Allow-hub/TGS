@@ -18,7 +18,7 @@ namespace TechC
             {
                 { WindowType.Basic, 2 },
                 { WindowType.Image, 1 },
-                { WindowType.Web,   0 }
+                { WindowType.Web,   1 }
             };
         private List<NativeWindow> activeWindows = new();
 
@@ -55,7 +55,7 @@ namespace TechC
             if (poolByType.TryGetValue(type, out var queue) && queue.Count > 0)
             {
                 window = queue.Dequeue(); // 再利用
-                Debug.Log(window);
+                // Debug.Log(window);
             }
             else
             {

@@ -23,7 +23,13 @@ namespace TechC
             // ウィンドウ生成を遅延実行
             DelayUtility.StartDelayedAction(this, 1.1f, () =>
             {
-                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
+                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
+                if (w is WebWindow webWindow)
+                {
+                    // ウェブウィンドウのURLを設定
+                    webWindow.SetUrl(null, HtmlNames.HtmlFileName.Test);
+                    // webWindow.SetUrl("https://www.google.com", null);
+                }
                 if (w != null)
                 {
                     windows.Add(w);
@@ -104,10 +110,10 @@ namespace TechC
             Vector3 worldCenter = (worldLeftBottom + worldRightTop) / 2f;
             colliderObj.transform.position = worldCenter; // zもScreenToWorldPointの値を使う
             colliderObj.transform.localScale = size3d;
-            Debug.Log($"Position: {colliderObj.transform.position}, Scale: {colliderObj.transform.localScale}");
-            Debug.Log($"nativeX:{nativeX}, nativeY:{nativeY}, nativeWidth:{nativeWidth}, nativeHeight:{nativeHeight}");
-            Debug.Log($"unityRect: left={unityRect.left}, top={unityRect.top}, right={unityRect.right}, bottom={unityRect.bottom}");
-            Debug.Log($"relativeX:{relativeX}, relativeY:{relativeY}");
+            // Debug.Log($"Position: {colliderObj.transform.position}, Scale: {colliderObj.transform.localScale}");
+            // Debug.Log($"nativeX:{nativeX}, nativeY:{nativeY}, nativeWidth:{nativeWidth}, nativeHeight:{nativeHeight}");
+            // Debug.Log($"unityRect: left={unityRect.left}, top={unityRect.top}, right={unityRect.right}, bottom={unityRect.bottom}");
+            // Debug.Log($"relativeX:{relativeX}, relativeY:{relativeY}");
         }
 
         // --- Gizmoで範囲を可視化 ---

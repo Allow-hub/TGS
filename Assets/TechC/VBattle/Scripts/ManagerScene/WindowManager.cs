@@ -21,32 +21,32 @@ namespace TechC
         {
             base.Init();
             // ウィンドウ生成を遅延実行
-            DelayUtility.StartDelayedAction(this, 1.1f, () =>
-            {
-                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
-                if (w is WebWindow webWindow)
-                {
-                    // ウェブウィンドウのURLを設定
-                    webWindow.SetUrl(null, HtmlNames.HtmlFileName.Test);
-                    // webWindow.SetUrl("https://www.google.com", null);
-                }
-                if (w != null)
-                {
-                    windows.Add(w);
+            // DelayUtility.StartDelayedAction(this, 1.1f, () =>
+            // {
+            //     var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
+            //     if (w is WebWindow webWindow)
+            //     {
+            //         // ウェブウィンドウのURLを設定
+            //         webWindow.SetUrl(null, HtmlNames.HtmlFileName.Test);
+            //         // webWindow.SetUrl("https://www.google.com", null);
+            //     }
+            //     if (w != null)
+            //     {
+            //         windows.Add(w);
 
-                    // コライダー生成・紐付け
-                    var colliderObj = WindowColliderFactory.I.GetWindowColliderPrefab();
-                    if (colliderObj != null)
-                    {
-                        windowColliders[w] = colliderObj;
-                        UpdateColliderTransform(w, colliderObj); // 初期位置・サイズ合わせ
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("Webウィンドウの取得に失敗しました");
-                }
-            });
+            //         // コライダー生成・紐付け
+            //         var colliderObj = WindowColliderFactory.I.GetWindowColliderPrefab();
+            //         if (colliderObj != null)
+            //         {
+            //             windowColliders[w] = colliderObj;
+            //             UpdateColliderTransform(w, colliderObj); // 初期位置・サイズ合わせ
+            //         }
+            //     }
+            //     else
+            //     {
+            //         Debug.LogWarning("Webウィンドウの取得に失敗しました");
+            //     }
+            // });
         }
 
         void Update()

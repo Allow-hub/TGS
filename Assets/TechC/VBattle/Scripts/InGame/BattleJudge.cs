@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
-/// <summary>
-/// TODO:攻撃不能状態などを対応させること
-/// </summary>
 namespace TechC
 {
     /// <summary>
@@ -16,7 +14,7 @@ namespace TechC
     public class BattleJudge : Singleton<BattleJudge>
     {
         #region クラス定義
-        [System.Serializable]
+        [Serializable]
         public class PlayerData
         {
             public GameObject playerPrefab;
@@ -52,6 +50,9 @@ namespace TechC
         public UnityEvent OnBattleStart;                     // バトル開始時
         public UnityEvent OnBattleEnd;                       // バトル終了時
         public UnityEvent<float> OnTimeUpdate;               // 時間更新時
+        [Header("ポーズイベント")]
+        public UnityEvent OnPauseStarted;
+        public UnityEvent OnPauseEnded;
         #endregion
 
         #region プライベート変数
@@ -73,8 +74,14 @@ namespace TechC
         private void Update()
         {
             if (!isBattleOngoing) return;
-
-            // 時間制限の管理
+            if(Input.GetKeyDown(KeyCode.V))
+            {
+                PausePlayers();
+            }
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                ResumePlayers();
+            }
             if (isTimeLimitEnabled)
             {
                 currentTime -= Time.deltaTime;
@@ -357,35 +364,52 @@ namespace TechC
 
         #region ユーティリティメソッド
         /// <summary>
-        /// プレイヤーの残機数を取得
+        /// 全プレイヤーをポーズ状態にする（PlayerInput無効化＋Rigidbodyフリーズ）
         /// </summary>
-        /// <param name="playerID">プレイヤーID</param>
-        /// <returns>残機数</returns>
-        public int GetPlayerStockCount(int playerID)
+        public void PausePlayers()
         {
-            if (playerID < 0 || playerID >= players.Count) return 0;
-            return players[playerID].stockCount;
+            foreach (var player in players)
+            {
+                if (player.playerObject != null)
+                {
+                    // PlayerInputを無効化
+                    var input = player.playerObject.GetComponent<PlayerInput>();
+                    if (input != null)
+                        input.enabled = false;
+
+                    // Rigidbodyをフリーズ
+                    var rb = player.playerObject.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.velocity = Vector3.zero;
+                        rb.angularVelocity = Vector3.zero;
+                        rb.isKinematic = true;
+                    }
+                }
+            }
+            OnPauseStarted?.Invoke();
         }
 
         /// <summary>
-        /// プレイヤーを追加
+        /// 全プレイヤーのポーズを解除する（PlayerInput有効化＋Rigidbodyフリーズ解除）
         /// </summary>
-        /// <param name="playerObject">プレイヤーオブジェクト</param>
-        /// <param name="stockCount">初期残機数</param>
-        public void AddPlayer(GameObject playerObject, int stockCount = 3)
+        public void ResumePlayers()
         {
-            PlayerData newPlayer = new PlayerData
+            foreach (var player in players)
             {
-                playerObject = playerObject,
-                stockCount = stockCount,
-                playerID = players.Count,
-                isAlive = true,
-                canAttack = true,
-                isInvincible = false,
-                respawnPosition = playerObject.transform.position
-            };
+                if (player.playerObject != null)
+                {
+                    // PlayerInputを有効化
+                    var input = player.playerObject.GetComponent<PlayerInput>();
+                    if (input != null)
+                        input.enabled = true;
 
-            players.Add(newPlayer);
+                    // Rigidbodyのフリーズ解除
+                    var rb = player.playerObject.GetComponent<Rigidbody>();
+                    if (rb != null) rb.isKinematic = false;
+                }
+            }
+            OnPauseEnded?.Invoke();
         }
 
         /// <summary>

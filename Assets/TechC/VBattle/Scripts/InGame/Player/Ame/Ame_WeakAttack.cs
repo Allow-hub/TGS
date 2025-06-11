@@ -40,7 +40,7 @@ namespace TechC
 
         [Header("上弱")]
         private float returnUpEffectTime = 3f;
-        
+
         /// <summary>
         /// 剣を振る、前方への軽い攻撃。３回まで派生
         /// </summary>
@@ -57,7 +57,7 @@ namespace TechC
                 currentSlashRot = n3Rot;
             var slObjPos = transform.position.AddY(slashEffectDistance);
             // 向きに応じて回転反転
-            if (transform.forward.x < 0) 
+            if (transform.forward.x < 0)
             {
                 currentSlashRot = Quaternion.Euler(0, 180, 0) * currentSlashRot;
             }
@@ -70,6 +70,7 @@ namespace TechC
             {
                 CharaEffectFactory.I.ReturnEffectObj(slObj);
             });
+            AudioManager.I.PlayCharacterSE(CharacterType.Ame,CharacterSEType.WeakNormalAttack_1);
         }
 
         /// <summary>

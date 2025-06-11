@@ -129,6 +129,7 @@ namespace TechC
                 });
                 currentCount = 0;
             }
+            AudioManager.I.PlayCharacterSE(CharacterType.Ame,CharacterSEType.StrongLeftAttack);
         }
 
         /// <summary>

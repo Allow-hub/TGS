@@ -186,6 +186,7 @@ namespace TechC
             {
                 canFire = true;
             });
+            AudioManager.I.PlayCharacterSE(CharacterType.Terami,CharacterSEType.StrongRightAttack);
         }
 
         /// <summary>
@@ -203,6 +204,7 @@ namespace TechC
             {
                 CharaEffectFactory.I.ReturnEffectObj(cookieEffect);
             });
+            AudioManager.I.PlayCharacterSE(CharacterType.Terami,CharacterSEType.StrongDownAttack);
         }
 
         /// <summary>
@@ -241,6 +243,7 @@ namespace TechC
             {
                 isGiantCooldown = false;
             });
+            AudioManager.I.PlayCharacterSE(CharacterType.Terami,CharacterSEType.StrongUpAttack);
 
         }
 

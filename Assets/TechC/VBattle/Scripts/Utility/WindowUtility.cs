@@ -5,6 +5,9 @@ using UnityEngine;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace TechC
 {
@@ -17,13 +20,49 @@ namespace TechC
         #region ウィンドウ作成・取得
 
         /// <summary>
-        /// 現在のUnityウィンドウのハンドルを取得
+        /// 現在のUnityウィンドウのハンドルを取得（より確実な方法）
         /// </summary>
         /// <returns>ウィンドウハンドル</returns>
         public static HWND GetUnityWindowHandle()
         {
-            return new HWND((IntPtr)PInvoke.FindWindow("UnityWndClass", null));
+#if UNITY_EDITOR
+            // Editor時は0固定でOK
+            return HWND.Null;
+#else
+            // クラス名でUnityウィンドウのみ取得
+            int pid = System.Diagnostics.Process.GetCurrentProcess().Id;
+            return GetWindowByProcessId(pid, "UnityWndClass");
+#endif
         }
+
+        /// <summary>
+        /// Unityのゲームビューの矩形を取得
+        /// </summary>
+        /// <returns>ゲームビューの矩形</returns>
+        public static RECT GetUnityGameViewRect()
+        {
+#if UNITY_EDITOR
+            var assembly = typeof(EditorWindow).Assembly;
+            var type = assembly.GetType("UnityEditor.GameView");
+            var gameView = EditorWindow.GetWindow(type);
+            if (gameView != null)
+            {
+                var unityRect = gameView.position;
+                return new RECT
+                {
+                    left = (int)unityRect.x,
+                    top = (int)unityRect.y,
+                    right = (int)(unityRect.x + unityRect.width),
+                    bottom = (int)(unityRect.y + unityRect.height)
+                };
+            }
+            // gameViewがnullの場合はデフォルト値を返す
+            return new RECT();
+#else
+            return GetWindowRect(GetUnityWindowHandle());
+#endif
+        }
+
 
         /// <summary>
         /// アクティブウィンドウのハンドルを取得

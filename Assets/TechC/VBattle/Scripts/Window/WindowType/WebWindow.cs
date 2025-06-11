@@ -80,7 +80,7 @@ namespace TechC
                 string args = $"\"{Url}\" {Hwnd} {Width} {Height}";
                 _browserProcess = System.Diagnostics.Process.Start(exePath, args);
                 int processId = _browserProcess.Id;
-
+                Debug.Log($"WebWindow process started with ID: {processId}");
                 DelayUtility.StartDelayedAction(mono, 0.1f, () =>
                 {
                     webWindow = WindowUtility.GetWindowByProcessId(processId);

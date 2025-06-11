@@ -1,4 +1,0 @@
-2025/06/10-13:51:18.845 39b4 Creating DB C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Sync Data\LevelDB since it was missing.
-2025/06/10-13:51:18.892 39b4 Reusing MANIFEST C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Sync Data\LevelDB/MANIFEST-000001
-2025/06/10-13:51:18.893 39b4 Recovering log #3
-2025/06/10-13:51:18.893 39b4 Reusing old log C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Sync Data\LevelDB/000003.log 

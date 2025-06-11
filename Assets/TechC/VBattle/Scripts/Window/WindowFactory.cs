@@ -18,7 +18,7 @@ namespace TechC
             {
                 { WindowType.Basic, 2 },
                 { WindowType.Image, 1 },
-                { WindowType.Web,   1 }
+                { WindowType.Web,   0 }
             };
         private List<NativeWindow> activeWindows = new();
 

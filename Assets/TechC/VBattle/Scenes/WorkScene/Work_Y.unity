@@ -488,7 +488,7 @@ PrefabInstance:
         type: 3}
       propertyPath: poolItems.Array.data[8].prefab
       value: 
-      objectReference: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+      objectReference: {fileID: 6079553468376813958, guid: 4dda710bd940a44439b8a5e016faa2bc,
         type: 3}
     - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -659,6 +659,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   depth: 1
+  sideMaterial: {fileID: 0}
 --- !u!114 &1979135225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -679,7 +680,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: A
+  m_text: "AB\uFF1A\u65E5\u672C\u8A9E\u3067\u3059"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cf54254752b2acf4ebdd30abcf736a67, type: 2}
   m_sharedMaterial: {fileID: 2168590787986126325, guid: cf54254752b2acf4ebdd30abcf736a67,

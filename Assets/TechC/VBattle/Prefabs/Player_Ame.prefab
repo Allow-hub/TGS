@@ -1133,16 +1133,17 @@ MonoBehaviour:
   canChargeDuration: 10
   errorSprite: {fileID: 21300000, guid: 85fb38cec81f9e84eae54e1f32660143, type: 3}
   rushDistance: 20
-  rushDuration: 0.5
+  rushDuration: 0.3
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 1
   wallLayerMask:
     serializedVersion: 2
     m_Bits: 128
-  rayLength: 1
+  rayLength: 0.5
   wallCheckDistance: 2
   raycastInterval: 0.1
+  sweepRayLength: 2
 --- !u!114 &3455362588810788779
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -404,7 +404,78 @@ namespace TechC
             }
             OnPauseEnded?.Invoke();
         }
+        /// <summary>
+        /// 指定したプレイヤーのみポーズ状態にする
+        /// </summary>
+        public void PausePlayer(int playerID, bool isKinematic = true)
+        {
+            playerID--; // プレイヤーIDは1から始まるため、0ベースに変換
+            if (playerID < 0 || playerID >= players.Count) return;
+            var player = players[playerID];
+            if (player.playerObject != null)
+            {
+                // PlayerInputを無効化
+                var input = player.playerObject.GetComponent<PlayerInput>();
+                if (input != null)
+                    input.enabled = false;
 
+                // Rigidbodyをフリーズ＆速度保存
+                var rb = player.playerObject.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    lastVelocities[player.playerID] = rb.velocity;
+                    lastAngularVelocities[player.playerID] = rb.angularVelocity;
+                    rb.velocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.isKinematic = isKinematic;
+                }
+
+                // アニメーション速度保存
+                var characterController = player.playerObject.GetComponent<Player.CharacterController>();
+                if (characterController != null)
+                {
+                    var anim = characterController.GetAnim();
+                    lastAnimSpeeds[player.playerID] = anim.speed;
+                    anim.speed = 0f;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 指定したプレイヤーのみポーズ解除する
+        /// </summary>
+        public void ResumePlayer(int playerID)
+        {
+            if (playerID < 0 || playerID >= players.Count) return;
+            var player = players[playerID];
+            if (player.playerObject != null)
+            {
+                // PlayerInputを有効化
+                var input = player.playerObject.GetComponent<PlayerInput>();
+                if (input != null)
+                    input.enabled = true;
+
+                // Rigidbodyのフリーズ解除＆速度復元
+                var rb = player.playerObject.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.isKinematic = false;
+                    if (lastVelocities.TryGetValue(player.playerID, out var v))
+                        rb.velocity = v;
+                    if (lastAngularVelocities.TryGetValue(player.playerID, out var av))
+                        rb.angularVelocity = av;
+                }
+
+                // アニメーション速度復元
+                var characterController = player.playerObject.GetComponent<Player.CharacterController>();
+                if (characterController != null)
+                {
+                    var anim = characterController.GetAnim();
+                    if (lastAnimSpeeds.TryGetValue(player.playerID, out var speed))
+                        anim.speed = speed;
+                }
+            }
+        }
         /// <summary>
         /// 現在のバトル状態を取得
         /// </summary>

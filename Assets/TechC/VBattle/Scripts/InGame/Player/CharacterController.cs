@@ -89,6 +89,7 @@ namespace TechC.Player
         public Rigidbody Rb => rb;
         public float DefaultAnimSpeed => defaultAnimSpeed;
         public CharacterType CharacterType => characterType;
+        public Player.CharacterController OpponentController => opponentController;
         public int PlayerID => playerID; // PlayerIDのゲッター
         #endregion
 

@@ -9,7 +9,7 @@ namespace TechC
         {
             //必要に応じて定義してください
             Test,
-            // Sample,
+            Error,//Ame必殺用
             // Hello,
             // About
         }
@@ -21,7 +21,7 @@ namespace TechC
             return htmlFile switch
             {
                 HtmlFileName.Test => "Test.html",
-                // HtmlFileName.Sample => "Sample.html",
+                HtmlFileName.Error => "Error.html",
                 // HtmlFileName.Hello => "Hello.html",
                 // HtmlFileName.About => "About.html",
                 _ => null

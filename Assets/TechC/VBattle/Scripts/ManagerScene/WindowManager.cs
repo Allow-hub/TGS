@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using Windows.Win32.Foundation;
 
 namespace TechC
 {
@@ -8,7 +10,6 @@ namespace TechC
     /// </summary>
     public class WindowManager : Singleton<WindowManager>
     {
-        [SerializeField] private Sprite tex;
         private List<NativeWindow> windows = new();
         private Dictionary<NativeWindow, GameObject> windowColliders = new();
 
@@ -20,45 +21,23 @@ namespace TechC
         protected override void Init()
         {
             base.Init();
-            // ウィンドウ生成を遅延実行
-            DelayUtility.StartDelayedAction(this, 1.1f, () =>
-            {
-                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
-                // if (w is WebWindow webWindow)
-                // {
-                //     // ウェブウィンドウのURLを設定
-                //     webWindow.SetUrl(null, HtmlNames.HtmlFileName.Test);
-                //     // webWindow.SetUrl("https://www.google.com", null);
-                // }
-                if (w != null)
-                {
-                    windows.Add(w);
-
-                    // コライダー生成・紐付け
-                    var colliderObj = WindowColliderFactory.I.GetWindowColliderPrefab();
-                    if (colliderObj != null)
-                    {
-                        windowColliders[w] = colliderObj;
-                        UpdateColliderTransform(w, colliderObj); // 初期位置・サイズ合わせ
-                    }
-                }
-                // else
-                // {
-                //     Debug.LogWarning("Webウィンドウの取得に失敗しました");
-                // }
-            });
         }
 
         void Update()
         {
             // ウィンドウとコライダーを毎フレーム追従
-            foreach (var w in windows)
-            {
-                if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
-                {
-                    UpdateColliderTransform(w, colliderObj);
-                }
-            }
+            // foreach (var w in windows)
+            // {
+            //     if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
+            //     {
+            //         UpdateColliderTransform(w, colliderObj);
+            //     }
+            // }
+            // if (Time.frameCount % 60 == 0) // 60フレームごとに出力（約1秒ごと）
+            // {
+            //     float fps = 1f / Time.deltaTime;
+            //     Debug.Log($"FPS: {fps:F1}");
+            // }
         }
 
         private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)
@@ -110,10 +89,10 @@ namespace TechC
             Vector3 worldCenter = (worldLeftBottom + worldRightTop) / 2f;
             colliderObj.transform.position = worldCenter; // zもScreenToWorldPointの値を使う
             colliderObj.transform.localScale = size3d;
-            Debug.Log($"Position: {colliderObj.transform.position}, Scale: {colliderObj.transform.localScale}");
-            Debug.Log($"nativeX:{nativeX}, nativeY:{nativeY}, nativeWidth:{nativeWidth}, nativeHeight:{nativeHeight}");
-            Debug.Log($"unityRect: left={unityRect.left}, top={unityRect.top}, right={unityRect.right}, bottom={unityRect.bottom}");
-            Debug.Log($"relativeX:{relativeX}, relativeY:{relativeY}");
+            // Debug.Log($"Position: {colliderObj.transform.position}, Scale: {colliderObj.transform.localScale}");
+            // Debug.Log($"nativeX:{nativeX}, nativeY:{nativeY}, nativeWidth:{nativeWidth}, nativeHeight:{nativeHeight}");
+            // Debug.Log($"unityRect: left={unityRect.left}, top={unityRect.top}, right={unityRect.right}, bottom={unityRect.bottom}");
+            // Debug.Log($"relativeX:{relativeX}, relativeY:{relativeY}");
         }
 
         // --- Gizmoで範囲を可視化 ---
@@ -121,6 +100,75 @@ namespace TechC
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(new Vector3(areaCenter.x, areaCenter.y, -5.3f), new Vector3(areaSize.x, areaSize.y, 0.1f));
+        }
+
+        public void PopupWindowWindow(WindowFactory.WindowType type, int maxSize = 500, int tileSize = 200, float duration = 1f, Sprite tex = null)
+        {
+            // 画面サイズ取得
+            var unityRect = WindowUtility.GetUnityGameViewRect();
+            int unityScreenX = unityRect.left;
+            int unityScreenY = unityRect.top;
+            int unityScreenWidth = unityRect.right - unityRect.left;
+            int unityScreenHeight = unityRect.bottom - unityRect.top;
+
+            // Windowで隙間なく覆うための分割数を計算
+            var rnd = new System.Random();
+
+            // 横・縦に何枚並べるか
+            int xCount = Mathf.CeilToInt((float)unityScreenWidth / tileSize);
+            int yCount = Mathf.CeilToInt((float)unityScreenHeight / tileSize);
+
+            int windowCount = xCount * yCount;
+            float interval = duration / windowCount;
+
+            // グリッドの全パターンをリスト化してシャッフル
+            List<(int xi, int yi)> gridList = new List<(int xi, int yi)>();
+            for (int xi = 0; xi < xCount; xi++)
+                for (int yi = 0; yi < yCount; yi++)
+                    gridList.Add((xi, yi));
+
+            // シャッフル
+            for (int i = gridList.Count - 1; i > 0; i--)
+            {
+                int j = rnd.Next(i + 1);
+                var tmp = gridList[i];
+                gridList[i] = gridList[j];
+                gridList[j] = tmp;
+            }
+
+            int created = 0;
+            DelayUtility.StartRepeatedAction(this, duration, interval, () =>
+            {
+                if (created >= gridList.Count) return;
+
+                var (xi, yi) = gridList[created];
+
+                // 各グリッドで残り幅・高さを計算
+                int remainWidth = unityScreenWidth - xi * tileSize;
+                int remainHeight = unityScreenHeight - yi * tileSize;
+
+                int wMin = Mathf.Min(tileSize, remainWidth);
+                int wMax = Mathf.Min(maxSize, remainWidth);
+                int hMin = Mathf.Min(tileSize, remainHeight);
+                int hMax = Mathf.Min(maxSize, remainHeight);
+
+                int w = (wMin < wMax) ? rnd.Next(wMin, wMax + 1) : wMin;
+                int h = (hMin < hMax) ? rnd.Next(hMin, hMax + 1) : hMin;
+
+                int x = unityScreenX + xi * tileSize;
+                int y = unityScreenY + yi * tileSize;
+
+                var win = WindowFactory.I.GetWindow(type);
+                WindowUtility.MoveWindow((HWND)win.Hwnd, x, y);
+                WindowUtility.ResizeWindow((HWND)win.Hwnd, w, h);
+                win.SetRect();
+                if (win is ImageWindow imageWindow)
+                {
+                    imageWindow.SetImage(tex.texture, w, h);
+                }
+                windows.Add(win);
+                created++;
+            });
         }
 
         protected override void OnRelease()

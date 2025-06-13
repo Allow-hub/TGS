@@ -17,7 +17,7 @@ namespace TechC
         Dictionary<WindowType, int> initialPoolSizes = new Dictionary<WindowType, int>
             {
                 { WindowType.Basic, 2 },
-                { WindowType.Image, 1 },
+                { WindowType.Image, 60 },
                 { WindowType.Web,   0 }
             };
         private List<NativeWindow> activeWindows = new();

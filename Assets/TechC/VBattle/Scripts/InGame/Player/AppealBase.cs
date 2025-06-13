@@ -13,7 +13,7 @@ namespace TechC
     [Serializable]
     public class AppealBase : MonoBehaviour, IAttackBase
     {
-        [SerializeField] private Player.CharacterController characterController;
+        [SerializeField] protected Player.CharacterController characterController;
         [SerializeField]
         private AttackSet attackSet;
         [SerializeField,ReadOnly]

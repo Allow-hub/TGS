@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 562fd7e13ab609e43a03075879429359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tex: {fileID: 21300000, guid: a98f108edc2015d47bab8b94efef5f9f, type: 3}
+  tex: {fileID: 21300000, guid: 85fb38cec81f9e84eae54e1f32660143, type: 3}
   areaCenter: {x: 0, y: 0}
   areaSize: {x: 10, y: 10}
 --- !u!114 &195722322

@@ -63,6 +63,45 @@ namespace TechC
 #endif
         }
 
+        public static HWND FindWindowWithTitleSubstring(string substring)
+        {
+            HWND result = default;
+
+            PInvoke.EnumWindows((hWnd, lParam) =>
+            {
+                if (!IsWindowVisible(hWnd))
+                    return true;
+
+                int length = PInvoke.GetWindowTextLength(hWnd);
+                if (length == 0)
+                    return true;
+
+                Span<char> buffer = stackalloc char[length + 1];
+                int copied = GetWindowText(hWnd, buffer);
+                string title = copied > 0 ? new string(buffer.Slice(0, copied)) : "";
+
+                if (title.Contains(substring, StringComparison.OrdinalIgnoreCase))
+                {
+                    result = hWnd;
+                    return false; // 見つかったので列挙停止
+                }
+
+                return true; // 続行
+            }, IntPtr.Zero);
+
+            return result;
+        }
+
+        private static int GetWindowText(HWND hWnd, Span<char> buffer)
+        {
+            unsafe
+            {
+                fixed (char* ptr = buffer)
+                {
+                    return PInvoke.GetWindowText(hWnd, ptr, buffer.Length);
+                }
+            }
+        }
 
         /// <summary>
         /// アクティブウィンドウのハンドルを取得
@@ -323,7 +362,21 @@ namespace TechC
         {
             return PInvoke.SetWindowPos(hwnd, insertAfter, x, y, width, height, flags);
         }
+        public static void GetClientRect(HWND hwnd, out RECT rect)
+        {
+            if (hwnd.IsNull)
+            {
+                Debug.LogWarning("GetClientRect: hwnd is null.");
+                rect = new RECT();
+                return;
+            }
 
+            if (!PInvoke.GetClientRect(hwnd, out rect))
+            {
+                int error = Marshal.GetLastWin32Error();
+                Debug.LogError($"GetClientRect failed with error code {error}");
+            }
+        }
         /// <summary>
         /// ウィンドウハンドルを破棄
         /// </summary>

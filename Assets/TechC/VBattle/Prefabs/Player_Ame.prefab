@@ -1132,6 +1132,7 @@ MonoBehaviour:
   inputManager: {fileID: 6455736973200020084}
   canChargeDuration: 10
   errorSprite: {fileID: 21300000, guid: 85fb38cec81f9e84eae54e1f32660143, type: 3}
+  specialSprite: {fileID: 21300000, guid: a70dca075beeeea488ecff95fbee3f8e, type: 3}
   rushDistance: 20
   rushDuration: 0.3
   targetLayerMask:

@@ -12,12 +12,13 @@ namespace TechC
     {
         [Header("必殺技設定")]
         [SerializeField] private Sprite errorSprite;
+        [SerializeField] private Sprite specialSprite;
         [SerializeField] private float rushDistance = 20f; // 前進距離
-        [SerializeField]private float rushDuration = 0.5f; // 前進時間
-        [SerializeField]private LayerMask targetLayerMask = 0; // 攻撃対象のレイヤー
-        [SerializeField]private LayerMask wallLayerMask = 7; // 壁のレイヤー
-        [SerializeField]private float rayLength = 0.5f; // レイの長さ
-        [SerializeField]private float wallCheckDistance = 2f; // 壁チェック用レイの長さ
+        [SerializeField] private float rushDuration = 0.5f; // 前進時間
+        [SerializeField] private LayerMask targetLayerMask = 0; // 攻撃対象のレイヤー
+        [SerializeField] private LayerMask wallLayerMask = 7; // 壁のレイヤー
+        [SerializeField] private float rayLength = 0.5f; // レイの長さ
+        [SerializeField] private float wallCheckDistance = 2f; // 壁チェック用レイの長さ
         [SerializeField] private float raycastInterval = 0.1f; // レイキャストの間隔
         private bool isRushing = false;
         private Rigidbody rb;
@@ -72,7 +73,6 @@ namespace TechC
             base.ExcuteSpecial();
             var opponentCharacter = characterController.OpponentController;
             BattleJudge.I.PausePlayer(opponentCharacter.PlayerID, false);
-
             if (!isRushing && rb != null)
             {
                 isRushing = true;
@@ -176,30 +176,55 @@ namespace TechC
                 duration: 1f,
                 tex: errorSprite
             );
-            var webWindowParent = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
-            var webWindow = webWindowParent as WebWindow;
-            WindowUtility.ResizeWindow(webWindow.WebWindowHwnd, Screen.width, Screen.height);
-            //画面上部にいったんWebWindowを隠す
-            WindowUtility.MoveWindow(webWindow.WebWindowHwnd, 0, -Screen.height);
-            webWindow.SetUrl("https://www.youtube.com/watch?v=CBYSqKn1vpQ");
 
-            webWindow.SetRect();
-            //画面が隠れるのを待ち、Youtubeを上から降ろす
-            DelayUtility.StartDelayedAction(this, 1.5f,() =>
+            if (GameManager.I.CanConectWifi)
             {
-                canMove = true; // ウィンドウを動かせるようにする
+                var webWindowParent = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
+                var webWindow = webWindowParent as WebWindow;
+                WindowUtility.ResizeWindow(webWindow.WebWindowHwnd, Screen.width, Screen.height);
+                //画面上部にいったんWebWindowを隠す
+                WindowUtility.MoveWindow(webWindow.WebWindowHwnd, 0, -Screen.height);
+                webWindow.SetUrl("https://www.youtube.com/watch?v=CBYSqKn1vpQ");
+
+                webWindow.SetRect();
+                //画面が隠れるのを待ち、Youtubeを上から降ろす
+                DelayUtility.StartDelayedAction(this, 1.5f, () =>
+                {
+                    canMove = true; // ウィンドウを動かせるようにする
+                    DelayUtility.StartRepeatedActionWhile(this, CanMoveFunc, 0.05f, () =>
+                    {
+                        Debug.Log(WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y);
+                        // ウィンドウの位置を下に移動
+                        WindowUtility.MoveWindowToTargetPosition(webWindow.WebWindowHwnd, 0, Screen.height, 2000f);
+                        if (WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y >= 0)
+                        {
+                            Debug.Log("WebWindowが画面内に戻りました。");
+                            canMove = false; // ウィンドウが画面内に戻ったら停止
+                        }
+                    });
+                });
+            }
+            else
+            {
+                var imageWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
+                WindowUtility.ResizeWindow((HWND)imageWindow.Hwnd, 0, 0);
+                WindowUtility.MoveWindow((HWND)imageWindow.Hwnd, Screen.width / 2, Screen.height / 2);
+                imageWindow.SetRect();
+                var image = imageWindow as ImageWindow;
+                image.SetImage(specialSprite.texture,imageWindow.Width, imageWindow.Height);
+                canMove = true;
                 DelayUtility.StartRepeatedActionWhile(this, CanMoveFunc, 0.05f, () =>
                 {
-                    Debug.Log(WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y);
                     // ウィンドウの位置を下に移動
-                    WindowUtility.MoveWindowToTargetPosition(webWindow.WebWindowHwnd, 0, Screen.height,1000f);
-                    if (WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y >= 0)
+                    WindowUtility.MoveWindowToTargetPosition((HWND)imageWindow.Hwnd, 0, 0, 1000f);
+                    WindowUtility.AnimateResizeWindow((HWND)imageWindow.Hwnd, Screen.width, Screen.height, 2000f);
+                    if (WindowUtility.GetWindowRect((HWND)imageWindow.Hwnd).Y == 0)
                     {
-                        Debug.Log("WebWindowが画面内に戻りました。");
-                        canMove = false; // ウィンドウが画面内に戻ったら停止
+                        canMove = false;
                     }
                 });
-            });
+
+            }
         }
 
         /// <summary>

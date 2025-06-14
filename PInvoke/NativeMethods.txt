@@ -50,3 +50,6 @@ HWND_TOPMOST
 GetWindowThreadProcessId
 EnumWindows
 GetClassName
+GetClientRect
+GetWindowText
+GetWindowTextLength

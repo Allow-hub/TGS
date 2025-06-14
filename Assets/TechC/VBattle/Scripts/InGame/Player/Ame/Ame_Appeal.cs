@@ -67,18 +67,64 @@ namespace TechC
         {
             base.ExcuteSpecial();
             var opponentCharacter = characterController.OpponentController;
-            BattleJudge.I.PausePlayer(opponentCharacter.PlayerID,false);
+            BattleJudge.I.PausePlayer(opponentCharacter.PlayerID, false);
+
             if (!isRushing && rb != null)
             {
                 isRushing = true;
                 hitTargets.Clear();
 
-                // 開始位置と目標位置を設定
                 Vector3 forwardDirection = transform.forward;
+                Vector3 basePosition = transform.position;
+                float minHitDistance = rushDistance;
+                GameObject firstHitTarget = null;
+                bool hitIsTarget = false;
 
-                float rushSpeed = rushDistance / rushDuration;
+                // 上部・中部・下部の3つのレイで最短ヒット距離を調べる
+                Vector3[] checkPositions = new Vector3[]
+                {
+                    basePosition + Vector3.up * 1.5f,      // 上部
+                    basePosition + Vector3.up * 0.75f,     // 中部
+                    basePosition,                          // 下部
+                };
+
+                for (int i = 0; i < checkPositions.Length; i++)
+                {
+                    RaycastHit hit;
+                    if (Physics.Raycast(checkPositions[i], forwardDirection, out hit, rushDistance, wallLayerMask | targetLayerMask))
+                    {
+                        // 自分自身に当たった場合は無視
+                        if (hit.collider.gameObject == this.gameObject || hit.collider.transform.root == this.transform.root)
+                            continue;
+
+                        if (hit.distance < minHitDistance)
+                        {
+                            minHitDistance = hit.distance;
+                            firstHitTarget = hit.collider.gameObject;
+
+                            // 壁かtargetか判定
+                            if (((1 << hit.collider.gameObject.layer) & targetLayerMask) != 0)
+                            {
+                                hitIsTarget = true;
+                            }
+                            else if (((1 << hit.collider.gameObject.layer) & wallLayerMask) != 0)
+                            {
+                                hitIsTarget = false;
+                            }
+                        }
+                        Debug.DrawRay(checkPositions[i], forwardDirection * hit.distance, Color.red, 0.2f);
+                    }
+                    else
+                    {
+                        Debug.DrawRay(checkPositions[i], forwardDirection * rushDistance, Color.green, 0.1f);
+                    }
+                }
+
+                // 実際に進む距離を決定
+                float actualRushDistance = minHitDistance;
+                float rushSpeed = actualRushDistance / rushDuration;
                 float elapsedTime = 0f;
-                // ポーズ対応の繰り返しで前進＋攻撃＋壁判定
+
                 DelayUtility.StartRepeatedActionWithPause(
                     this,
                     rushDuration,
@@ -86,127 +132,28 @@ namespace TechC
                     BattleJudge.I.GetPauseStateFunc,
                     () =>
                     {
-                        // 前進
                         elapsedTime += raycastInterval;
                         Vector3 velocity = forwardDirection * rushSpeed;
                         rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
 
-                        // レイキャスト攻撃
-                        PerformRaycastAttacks();
-                        // 壁チェック
-                        if (CheckWallCollision())
-                        {
-                            rb.velocity = Vector3.zero;
-                            isRushing = false;
-                            return;
-                        }
                         // 終了判定
                         if (elapsedTime >= rushDuration)
                         {
                             rb.velocity = Vector3.zero;
                             isRushing = false;
+
+                            // 移動が終わってからヒット処理
+                            if (hitIsTarget && firstHitTarget != null)
+                            {
+                                var opponentController = firstHitTarget.GetComponentInParent<Player.CharacterController>();
+                                if (opponentController != null)
+                                {
+                                    ProcessOpponentHit(opponentController);
+                                }
+                            }
                         }
                     }
                 );
-            }
-        }
-
-        /// <summary>
-        /// 壁との衝突をチェック
-        /// </summary>
-        private bool CheckWallCollision()
-        {
-            Vector3 forwardDirection = transform.forward;
-            Vector3 basePosition = transform.position;
-
-            // 上部・中部・下部の3つの位置で壁チェック
-            Vector3[] checkPositions = new Vector3[]
-            {
-                basePosition + Vector3.up * 1.5f,      // 上部
-                basePosition + Vector3.up * 0.75f,     // 中部
-                basePosition,                          // 下部
-            };
-
-            for (int i = 0; i < checkPositions.Length; i++)
-            {
-                // 壁チェック用レイキャスト
-                if (Physics.Raycast(checkPositions[i], forwardDirection, wallCheckDistance, wallLayerMask))
-                {
-                    // デバッグ用レイ描画（壁検出時は赤色）
-                    Debug.DrawRay(checkPositions[i], forwardDirection * wallCheckDistance, Color.red, 0.2f);
-                    return true;
-                }
-
-                // デバッグ用レイ描画（通常時は緑色）
-                Debug.DrawRay(checkPositions[i], forwardDirection * wallCheckDistance, Color.green, 0.1f);
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// 上部・中部・下部にレイを飛ばして攻撃判定
-        /// </summary>
-        private void PerformRaycastAttacks()
-        {
-            Vector3 forwardDirection = transform.forward;
-            Vector3 basePosition = transform.position;
-
-            // 上部・中部・下部の3つのレイを設定
-            Vector3[] rayPositions = new Vector3[]
-            {
-                basePosition + Vector3.up * 1.5f,      // 上部
-                basePosition + Vector3.up * 0.75f,     // 中部
-                basePosition,                          // 下部
-            };
-
-            // デバッグ用のレイ描画色
-            Color[] rayColors = new Color[]
-            {
-                Color.red,    // 上部
-                Color.yellow, // 中部
-                Color.blue    // 下部
-            };
-
-            for (int i = 0; i < rayPositions.Length; i++)
-            {
-                // レイキャストを実行
-                RaycastHit hit;
-                if (Physics.Raycast(rayPositions[i], forwardDirection, out hit, rayLength, targetLayerMask))
-                {
-                    GameObject hitObject = hit.collider.gameObject;
-
-                    // 重複ヒット防止
-                    if (!hitTargets.Contains(hitObject))
-                    {
-                        hitTargets.Add(hitObject);
-                        OnRaycastHit(hitObject, hit, i);
-                    }
-                }
-
-                // デバッグ用レイ描画
-                Debug.DrawRay(rayPositions[i], forwardDirection * rayLength, rayColors[i], 0.1f);
-            }
-        }
-
-        /// <summary>
-        /// レイキャストがヒットした時の処理
-        /// </summary>
-        /// <param name="hitObject">ヒットしたオブジェクト</param>
-        /// <param name="hit">レイキャストのヒット情報</param>
-        /// <param name="rayIndex">レイのインデックス（0:上部, 1:中部, 2:下部）</param>
-        private void OnRaycastHit(GameObject hitObject, RaycastHit hit, int rayIndex)
-        {
-            // ヒット位置の名前を取得
-            string[] rayNames = { "上部", "中部", "下部" };
-            Debug.Log($"レイキャスト攻撃ヒット: {hitObject.name} ({rayNames[rayIndex]})");
-
-            // 敵キャラクターの場合の処理
-            var opponentController = hitObject.GetComponentInParent<Player.CharacterController>();
-            if (opponentController != null)
-            {
-                // ダメージやノックバックなどの処理
-                ProcessOpponentHit(opponentController);
             }
         }
 

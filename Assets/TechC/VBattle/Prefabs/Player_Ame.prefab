@@ -1143,7 +1143,6 @@ MonoBehaviour:
   rayLength: 0.5
   wallCheckDistance: 2
   raycastInterval: 0.1
-  sweepRayLength: 2
 --- !u!114 &3455362588810788779
 MonoBehaviour:
   m_ObjectHideFlags: 0

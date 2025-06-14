@@ -1,2 +1,3 @@
-2025/06/14-09:26:33.564 634c Creating DB C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Local Storage\leveldb since it was missing.
-2025/06/14-09:26:33.907 634c Reusing MANIFEST C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
+2025/06/14-11:55:07.364 90 Reusing MANIFEST C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
+2025/06/14-11:55:07.379 90 Recovering log #3
+2025/06/14-11:55:07.383 90 Reusing old log C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Local Storage\leveldb/000003.log 

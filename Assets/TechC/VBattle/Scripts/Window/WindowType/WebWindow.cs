@@ -14,6 +14,7 @@ namespace TechC
 
         private System.Diagnostics.Process _browserProcess;
         private MonoBehaviour mono;
+        public HWND WebWindowHwnd => webWindow; // ウィンドウのハンドルを公開
         private HWND webWindow;// ウェブウィンドウのハンドル
 
         public WebWindow(IntPtr hwnd, int width, int height, MonoBehaviour mono, string url)

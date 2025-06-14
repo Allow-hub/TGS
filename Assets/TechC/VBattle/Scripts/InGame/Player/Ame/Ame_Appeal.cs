@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Windows.Win32.Foundation;
 
 namespace TechC
 {
@@ -21,6 +22,9 @@ namespace TechC
         private bool isRushing = false;
         private Rigidbody rb;
         private HashSet<GameObject> hitTargets = new HashSet<GameObject>(); // 重複ヒット防止
+        private bool canMove = false;
+        public bool CanMove => canMove;
+        System.Func<bool> CanMoveFunc => () => CanMove;
 
         private void Start()
         {
@@ -164,6 +168,7 @@ namespace TechC
         {
             BattleJudge.I.ResumePlayer(opponentController.PlayerID);
             BattleJudge.I.PausePlayers();
+            //ウィンドウで画面を隠す
             WindowManager.I.PopupWindowWindow(
                 WindowFactory.WindowType.Image,
                 maxSize: 500,
@@ -171,6 +176,30 @@ namespace TechC
                 duration: 1f,
                 tex: errorSprite
             );
+            var webWindowParent = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
+            var webWindow = webWindowParent as WebWindow;
+            WindowUtility.ResizeWindow(webWindow.WebWindowHwnd, Screen.width, Screen.height);
+            //画面上部にいったんWebWindowを隠す
+            WindowUtility.MoveWindow(webWindow.WebWindowHwnd, 0, -Screen.height);
+            webWindow.SetUrl("https://www.youtube.com/watch?v=CBYSqKn1vpQ");
+
+            webWindow.SetRect();
+            //画面が隠れるのを待ち、Youtubeを上から降ろす
+            DelayUtility.StartDelayedAction(this, 1.5f,() =>
+            {
+                canMove = true; // ウィンドウを動かせるようにする
+                DelayUtility.StartRepeatedActionWhile(this, CanMoveFunc, 0.05f, () =>
+                {
+                    Debug.Log(WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y);
+                    // ウィンドウの位置を下に移動
+                    WindowUtility.MoveWindowToTargetPosition(webWindow.WebWindowHwnd, 0, Screen.height,1000f);
+                    if (WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y >= 0)
+                    {
+                        Debug.Log("WebWindowが画面内に戻りました。");
+                        canMove = false; // ウィンドウが画面内に戻ったら停止
+                    }
+                });
+            });
         }
 
         /// <summary>

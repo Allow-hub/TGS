@@ -160,5 +160,59 @@ namespace TechC
         {
             return monoBehaviour.StartCoroutine(RunRepeatedlyWithPause(duration, interval, callback, isPausedFunc));
         }
+        // ================================
+        // boolで繰り返し制御：Coroutine版（非ポーズ対応）
+        // ================================
+
+        public static IEnumerator RunRepeatedlyWhile(Func<bool> shouldContinueFunc, float interval, Action callback)
+        {
+            while (shouldContinueFunc == null || shouldContinueFunc())
+            {
+                callback?.Invoke();
+                yield return new WaitForSeconds(interval);
+            }
+        }
+
+        public static Coroutine StartRepeatedActionWhile(MonoBehaviour monoBehaviour, Func<bool> shouldContinueFunc, float interval, Action callback)
+        {
+            return monoBehaviour.StartCoroutine(RunRepeatedlyWhile(shouldContinueFunc, interval, callback));
+        }
+
+        // ================================
+        // boolで繰り返し制御：ポーズ対応版（Coroutine）
+        // ================================
+
+        public static IEnumerator RunRepeatedlyWhileWithPause(Func<bool> shouldContinueFunc, float interval, Action callback, Func<bool> isPausedFunc)
+        {
+            while (shouldContinueFunc == null || shouldContinueFunc())
+            {
+                // ポーズしている間は処理しない
+                if (isPausedFunc != null && isPausedFunc())
+                {
+                    yield return null;
+                    continue;
+                }
+
+                callback?.Invoke();
+
+                float intervalElapsed = 0f;
+                while (intervalElapsed < interval)
+                {
+                    if (isPausedFunc != null && isPausedFunc())
+                    {
+                        yield return null;
+                        continue;
+                    }
+
+                    intervalElapsed += Time.deltaTime;
+                    yield return null;
+                }
+            }
+        }
+
+        public static Coroutine StartRepeatedActionWhileWithPause(MonoBehaviour monoBehaviour, Func<bool> shouldContinueFunc, float interval, Func<bool> isPausedFunc, Action callback)
+        {
+            return monoBehaviour.StartCoroutine(RunRepeatedlyWhileWithPause(shouldContinueFunc, interval, callback, isPausedFunc));
+        }
     }
 }

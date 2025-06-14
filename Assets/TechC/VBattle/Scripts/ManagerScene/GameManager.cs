@@ -8,13 +8,19 @@ namespace TechC
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField] private int targetFrameRate = 144;
+        [SerializeField] private bool isHighPerformanceMode = true;// 高パフォーマンスモードかどうか
+        [SerializeField] private bool canConectWifi = true;// Wi-Fi接続可能かどうか
+
+        public bool IsHighPerformanceMode=> isHighPerformanceMode;
+        public bool CanConectWifi => canConectWifi;
 
         public enum GameState
         {
             Title,
+            Select,
             Menu,
-            Clear,
-            GameOver
+            Battle,
+            Result,
         }
         public GameState currentState = GameState.Title;
         protected override void Init()

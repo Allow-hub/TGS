@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 215195732546006201}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HitEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 2405362784798179396}
   - component: {fileID: 8177485041525903452}
   - component: {fileID: 2157535204036312076}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: hitEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}

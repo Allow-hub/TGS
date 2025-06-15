@@ -13,7 +13,7 @@ namespace TechC
     [Serializable]
     public class AppealBase : MonoBehaviour, IAttackBase
     {
-        [SerializeField] private Player.CharacterController characterController;
+        [SerializeField] protected Player.CharacterController characterController;
         [SerializeField]
         private AttackSet attackSet;
         [SerializeField,ReadOnly]
@@ -92,7 +92,7 @@ namespace TechC
             {
                 characterController.GetAnim().speed = attackData.animationSpeed;
                 characterController.GetAnim().SetBool(attackData.animHash, true);
-                StartCoroutine(Charge(attackData));
+                Charge(attackData);
             }
             else
             {
@@ -110,12 +110,16 @@ namespace TechC
         /// 必殺技のチャージを可能に
         /// </summary>
         /// <returns></returns>
-        private IEnumerator Charge(AttackData attackData)
+        private void Charge(AttackData attackData)
         {
-            yield return new WaitForSeconds(attackData.attackDuration);
-            characterController.ChangeCanCharge(true);
-            yield return new WaitForSeconds(canChargeDuration);
-            characterController.ChangeCanCharge(false);
+            DelayUtility.StartDelayedActionWithPause(this, attackData.attackDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                characterController.ChangeCanCharge(true);
+                DelayUtility.StartDelayedActionWithPause(this, canChargeDuration, BattleJudge.I.GetPauseStateFunc, () =>
+                {
+                    characterController.ChangeCanCharge(false);
+                });
+            });
         }
         /// <summary>
         /// 強制終了時

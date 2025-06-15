@@ -1,7 +1,5 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
-using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 
@@ -16,7 +14,8 @@ namespace TechC
 
         private System.Diagnostics.Process _browserProcess;
         private MonoBehaviour mono;
-        private HWND webWindow;
+        public HWND WebWindowHwnd => webWindow; // ウィンドウのハンドルを公開
+        private HWND webWindow;// ウェブウィンドウのハンドル
 
         public WebWindow(IntPtr hwnd, int width, int height, MonoBehaviour mono, string url)
             : base(hwnd, width, height, WindowFactory.WindowType.Web)
@@ -24,14 +23,18 @@ namespace TechC
             Url = url;
             this.mono = mono;
             StartExe();
-            // Debug.Log($"WebWindow created with URL: {Url}\nHwnd: {hwnd}, Width: {width}, Height: {height}");
         }
 
         public override void Show()
         {
             base.Show();
             WindowUtility.SetWindowVisibility(webWindow, (int)SHOW_WINDOW_CMD.SW_SHOW);
-            WebView2NativeMethods.SendUrlToWebView2(Url);
+            WindowUtility.SetWindowPos(
+                webWindow,
+                HWND.HWND_TOPMOST,
+                0, 0, 0, 0,
+                SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE
+            );
         }
 
         public override void Destroy()
@@ -55,16 +58,15 @@ namespace TechC
 
         public void Move()
         {
-            // Get current window position
             int currentX = 0, currentY = 0;
-           var r=  WindowUtility.GetWindowRect(webWindow);
-           currentX = r.X;
+            var r = WindowUtility.GetWindowRect(webWindow);
+            currentX = r.X;
             currentY = r.Y;
 
-            if (Input.GetKey(KeyCode.LeftArrow)) WindowUtility.MoveWindow(webWindow,currentX - 30, currentY);
-            if (Input.GetKey(KeyCode.RightArrow)) WindowUtility.MoveWindow(webWindow,currentX + 30, currentY);
-            if (Input.GetKey(KeyCode.UpArrow)) WindowUtility.MoveWindow(webWindow,currentX, currentY - 30);
-            if (Input.GetKey(KeyCode.DownArrow)) WindowUtility.MoveWindow(webWindow,currentX, currentY + 30);
+            if (Input.GetKey(KeyCode.LeftArrow)) WindowUtility.MoveWindow(webWindow, currentX - 30, currentY);
+            if (Input.GetKey(KeyCode.RightArrow)) WindowUtility.MoveWindow(webWindow, currentX + 30, currentY);
+            if (Input.GetKey(KeyCode.UpArrow)) WindowUtility.MoveWindow(webWindow, currentX, currentY - 30);
+            if (Input.GetKey(KeyCode.DownArrow)) WindowUtility.MoveWindow(webWindow, currentX, currentY + 30);
         }
 
         /// <summary>
@@ -80,7 +82,6 @@ namespace TechC
                 string args = $"\"{Url}\" {Hwnd} {Width} {Height}";
                 _browserProcess = System.Diagnostics.Process.Start(exePath, args);
                 int processId = _browserProcess.Id;
-
                 DelayUtility.StartDelayedAction(mono, 0.1f, () =>
                 {
                     webWindow = WindowUtility.GetWindowByProcessId(processId);
@@ -92,8 +93,6 @@ namespace TechC
                         0, 0, 0, 0,
                         SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE
                     );
-
-                    Debug.Log($"WebWindow process started: {webWindow}");
                     WindowUtility.SetWindowVisibility(webWindow, (int)SHOW_WINDOW_CMD.SW_HIDE);
                 });
             }
@@ -107,18 +106,22 @@ namespace TechC
         /// URLを設定し、WebView2に送信
         /// </summary>
         /// <param name="url"></param>
-        public void SetUrl(string url)
+        public void SetUrl(string url = null, HtmlNames.HtmlFileName? htmlFile = null)
         {
-            Url = url;
-            if (webWindow != HWND.Null)
+            if (htmlFile.HasValue)
             {
-                WebView2NativeMethods.SendUrlToWebView2(Url);
+                WebView2NativeMethods.SendContentToWebView2(HtmlNames.LoadHtmlFromStreamingAssets(htmlFile.Value));
+                Url = url ?? htmlFile.ToString();
+            }
+            else if (!string.IsNullOrEmpty(url))
+            {
+                WebView2NativeMethods.SendContentToWebView2(url);
+                Url = url;
             }
             else
             {
-                Debug.LogWarning("Web window is not initialized yet.");
+                Debug.LogWarning("SetUrl: url か htmlFile のどちらかを指定してください。");
             }
         }
-
     }
 }

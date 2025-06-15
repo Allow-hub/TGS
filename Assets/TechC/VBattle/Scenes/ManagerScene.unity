@@ -180,7 +180,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 562fd7e13ab609e43a03075879429359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tex: {fileID: 21300000, guid: a98f108edc2015d47bab8b94efef5f9f, type: 3}
+  areaCenter: {x: 0, y: 0}
+  areaSize: {x: 17, y: 13}
 --- !u!114 &195722322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,6 +340,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetFrameRate: 144
+  isHighPerformanceMode: 1
+  canConectWifi: 1
   currentState: 0
 --- !u!4 &1183286594
 Transform:

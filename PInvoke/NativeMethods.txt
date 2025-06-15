@@ -50,3 +50,10 @@ HWND_TOPMOST
 GetWindowThreadProcessId
 EnumWindows
 GetClassName
+GetClientRect
+GetWindowText
+GetWindowTextLength
+SetLayeredWindowAttributes
+GetDpiForMonitor
+MonitorFromPoint
+Windows.Win32.Foundation.POINT

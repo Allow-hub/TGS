@@ -5,6 +5,9 @@ using UnityEngine;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace TechC
 {
@@ -17,12 +20,72 @@ namespace TechC
         #region ウィンドウ作成・取得
 
         /// <summary>
-        /// 現在のUnityウィンドウのハンドルを取得
+        /// 現在のUnityウィンドウのハンドルを取得（より確実な方法）
         /// </summary>
         /// <returns>ウィンドウハンドル</returns>
         public static HWND GetUnityWindowHandle()
         {
-            return new HWND((IntPtr)PInvoke.FindWindow("UnityWndClass", null));
+#if UNITY_EDITOR
+            // Editor時は0固定でOK
+            return HWND.Null;
+#else
+            // クラス名でUnityウィンドウのみ取得
+            int pid = System.Diagnostics.Process.GetCurrentProcess().Id;
+            return GetWindowByProcessId(pid, "UnityWndClass");
+#endif
+        }
+
+        /// <summary>
+        /// Unityのゲームビューの矩形を取得
+        /// </summary>
+        /// <returns>ゲームビューの矩形</returns>
+        public static RECT GetUnityGameViewRect()
+        {
+// #if UNITY_EDITOR
+            return GameViewUtils.ToWin32Rect(GameViewUtils.GetGameViewScreenRect());
+// #else
+            // return GetWindowRect(GetUnityWindowHandle());
+// #endif
+        }
+
+        public static HWND FindWindowWithTitleSubstring(string substring)
+        {
+            HWND result = default;
+
+            PInvoke.EnumWindows((hWnd, lParam) =>
+            {
+                if (!IsWindowVisible(hWnd))
+                    return true;
+
+                int length = PInvoke.GetWindowTextLength(hWnd);
+                if (length == 0)
+                    return true;
+
+                Span<char> buffer = stackalloc char[length + 1];
+                int copied = GetWindowText(hWnd, buffer);
+                string title = copied > 0 ? new string(buffer.Slice(0, copied)) : "";
+
+                if (title.Contains(substring, StringComparison.OrdinalIgnoreCase))
+                {
+                    result = hWnd;
+                    return false; // 見つかったので列挙停止
+                }
+
+                return true; // 続行
+            }, IntPtr.Zero);
+
+            return result;
+        }
+
+        private static int GetWindowText(HWND hWnd, Span<char> buffer)
+        {
+            unsafe
+            {
+                fixed (char* ptr = buffer)
+                {
+                    return PInvoke.GetWindowText(hWnd, ptr, buffer.Length);
+                }
+            }
         }
 
         /// <summary>
@@ -284,7 +347,21 @@ namespace TechC
         {
             return PInvoke.SetWindowPos(hwnd, insertAfter, x, y, width, height, flags);
         }
+        public static void GetClientRect(HWND hwnd, out RECT rect)
+        {
+            if (hwnd.IsNull)
+            {
+                Debug.LogWarning("GetClientRect: hwnd is null.");
+                rect = new RECT();
+                return;
+            }
 
+            if (!PInvoke.GetClientRect(hwnd, out rect))
+            {
+                int error = Marshal.GetLastWin32Error();
+                Debug.LogError($"GetClientRect failed with error code {error}");
+            }
+        }
         /// <summary>
         /// ウィンドウハンドルを破棄
         /// </summary>

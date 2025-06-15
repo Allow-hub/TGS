@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 133d51a2a1c84a4409b5ef5c95ca25d7, type: 3}
   m_Name: TeramiSE
   m_EditorClassIdentifier: 
-  characterType: 0
+  characterType: 2
   seList:
   - seType: 0
     clip: {fileID: 0}
@@ -40,7 +40,7 @@ MonoBehaviour:
     pitch: 1
     loop: 0
   - seType: 5
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: c6ba291537560ec4ca76c85f558b3582, type: 3}
     volume: 1
     pitch: 1
     loop: 0
@@ -55,22 +55,22 @@ MonoBehaviour:
     pitch: 1
     loop: 0
   - seType: 8
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: b7c51caad519fa7408104df6a389b9d9, type: 3}
     volume: 1
     pitch: 1
     loop: 0
   - seType: 9
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 494a96899930c7847af79829063ef6d8, type: 3}
     volume: 1
     pitch: 1
     loop: 0
   - seType: 10
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 81b5de84d3906be4ea3c81e6fcffa4f9, type: 3}
     volume: 1
     pitch: 1
     loop: 0
   - seType: 11
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 0ad95c4f9a78eb5498c3e62d489e5e89, type: 3}
     volume: 1
     pitch: 1
     loop: 0
@@ -85,17 +85,17 @@ MonoBehaviour:
     pitch: 1
     loop: 0
   - seType: 14
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 69f332c991d2a61439e5f0bfdd8dfacc, type: 3}
     volume: 1
     pitch: 1
     loop: 0
   - seType: 15
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 5a417e69f2556b540a9a2a6a8e35f89a, type: 3}
     volume: 1
     pitch: 1
     loop: 0
   - seType: 16
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: e20d3200ccdad1449b4f36e9b2d246bd, type: 3}
     volume: 1
     pitch: 1
     loop: 0

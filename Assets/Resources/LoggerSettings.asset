@@ -80,7 +80,6 @@ MonoBehaviour:
   - network
   - input
   - ui
-  - audio
   - gamePlay
   - physics
   - default

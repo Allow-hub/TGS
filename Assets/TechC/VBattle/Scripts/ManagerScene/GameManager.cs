@@ -17,6 +17,7 @@ namespace TechC
             GameOver
         }
         public GameState currentState = GameState.Title;
+
         protected override void Init()
         {
             base.Init();
@@ -26,6 +27,7 @@ namespace TechC
             QualitySettings.vSyncCount = 0;
             // fps 144 を目標に設定
             Application.targetFrameRate = targetFrameRate;
+            // AudioManager.I.PlayBGM(BGMID.Title);
         }
 
 

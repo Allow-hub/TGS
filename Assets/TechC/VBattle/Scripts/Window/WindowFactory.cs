@@ -13,17 +13,27 @@ namespace TechC
         public enum WindowType { Basic, Image, Web }
 
         private Dictionary<WindowType, Queue<NativeWindow>> poolByType = new();
-        private const int InitialPoolSize = 50;
+        private const int InitialPoolSize = 1;
+        Dictionary<WindowType, int> initialPoolSizes = new Dictionary<WindowType, int>
+            {
+                { WindowType.Basic, 2 },
+                { WindowType.Image, 1 },
+                { WindowType.Web,   0 }
+            };
         private List<NativeWindow> activeWindows = new();
 
         protected override void Init()
         {
             base.Init();
             CustomWindowUtility.RegisterWindowClasses();
+
+            // ウィンドウタイプごとの初期プールサイズを定義
+
             foreach (WindowType type in Enum.GetValues(typeof(WindowType)))
             {
                 poolByType[type] = new Queue<NativeWindow>();
-                for (int i = 0; i < InitialPoolSize; i++)
+                int poolSize = initialPoolSizes.TryGetValue(type, out var size) ? size : InitialPoolSize;
+                for (int i = 0; i < poolSize; i++)
                 {
                     var window = CreateNewWindow(type, $"{type} Window {i}", 300, 300);
                     if (window != null)
@@ -89,20 +99,41 @@ namespace TechC
         public NativeWindow CreateNewWindow(WindowType type, string title, int width, int height, Texture2D tex = null)
         {
             // ウィンドウクラス名を決定
-            //CustomWindowUtilityと同じ名前を使うこと
             string className = type switch
             {
                 WindowType.Image => "WindowClass_Image",
+                WindowType.Web => "WindowClass_Web",
                 _ => "WindowClass_Basic",
             };
+
+            uint style, exStyle;
+            if (type == WindowType.Web)
+            {
+                // WebWindowのみ: 枠なし・非アクティブ・最前面・ツールウィンドウ・入力透過
+                style = (uint)WINDOW_STYLE.WS_POPUP;
+                exStyle = (uint)(
+                    WINDOW_EX_STYLE.WS_EX_NOACTIVATE |
+                    WINDOW_EX_STYLE.WS_EX_TOPMOST |
+                    WINDOW_EX_STYLE.WS_EX_TOOLWINDOW |
+                    WINDOW_EX_STYLE.WS_EX_LAYERED |
+                    WINDOW_EX_STYLE.WS_EX_TRANSPARENT
+                );
+            }
+            else
+            {
+                // 通常ウィンドウ
+                style = (uint)WINDOW_STYLE.WS_OVERLAPPEDWINDOW;
+                exStyle = (uint)WINDOW_EX_STYLE.WS_EX_NOACTIVATE | (uint)WINDOW_EX_STYLE.WS_EX_TOPMOST;
+            }
+
             IntPtr hwnd = CustomWindowUtility.CreateWindow(
                 className,
                 title,
-                (uint)WINDOW_STYLE.WS_OVERLAPPEDWINDOW, // 普通のウィンドウスタイルに変更推奨
-                (uint)WINDOW_EX_STYLE.WS_EX_APPWINDOW,
+                style,
+                exStyle,
                 100, 100, width, height,
                 IntPtr.Zero
-                );
+            );
 
             if (hwnd == IntPtr.Zero)
                 return null;
@@ -113,6 +144,9 @@ namespace TechC
                     return new BasicWindow(hwnd, width, height);
                 case WindowType.Image:
                     return new ImageWindow(hwnd, width, height, tex);
+                case WindowType.Web:
+                    // WebWindowはURLを設定する必要があるため、初期URLを指定
+                    return new WebWindow(hwnd, width, height, this, "https://www.google.com");
                 default:
                     return new NativeWindow(hwnd, width, height, type);
             }

@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmList:
   - id: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 8adf597a53b1aca4e904d5a3b2abd06d, type: 3}
     volume: 1
     pitch: 1
     loop: 1
-    fadeInTime: 0
-    fadeOutTime: 0
+    fadeInTime: 1
+    fadeOutTime: 1
   - id: 1
     clip: {fileID: 0}
     volume: 1

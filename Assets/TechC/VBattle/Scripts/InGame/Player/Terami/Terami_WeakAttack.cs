@@ -63,7 +63,7 @@ namespace TechC
                 currentSwingRot = n3Rot;
             var swObjPos = transform.position.AddY(swingEffectDistance);
             // 向きに応じて回転反転
-            if (transform.forward.x < 0) 
+            if (transform.forward.x < 0)
             {
                 currentSwingRot = Quaternion.Euler(0, 180, 0) * currentSwingRot;
             }
@@ -76,6 +76,7 @@ namespace TechC
             {
                 CharaEffectFactory.I.ReturnEffectObj(swObj);
             });
+            AudioManager.I.PlayCharacterSE(CharacterType.Terami,CharacterSEType.WeakNormalAttack_1);
         }
 
         /// <summary>
@@ -105,6 +106,7 @@ namespace TechC
             {
                 CharaEffectFactory.I.ReturnEffectObj(marshObj);
             });
+            AudioManager.I.PlayCharacterSE(CharacterType.Terami,CharacterSEType.WeakLeftAttack);
         }
 
         /// <summary>
@@ -122,6 +124,7 @@ namespace TechC
             {
                 CharaEffectFactory.I.ReturnEffectObj(spinEffect);
             });
+            AudioManager.I.PlayCharacterSE(CharacterType.Terami,CharacterSEType.WeakRightAttack);
         }
 
         /// <summary>
@@ -144,7 +147,7 @@ namespace TechC
 
             effectSetting.SetAttackProcessor(attackProcessor);
             effectSetting.SetOwnerId(characterController.PlayerID);
-                
+
             // ドーナツクールタイム解除タイマー。実行はヘルパーメソッドで
             DelayUtility.StartDelayedAction(this, donutCooldown, () =>
             {
@@ -152,6 +155,7 @@ namespace TechC
 
                 canPlaceDonut = true;
             });
+            AudioManager.I.PlayCharacterSE(CharacterType.Terami,CharacterSEType.WeakDownAttack);
         }
 
         /// <summary>
@@ -185,6 +189,7 @@ namespace TechC
             {
                 CharaEffectFactory.I.ReturnEffectObj(chocolateObj);
             });
+            AudioManager.I.PlayCharacterSE(CharacterType.Terami,CharacterSEType.WeakUpAttack);
         }
 
         protected override void ExecuteAttack(AttackData attackData)

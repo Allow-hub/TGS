@@ -41,26 +41,11 @@ namespace TechC
         /// <returns>ゲームビューの矩形</returns>
         public static RECT GetUnityGameViewRect()
         {
-#if UNITY_EDITOR
-            var assembly = typeof(EditorWindow).Assembly;
-            var type = assembly.GetType("UnityEditor.GameView");
-            var gameView = EditorWindow.GetWindow(type);
-            if (gameView != null)
-            {
-                var unityRect = gameView.position;
-                return new RECT
-                {
-                    left = (int)unityRect.x,
-                    top = (int)unityRect.y,
-                    right = (int)(unityRect.x + unityRect.width),
-                    bottom = (int)(unityRect.y + unityRect.height)
-                };
-            }
-            // gameViewがnullの場合はデフォルト値を返す
-            return new RECT();
-#else
-            return GetWindowRect(GetUnityWindowHandle());
-#endif
+// #if UNITY_EDITOR
+            return GameViewUtils.ToWin32Rect(GameViewUtils.GetGameViewScreenRect());
+// #else
+            // return GetWindowRect(GetUnityWindowHandle());
+// #endif
         }
 
         public static HWND FindWindowWithTitleSubstring(string substring)

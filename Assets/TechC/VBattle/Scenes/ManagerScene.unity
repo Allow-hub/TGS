@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   areaCenter: {x: 0, y: 0}
-  areaSize: {x: 10, y: 10}
+  areaSize: {x: 17, y: 13}
 --- !u!114 &195722322
 MonoBehaviour:
   m_ObjectHideFlags: 0

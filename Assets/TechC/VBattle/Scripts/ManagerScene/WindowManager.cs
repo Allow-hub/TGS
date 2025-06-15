@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Windows.Win32.Foundation;
-using UnityEditor.PackageManager.UI;
+using Windows.Win32;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace TechC
 {
@@ -14,7 +14,6 @@ namespace TechC
         private List<NativeWindow> windows = new();
         private Dictionary<NativeWindow, GameObject> windowColliders = new();
 
-        // コライダー移動許可範囲（ワールド座標系で指定）
         [Header("コライダー移動許可範囲")]
         public Vector2 areaCenter = Vector2.zero;
         public Vector2 areaSize = new Vector2(10, 6);
@@ -25,25 +24,19 @@ namespace TechC
             DelayUtility.StartDelayedAction(this, 0.1f, () =>
             {
                 var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
+                uint white = 0x00FFFFFF;
+                PInvoke.SetLayeredWindowAttributes((HWND)w.Hwnd, (COLORREF)white, 100, LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
+
                 w.SetRect();
                 windows.Add(w);
                 var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
                 windowColliders[w] = windowCollider;
                 UpdateColliderTransform(w, windowCollider);
             });
-
-            var gameView = WindowUtility.FindWindowWithTitleSubstring("Game");
-            var gameViewRect = WindowUtility.GetWindowRect(gameView);
-            
-            WindowUtility.GetClientRect(gameView, out var rect);
-            Debug.Log($"GameViewQQQ Rect: {gameViewRect.left}, {gameViewRect.top}, {gameViewRect.right}, {gameViewRect.bottom}");
-
-            Debug.Log($"GameView Rect: {rect.left}, {rect.top}, {rect.right}, {rect.bottom}");
         }
 
         void Update()
         {
-            // ウィンドウとコライダーを毎フレーム追従
             foreach (var w in windows)
             {
                 if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
@@ -51,143 +44,104 @@ namespace TechC
                     UpdateColliderTransform(w, colliderObj);
                 }
             }
-            // if (Time.frameCount % 60 == 0) // 60フレームごとに出力（約1秒ごと）
-            // {
-            //     float fps = 1f / Time.deltaTime;
-            //     Debug.Log($"FPS: {fps:F1}");
-            // }
         }
 
-        private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)
+      private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)
         {
-            // 1. リサイズと位置設定
-            WindowUtility.ResizeWindow((HWND)window.Hwnd, 100, 100);
             window.SetRect();
-            WindowUtility.MoveWindow((HWND)window.Hwnd, Screen.width / 2, Screen.height / 2);
 
-            // 2. ネイティブのスクリーン座標取得
             var (nativeX, nativeY) = window.GetScreenPosition();
-            // Debug.Log($"[Native] Screen Position: ({nativeX}, {nativeY})");
 
-            // 3. Unityゲームビューのスクリーン上の矩形
-            var unityRect = WindowUtility.GetUnityGameViewRect(); // Rect { X, Y, Width, Height }
-            // Debug.Log($"[Unity] GameView Rect: X={unityRect.X}, Y={unityRect.Y}, Width={unityRect.Width}, Height={unityRect.Height}");
+            // スクリーン解像度に合わせる（特にビルド時）
+            int screenW = Display.main.systemWidth;
+            int screenH = Display.main.systemHeight;
 
-            // 4. ネイティブ座標 -> Unityスクリーン座標へ変換
-            float unityX = nativeX - unityRect.X;
-            float unityY = (unityRect.Y + unityRect.Height) - nativeY;
-            Vector2 screenPos2D = new Vector2(unityX, unityY);
-            // Debug.Log($"[Unity] Converted Screen Pos: {screenPos2D}");
+            // ウィンドウの中心座標を計算（スクリーン座標系）
+            float windowCenterX = nativeX + window.Width * 0.5f;
+            float windowCenterY = nativeY + window.Height * 0.5f;
 
-            // 5. カメラからの距離
-            float zDistance = 5.3f;
-            Vector3 screenPos3D = new Vector3(screenPos2D.x, screenPos2D.y, zDistance);
-            // Debug.Log($"[Unity] Screen Pos 3D for World: {screenPos3D}");
+            // Unityのスクリーン座標に正規化（0〜screen.width / height）
+            float normalizedX = (windowCenterX / screenW) * Screen.width;
+            float normalizedY = ((screenH - windowCenterY) / screenH) * Screen.height;
 
-            // 6. ワールド座標への変換
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos3D);
-            // Debug.Log($"[Unity] World Position: {worldPos}");
+            var screenPos = new Vector3(normalizedX, normalizedY, 0);
 
-            // 7. オブジェクト移動
-            colliderObj.transform.position = worldPos;
-            Vector3 size3d = new Vector3(
-                3,
-                3,
-                3f
-            );
-            colliderObj.transform.localScale = size3d;
-            // int unityScreenX = unityRect.left;
-            // int unityScreenBottom = unityRect.bottom;
-            // int unityScreenWidth = unityRect.right - unityRect.left;
-            // int unityScreenHeight = unityRect.bottom - unityRect.top;
-            // // ネイティブウィンドウの左下座標（スクリーン座標系）
-            // int nativeLeft = nativeX;
-            // int nativeBottom = nativeY + nativeHeight;
+            Camera cam = Camera.main;
+            if (cam == null)
+            {
+                Debug.LogError("Main Camera not found!");
+                return;
+            }
 
-            // // Unityウィンドウ左下を原点とした相対座標
-            // float relativeX = nativeLeft - unityScreenX;
-            // float relativeY = unityScreenHeight - (nativeY - unityRect.top);
+            // Z距離を固定してワールド座標に変換
+            float fixedZ = -5.3f;
+            screenPos.z = Mathf.Abs(cam.transform.position.z - fixedZ);
+            Vector3 worldPos = cam.ScreenToWorldPoint(screenPos);
+            worldPos.z = fixedZ;
 
-            // // カメラからの距離を計算
-            // float colliderZ = -5.3f;
-            // float cameraZ = Camera.main.transform.position.z;
-            // float zDistance = Mathf.Abs(colliderZ - cameraZ);
+            Vector3 clampedPos = ClampToAllowedArea(worldPos);
+            colliderObj.transform.position = clampedPos;
 
-            // // スクリーン座標（左下・右上）→ワールド座標
-            // Vector3 screenLeftBottom = new Vector3(relativeX, relativeY, zDistance);
-            // Vector3 screenRightTop = new Vector3(relativeX + nativeWidth, relativeY + nativeHeight, zDistance);
-
-            // Vector3 worldLeftBottom = Camera.main.ScreenToWorldPoint(screenLeftBottom);
-            // Vector3 worldRightTop = Camera.main.ScreenToWorldPoint(screenRightTop);
-
-            // // colliderZでzを上書きしない
-            // // worldLeftBottom.z = colliderZ;
-            // // worldRightTop.z = colliderZ;
-
-            // // サイズ（zは3f固定）
-            // Vector3 size3d = new Vector3(
-            //     Mathf.Abs(worldRightTop.x - worldLeftBottom.x),
-            //     Mathf.Abs(worldRightTop.y - worldLeftBottom.y),
-            //     3f
-            // );
-
-            // // 中心座標
-            // Vector3 worldCenter = (worldLeftBottom + worldRightTop) / 2f;
-            // colliderObj.transform.position = worldCenter; // zもScreenToWorldPointの値を使う
-            // colliderObj.transform.localScale = size3d;
-            // Debug.Log($"Position: {colliderObj.transform.position}, Scale: {colliderObj.transform.localScale}");
-            // Debug.Log($"nativeX:{nativeX}, nativeY:{nativeY}, nativeWidth:{nativeWidth}, nativeHeight:{nativeHeight}");
-            // Debug.Log($"unityRect: left={unityRect.left}, top={unityRect.top}, right={unityRect.right}, bottom={unityRect.bottom}");
-            // Debug.Log($"relativeX:{relativeX}, relativeY:{relativeY}");
+            // サイズをワールド座標単位で設定
+            colliderObj.transform.localScale = GetWindowSizeInWorldUnits(window.Width, window.Height, cam, screenPos.z);
         }
 
-        // --- Gizmoで範囲を可視化 ---
+
+        private Vector3 ClampToAllowedArea(Vector3 worldPos)
+        {
+            float halfWidth = areaSize.x * 0.5f;
+            float halfHeight = areaSize.y * 0.5f;
+
+            float clampedX = Mathf.Clamp(worldPos.x, areaCenter.x - halfWidth, areaCenter.x + halfWidth);
+            float clampedY = Mathf.Clamp(worldPos.y, areaCenter.y - halfHeight, areaCenter.y + halfHeight);
+
+            return new Vector3(clampedX, clampedY, worldPos.z);
+        }
+
+        private Vector3 GetWindowSizeInWorldUnits(int pixelWidth, int pixelHeight, Camera camera, float zDistance)
+        {
+            // より正確なサイズ計算のため、画面中央を基準点として使用
+            Vector3 center = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, zDistance);
+            Vector3 offset = new Vector3(pixelWidth * 0.5f, pixelHeight * 0.5f, 0);
+
+            Vector3 worldCenter = camera.ScreenToWorldPoint(center);
+            Vector3 worldCorner = camera.ScreenToWorldPoint(center + offset);
+
+            float worldWidth = Mathf.Abs(worldCorner.x - worldCenter.x) * 2f;
+            float worldHeight = Mathf.Abs(worldCorner.y - worldCenter.y) * 2f;
+
+            return new Vector3(worldWidth, worldHeight, 1f);
+        }
+
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(new Vector3(areaCenter.x, areaCenter.y, -5.3f), new Vector3(areaSize.x, areaSize.y, 0.1f));
         }
 
-        /// <summary>
-        /// ウィンドウを画面を覆い隠すように分割して表示する（Ameの必殺技用）
-        /// </summary>
-        /// <param name="type">windowの種類</param>
-        /// <param name="maxSize">windowのサイズ</param>
-        /// <param name="tileSize">分割サイズ</param>
-        /// <param name="duration">時間</param>
-        /// <param name="tex">Imageの場合Texture</param>
         public void PopupWindowWindow(WindowFactory.WindowType type, int maxSize = 500, int tileSize = 200, float duration = 1f, Sprite tex = null)
         {
-            // 画面サイズ取得
             var unityRect = WindowUtility.GetUnityGameViewRect();
             int unityScreenX = unityRect.left;
             int unityScreenY = unityRect.top;
             int unityScreenWidth = unityRect.right - unityRect.left;
             int unityScreenHeight = unityRect.bottom - unityRect.top;
 
-            // Windowで隙間なく覆うための分割数を計算
             var rnd = new System.Random();
-
-            // 横・縦に何枚並べるか
             int xCount = Mathf.CeilToInt((float)unityScreenWidth / tileSize);
             int yCount = Mathf.CeilToInt((float)unityScreenHeight / tileSize);
-
             int windowCount = xCount * yCount;
             float interval = duration / windowCount;
 
-            // グリッドの全パターンをリスト化してシャッフル
-            List<(int xi, int yi)> gridList = new List<(int xi, int yi)>();
+            List<(int xi, int yi)> gridList = new();
             for (int xi = 0; xi < xCount; xi++)
                 for (int yi = 0; yi < yCount; yi++)
                     gridList.Add((xi, yi));
 
-            // シャッフル
             for (int i = gridList.Count - 1; i > 0; i--)
             {
                 int j = rnd.Next(i + 1);
-                var tmp = gridList[i];
-                gridList[i] = gridList[j];
-                gridList[j] = tmp;
+                (gridList[i], gridList[j]) = (gridList[j], gridList[i]);
             }
 
             int created = 0;
@@ -196,8 +150,6 @@ namespace TechC
                 if (created >= gridList.Count) return;
 
                 var (xi, yi) = gridList[created];
-
-                // 各グリッドで残り幅・高さを計算
                 int remainWidth = unityScreenWidth - xi * tileSize;
                 int remainHeight = unityScreenHeight - yi * tileSize;
 

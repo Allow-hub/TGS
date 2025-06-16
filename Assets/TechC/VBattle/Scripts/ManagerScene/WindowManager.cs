@@ -46,7 +46,7 @@ namespace TechC
             }
         }
 
-      private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)
+        private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)
         {
             window.SetRect();
 

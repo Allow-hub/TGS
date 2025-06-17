@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 328656c474162ad43b0d879612c78037
+guid: c20b9afb57f049f4992f71f6ca3e3428
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -94,7 +94,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
-    buildTarget: WebGL
+    buildTarget: iPhone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -119,30 +119,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: iPhone
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ingame_L-HPbar-button_0
+      name: ingame_L-HPbutton 1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 35
-        height: 35
+        width: 58
+        height: 27
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 1, y: 1, z: 1, w: 1}
@@ -150,8 +137,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8000588385b395843ba12f8815a1b8a7
-      internalID: 643492662
+      spriteID: 05bbf31b428166f4ab48219881609069
+      internalID: 1312023454
       vertices: []
       indices: 
       edges: []
@@ -159,7 +146,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 80bf9e90d619e9a42ae287bdd419215d
     internalID: 0
     vertices: []
     indices: 
@@ -167,7 +154,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ingame_L-HPbar-button_0: 643492662
+      ingame_L-HPbutton 1_0: 1312023454
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

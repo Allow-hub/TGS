@@ -61,6 +61,7 @@ namespace TechC.Player
         private float currentGuardPower;
         private float lastGuardTime;
         private Vector3 lastVelocity;
+        private float lastAnimSpeed;
 
         // 移動・物理関連
         private Rigidbody rb;
@@ -88,6 +89,7 @@ namespace TechC.Player
         public Rigidbody Rb => rb;
         public float DefaultAnimSpeed => defaultAnimSpeed;
         public CharacterType CharacterType => characterType;
+        public Player.CharacterController OpponentController => opponentController;
         public int PlayerID => playerID; // PlayerIDのゲッター
         #endregion
 

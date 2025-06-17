@@ -8,30 +8,19 @@ namespace TechC
     /// </summary>
     internal static class WebView2NativeMethods
     {
-        public static void SendUrlToWebView2(string url)
-        {
-            using (var pipe = new NamedPipeClientStream(".", "WebView2Pipe", PipeDirection.Out))
-            {
-                pipe.Connect(1000); // 1秒待つ
-                using (var writer = new StreamWriter(pipe))
-                {
-                    writer.WriteLine(url);
-                    writer.Flush();
-                }
-            }
-        }
-
         /// <summary>
-        /// WebView2のキャッシュ削除コマンドを送信
+        /// URLまたはHTMLを送信してWebView2を更新するメソッド。
+        /// このメソッドは、WebView2のネイティブアプリケーションと通信するためにNamedPipeを使用します。
         /// </summary>
-        public static void ClearWebView2Cache()
+        /// <param name="content"></param>
+        public static void SendContentToWebView2(string content)
         {
             using (var pipe = new NamedPipeClientStream(".", "WebView2Pipe", PipeDirection.Out))
             {
-                pipe.Connect(1000); // 1秒待つ
+                pipe.Connect(1000);
                 using (var writer = new StreamWriter(pipe))
                 {
-                    writer.WriteLine("CLEAR_CACHE");
+                    writer.WriteLine(content);
                     writer.Flush();
                 }
             }

@@ -1,10 +1,6 @@
 ﻿using IceMilkTea.StateMachine;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using TechC.Extensions;
-using TechC.Player;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 using static TechC.AttackManager;
 
@@ -102,14 +98,12 @@ namespace TechC
             stateMachine.AddTransition<AttackState, NeutralState>((int)StateEventId.Neutral);
             stateMachine.AddTransition<GuardState, NeutralState>((int)StateEventId.Neutral);
             stateMachine.AddTransition<DamageState, NeutralState>((int)StateEventId.Neutral);
-            //stateMachine.AddTransition<AppealState, NeutralState>((int)StateEventId.Neutral);
 
             //通常ステートからの移行
             stateMachine.AddTransition<NeutralState, AirState>((int)StateEventId.Air);
             stateMachine.AddTransition<NeutralState, GuardState>((int)StateEventId.Guard);
             stateMachine.AddTransition<NeutralState, AttackState>((int)StateEventId.Attack);
             stateMachine.AddTransition<NeutralState, DamageState>((int)StateEventId.Damage);
-            //stateMachine.AddTransition<NeutralState, AppealState>((int)StateEventId.Appeal);
 
             //空中ステートからの移行
             stateMachine.AddTransition<AirState, DamageState>((int)StateEventId.Damage);
@@ -118,8 +112,6 @@ namespace TechC
             //攻撃ステートからの移行
             stateMachine.AddTransition<AttackState, DamageState>((int)StateEventId.Damage);
 
-            //アピールステートからの移行
-            //stateMachine.AddTransition<AppealState, DamageState>((int)StateEventId.Damage);
 
             //どのステートからでも移行できる
             stateMachine.AddAnyTransition<DeadState>((int)StateEventId.Dead);

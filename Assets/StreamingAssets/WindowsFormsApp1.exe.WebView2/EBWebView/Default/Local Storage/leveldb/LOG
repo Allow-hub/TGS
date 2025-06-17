@@ -1,3 +1,6 @@
-2025/06/14-15:32:27.636 41ec Reusing MANIFEST C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
-2025/06/14-15:32:27.662 41ec Recovering log #3
-2025/06/14-15:32:27.667 41ec Reusing old log C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Local Storage\leveldb/000003.log 
+2025/06/17-15:43:37.880 33e0 Reusing MANIFEST C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
+2025/06/17-15:43:37.910 33e0 Recovering log #3
+2025/06/17-15:43:37.915 33e0 Reusing old log C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\Local Storage\leveldb/000003.log 
+2025/06/17-15:43:52.709 15ec Level-0 table #5: started
+2025/06/17-15:43:52.717 15ec Level-0 table #5: 10727 bytes OK
+2025/06/17-15:43:52.723 15ec Delete type=0 #3

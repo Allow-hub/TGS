@@ -19,6 +19,19 @@ namespace TechC
         public static string WINDOWLOGTAG = "window";
         #region ウィンドウ作成・取得
 
+        public static float GetDpiScaleRatio(HWND hwnd)
+        {
+            try
+            {
+                float dpiX = PInvoke.GetDpiForWindow(hwnd);
+                return dpiX / 96.0f; // 96 DPIが基準
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"GetDpiScaleRatio failed: {ex.Message}");
+                return 1.0f; // デフォルトのスケール
+            }
+        }
         /// <summary>
         /// 現在のUnityウィンドウのハンドルを取得（より確実な方法）
         /// </summary>

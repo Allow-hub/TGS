@@ -54,6 +54,6 @@ GetClientRect
 GetWindowText
 GetWindowTextLength
 SetLayeredWindowAttributes
-GetDpiForMonitor
+GetDpiForWindow
 MonitorFromPoint
 Windows.Win32.Foundation.POINT

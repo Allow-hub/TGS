@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace TechC
 {
@@ -31,6 +32,7 @@ namespace TechC
 
         #region インスペクター設定項目
         [SerializeField] private TextMeshProUGUI timerText;
+        [SerializeField] private Slider timerSlider;
         [Header("バトル設定")]
         [SerializeField] private float timeLimit = 180f;  // 制限時間（秒）
         [SerializeField] private bool isTimeLimitEnabled = true;  // 制限時間の有無
@@ -90,6 +92,7 @@ namespace TechC
             if (isTimeLimitEnabled)
             {
                 currentTime -= Time.deltaTime;
+                timerSlider.value = currentTime / timeLimit; // スライダーの更新
                 OnTimeUpdate?.Invoke(currentTime);
                 timerText.text = currentTime.ToString("N0");
                 if (currentTime <= 0)

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5311d696b89f0854daf4911dd32e8589
+guid: 49a2a77c97abb734da827a3b1301dfb9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -123,13 +123,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ingame_under-bar-TIME0_0
+      name: timer_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1734
-        height: 132
+        x: 444
+        y: 330
+        width: 1032
+        height: 418
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 1, y: 1, z: 1, w: 1}
@@ -137,8 +137,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: babd76f56bc232947b932ef16fe0268e
-      internalID: -767680068
+      spriteID: 1795a3c15e738b640815b4ade7b01f19
+      internalID: -1472821914
       vertices: []
       indices: 
       edges: []
@@ -146,7 +146,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 28809d78bb193704c8d2ff97fad95033
     internalID: 0
     vertices: []
     indices: 
@@ -154,7 +154,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ingame_under-bar-TIME0_0: -767680068
+      timer_0: -1472821914
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

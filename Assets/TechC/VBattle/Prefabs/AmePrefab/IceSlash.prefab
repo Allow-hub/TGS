@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4923032584641568461}
   - component: {fileID: 2892843454470339098}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceSlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,6 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackData: {fileID: 11400000, guid: b4913a5484cda7344a9dccbf3f637fa0, type: 2}
+  vfx: {fileID: 7725357957902029645}
+  rb: {fileID: 0}
+  canHeal: 0
+  canSelfReturn: 0
 --- !u!1 &3977808271224849345
 GameObject:
   m_ObjectHideFlags: 0
@@ -57,7 +61,7 @@ GameObject:
   - component: {fileID: 5436084832399177807}
   - component: {fileID: 7725357957902029645}
   - component: {fileID: 473830630513343023}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceSlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}

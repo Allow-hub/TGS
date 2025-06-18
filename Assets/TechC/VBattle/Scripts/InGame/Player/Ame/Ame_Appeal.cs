@@ -17,8 +17,6 @@ namespace TechC
         [SerializeField] private float rushDuration = 0.5f; // 前進時間
         [SerializeField] private LayerMask targetLayerMask = 0; // 攻撃対象のレイヤー
         [SerializeField] private LayerMask wallLayerMask = 7; // 壁のレイヤー
-        [SerializeField] private float rayLength = 0.5f; // レイの長さ
-        [SerializeField] private float wallCheckDistance = 2f; // 壁チェック用レイの長さ
         [SerializeField] private float raycastInterval = 0.1f; // レイキャストの間隔
         private bool isRushing = false;
         private Rigidbody rb;

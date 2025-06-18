@@ -1,8 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace TechC
@@ -20,7 +17,6 @@ namespace TechC
         private Vector3 lastAttackPosition;
         private float lastAttackRadius;
         private Player.CharacterController characterController;
-        private Player.CharacterController opponentCharacterController;
         private ComboSystem comboSystem;
 
         // ヒットエフェクトの持続時間（秒）
@@ -43,23 +39,10 @@ namespace TechC
                 HitConfirmed(hitCollider.transform.position);
             }
         }
-        /// <summary>
-        /// 攻撃処理を実行する
-        /// </summary>
-        // public IEnumerator ProcessAttack(AttackData attackData)
-        // {
-        //     yield return new WaitForSeconds(attackData.hitTiming);
-        //     // ヒットチェックを実行し、ヒットした場合にヒットストップを発生させる
-        //     if (PerformAttackHitCheck(attackData))
-        //     {
-        //         // ヒットストップを実行
-        //         HitStopManager.I.DoHitStop(attackData.hitStopDuration, attackData.hitStopTimeScale);
-        //     }
-        // }
         
         public void ProcessAttack(AttackData attackData)
         {
-            DelayUtility.StartDelayedActionWithPause(characterController, attackData.hitTiming,BattleJudge.I.GetPauseStateFunc ,() =>
+            DelayUtility.StartDelayedActionWithPause(characterController, attackData.hitTiming, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 // ヒットチェックを実行し、ヒットした場合にヒットストップを発生させる
                 if (PerformAttackHitCheck(attackData))
@@ -115,6 +98,7 @@ namespace TechC
                 Collider[] hitColliders = Physics.OverlapSphere(attackPosition, attackData.radius, attackData.targetLayers);
                 foreach (var hitCollider in hitColliders)
                 {
+                    
                     if (IsOwnCollider(hitCollider))
                         continue;
                     if (TryProcessHit(hitCollider, attackData))
@@ -157,7 +141,7 @@ namespace TechC
         {
             var targetController = GetOpponentController(hitCollider);
             if (targetController == null) return false;
-
+            if (targetController.PlayerID == characterController.PlayerID) return false;
             if (TryProcessGuard(targetController, hitCollider, attackData))
             {
                 return true;

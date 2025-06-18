@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TechC
 {
@@ -16,16 +14,15 @@ namespace TechC
         [SerializeField] private GameObject iceExplosionPrefab;
         [SerializeField] private GameObject iceRosePrefab;
         [SerializeField] private GameObject iceWallPrefab;
-
-
-        [Header("エフェクトのプレハブや参照")]
         [SerializeField] private GameObject bladeStormPrefab;
 
-        // [Header("ニュートラル強")]
+
         [Header("ニュートラル強")]
-        [SerializeField] private GameObject iceClonePrefab; // 分身のプレハブ
-        [SerializeField] private float echoTimeWindow = 3.0f; // 再現する時間幅
-        [SerializeField] private int maxEchoCount = 3;
+        [SerializeField] private TransformRecorder transformRecorder;
+        [SerializeField] private CommandHistory commandHistory;
+        [SerializeField] private GameObject iceCloneObj; // 分身のプレハブ
+        [SerializeField] private float echoTimeInterval = 3.0f; // 再現する時間幅
+        private bool isCloneAttacking = false;
 
         [Header("左強")]
         [SerializeField] private float magicDuration = 2f;
@@ -33,24 +30,16 @@ namespace TechC
         [SerializeField] private float leftStrongVelocity;
         [SerializeField] private float explosionDuration = 3f;
         private GameObject currentIceObj;
-        private float elapsedTime;
         private const int MAXCOUNT = 2;
         private int currentCount;
-        private bool OnleftStrong = false;
 
-        // [Header("右強")]
         [Header("右強")]
         [SerializeField] private float iceWallDuration = 5.0f;
         [SerializeField] private float wallOffset = 1.5f;
 
-        // [Header("下強")]
-        // [Header("上強")]
         [Header("上強")]
-
         [SerializeField] private float returnStrongUpEffectTime = 3f;
         [SerializeField] private float upwardVelocity = 2.5f;
-        [SerializeField] private float backOffset = 0.5f;
-        [SerializeField] private float scaleVariance = 0.3f;
 
 
 
@@ -59,36 +48,26 @@ namespace TechC
         /// </summary>
         public override void NeutralAttack()
         {
+            if (isCloneAttacking) return;
             base.NeutralAttack();
+            var cloneObj = Instantiate(iceCloneObj);
+            transformRecorder.StartReplayFromSecondsAgo(echoTimeInterval, cloneObj.transform);
 
-            var commandHistory = GetComponent<CommandHistory>();
             if (commandHistory == null)
             {
                 Debug.LogWarning("CommandHistoryが見つかりませんでした");
                 return;
             }
-
-            List<CommandHistory.CommandRecord> recentAttacks = commandHistory.GetFullHistory()
-                .FindAll(r => r.commandInstance is AttackCommand && Time.time - r.executionTime <= echoTimeWindow);
-
-            int echoCount = 0;
-
-            foreach (var record in recentAttacks)
+            var cloneController = cloneObj.GetComponent<Player.CharacterController>();
+            cloneController.SetClonePlayerID(characterController.PlayerID);
+            if (characterController.GetCharacterState().AttackManager == null) return;
+            commandHistory.ReplayAttackCommandsFromSecondsAgo(echoTimeInterval, cloneController.GetCharacterState().AttackManager);
+            isCloneAttacking = true;
+            DelayUtility.StartDelayedActionWithPause(this, echoTimeInterval, BattleJudge.I.GetPauseStateFunc, () =>
             {
-                if (echoCount >= maxEchoCount) break;
-
-                Vector3 spawnPos = record.playerPosition + Vector3.up * 0.1f;
-                GameObject clone = Instantiate(iceClonePrefab, spawnPos, Quaternion.identity);
-
-                // 攻撃コマンドの再実行
-                if (record.commandInstance is AttackCommand atkCmd)
-                {
-                    // Clone の Transform や ID を使って攻撃の方向などを上書きしてもOK
-                    atkCmd.Execute();  // 通常はクローンに対してやりたい処理
-                }
-
-                echoCount++;
-            }
+                Destroy(cloneObj);
+                isCloneAttacking = false;
+            });
         }
 
 
@@ -104,10 +83,11 @@ namespace TechC
             if (currentCount < MAXCOUNT)
             {
                 magicCircle.SetActive(true);
-                DelayUtility.StartDelayedAction(this, magicDuration, () =>
+                DelayUtility.StartDelayedActionWithPause(this, magicDuration, BattleJudge.I.GetPauseStateFunc, () =>
                 {
                     magicCircle.SetActive(false);
                 });
+
                 var pos = transform.position.AddY(yOffset);
                 currentIceObj = CharaEffectFactory.I.GetEffectObj(iceDataPrefab, pos, Quaternion.identity);
                 var rb = currentIceObj.GetComponent<Rigidbody>();
@@ -116,20 +96,19 @@ namespace TechC
             }
             else
             {
-
                 var createPos = currentIceObj.transform.position;
                 CharaEffectFactory.I.ReturnEffectObj(currentIceObj);
                 var explosionObj = CharaEffectFactory.I.GetEffectObj(iceExplosionPrefab, createPos, Quaternion.identity);
                 var charaEffectSetting = explosionObj.GetComponent<CharaEffect>();
                 charaEffectSetting.SetOwnerId(characterController.PlayerID);
                 charaEffectSetting.SetAttackProcessor(attackProcessor);
-                DelayUtility.StartDelayedAction(this, explosionDuration, () =>
+                DelayUtility.StartDelayedActionWithPause(this, explosionDuration, BattleJudge.I.GetPauseStateFunc, () =>
                 {
                     CharaEffectFactory.I.ReturnEffectObj(explosionObj);
                 });
                 currentCount = 0;
             }
-            AudioManager.I.PlayCharacterSE(CharacterType.Ame,CharacterSEType.StrongLeftAttack);
+            AudioManager.I.PlayCharacterSE(CharacterType.Ame, CharacterSEType.StrongLeftAttack);
         }
 
         /// <summary>
@@ -162,7 +141,7 @@ namespace TechC
             TryLaunchEnemy(iceWallObj);
 
             // 一定時間後にエフェクト削除
-            DelayUtility.StartDelayedAction(this, iceWallDuration, () =>
+            DelayUtility.StartDelayedActionWithPause(this, iceWallDuration, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 CharaEffectFactory.I.ReturnEffectObj(iceWallObj);
             });
@@ -204,12 +183,6 @@ namespace TechC
                 }
             }
         }
-
-
-
-
-
-
 
         /// <summary>
         /// 下に剣を突き立てて周囲に氷の薔薇を咲かせて範囲攻撃
@@ -255,10 +228,10 @@ namespace TechC
                 charaEffect.SetAttackProcessor(attackProcessor);
             }
 
-            DelayUtility.StartDelayedAction(this, returnStrongUpEffectTime, () =>
-            {
-                CharaEffectFactory.I.ReturnEffectObj(stormObj);
-            });
+            DelayUtility.StartDelayedActionWithPause(this, returnStrongUpEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
+           {
+               CharaEffectFactory.I.ReturnEffectObj(stormObj);
+           });
         }
 
 
@@ -273,7 +246,7 @@ namespace TechC
         private void ActiveSword(float duration)
         {
             swordObj.gameObject.SetActive(true);
-            DelayUtility.StartDelayedAction(this, duration, () =>
+            DelayUtility.StartDelayedActionWithPause(this, duration, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 swordObj.gameObject.SetActive(false);
             });

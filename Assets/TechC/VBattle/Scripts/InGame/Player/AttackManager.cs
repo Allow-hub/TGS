@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using TechC.Player;
-using UnityEngine;
+﻿using UnityEngine;
 using static TechC.CharacterState;
 
 namespace TechC
@@ -22,7 +18,6 @@ namespace TechC
         private IAttackBase appeal;
         private IAttackBase airAttack;
 
-        private AttackData currentAttackData;
 
 
         /// <summary>
@@ -47,50 +42,17 @@ namespace TechC
             // if (airAttack == null) Debug.LogError("AirAttack実装が IAttackBase を実装していません");
         }
 
-        //// コマンドを作成して返すファクトリメソッド
-        //public ICommand CreateAttackCommand(CharacterState.AttackType attackType, bool isWeak, float duration)
-        //{
-        //    Debug.Log("CreateCommand");
-        //    IAttackBase attackImpl = isWeak ? weakAttack : strongAttack;
-        //    switch (attackType)
-        //    {
-        //        case CharacterState.AttackType.Neutral:
-        //            return isWeak
-        //                ? new WeakNeutralAttackCommand(attackImpl, characterController, 1)
-        //                : new WeakNeutralAttackCommand(attackImpl, characterController, 1);
-        //        case CharacterState.AttackType.Left:
-        //            return isWeak
-        //                ? new WeakNeutralAttackCommand(attackImpl, characterController, 1)
-        //                : new WeakNeutralAttackCommand(attackImpl, characterController, 1);
-        //        // 他の方向も同様に
-        //        default:
-        //            Debug.LogWarning("未定義のAttackTypeが指定されました");
-        //            return isWeak
-        //                ? new WeakNeutralAttackCommand(attackImpl, characterController, 1)
-        //                : new WeakNeutralAttackCommand(attackImpl, characterController, 1);
-        //    }
-        //    return null;
-        //}
-
-
-
         /// <summary>
         /// 攻撃種の設定
         /// </summary>
         /// <param name="attackType"></param>
-        /// <param name="context"></param>
-        public void ExecuteAttack(AttackType attackType, CharacterState context)
+        public void ExecuteAttack(AttackType attackType)
         {
-
             // 空中攻撃はまだ
-
-            //float attackDuration = 1.0f; // デフォルト持続時間
 
             // 強攻撃
             if (playerInputManager.IsStrongAttacking && strongAttack != null)
             {
-                //var command = CreateAttackCommand(attackType, false, attackDuration);
-                //command?.Execute();
                 ExecuteSpecificAttack(strongAttack, attackType);
                 return;
             }
@@ -98,8 +60,6 @@ namespace TechC
             // 弱攻撃
             if (playerInputManager.IsWeakAttacking && weakAttack != null)
             {
-                //var command = CreateAttackCommand(attackType, true, attackDuration);
-                //command?.Execute();
                 ExecuteSpecificAttack(weakAttack, attackType);
                 return;
             }
@@ -107,8 +67,6 @@ namespace TechC
             // アピール
             if (playerInputManager.IsAppealing && appeal != null)
             {
-                //var command = CreateAttackCommand(attackType, true, attackDuration);
-                //command?.Execute();
                 ExecuteSpecificAttack(appeal, attackType);
                 return;
             }
@@ -116,6 +74,29 @@ namespace TechC
             Debug.LogWarning("攻撃が入力されていません");
         }
 
+        /// <summary>
+        /// 攻撃を再現するときに使うオーバーロードメソッド
+        /// </summary>
+        /// <param name="attackType"></param>
+        /// <param name="attackStrength"></param>
+        public void ReplayExecuteAttack(AttackType attackType, AttackStrength attackStrength)
+        {
+            if (weakAttack != null && attackStrength == AttackStrength.Weak)
+            {
+                ExecuteSpecificAttack(weakAttack, attackType);
+                return;
+            }
+            if (strongAttack != null && attackStrength == AttackStrength.Strong)
+            {
+                ExecuteSpecificAttack(strongAttack, attackType);
+                return;
+            }
+            if (appeal != null && attackStrength == AttackStrength.Appeal)
+            {
+                ExecuteSpecificAttack(appeal, attackType);
+                return;
+            }
+        }
 
         /// <summary>
         /// 向きによって攻撃種を変更

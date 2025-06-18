@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7316563897662353684}
   - component: {fileID: 5042321605036330226}
   - component: {fileID: 7428261409202861442}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: VolcanoExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -298,7 +298,7 @@ GameObject:
   - component: {fileID: 2797759442221001637}
   - component: {fileID: 3237262075612831209}
   - component: {fileID: -2033440348454686484}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -382,3 +382,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackData: {fileID: 11400000, guid: 4adf88afa8babbd49ba3b2ee06d2b996, type: 2}
+  vfx: {fileID: 5042321605036330226}
+  rb: {fileID: 2797759442221001637}
+  canHeal: 0
+  canSelfReturn: 0

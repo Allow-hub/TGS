@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -59,8 +60,6 @@ namespace TechC
         private List<CommandRecord> commandHistory = new();
 
         [SerializeField] private bool showDebugLog = true;
-        [SerializeField] private bool showGUI = false;
-        [SerializeField] private int displayCount = 10;
 
         /// <summary>
         /// コマンド実行を記録
@@ -157,22 +156,67 @@ namespace TechC
         }
 
         /// <summary>
-        /// GUIで表示（デバッグ用）
+        /// 指定秒数前から現在までのAttackCommandを古い順に順次再実行する（Coroutine版）
         /// </summary>
-        private void OnGUI()
+        /// <param name="secondsAgo">何秒前から再実行するか</param>
+        /// <param name="attackManager">AttackManager</param>
+        public void ReplayAttackCommandsFromSecondsAgo(float secondsAgo, AttackManager attackManager)
         {
-            if (!showGUI) return;
-
-            GUILayout.BeginArea(new Rect(10, 10, 400, 25 * displayCount));
-            GUILayout.Label("コマンド履歴:");
-
-            int start = Mathf.Max(0, commandHistory.Count - displayCount);
-            for (int i = start; i < commandHistory.Count; i++)
-            {
-                GUILayout.Label(commandHistory[i].ToString());
-            }
-            GUILayout.EndArea();
+            StartCoroutine(ReplayCoroutine(secondsAgo, attackManager));
         }
+
+        private IEnumerator ReplayCoroutine(float secondsAgo, AttackManager attackManager)
+        {
+            float now = Time.time;
+            float replayFrom = now - secondsAgo;
+
+            // 再生対象のAttackCommandを抽出（古い順）
+            var attacksToReplay = new List<CommandRecord>();
+            foreach (var record in commandHistory)
+            {
+                if (record.executionTime >= replayFrom && record.commandInstance is AttackCommand)
+                {
+                    attacksToReplay.Add(record);
+                }
+            }
+            attacksToReplay.Sort((a, b) => a.executionTime.CompareTo(b.executionTime));
+
+            if (attacksToReplay.Count == 0)
+                yield break;
+
+            float firstCommandTime = attacksToReplay[0].executionTime;
+
+            for (int i = 0; i < attacksToReplay.Count; i++)
+            {
+                var record = attacksToReplay[i];
+
+                // 最初のコマンドとの差分時間を使って待機
+                float delay = record.executionTime - firstCommandTime;
+                if (delay > 0f)
+                    yield return new WaitForSeconds(delay);
+
+                // 攻撃実行
+                if (record.commandInstance is AttackCommand attackCmd)
+                {
+                    if (attackCmd.Type == CharacterState.AttackType.Neutral && attackCmd.Strength == AttackManager.AttackStrength.Strong)
+                        continue;
+                    attackCmd.ExecuteAttack(attackCmd.Type, attackCmd.Strength, attackManager);
+                    if (showDebugLog)
+                        Debug.Log($"Replayed: {record}.Type{attackCmd.Type} Strength{attackCmd.Strength}");
+                }
+
+                // 次のコマンドとの時間差を差分にして累積ではない形にする
+                if (i + 1 < attacksToReplay.Count)
+                {
+                    float currentTime = record.executionTime;
+                    float nextTime = attacksToReplay[i + 1].executionTime;
+                    float interval = nextTime - currentTime;
+                    if (interval > 0f)
+                        yield return new WaitForSeconds(interval);
+                }
+            }
+        }
+
 
         /// <summary>
         /// 最新のコマンド名を取得
@@ -180,36 +224,5 @@ namespace TechC
         /// <returns></returns>
         public string GetLatestCommandName() => commandHistory.Count > 0 ? commandHistory[^1].commandName : "なし";
 
-        /// <summary>
-        /// コマンドの型一致でコンボをチェック（シンプル版）
-        /// </summary>
-        /// <param name="types"></param>
-        /// <param name="maxInterval"></param>
-        /// <returns></returns>
-        public bool CheckCombo(Type[] types, float maxInterval = 1.0f)
-        {
-            if (types.Length == 0 || commandHistory.Count < types.Length) return false;
-
-            int index = commandHistory.Count - 1;
-            for (int i = types.Length - 1; i >= 0; i--)
-            {
-                bool found = false;
-                float lastTime = i < types.Length - 1 ? commandHistory[index + 1].executionTime : float.MaxValue;
-
-                while (index >= 0)
-                {
-                    var r = commandHistory[index];
-                    if (r.commandName == types[i].Name && r.wasSuccessful && lastTime - r.executionTime <= maxInterval)
-                    {
-                        found = true;
-                        break;
-                    }
-                    index--;
-                }
-
-                if (!found) return false;
-            }
-            return true;
-        }
     }
 }

@@ -34,13 +34,13 @@ namespace TechC
 
         void Update()
         {
-            foreach (var w in windows)
-            {
-                if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
-                {
-                    UpdateColliderTransform(w, colliderObj);
-                }
-            }
+            // foreach (var w in windows)
+            // {
+            //     if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
+            //     {
+            //         UpdateColliderTransform(w, colliderObj);
+            //     }
+            // }
         }
 
         private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)

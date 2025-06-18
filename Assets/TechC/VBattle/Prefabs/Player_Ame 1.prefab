@@ -953,6 +953,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 0cce1426-106a-4d4f-bc3b-83ce140e196c
     m_ActionName: Player/Crouch[/Keyboard/s]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f346a95e-8acd-44f2-9b66-cc87827c311e
+    m_ActionName: Player/Menu[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: KeyBoardScheme
   m_DefaultActionMap: Player
@@ -965,7 +969,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7627828736903395385}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 306094bde86e85343ae44ddac3588188, type: 3}
   m_Name: 
@@ -985,7 +989,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7627828736903395385}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4af0f20915ea8774b8271f4a7a3bf32e, type: 3}
   m_Name: 
@@ -1051,9 +1055,10 @@ MonoBehaviour:
     type: 3}
   bladeStormPrefab: {fileID: 7371667505975298854, guid: c80a682fb7c79e14593541978e10212b,
     type: 3}
-  iceClonePrefab: {fileID: 0}
-  echoTimeWindow: 3
-  maxEchoCount: 3
+  transformRecorder: {fileID: 0}
+  commandHistory: {fileID: 0}
+  iceCloneObj: {fileID: 0}
+  echoTimeInterval: 3
   magicDuration: 2
   yOffset: 1
   leftStrongVelocity: 5
@@ -1062,8 +1067,6 @@ MonoBehaviour:
   wallOffset: 1.5
   returnStrongUpEffectTime: 3
   upwardVelocity: 2.5
-  backOffset: 0.5
-  scaleVariance: 0.3
 --- !u!114 &9141137595621075143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1131,6 +1134,7 @@ MonoBehaviour:
   inputManager: {fileID: 6455736973200020084}
   canChargeDuration: 10
   errorSprite: {fileID: 0}
+  specialSprite: {fileID: 0}
   rushDistance: 20
   rushDuration: 0.5
   targetLayerMask:
@@ -1139,8 +1143,6 @@ MonoBehaviour:
   wallLayerMask:
     serializedVersion: 2
     m_Bits: 7
-  rayLength: 0.5
-  wallCheckDistance: 2
   raycastInterval: 0.1
 --- !u!114 &3455362588810788779
 MonoBehaviour:
@@ -1156,8 +1158,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHistorySize: 50
   showDebugLog: 0
-  showGUI: 0
-  displayCount: 10
 --- !u!114 &2764965064054818122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1191,7 +1191,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7627828736903395385}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a42e09dcf65ed7547ac3bb9829f46fd8, type: 3}
   m_Name: 

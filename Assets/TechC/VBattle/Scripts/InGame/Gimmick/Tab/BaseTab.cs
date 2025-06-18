@@ -1,13 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
+
 
 namespace TechC
 {
     [RequireComponent(typeof(RectTransform))]
-    public class BaseTab : MonoBehaviour,ITab
+    public class BaseTab : MonoBehaviour, ITab
     {
         [SerializeField] protected float slideDuration = 0.5f;    // スライドアニメ時間
         [SerializeField] protected float visibleTime = 3f;        // 表示持続時間
@@ -38,7 +36,7 @@ namespace TechC
 
         public virtual void Excute()
         {
-            
+
         }
 
         protected IEnumerator SlideIn()

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TechC
 {
@@ -21,9 +20,9 @@ namespace TechC
         [Header("ニュートラル強")]
         [SerializeField] private TransformRecorder transformRecorder;
         [SerializeField] private CommandHistory commandHistory;
-        [SerializeField] private Player.CharacterController cloneController;
         [SerializeField] private GameObject iceCloneObj; // 分身のプレハブ
         [SerializeField] private float echoTimeInterval = 3.0f; // 再現する時間幅
+        private bool isCloneAttacking = false;
 
         [Header("左強")]
         [SerializeField] private float magicDuration = 2f;
@@ -49,22 +48,25 @@ namespace TechC
         /// </summary>
         public override void NeutralAttack()
         {
+            if (isCloneAttacking) return;
             base.NeutralAttack();
-            iceCloneObj.SetActive(true);
-            transformRecorder.StartReplayFromSecondsAgo(echoTimeInterval, iceCloneObj.transform);
+            var cloneObj = Instantiate(iceCloneObj);
+            transformRecorder.StartReplayFromSecondsAgo(echoTimeInterval, cloneObj.transform);
 
             if (commandHistory == null)
             {
                 Debug.LogWarning("CommandHistoryが見つかりませんでした");
                 return;
             }
-            // Debug.Log(characterController.GetCharacterState().AttackManager);
+            var cloneController = cloneObj.GetComponent<Player.CharacterController>();
+            cloneController.SetClonePlayerID(characterController.PlayerID);
             if (characterController.GetCharacterState().AttackManager == null) return;
-             commandHistory.ReplayAttackCommandsFromSecondsAgo(echoTimeInterval, cloneController.GetCharacterState().AttackManager);
-
+            commandHistory.ReplayAttackCommandsFromSecondsAgo(echoTimeInterval, cloneController.GetCharacterState().AttackManager);
+            isCloneAttacking = true;
             DelayUtility.StartDelayedActionWithPause(this, echoTimeInterval, BattleJudge.I.GetPauseStateFunc, () =>
             {
-                iceCloneObj.SetActive(false);
+                Destroy(cloneObj);
+                isCloneAttacking = false;
             });
         }
 
@@ -81,10 +83,11 @@ namespace TechC
             if (currentCount < MAXCOUNT)
             {
                 magicCircle.SetActive(true);
-                DelayUtility.StartDelayedAction(this, magicDuration, () =>
+                DelayUtility.StartDelayedActionWithPause(this, magicDuration, BattleJudge.I.GetPauseStateFunc, () =>
                 {
                     magicCircle.SetActive(false);
                 });
+
                 var pos = transform.position.AddY(yOffset);
                 currentIceObj = CharaEffectFactory.I.GetEffectObj(iceDataPrefab, pos, Quaternion.identity);
                 var rb = currentIceObj.GetComponent<Rigidbody>();
@@ -93,14 +96,13 @@ namespace TechC
             }
             else
             {
-
                 var createPos = currentIceObj.transform.position;
                 CharaEffectFactory.I.ReturnEffectObj(currentIceObj);
                 var explosionObj = CharaEffectFactory.I.GetEffectObj(iceExplosionPrefab, createPos, Quaternion.identity);
                 var charaEffectSetting = explosionObj.GetComponent<CharaEffect>();
                 charaEffectSetting.SetOwnerId(characterController.PlayerID);
                 charaEffectSetting.SetAttackProcessor(attackProcessor);
-                DelayUtility.StartDelayedAction(this, explosionDuration, () =>
+                DelayUtility.StartDelayedActionWithPause(this, explosionDuration, BattleJudge.I.GetPauseStateFunc, () =>
                 {
                     CharaEffectFactory.I.ReturnEffectObj(explosionObj);
                 });
@@ -139,7 +141,7 @@ namespace TechC
             TryLaunchEnemy(iceWallObj);
 
             // 一定時間後にエフェクト削除
-            DelayUtility.StartDelayedAction(this, iceWallDuration, () =>
+            DelayUtility.StartDelayedActionWithPause(this, iceWallDuration, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 CharaEffectFactory.I.ReturnEffectObj(iceWallObj);
             });
@@ -226,10 +228,10 @@ namespace TechC
                 charaEffect.SetAttackProcessor(attackProcessor);
             }
 
-            DelayUtility.StartDelayedAction(this, returnStrongUpEffectTime, () =>
-            {
-                CharaEffectFactory.I.ReturnEffectObj(stormObj);
-            });
+            DelayUtility.StartDelayedActionWithPause(this, returnStrongUpEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
+           {
+               CharaEffectFactory.I.ReturnEffectObj(stormObj);
+           });
         }
 
 
@@ -244,7 +246,7 @@ namespace TechC
         private void ActiveSword(float duration)
         {
             swordObj.gameObject.SetActive(true);
-            DelayUtility.StartDelayedActionWithPause(this, duration,BattleJudge.I.GetPauseStateFunc ,() =>
+            DelayUtility.StartDelayedActionWithPause(this, duration, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 swordObj.gameObject.SetActive(false);
             });

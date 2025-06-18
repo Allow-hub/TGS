@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4022769918100269704}
   - component: {fileID: 1888116644708373567}
   - component: {fileID: 314894418874903271}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: storm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: -9030245242809681442}
   - component: {fileID: 4352859800247467188}
   - component: {fileID: 2158362086614558093}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BladeStorm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,6 +159,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackData: {fileID: 11400000, guid: 76c05fcb9a3836341b5ef7637409d006, type: 2}
+  vfx: {fileID: 1888116644708373567}
+  rb: {fileID: 4352859800247467188}
+  canHeal: 0
+  canSelfReturn: 0
 --- !u!54 &4352859800247467188
 Rigidbody:
   m_ObjectHideFlags: 0

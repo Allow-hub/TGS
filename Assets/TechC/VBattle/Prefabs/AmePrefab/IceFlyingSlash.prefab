@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1902153982331287244}
   - component: {fileID: 6465277972538995446}
   - component: {fileID: 828163063376542558}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: FlyingIceSlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: -4238288756737005898}
   - component: {fileID: -4064166904872665729}
   - component: {fileID: -7910282743814644207}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceFlyingSlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,3 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackData: {fileID: 11400000, guid: f91b55d3335a4594fac42ab41866e12d, type: 2}
+  vfx: {fileID: 6465277972538995446}
+  rb: {fileID: -4238288756737005898}
+  canHeal: 0
+  canSelfReturn: 0

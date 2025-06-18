@@ -98,6 +98,7 @@ namespace TechC
                 Collider[] hitColliders = Physics.OverlapSphere(attackPosition, attackData.radius, attackData.targetLayers);
                 foreach (var hitCollider in hitColliders)
                 {
+                    
                     if (IsOwnCollider(hitCollider))
                         continue;
                     if (TryProcessHit(hitCollider, attackData))
@@ -140,7 +141,7 @@ namespace TechC
         {
             var targetController = GetOpponentController(hitCollider);
             if (targetController == null) return false;
-
+            if (targetController.PlayerID == characterController.PlayerID) return false;
             if (TryProcessGuard(targetController, hitCollider, attackData))
             {
                 return true;

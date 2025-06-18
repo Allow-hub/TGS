@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1329112334472152448}
   - component: {fileID: 6135803271641878507}
   - component: {fileID: 3254958876738211078}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceRose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,6 +47,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackData: {fileID: 11400000, guid: 701b30260febc674b938c054bff32e43, type: 2}
+  vfx: {fileID: 0}
+  rb: {fileID: 6135803271641878507}
+  canHeal: 0
+  canSelfReturn: 0
 --- !u!54 &6135803271641878507
 Rigidbody:
   m_ObjectHideFlags: 0

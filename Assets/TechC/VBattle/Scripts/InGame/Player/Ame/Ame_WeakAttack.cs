@@ -39,6 +39,8 @@ namespace TechC
 
 
         [Header("上弱")]
+        [SerializeField] private float xFlowerOffset;
+        [SerializeField] private float yFlowerOffset;
         private float returnUpEffectTime = 3f;
 
         /// <summary>
@@ -134,12 +136,17 @@ namespace TechC
         public override void UpAttack()
         {
             base.UpAttack();
-            var flowerEffect = CharaEffectFactory.I.GetEffectObj(flower, transform.up, Quaternion.identity);
+            GameObject obj = null;
+            DelayUtility.StartDelayedActionWithPause(this, upAttackData.hitTiming, BattleJudge.I.GetPauseStateFunc, () =>
+             {
+                 var pos = transform.position.AddX(xFlowerOffset).AddY(yFlowerOffset);
+                 obj = CharaEffectFactory.I.GetEffectObj(flower, pos, Quaternion.identity);
+             });
 
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedActionWithPause(this, returnUpEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
-                CharaEffectFactory.I.ReturnEffectObj(flowerEffect);
+                CharaEffectFactory.I.ReturnEffectObj(obj);
             });
         }
 

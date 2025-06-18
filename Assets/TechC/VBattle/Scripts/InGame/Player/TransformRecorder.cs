@@ -12,9 +12,9 @@ namespace TechC
         public List<TransformData> records = new List<TransformData>();
         private Transform target;
 
-        public float recordInterval = 1.0f; // 何秒ごとに記録
-        public float keepDuration = 5.0f;   // 最大保持時間（秒）
-        public int maxRecords = 100;        // 最大記録数
+        [SerializeField] private float recordInterval = 1.0f; // 何秒ごとに記録
+        [SerializeField] private float keepDuration = 5.0f;   // 最大保持時間（秒）
+        [SerializeField] private int maxRecords = 100;        // 最大記録数
 
         private float timer = 0f;
 
@@ -69,12 +69,38 @@ namespace TechC
 
         private IEnumerator ReplayCoroutine(float secondsAgo, Transform t)
         {
+            if (!t) yield break;
+
             float startTime = Time.time - secondsAgo;
+
+            // ① startTime 以前の中で一番遅いデータ（＝直前の状態）を探す
+            TransformData? first = null;
+            for (int i = records.Count - 1; i >= 0; i--)
+            {
+                if (records[i].timestamp <= startTime)
+                {
+                    first = records[i];
+                    break;
+                }
+            }
+
+            // 安全処理：なければ先頭を使う（念のため）
+            if (!first.HasValue)
+                first = records[0];
+
+            // 指定Transformに即時反映（補間せず代入）
+            t.position = first.Value.position;
+            t.rotation = first.Value.rotation;
+            t.localScale = first.Value.scale;
+
+
+            // ③ 再生対象データを取得（startTime以降）
             List<TransformData> replayData = records.FindAll(d => d.timestamp >= startTime);
 
             if (replayData.Count < 2)
                 yield break;
 
+            // ④ 通常通り補間再生
             for (int i = 0; i < replayData.Count - 1; i++)
             {
                 TransformData from = replayData[i];
@@ -84,10 +110,11 @@ namespace TechC
 
                 while (timer < duration)
                 {
+                    if (!t) yield break;
+
                     timer += Time.deltaTime;
                     float tLerp = Mathf.Clamp01(timer / duration);
 
-                    // 線形補間でTransform再現
                     Vector3 pos = Vector3.Lerp(from.position, to.position, tLerp);
                     Quaternion rot = Quaternion.Slerp(from.rotation, to.rotation, tLerp);
                     Vector3 scale = Vector3.Lerp(from.scale, to.scale, tLerp);
@@ -100,6 +127,7 @@ namespace TechC
                 }
             }
         }
+
 
     }
 }

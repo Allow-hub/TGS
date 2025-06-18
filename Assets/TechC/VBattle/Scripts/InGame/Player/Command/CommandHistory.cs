@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -162,15 +161,13 @@ namespace TechC
         /// <param name="attackManager">AttackManager</param>
         public void ReplayAttackCommandsFromSecondsAgo(float secondsAgo, AttackManager attackManager)
         {
-            StartCoroutine(ReplayCoroutine(secondsAgo, attackManager));
+            StopAllCoroutines();
+            StartCoroutine(ReplayAttackCoroutine(secondsAgo, attackManager));
         }
-
-        private IEnumerator ReplayCoroutine(float secondsAgo, AttackManager attackManager)
+        private IEnumerator ReplayAttackCoroutine(float secondsAgo, AttackManager attackManager)
         {
-            float now = Time.time;
-            float replayFrom = now - secondsAgo;
+            float replayFrom = Time.time - secondsAgo;
 
-            // 再生対象のAttackCommandを抽出（古い順）
             var attacksToReplay = new List<CommandRecord>();
             foreach (var record in commandHistory)
             {
@@ -179,45 +176,47 @@ namespace TechC
                     attacksToReplay.Add(record);
                 }
             }
+
             attacksToReplay.Sort((a, b) => a.executionTime.CompareTo(b.executionTime));
 
             if (attacksToReplay.Count == 0)
+            {
+                Debug.LogWarning("[Replay] 再生対象の攻撃が見つかりませんでした");
                 yield break;
+            }
 
-            float firstCommandTime = attacksToReplay[0].executionTime;
+            // === 初期待機時間を追加 ===
+            float firstDelay = attacksToReplay[0].executionTime - replayFrom;
+            if (firstDelay > 0f)
+                yield return new WaitForSeconds(firstDelay);
 
             for (int i = 0; i < attacksToReplay.Count; i++)
             {
-                var record = attacksToReplay[i];
+                var current = attacksToReplay[i];
+                if (current.commandInstance is not AttackCommand attackCmd)
+                    continue;
 
-                // 最初のコマンドとの差分時間を使って待機
-                float delay = record.executionTime - firstCommandTime;
-                if (delay > 0f)
-                    yield return new WaitForSeconds(delay);
+                if (current.attackType == CharacterState.AttackType.Neutral &&
+                    current.attackStrength == AttackManager.AttackStrength.Strong)
+                    continue;
 
-                // 攻撃実行
-                if (record.commandInstance is AttackCommand attackCmd)
+                try
                 {
-                    if (attackCmd.Type == CharacterState.AttackType.Neutral && attackCmd.Strength == AttackManager.AttackStrength.Strong)
-                        continue;
-                    attackCmd.ExecuteAttack(attackCmd.Type, attackCmd.Strength, attackManager);
-                    if (showDebugLog)
-                        Debug.Log($"Replayed: {record}.Type{attackCmd.Type} Strength{attackCmd.Strength}");
+                    attackCmd.ExecuteAttack(current.attackType, current.attackStrength, attackManager);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[Replay] 攻撃再生中に例外が発生: {ex.Message}\n{ex.StackTrace}");
                 }
 
-                // 次のコマンドとの時間差を差分にして累積ではない形にする
                 if (i + 1 < attacksToReplay.Count)
                 {
-                    float currentTime = record.executionTime;
-                    float nextTime = attacksToReplay[i + 1].executionTime;
-                    float interval = nextTime - currentTime;
+                    float interval = attacksToReplay[i + 1].executionTime - current.executionTime;
                     if (interval > 0f)
                         yield return new WaitForSeconds(interval);
                 }
             }
         }
-
-
         /// <summary>
         /// 最新のコマンド名を取得
         /// </summary>

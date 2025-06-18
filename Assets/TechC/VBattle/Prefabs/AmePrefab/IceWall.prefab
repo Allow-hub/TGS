@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4167239402671724671}
   - component: {fileID: 2896945430815236229}
   - component: {fileID: 6393826975672845578}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: -6650507377659744894}
   - component: {fileID: 7389394034874562337}
   - component: {fileID: -582953417581232893}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,3 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackData: {fileID: 11400000, guid: 48926b1474b7a414cb0b69b666761e83, type: 2}
+  vfx: {fileID: 2896945430815236229}
+  rb: {fileID: -6650507377659744894}
+  canHeal: 0
+  canSelfReturn: 0

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3323051076063063130}
   - component: {fileID: -152849080019372531}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceData
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2496421634309648141}
   - component: {fileID: 3196625356808980448}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceData
   m_TagString: Untagged
   m_Icon: {fileID: 0}

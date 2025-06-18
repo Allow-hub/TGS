@@ -139,5 +139,20 @@ namespace TechC
                     return null;
             }
         }
+        
+
+        public float GetCurrentSpeed()
+        {
+            return speed;
+        }
+        public void SetSpeed(float newSpeed)
+        {
+            speed = newSpeed;
+        }
+
+        public void AddSpeed(float amount)
+        {
+            speed += amount;
+        }
     }
 }

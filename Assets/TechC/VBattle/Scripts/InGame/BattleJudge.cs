@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
-/// <summary>
-/// TODO:攻撃不能状態などを対応させること
-/// </summary>
 namespace TechC
 {
     /// <summary>
@@ -16,7 +14,7 @@ namespace TechC
     public class BattleJudge : Singleton<BattleJudge>
     {
         #region クラス定義
-        [System.Serializable]
+        [Serializable]
         public class PlayerData
         {
             public GameObject playerPrefab;
@@ -52,6 +50,9 @@ namespace TechC
         public UnityEvent OnBattleStart;                     // バトル開始時
         public UnityEvent OnBattleEnd;                       // バトル終了時
         public UnityEvent<float> OnTimeUpdate;               // 時間更新時
+        [Header("ポーズイベント")]
+        public UnityEvent OnPauseStarted;
+        public UnityEvent OnPauseEnded;
         #endregion
 
         #region プライベート変数
@@ -59,6 +60,15 @@ namespace TechC
         private bool isBattleOngoing = false;   // バトル進行中フラグ
         private int alivePlayerCount = 0;       // 生存プレイヤー数
         protected override bool UseDontDestroyOnLoad => false;
+
+        // プレイヤーごとの一時保存用
+        private Dictionary<int, Vector3> lastVelocities = new Dictionary<int, Vector3>();
+        private Dictionary<int, Vector3> lastAngularVelocities = new Dictionary<int, Vector3>();
+        private Dictionary<int, float> lastAnimSpeeds = new Dictionary<int, float>();
+
+        private bool isPaused = false;          // ポーズ状態フラグ
+        public bool IsPaused => isPaused;       // 読み取り専用プロパティ
+        public Func<bool> GetPauseStateFunc => () => isPaused;  // Funcデリゲート
         #endregion
 
 
@@ -73,8 +83,10 @@ namespace TechC
         private void Update()
         {
             if (!isBattleOngoing) return;
-
-            // 時間制限の管理
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                SetPause(!isPaused); // Vキーでポーズ/再開切り替え
+            }
             if (isTimeLimitEnabled)
             {
                 currentTime -= Time.deltaTime;
@@ -196,60 +208,6 @@ namespace TechC
                 // 残機がなくなった場合
                 PlayerEliminated(player);
             }
-            else
-            {
-                // 残機がある場合はリスポーン
-                StartCoroutine(RespawnPlayer(player));
-            }
-        }
-
-        /// <summary>
-        /// プレイヤーのリスポーン処理
-        /// </summary>
-        /// <param name="player">リスポーンするプレイヤー</param>
-        private IEnumerator RespawnPlayer(PlayerData player)
-        {
-            yield return new WaitForSeconds(2f);  // リスポーン待機時間
-
-            if (player.playerObject != null)
-            {
-                // プレイヤーをリスポーン位置に戻す
-                player.playerObject.transform.position = player.respawnPosition;
-
-                // Rigidbodyがあれば速度をリセット
-                Rigidbody rb = player.playerObject.GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    rb.velocity = Vector3.zero;
-                    rb.angularVelocity = Vector3.zero;
-                }
-
-                player.isAlive = true;
-                player.isInvincible = true;  // 無敵状態を設定
-
-                // リスポーンイベント発火
-                OnPlayerRespawn?.Invoke(player);
-
-                // リスポーン直後は攻撃不可
-                player.canAttack = false;
-
-                // 無敵時間後に通常状態に戻す
-                StartCoroutine(EndInvincibility(player));
-            }
-        }
-
-        /// <summary>
-        /// 無敵時間の終了処理
-        /// </summary>
-        /// <param name="player">対象プレイヤー</param>
-        private IEnumerator EndInvincibility(PlayerData player)
-        {
-            yield return new WaitForSeconds(respawnInvincibleTime);
-
-            player.isInvincible = false;
-            player.canAttack = true;  // 攻撃可能状態に戻す
-
-            // 必要に応じて無敵終了イベントを追加することも可能
         }
 
         /// <summary>
@@ -357,37 +315,167 @@ namespace TechC
 
         #region ユーティリティメソッド
         /// <summary>
-        /// プレイヤーの残機数を取得
+        /// ポーズ状態を設定する
         /// </summary>
-        /// <param name="playerID">プレイヤーID</param>
-        /// <returns>残機数</returns>
-        public int GetPlayerStockCount(int playerID)
+        /// <param name="pause">trueでポーズ、falseで再開</param>
+        public void SetPause(bool pause)
         {
-            if (playerID < 0 || playerID >= players.Count) return 0;
-            return players[playerID].stockCount;
+            if (isPaused == pause) return; // 既に同じ状態の場合は何もしない
+
+            isPaused = pause;
+
+            if (isPaused)
+            {
+                PausePlayers();
+            }
+            else
+            {
+                ResumePlayers();
+            }
+        }
+
+
+        public void PausePlayers()
+        {
+            foreach (var player in players)
+            {
+                if (player.playerObject != null)
+                {
+                    // PlayerInputを無効化
+                    var input = player.playerObject.GetComponent<PlayerInput>();
+                    if (input != null)
+                        input.enabled = false;
+
+                    // Rigidbodyをフリーズ＆速度保存
+                    var rb = player.playerObject.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        lastVelocities[player.playerID] = rb.velocity;
+                        lastAngularVelocities[player.playerID] = rb.angularVelocity;
+                        rb.velocity = Vector3.zero;
+                        rb.angularVelocity = Vector3.zero;
+                        rb.isKinematic = true;
+                    }
+
+                    // アニメーション速度保存
+                    var characterController = player.playerObject.GetComponent<Player.CharacterController>();
+                    if (characterController != null)
+                    {
+                        var anim = characterController.GetAnim();
+                        lastAnimSpeeds[player.playerID] = anim.speed;
+                        anim.speed = 0f;
+                    }
+                }
+            }
+            OnPauseStarted?.Invoke();
+        }
+
+        public void ResumePlayers()
+        {
+            foreach (var player in players)
+            {
+                if (player.playerObject != null)
+                {
+                    // PlayerInputを有効化
+                    var input = player.playerObject.GetComponent<PlayerInput>();
+                    if (input != null)
+                        input.enabled = true;
+
+                    // Rigidbodyのフリーズ解除＆速度復元
+                    var rb = player.playerObject.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.isKinematic = false;
+                        if (lastVelocities.TryGetValue(player.playerID, out var v))
+                            rb.velocity = v;
+                        if (lastAngularVelocities.TryGetValue(player.playerID, out var av))
+                            rb.angularVelocity = av;
+                    }
+
+                    // アニメーション速度復元
+                    var characterController = player.playerObject.GetComponent<Player.CharacterController>();
+                    if (characterController != null)
+                    {
+                        var anim = characterController.GetAnim();
+                        if (lastAnimSpeeds.TryGetValue(player.playerID, out var speed))
+                            anim.speed = speed;
+                    }
+                }
+            }
+            OnPauseEnded?.Invoke();
+        }
+        /// <summary>
+        /// 指定したプレイヤーのみポーズ状態にする
+        /// </summary>
+        public void PausePlayer(int playerID, bool isKinematic = true)
+        {
+            playerID--; // プレイヤーIDは1から始まるため、0ベースに変換
+            if (playerID < 0 || playerID >= players.Count) return;
+            var player = players[playerID];
+            if (player.playerObject != null)
+            {
+                // PlayerInputを無効化
+                var input = player.playerObject.GetComponent<PlayerInput>();
+                if (input != null)
+                    input.enabled = false;
+
+                // Rigidbodyをフリーズ＆速度保存
+                var rb = player.playerObject.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    lastVelocities[player.playerID] = rb.velocity;
+                    lastAngularVelocities[player.playerID] = rb.angularVelocity;
+                    rb.velocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.isKinematic = isKinematic;
+                }
+
+                // アニメーション速度保存
+                var characterController = player.playerObject.GetComponent<Player.CharacterController>();
+                if (characterController != null)
+                {
+                    var anim = characterController.GetAnim();
+                    lastAnimSpeeds[player.playerID] = anim.speed;
+                    anim.speed = 0f;
+                }
+            }
         }
 
         /// <summary>
-        /// プレイヤーを追加
+        /// 指定したプレイヤーのみポーズ解除する
         /// </summary>
-        /// <param name="playerObject">プレイヤーオブジェクト</param>
-        /// <param name="stockCount">初期残機数</param>
-        public void AddPlayer(GameObject playerObject, int stockCount = 3)
+        public void ResumePlayer(int playerID)
         {
-            PlayerData newPlayer = new PlayerData
+            if (playerID < 0 || playerID >= players.Count) return;
+            var player = players[playerID];
+            if (player.playerObject != null)
             {
-                playerObject = playerObject,
-                stockCount = stockCount,
-                playerID = players.Count,
-                isAlive = true,
-                canAttack = true,
-                isInvincible = false,
-                respawnPosition = playerObject.transform.position
-            };
+                // PlayerInputを有効化
+                var input = player.playerObject.GetComponent<PlayerInput>();
+                if (input != null)
+                    input.enabled = true;
 
-            players.Add(newPlayer);
+                // Rigidbodyのフリーズ解除＆速度復元
+                var rb = player.playerObject.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.isKinematic = false;
+                    if (lastVelocities.TryGetValue(player.playerID, out var v))
+                        rb.velocity = v;
+                    if (lastAngularVelocities.TryGetValue(player.playerID, out var av))
+                        rb.angularVelocity = av;
+                }
+
+                // アニメーション速度復元
+                var characterController = player.playerObject.GetComponent<Player.CharacterController>();
+                if (characterController != null)
+                {
+                    var anim = characterController.GetAnim();
+                    if (lastAnimSpeeds.TryGetValue(player.playerID, out var speed))
+                        anim.speed = speed;
+                }
+            }
         }
-
         /// <summary>
         /// 現在のバトル状態を取得
         /// </summary>

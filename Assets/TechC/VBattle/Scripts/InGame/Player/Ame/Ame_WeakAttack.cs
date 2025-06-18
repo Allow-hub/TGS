@@ -66,7 +66,7 @@ namespace TechC
             var slObj = CharaEffectFactory.I.GetEffectObj(slash, slObjPos, currentSlashRot);
 
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
-            DelayUtility.StartDelayedAction(this, returnNeutralEffectTime, () =>
+            DelayUtility.StartDelayedActionWithPause(this, returnNeutralEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 CharaEffectFactory.I.ReturnEffectObj(slObj);
             });
@@ -88,7 +88,7 @@ namespace TechC
         {
             base.RightAttack();
             GameObject slObj = null;
-            DelayUtility.StartDelayedAction(this, rightAttackData.hitTiming, () =>
+            DelayUtility.StartDelayedActionWithPause(this, rightAttackData.hitTiming, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 //飛び道具の処理
                 var pos = transform.position.AddX(xOffset);
@@ -102,7 +102,7 @@ namespace TechC
             });
 
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
-            DelayUtility.StartDelayedAction(this, returnRightEffectTime, () =>
+            DelayUtility.StartDelayedActionWithPause(this, returnRightEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 CharaEffectFactory.I.ReturnEffectObj(slObj);
             });
@@ -120,7 +120,7 @@ namespace TechC
             characterController.ChangeHitCollider(changeHitBox, chageColliderSpeed);
             characterController.ChangeColliderTrigger(true);
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
-            DelayUtility.StartDelayedAction(this, returnDownEffectTime, () =>
+            DelayUtility.StartDelayedActionWithPause(this, returnDownEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 // CharaEffectFactory.I.ReturnEffectObj(flowerEffect);
                 characterController.ResetHitCollider(chageColliderSpeed);
@@ -137,7 +137,7 @@ namespace TechC
             var flowerEffect = CharaEffectFactory.I.GetEffectObj(flower, transform.up, Quaternion.identity);
 
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
-            DelayUtility.StartDelayedAction(this, returnUpEffectTime, () =>
+            DelayUtility.StartDelayedActionWithPause(this, returnUpEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 CharaEffectFactory.I.ReturnEffectObj(flowerEffect);
             });
@@ -146,15 +146,12 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
-            StartCoroutine(SwordDisActive(attackData));
-        }
-
-        private IEnumerator SwordDisActive(AttackData attackData)
-        {
             sword.SetActive(true);
-            yield return new WaitForSeconds(attackData.attackDuration);
-            sword.SetActive(false);
-        }
 
+            DelayUtility.StartDelayedActionWithPause(this, attackData.attackDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                sword.SetActive(false);
+            });
+        }
     }
 }

@@ -1,4 +1,3 @@
-2025/06/10-13:51:18.936 50e8 Creating DB C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\shared_proto_db since it was missing.
-2025/06/10-13:51:18.958 50e8 Reusing MANIFEST C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\shared_proto_db/MANIFEST-000001
-2025/06/10-13:51:18.959 50e8 Recovering log #3
-2025/06/10-13:51:18.960 50e8 Reusing old log C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\shared_proto_db/000003.log 
+2025/06/14-15:31:03.071 5d18 Reusing MANIFEST C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\shared_proto_db/MANIFEST-000001
+2025/06/14-15:31:03.072 5d18 Recovering log #3
+2025/06/14-15:31:03.073 5d18 Reusing old log C:\Users\student\Documents\TGS\Assets\StreamingAssets\WindowsFormsApp1.exe.WebView2\EBWebView\Default\shared_proto_db/000003.log 

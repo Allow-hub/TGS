@@ -953,6 +953,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 0cce1426-106a-4d4f-bc3b-83ce140e196c
     m_ActionName: Player/Crouch[/Keyboard/s]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6455736973200020084}
+        m_TargetAssemblyTypeName: TechC.BaseInputManager, Assembly-CSharp
+        m_MethodName: OnMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f346a95e-8acd-44f2-9b66-cc87827c311e
+    m_ActionName: Player/Menu[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: KeyBoardScheme
   m_DefaultActionMap: Player

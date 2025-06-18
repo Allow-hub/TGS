@@ -37,6 +37,7 @@ namespace TechC
         [SerializeField] private bool isTimeLimitEnabled = true;  // 制限時間の有無
         [SerializeField] private float respawnInvincibleTime = 3f;  // リスポーン無敵時間
 
+        [SerializeField] private bool isDebug = true;
         [Header("プレイヤー設定")]
         [SerializeField] private GameObject p1InitialPosition;
         [SerializeField] private GameObject p2InitialPosition;
@@ -80,16 +81,12 @@ namespace TechC
         {
             base.Init();
             // バトルの初期化
-            // InitializeBattle();
+            InitializeBattle();
         }
 
         private void Update()
         {
             if (!isBattleOngoing) return;
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                SetPause(!isPaused); // Vキーでポーズ/再開切り替え
-            }
             if (isTimeLimitEnabled)
             {
                 currentTime -= Time.deltaTime;
@@ -117,6 +114,14 @@ namespace TechC
 
             // タイマー表示
             timerText.text = isTimeLimitEnabled ? GetRemainingTime().ToString() : "∞";
+
+            //デバッグ状態でないときセレクトで選択した情報を取得
+            if (!isDebug)
+            {
+                ResetPlayer();
+                foreach (var info in GameManager.I.GetPlayerInfo())
+                    AddPlayer(info.prefab, info.playerId);
+            }
 
             for (int i = 0; i < players.Count; i++)
             {

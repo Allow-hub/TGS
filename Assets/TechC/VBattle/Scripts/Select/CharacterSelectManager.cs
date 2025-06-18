@@ -20,6 +20,9 @@ namespace TechC
             base.Init();
             DelayUtility.StartDelayedAction(this, initializeDelay, () =>
             {
+                foreach (var info in GameManager.I.GetPlayerInfo()) {
+                    GameManager.I.RemovePlayerById(info.playerId);
+                }
                 GameManager.I.RegisterPlayer(amePrefab, 0);
                 GameManager.I.RegisterPlayer(amePrefab, 1);
                 Debug.Log(GameManager.I.GetCharacterById(0));

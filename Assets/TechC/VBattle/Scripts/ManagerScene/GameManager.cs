@@ -44,8 +44,13 @@ namespace TechC
 
         private void Update()
         {
+            //テスト用完成時に消す
             if (Input.GetKeyDown(KeyCode.Space))
                 ChangeBattleState();
+
+            //将来的にパッド対応させる必要あり、現在はPauseするとInputManagerを消しているので取れない
+            if (Input.GetKeyDown(KeyCode.Escape))
+                MenuManager.I.OpenMenu();
             StateHandler();
         }
 
@@ -86,34 +91,16 @@ namespace TechC
 
         private void StateHandler()
         {
-            //switch (currentState)
-            //{
-
-            //}
+            // switch (currentState)
+            // {
+            //     case GameState.Battle:
+            //         break;
+            // }
         }
         private void BattleStateInit()
         {
             LoadSceneAsync(0);
             ChangeCursorMode(false, CursorLockMode.Locked);
-
-            if (BattleJudge.I == null)
-            {
-                Debug.LogError("バトルの調停者が初期化されていません");
-                return;
-            }
-
-            if (playerInfoList == null || playerInfoList.Count < 2)
-            {
-                Debug.LogError("プレイヤー情報が不足しています（2人必要）");
-                return;
-            }
-
-            foreach (var info in playerInfoList)
-            {
-                BattleJudge.I.AddPlayer(info.prefab, info.playerId);
-            }
-
-            BattleJudge.I.InitializeBattle();
         }
 
 
@@ -154,13 +141,9 @@ namespace TechC
         }
 
         /// <summary>
-        /// プレイヤー情報を設定（存在すれば上書き）
+        /// プレイヤー情報を設定
         /// </summary>
-        public void RegisterPlayer(GameObject prefab, int playerId)
-        {
-            playerInfoList.Add((prefab, playerId));
-        }
-
+        public void RegisterPlayer(GameObject prefab, int playerId) => playerInfoList.Add((prefab, playerId));
 
         /// <summary>
         /// 指定されたIDに対応するプレイヤーの選択したキャラのGameObjectを取得する。
@@ -183,10 +166,8 @@ namespace TechC
         /// <summary>
         /// プレイヤー情報を削除
         /// </summary>
-        public void RemovePlayerById(int id)
-        {
-            playerInfoList.RemoveAll(info => info.playerId == id);
-        }
+        public void RemovePlayerById(int id) => playerInfoList.RemoveAll(info => info.playerId == id);
+        public List<(GameObject prefab, int playerId)> GetPlayerInfo() => playerInfoList;
 
 
         public void ChangeTitleState() => SetState(GameState.Title);

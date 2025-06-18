@@ -3705,6 +3705,8 @@ MonoBehaviour:
   timeLimit: 180
   isTimeLimitEnabled: 1
   respawnInvincibleTime: 3
+  p1InitialPosition: {fileID: 921649179348610202}
+  p2InitialPosition: {fileID: 1832820432141741491}
   players:
   - playerPrefab: {fileID: 7627828736903395385, guid: 01e31a08014b679499c665bdfbef363f,
       type: 3}
@@ -3714,7 +3716,6 @@ MonoBehaviour:
     playerID: 1
     isAlive: 0
     initialPosition: {fileID: 921649179348610202}
-    respawnPosition: {x: 0, y: 0, z: 0}
     isInvincible: 1
     canAttack: 1
   - playerPrefab: {fileID: 7627828736903395385, guid: 10f0ab4c65588784091056c4bbc13ba4,
@@ -3725,7 +3726,6 @@ MonoBehaviour:
     playerID: 2
     isAlive: 0
     initialPosition: {fileID: 1832820432141741491}
-    respawnPosition: {x: 0, y: 0, z: 0}
     isInvincible: 1
     canAttack: 1
   OnPlayerDeath:

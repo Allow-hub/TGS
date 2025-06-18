@@ -24,7 +24,6 @@ namespace TechC
             public int playerID;                 // プレイヤーID
             public bool isAlive = true;          // 生存状態
             public GameObject initialPosition;
-            public Vector3 respawnPosition;      // リスポーン位置
             public bool isInvincible = false;    // 無敵状態
             public bool canAttack = true;        // 攻撃可能状態
         }
@@ -38,7 +37,10 @@ namespace TechC
         [SerializeField] private bool isTimeLimitEnabled = true;  // 制限時間の有無
         [SerializeField] private float respawnInvincibleTime = 3f;  // リスポーン無敵時間
 
+        [SerializeField] private bool isDebug = true;
         [Header("プレイヤー設定")]
+        [SerializeField] private GameObject p1InitialPosition;
+        [SerializeField] private GameObject p2InitialPosition;
         [SerializeField] private List<PlayerData> players = new List<PlayerData>();
         public List<PlayerData> Players => players;
         #endregion
@@ -85,10 +87,6 @@ namespace TechC
         private void Update()
         {
             if (!isBattleOngoing) return;
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                SetPause(!isPaused); // Vキーでポーズ/再開切り替え
-            }
             if (isTimeLimitEnabled)
             {
                 currentTime -= Time.deltaTime;
@@ -116,6 +114,14 @@ namespace TechC
 
             // タイマー表示
             timerText.text = isTimeLimitEnabled ? GetRemainingTime().ToString() : "∞";
+
+            //デバッグ状態でないときセレクトで選択した情報を取得
+            if (!isDebug)
+            {
+                ResetPlayer();
+                foreach (var info in GameManager.I.GetPlayerInfo())
+                    AddPlayer(info.prefab, info.playerId);
+            }
 
             for (int i = 0; i < players.Count; i++)
             {
@@ -516,6 +522,34 @@ namespace TechC
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// プレイヤーの初期化
+        /// </summary>
+        public void ResetPlayer() => players.Clear();
+        /// <summary>
+        /// GameManagerを使ってセレクト画面で選んだ項目をプレイヤーに反映する
+        /// </summary>
+        /// <param name="character">characterPrefab</param>
+        /// <param name="playerId">プレイヤーID</param>
+        public void AddPlayer(GameObject character, int playerId)
+        {
+            var data = new PlayerData();
+            playerId++;
+            data.playerPrefab = character;
+            data.playerID = playerId;
+            if (playerId == 1)
+                data.initialPosition = p1InitialPosition;
+            else if (playerId == 2)
+                data.initialPosition = p2InitialPosition;
+            else
+                Debug.LogError("指定したPlayerIdは存在しえないものです");
+            data.stockCount = 1;
+            data.canAttack = true;
+            data.isAlive = true;
+            data.isInvincible = false;
+            players.Add(data);
         }
     }
 }

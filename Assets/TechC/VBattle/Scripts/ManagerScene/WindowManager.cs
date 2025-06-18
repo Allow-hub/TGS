@@ -71,20 +71,13 @@ namespace TechC
                 Debug.LogError("Main Camera not found!");
                 return;
             }
-#if false
-            float zDistance = 4.2f;
-            Vector3 screenPos = new Vector3(unityScreenX, unityScreenY, zDistance);
-            Vector3 worldPos = cam.ScreenToWorldPoint(screenPos);
-            worldPos.z = -5.3f;
-#else
-            // var colliderPos = colliderObj.transform.position;
             var colliderPos = new Vector3(colliderObj.transform.position.x, colliderObj.transform.position.y, -5.3f);
 
             var screenPos = cam.WorldToScreenPoint(colliderPos);
             screenPos.x = unityScreenX;
             screenPos.y = unityScreenY;
             var worldPos = cam.ScreenToWorldPoint(screenPos);
-#endif
+
             Vector3 clampedPos = ClampToAllowedArea(worldPos);
             colliderObj.transform.position = clampedPos;
 

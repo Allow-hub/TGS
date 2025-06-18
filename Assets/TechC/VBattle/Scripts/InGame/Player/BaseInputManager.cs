@@ -157,6 +157,8 @@ namespace TechC
         /// <returns></returns>
         public ICommand GetCommandInstance(string commandName) => commands[commandName];
 
+        // public void OnMenu() => MenuManager.I.OpenMenu();
+
         // 各入力に対する抽象メソッド - 継承先で実装
         public abstract void OnMove(Vector2 inputValue, bool started, bool canceled);
         public abstract void OnJump(bool started, bool canceled);

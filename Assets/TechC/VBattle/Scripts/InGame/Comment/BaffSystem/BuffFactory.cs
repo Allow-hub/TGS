@@ -33,7 +33,7 @@ namespace TechC
             }
             else
             {
-                Debug.LogError("不明なバフ");
+                // Debug.LogError("不明なバフ");
                 return null;
             }
         }

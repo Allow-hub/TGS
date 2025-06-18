@@ -46,15 +46,28 @@ namespace TechC
         /// <summary>
         /// 攻撃処理を実行する
         /// </summary>
-        public IEnumerator ProcessAttack(AttackData attackData)
+        // public IEnumerator ProcessAttack(AttackData attackData)
+        // {
+        //     yield return new WaitForSeconds(attackData.hitTiming);
+        //     // ヒットチェックを実行し、ヒットした場合にヒットストップを発生させる
+        //     if (PerformAttackHitCheck(attackData))
+        //     {
+        //         // ヒットストップを実行
+        //         HitStopManager.I.DoHitStop(attackData.hitStopDuration, attackData.hitStopTimeScale);
+        //     }
+        // }
+        
+        public void ProcessAttack(AttackData attackData)
         {
-            yield return new WaitForSeconds(attackData.hitTiming);
-            // ヒットチェックを実行し、ヒットした場合にヒットストップを発生させる
-            if (PerformAttackHitCheck(attackData))
+            DelayUtility.StartDelayedActionWithPause(characterController, attackData.hitTiming,BattleJudge.I.GetPauseStateFunc ,() =>
             {
-                // ヒットストップを実行
-                HitStopManager.I.DoHitStop(attackData.hitStopDuration, attackData.hitStopTimeScale);
-            }
+                // ヒットチェックを実行し、ヒットした場合にヒットストップを発生させる
+                if (PerformAttackHitCheck(attackData))
+                {
+                    // ヒットストップを実行
+                    HitStopManager.I.DoHitStop(attackData.hitStopDuration, attackData.hitStopTimeScale);
+                }
+            });
         }
 
         /// <summary>
@@ -89,7 +102,7 @@ namespace TechC
                     if (TryProcessHit(hitCollider, attackData))
                     {
                         hitConfirmed = true;
-                        hitPosition = hitCollider.transform.position; 
+                        hitPosition = hitCollider.transform.position;
                     }
                 }
             }
@@ -107,7 +120,7 @@ namespace TechC
                     if (TryProcessHit(hitCollider, attackData))
                     {
                         hitConfirmed = true;
-                        hitPosition = hitCollider.transform.position; 
+                        hitPosition = hitCollider.transform.position;
                     }
                 }
             }

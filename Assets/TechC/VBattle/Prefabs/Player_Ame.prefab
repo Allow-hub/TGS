@@ -953,6 +953,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 0cce1426-106a-4d4f-bc3b-83ce140e196c
     m_ActionName: Player/Crouch[/Keyboard/s]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6455736973200020084}
+        m_TargetAssemblyTypeName: TechC.BaseInputManager, Assembly-CSharp
+        m_MethodName: OnMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f346a95e-8acd-44f2-9b66-cc87827c311e
+    m_ActionName: Player/Menu[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: KeyBoardScheme
   m_DefaultActionMap: Player
@@ -974,12 +990,9 @@ MonoBehaviour:
   inputLogId: input
   guardObj: {fileID: 5919897281684274840}
   dashTimeWindow: 0.5
-  intentionalMoveThreshold: 0.7
-  jumpButtonPriority: 0.9
   crouchButtonPriority: 0.9
   inputDebounceDuration: 0.12
   directionDeadzone: 0.3
-  restrictJumpToPureUp: 1
   restrictCrouchToPureDown: 1
 --- !u!114 &7797085845215521307
 MonoBehaviour:
@@ -1064,7 +1077,6 @@ MonoBehaviour:
   explosionDuration: 3
   iceWallDuration: 5
   wallOffset: 1.5
-  rightAttackData: {fileID: 11400000, guid: 4860b3839fc60684ea088f15f0764bea, type: 2}
   returnStrongUpEffectTime: 3
   upwardVelocity: 2.5
   backOffset: 0.5
@@ -1135,6 +1147,19 @@ MonoBehaviour:
   upAttackData: {fileID: 11400000, guid: f0c1833b3f73b6843a0da95d4af76ddc, type: 2}
   inputManager: {fileID: 6455736973200020084}
   canChargeDuration: 10
+  errorSprite: {fileID: 21300000, guid: 85fb38cec81f9e84eae54e1f32660143, type: 3}
+  specialSprite: {fileID: 21300000, guid: a70dca075beeeea488ecff95fbee3f8e, type: 3}
+  rushDistance: 20
+  rushDuration: 0.3
+  targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  wallLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  rayLength: 0.5
+  wallCheckDistance: 2
+  raycastInterval: 0.1
 --- !u!114 &3455362588810788779
 MonoBehaviour:
   m_ObjectHideFlags: 0

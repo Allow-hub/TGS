@@ -86,18 +86,13 @@ namespace TechC
             characterController.GetAnim().speed = attackData.animationSpeed;
             characterController.SetAnim(attackData.animHash, true);
             CustomLogger.Info("アタックデータ:"+attackData.name,"comboCheck");
-            StartCoroutine(EndAttack(attackData));
-        }
-
-        /// <summary>
-        /// アニメーションの秒数分経過したら自動でfalseに
-        /// </summary>
-        protected IEnumerator EndAttack(AttackData attackData)
-        {
-            yield return new WaitForSeconds(attackData.attackDuration);
-            isAttacking = false;
-            characterController.SetAnim(attackData.animHash, false);
-            characterController.GetAnim().speed = characterController.DefaultAnimSpeed;
+            DelayUtility.StartDelayedActionWithPause(this, attackData.attackDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                isAttacking = false;
+                characterController.SetAnim(attackData.animHash, false);
+                characterController.GetAnim().speed = characterController.DefaultAnimSpeed;
+                Debug.Log("攻撃終了: " + attackData.name);
+            });
         }
     }
 }

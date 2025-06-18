@@ -82,7 +82,7 @@ namespace TechC
 
             if (comment == null)
             {
-                Debug.LogWarning("GetComment returned null for " + commentData.text);
+                // Debug.LogWarning("GetComment returned null for " + commentData.text);
                 return;
             }
 

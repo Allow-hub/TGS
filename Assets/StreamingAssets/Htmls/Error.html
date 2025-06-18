@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERROR</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(45deg, #8B0000, #B22222, #DC143C, #8B0000);
+      background-size: 400% 400%;
+      animation: bloodFlow 2s ease-in-out infinite;
+      color: #000;
+      font-family: 'Creepster', cursive;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    @keyframes bloodFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .blood-drip {
+      position: absolute;
+      width: 2px;
+      background: #4A0000;
+      animation: drip 3s linear infinite;
+      opacity: 0.7;
+    }
+
+    .blood-drip:nth-child(1) { left: 10%; animation-delay: 0s; height: 100px; }
+    .blood-drip:nth-child(2) { left: 25%; animation-delay: 0.5s; height: 150px; }
+    .blood-drip:nth-child(3) { left: 45%; animation-delay: 1s; height: 80px; }
+    .blood-drip:nth-child(4) { left: 65%; animation-delay: 1.5s; height: 120px; }
+    .blood-drip:nth-child(5) { left: 85%; animation-delay: 2s; height: 90px; }
+
+    @keyframes drip {
+      0% { transform: translateY(-100vh); opacity: 0; }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.7; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .error-code {
+      font-family: 'Nosifer', cursive;
+      font-size: clamp(3rem, 12vw, 8rem);
+      font-weight: bold;
+      text-shadow: 
+        clamp(1px, 0.3vw, 3px) clamp(1px, 0.3vw, 3px) 0px #000,
+        clamp(2px, 0.6vw, 6px) clamp(2px, 0.6vw, 6px) 0px #dd0404,
+        clamp(3px, 0.9vw, 9px) clamp(3px, 0.9vw, 9px) 0px #570000;
+      animation: glitch 0.4s infinite;
+      margin-bottom: clamp(1rem, 3vw, 2rem);
+      line-height: 0.9;
+    }
+
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+    }
+
+    .error-title {
+      font-size: clamp(3.5rem, 6vw, 6rem);
+      margin-bottom: clamp(1rem, 3vw, 2rem);
+      text-shadow: 1px 1px 2px #000;
+      animation: flicker 3s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      30%, 60% { opacity: 0.2; } /* より消える感を出す */
+      50% { opacity: 0.5; }
+    }
+
+    .error-message {
+      font-size: clamp(0.8rem, 3vw, 1.2rem);
+      line-height: 1.4;
+      margin-bottom: clamp(2rem, 5vw, 3rem);
+      text-shadow: 1px 1px 2px #000;
+      animation: shake 4s infinite;
+    }
+
+    @keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-10px); }
+  20% { transform: translateX(10px); }
+  30% { transform: translateX(-15px); }
+  40% { transform: translateX(15px); }
+  50% { transform: translateX(0); }
+    }
+
+    .skull {
+      font-size: clamp(2rem, 8vw, 4rem);
+      animation: bounce 2s infinite;
+      margin: clamp(1rem, 3vw, 2rem) 0;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .static-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle, transparent 20%, rgba(0,0,0,0.1) 20.1%),
+        linear-gradient(0deg, transparent 24%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.05) 26%, transparent 27%);
+      background-size: 3px 3px, 100% 3px;
+      animation: static 0.1s infinite;
+      pointer-events: none;
+      opacity: 0.3;
+      z-index: 98;
+    }
+
+    @keyframes static {
+  0% { transform: translate(0, 0); }
+  10% { transform: translate(-3px, -3px); }
+  20% { transform: translate(3px, 3px); }
+  30% { transform: translate(-3px, 3px); }
+  40% { transform: translate(3px, -3px); }
+  50% { transform: translate(0, 0); }
+  60% { transform: translate(4px, 4px); }
+  70% { transform: translate(-4px, -4px); }
+  80% { transform: translate(4px, -4px); }
+  90% { transform: translate(-4px, 4px); }
+  100% { transform: translate(0, 0); }
+    }
+
+    .glitch-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.05) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      mix-blend-mode: difference;
+      animation: glitchFlash 0.4s infinite;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    @keyframes glitchFlash {
+      0%   { opacity: 0.05; }
+      10%  { opacity: 0.2; }
+      20%  { opacity: 0.05; }
+      30%  { opacity: 0.15; }
+      40%  { opacity: 0.08; }
+      50%  { opacity: 0.3; }
+      60%  { opacity: 0.1; }
+      70%  { opacity: 0.25; }
+      80%  { opacity: 0.05; }
+      90%  { opacity: 0.1; }
+      100% { opacity: 0.05; }
+    }
+  </style>
+</head>
+<body>
+  <div class="blood-drip"></div>
+  <div class="blood-drip"></div>
+  <div class="blood-drip"></div>
+  <div class="blood-drip"></div>
+  <div class="blood-drip"></div>
+
+  <div class="static-overlay"></div>
+  <div class="glitch-overlay"></div>
+
+  <div class="container">
+    <div class="error-code">666</div>
+    <h1 class="error-title">ERROR</h1>
+    <div class="skull">💀</div>
+    <p class="error-message">
+      シス繝√ムが予ｪ繝しない異常を検知しｯ繝した。<br>
+      繝舌?繝√Ε繝ｫ繝ｪ繝ｳ繧ｯ繝舌ヨ繝ｫ。<br>
+    </p>
+  </div>
+</body>
+</html>

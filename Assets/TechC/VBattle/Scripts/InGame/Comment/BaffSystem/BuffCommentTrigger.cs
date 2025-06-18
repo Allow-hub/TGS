@@ -55,22 +55,22 @@ namespace TechC
 
                 // Debug.Log(id);
                 /* バフの種類ごとに適用するエフェクトを変える */
-                Debug.Log(buffType);
+                // Debug.Log(buffType);
                 switch (buffType)
                 {
                     case BuffType.Speed:
                         EffectFactory.I.PlayEffect("SpeedComment", id, Quaternion.identity, effectTime);
-                        Debug.Log("SpeedBuffが適用");
+                        // Debug.Log("SpeedBuffが適用");
                         break;
                     case BuffType.Attack:
                         EffectFactory.I.PlayEffect("AttackComment", id, Quaternion.identity, effectTime);
-                        Debug.Log("AttackBuffが適用");
+                        // Debug.Log("AttackBuffが適用");
 
                         break;
-                    // 必要であれば他のバフタイプも追加できます
                     default:
-                        Debug.LogWarning($"未対応のバフタイプ: {buffType}");
+                        // Debug.LogWarning($"未対応のバフタイプ: {buffType}");
                         break;
+                    // ここでバフを追加可能
                 }
 
                 alreadyApplied = true;

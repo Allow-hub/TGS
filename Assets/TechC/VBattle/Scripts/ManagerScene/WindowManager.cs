@@ -6,9 +6,6 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace TechC
 {
-    /// <summary>
-    /// ウィンドウの管理クラス
-    /// </summary>
     public class WindowManager : Singleton<WindowManager>
     {
         private List<NativeWindow> windows = new();
@@ -50,21 +47,23 @@ namespace TechC
         {
             window.SetRect();
 
+            float dpiScale = WindowUtility.GetDpiScaleRatio((HWND)window.Hwnd);
             var (nativeX, nativeY) = window.GetScreenPosition();
 
-            // スクリーン解像度に合わせる（特にビルド時）
-            int screenW = Display.main.systemWidth;
-            int screenH = Display.main.systemHeight;
+            float correctedX = nativeX / dpiScale;
+            float correctedY = nativeY / dpiScale;
+            float correctedWidth = window.Width / dpiScale;
+            float correctedHeight = window.Height / dpiScale;
 
-            // ウィンドウの中心座標を計算（スクリーン座標系）
-            float windowCenterX = nativeX + window.Width * 0.5f;
-            float windowCenterY = nativeY + window.Height * 0.5f;
+            float windowCenterX = correctedX + correctedWidth * 0.5f;
+            float windowCenterY = correctedY + correctedHeight * 0.5f;
 
-            // Unityのスクリーン座標に正規化（0〜screen.width / height）
-            float normalizedX = (windowCenterX / screenW) * Screen.width;
-            float normalizedY = ((screenH - windowCenterY) / screenH) * Screen.height;
+            var unityRect = WindowUtility.GetUnityGameViewRect();
+            float unityHeight = Screen.height;
 
-            var screenPos = new Vector3(normalizedX, normalizedY, 0);
+            float offsetY = windowCenterY - unityRect.top;
+            float unityScreenY = unityHeight - offsetY;
+            float unityScreenX = windowCenterX - unityRect.left;
 
             Camera cam = Camera.main;
             if (cam == null)
@@ -72,18 +71,17 @@ namespace TechC
                 Debug.LogError("Main Camera not found!");
                 return;
             }
+            var colliderPos = new Vector3(colliderObj.transform.position.x, colliderObj.transform.position.y, -5.3f);
 
-            // Z距離を固定してワールド座標に変換
-            float fixedZ = -5.3f;
-            screenPos.z = Mathf.Abs(cam.transform.position.z - fixedZ);
-            Vector3 worldPos = cam.ScreenToWorldPoint(screenPos);
-            worldPos.z = fixedZ;
+            var screenPos = cam.WorldToScreenPoint(colliderPos);
+            screenPos.x = unityScreenX;
+            screenPos.y = unityScreenY;
+            var worldPos = cam.ScreenToWorldPoint(screenPos);
 
             Vector3 clampedPos = ClampToAllowedArea(worldPos);
             colliderObj.transform.position = clampedPos;
 
-            // サイズをワールド座標単位で設定
-            colliderObj.transform.localScale = GetWindowSizeInWorldUnits(window.Width, window.Height, cam, screenPos.z);
+            colliderObj.transform.localScale = GetWindowSizeInWorldUnits(correctedWidth, correctedHeight, cam);
         }
 
 
@@ -97,21 +95,32 @@ namespace TechC
 
             return new Vector3(clampedX, clampedY, worldPos.z);
         }
-
-        private Vector3 GetWindowSizeInWorldUnits(int pixelWidth, int pixelHeight, Camera camera, float zDistance)
+        private Vector3 GetWindowSizeInWorldUnits(float pixelWidth, float pixelHeight, Camera camera)
         {
-            // より正確なサイズ計算のため、画面中央を基準点として使用
-            Vector3 center = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, zDistance);
-            Vector3 offset = new Vector3(pixelWidth * 0.5f, pixelHeight * 0.5f, 0);
+            if (camera == null)
+            {
+                Debug.LogError("Camera is null!");
+                return Vector3.one;
+            }
 
-            Vector3 worldCenter = camera.ScreenToWorldPoint(center);
-            Vector3 worldCorner = camera.ScreenToWorldPoint(center + offset);
+            float zDepth = -5.3f; // ウィンドウコライダーの Z 座標に合わせる
 
-            float worldWidth = Mathf.Abs(worldCorner.x - worldCenter.x) * 2f;
-            float worldHeight = Mathf.Abs(worldCorner.y - worldCenter.y) * 2f;
+            // スクリーン座標系での中心 + 幅・高さ
+            Vector3 screenCenter = camera.WorldToScreenPoint(new Vector3(0f, 0f, zDepth));
+            Vector3 screenRight = screenCenter + new Vector3(pixelWidth, 0f, 0f);
+            Vector3 screenTop = screenCenter + new Vector3(0f, pixelHeight, 0f);
+
+            Vector3 worldCenter = camera.ScreenToWorldPoint(screenCenter);
+            Vector3 worldRight = camera.ScreenToWorldPoint(screenRight);
+            Vector3 worldTop = camera.ScreenToWorldPoint(screenTop);
+
+            float worldWidth = Mathf.Abs(worldRight.x - worldCenter.x);
+            float worldHeight = Mathf.Abs(worldTop.y - worldCenter.y);
 
             return new Vector3(worldWidth, worldHeight, 1f);
         }
+
+
 
         private void OnDrawGizmos()
         {
@@ -119,29 +128,38 @@ namespace TechC
             Gizmos.DrawWireCube(new Vector3(areaCenter.x, areaCenter.y, -5.3f), new Vector3(areaSize.x, areaSize.y, 0.1f));
         }
 
-        public void PopupWindowWindow(WindowFactory.WindowType type, int maxSize = 500, int tileSize = 200, float duration = 1f, Sprite tex = null)
+           public void PopupWindowWindow(WindowFactory.WindowType type, int maxSize = 500, int tileSize = 200, float duration = 1f, Sprite tex = null)
         {
+            // 画面サイズ取得
             var unityRect = WindowUtility.GetUnityGameViewRect();
             int unityScreenX = unityRect.left;
             int unityScreenY = unityRect.top;
             int unityScreenWidth = unityRect.right - unityRect.left;
             int unityScreenHeight = unityRect.bottom - unityRect.top;
 
+            // Windowで隙間なく覆うための分割数を計算
             var rnd = new System.Random();
+
+            // 横・縦に何枚並べるか
             int xCount = Mathf.CeilToInt((float)unityScreenWidth / tileSize);
             int yCount = Mathf.CeilToInt((float)unityScreenHeight / tileSize);
+
             int windowCount = xCount * yCount;
             float interval = duration / windowCount;
 
-            List<(int xi, int yi)> gridList = new();
+            // グリッドの全パターンをリスト化してシャッフル
+            List<(int xi, int yi)> gridList = new List<(int xi, int yi)>();
             for (int xi = 0; xi < xCount; xi++)
                 for (int yi = 0; yi < yCount; yi++)
                     gridList.Add((xi, yi));
 
+            // シャッフル
             for (int i = gridList.Count - 1; i > 0; i--)
             {
                 int j = rnd.Next(i + 1);
-                (gridList[i], gridList[j]) = (gridList[j], gridList[i]);
+                var tmp = gridList[i];
+                gridList[i] = gridList[j];
+                gridList[j] = tmp;
             }
 
             int created = 0;
@@ -150,6 +168,8 @@ namespace TechC
                 if (created >= gridList.Count) return;
 
                 var (xi, yi) = gridList[created];
+
+                // 各グリッドで残り幅・高さを計算
                 int remainWidth = unityScreenWidth - xi * tileSize;
                 int remainHeight = unityScreenHeight - yi * tileSize;
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+
 namespace TechC
 {
     [RequireComponent(typeof(RectTransform))]
@@ -35,7 +36,7 @@ namespace TechC
 
         public virtual void Excute()
         {
-            Show();
+
         }
 
         protected IEnumerator SlideIn()

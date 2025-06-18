@@ -71,7 +71,7 @@ namespace TechC
                 neutralAttackData_2,
                 neutralAttackData_3
             );
-            
+
             currentNeutral = nextAttack;
             CustomLogger.Info("ニュートラル番号" + nextAttack.name, "comboCheck");
             ExecuteAttack(nextAttack);
@@ -102,16 +102,16 @@ namespace TechC
             base.ExecuteAttack(attackData);
             if (attackData.canRepeat)
             {
-                DelayUtility.StartRepeatedAction(this, attackData.repeatDuration, attackData.repeatInterval, () =>
+                DelayUtility.StartRepeatedActionWithPause(this, attackData.repeatDuration, attackData.repeatInterval, BattleJudge.I.GetPauseStateFunc, () =>
                 {
                     // 攻撃処理をAttackProcessorに委譲
-                    StartCoroutine(attackProcessor.ProcessAttack(attackData));
+                    attackProcessor.ProcessAttack(attackData);
                 });
             }
             else
             {
                 // 攻撃処理をAttackProcessorに委譲
-                StartCoroutine(attackProcessor.ProcessAttack(attackData));
+                attackProcessor.ProcessAttack(attackData);
             }
         }
 

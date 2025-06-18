@@ -44,7 +44,7 @@ namespace TechC
             }
             else
             {
-                Debug.LogWarning("ステージが1つしかありません。変更できません。");
+                // Debug.LogWarning("ステージが1つしかありません。変更できません。");
             }
         }
 

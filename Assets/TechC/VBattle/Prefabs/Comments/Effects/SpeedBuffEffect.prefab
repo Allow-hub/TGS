@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2457286274072072104}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SpeedBuffEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 3248056188166446305}
   - component: {fileID: 5959127843359091224}
   - component: {fileID: 6081253559081283869}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BuffEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}

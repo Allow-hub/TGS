@@ -1,15 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace TechC
 {
     public class NormalTab : BaseTab
     {
+        [SerializeField] private CommentDisplay commentDisplay;
+        [SerializeField] private TextMeshProUGUI durationText;
+        [SerializeField] private float addSpeed = 1.5f;
+        [SerializeField] private float delayDuration = 3f;
+
+        private float originalSpeed;
+
         [ContextMenu("Show")]
         public override void Show()
         {
             base.Show();
+            Excute();
         }
 
         public override void Hide()
@@ -20,6 +27,16 @@ namespace TechC
         public override void Excute()
         {
             base.Excute();
+            durationText.text = delayDuration + "秒間";
+
+            originalSpeed = commentDisplay.GetCurrentSpeed();
+            // スピードを一時的に上げる
+            commentDisplay.AddSpeed(addSpeed);
+            // 速度をもとに戻す
+            DelayUtility.StartDelayedAction(this, delayDuration, () =>
+            {
+                commentDisplay.SetSpeed(originalSpeed);
+            });
         }
     }
 }

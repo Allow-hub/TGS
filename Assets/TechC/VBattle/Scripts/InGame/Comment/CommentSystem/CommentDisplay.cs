@@ -82,7 +82,7 @@ namespace TechC
 
             if (comment == null)
             {
-                Debug.LogWarning("GetComment returned null for " + commentData.text);
+                // Debug.LogWarning("GetComment returned null for " + commentData.text);
                 return;
             }
 
@@ -138,6 +138,21 @@ namespace TechC
                 default:
                     return null;
             }
+        }
+        
+
+        public float GetCurrentSpeed()
+        {
+            return speed;
+        }
+        public void SetSpeed(float newSpeed)
+        {
+            speed = newSpeed;
+        }
+
+        public void AddSpeed(float amount)
+        {
+            speed += amount;
         }
     }
 }

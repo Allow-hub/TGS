@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TechC
 {
@@ -24,6 +21,9 @@ namespace TechC
         private float returnNeutralEffectTime = 3f;
         private Quaternion currentSlashRot;
         [Header("左弱")]
+        [SerializeField] private AttackData leftAttackCounter;
+        private Vector3 rightDirectionRot;
+        private Vector3 leftDirectionRot;
 
         [Header("右弱")]
         [SerializeField] private float xOffset = 3f;
@@ -72,16 +72,53 @@ namespace TechC
             {
                 CharaEffectFactory.I.ReturnEffectObj(slObj);
             });
-            AudioManager.I.PlayCharacterSE(CharacterType.Ame,CharacterSEType.WeakNormalAttack_1);
+            AudioManager.I.PlayCharacterSE(CharacterType.Ame, CharacterSEType.WeakNormalAttack_1);
         }
 
         /// <summary>
-        /// カウンターの予定だが後回し
+        /// カウンター
         /// </summary>
         public override void LeftAttack()
         {
-            base.LeftAttack();
+            base.LeftAttack();  
+            characterController.SetCanCounter(true);
+            characterController.SetCounterAction(CounterAttack);
+            //カウンター待機時に攻撃を受けなかった場合戻す
+            DelayUtility.StartDelayedActionWithPause(this, leftAttackData.attackDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                characterController.SetCanCounter(false);
+                characterController.SetCounterAction(null);
+            });
         }
+
+        private void CounterAttack()
+        {
+            characterController.GetAnim().SetBool(leftAttackCounter.animHash, true);
+            // 前方にレイを飛ばして相手をチェック
+            float rayDistance = 30f;
+            Ray ray = new Ray(transform.position, transform.forward);
+            if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
+            {
+                var opponentController = hit.collider.GetComponentInParent<Player.CharacterController>();
+                if (opponentController != null && opponentController.PlayerID != characterController.PlayerID)
+                {
+                }
+                else
+                {
+                    transform.forward = -transform.forward;
+                }
+            }
+            // カウンター攻撃を実行
+            ExecuteAttack(leftAttackCounter);
+            DelayUtility.StartDelayedActionWithPause(this, leftAttackCounter.attackDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                characterController.GetAnim().SetBool(leftAttackCounter.animHash, false);
+            });
+            // カウンター状態解除
+            characterController.SetCanCounter(false);
+            characterController.SetCounterAction(null);
+        }
+
 
         /// <summary>
         /// 氷の斬撃を飛ばす、飛び道具側の攻撃はCharaEffectが行う

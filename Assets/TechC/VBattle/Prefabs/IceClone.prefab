@@ -1108,6 +1108,7 @@ MonoBehaviour:
   n1Rot: {x: 0.3826835, y: 0, z: 0, w: -0.9238795}
   n2Rot: {x: 0.5686695, y: 0.10692081, z: -0.07486677, w: 0.81214404}
   n3Rot: {x: 0, y: 0, z: 0, w: 0}
+  leftAttackCounter: {fileID: 11400000, guid: 1a3149efd8f069240ba27d847fb29c2b, type: 2}
   xOffset: 1
   flyingSlashSpeed: 7
   changeHitBox: {x: 0.3, y: 0.8, z: 0}
@@ -1186,7 +1187,7 @@ MonoBehaviour:
   lastDetectedCombo: "\u306A\u3057"
   comboCheckLogId: comboCheck
   comboClearLogId: comboClear
-  showDebugInfo: 1
+  showDebugInfo: 0
 --- !u!114 &4029775971515787939
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -61,7 +61,6 @@ namespace TechC.Player
         private float currentGuardPower;
         private float lastGuardTime;
         private Vector3 lastVelocity;
-        private float lastAnimSpeed;
 
         // 移動・物理関連
         private Rigidbody rb;
@@ -83,6 +82,7 @@ namespace TechC.Player
         private Vector3 defaultCenter;   // centerを戻すために保存
 
         private Player.CharacterController opponentController;
+        [SerializeField] private bool isClonePlayer = false;
         #endregion
 
         #region プロパティ
@@ -121,6 +121,7 @@ namespace TechC.Player
         {
             rb = GetComponent<Rigidbody>();
             opponentController = BattleJudge.I.GetOtherPlayerObjects(PlayerID)[0].GetComponent<Player.CharacterController>();
+            if (isClonePlayer) return;
             // HPPresenterがnullでないか確認してから購読
             if (hpPresenter != null)
             {
@@ -144,12 +145,9 @@ namespace TechC.Player
             gaugePresenter = preObj.GetComponent<GaugePresenter>();
 
             hpPresenter = preObj.GetComponent<HPPresenter>();
-
-            // デバッグログ
-            // Debug.Log($"Player {playerID}: HPPresenter {(hpPresenter != null ? "見つかりました" : "見つかりませんでした")}");
-            // Debug.Log($"Player {playerID}: GaugePresenter {(gaugePresenter != null ? "見つかりました" : "見つかりませんでした")}");
         }
 
+        public void SetClonePlayerID(int id) => playerID = id;
         /// <summary>
         /// プレイヤーIDを設定する（生成時に呼び出す）
         /// </summary>
@@ -428,6 +426,8 @@ namespace TechC.Player
         /// </summary>
         public float GetHp()
         {
+            //複製キャラの場合HP1を返す
+            if (isClonePlayer) return 1;
             // hpPresenterがnullでないことを確認
             if (hpPresenter != null)
             {

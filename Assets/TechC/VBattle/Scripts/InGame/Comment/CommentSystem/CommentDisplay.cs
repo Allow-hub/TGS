@@ -78,8 +78,6 @@ namespace TechC
             }
 
             AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, commentColor);
-            // CharacterHelper.ProcessCommentText(commentData.text, comment.transform, commentColor);
-
 
             if (comment == null)
             {

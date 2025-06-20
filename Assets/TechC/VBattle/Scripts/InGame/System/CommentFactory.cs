@@ -9,7 +9,7 @@ namespace TechC
     {
         [SerializeField] private ObjectPool commentPool;
 
-        [Header("文字とPrefabのScriptableObject")]
+        [Header("文字とそのPrefabのScriptableObject")]
         [SerializeField] private CharPrefabDatabase charPrefabDatabase;
         protected override bool UseDontDestroyOnLoad => false;
 
@@ -35,10 +35,8 @@ namespace TechC
                         trigger.buffType = commentData.buffType.Value;
                     }
                 }
-
                 return text;
             }
-
             return null;
         }
 

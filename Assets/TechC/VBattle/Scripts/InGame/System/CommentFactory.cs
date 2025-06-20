@@ -7,8 +7,11 @@ namespace TechC
 {
     public class CommentFactory : Singleton<CommentFactory>
     {
-        [SerializeField]
-        private ObjectPool commentPool;
+        [SerializeField] private ObjectPool commentPool;
+
+        [Header("文字とPrefabのScriptableObject")]
+        [SerializeField] private CharPrefabDatabase charPrefabDatabase;
+        protected override bool UseDontDestroyOnLoad => false;
 
         public TMP_Text GetComment(CommentData commentData, GameObject commentPrefab, Transform parent)
         {
@@ -45,7 +48,24 @@ namespace TechC
             commentPool.ReturnObject(comment);
         }
 
-        public GameObject GetChar(string charName) =>
-            commentPool.GetObjectByName(charName);
+        public GameObject GetChar(string charName)
+        {
+
+            foreach (var entry in charPrefabDatabase.entries)
+            {
+
+                if (entry.charText == charName)
+                {
+                    Debug.Log("一致しました！");
+                    return entry.charPrefab;
+                }
+            }
+
+            Debug.LogWarning($"文字に対応するプレハブが見つかりません: {charName}");
+            return null;
+        }
+
+
+
     }
 }

@@ -3634,7 +3634,7 @@ MonoBehaviour:
   p1InitialPosition: {fileID: 921649179348610202}
   p2InitialPosition: {fileID: 1832820432141741491}
   players:
-  - playerPrefab: {fileID: 7627828736903395385, guid: 10f0ab4c65588784091056c4bbc13ba4,
+  - playerPrefab: {fileID: 7627828736903395385, guid: 01e31a08014b679499c665bdfbef363f,
       type: 3}
     playerObject: {fileID: 7627828736903395385, guid: a381c32573e781049b85ff8fd8ece1b6,
       type: 3}

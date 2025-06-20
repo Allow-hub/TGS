@@ -142,6 +142,12 @@ namespace TechC
             var targetController = GetOpponentController(hitCollider);
             if (targetController == null) return false;
             if (targetController.PlayerID == characterController.PlayerID) return false;
+
+            if (TryProcessCounter(targetController))
+            {
+                return true;
+            }
+
             if (TryProcessGuard(targetController, hitCollider, attackData))
             {
                 return true;
@@ -273,6 +279,13 @@ namespace TechC
                 return true;
             }
             return false;
+        }
+
+        private bool TryProcessCounter(Player.CharacterController targetController)
+        {
+            if (!targetController.CanCounter) return false;
+            targetController.UseCounter();
+            return true;
         }
 
         /// <summary>

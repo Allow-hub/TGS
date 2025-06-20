@@ -13,7 +13,6 @@ namespace TechC
     {
         [Header("バフの種類")]
         public BuffType buffType;
-        [TextArea]
         public string[] comments;
     }
 }

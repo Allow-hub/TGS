@@ -10,7 +10,7 @@ namespace TechC
         private string prefabFolderPath = "Assets/TechC/VBattle/Prefabs/Comments/Unicode/";
         private CharPrefabDatabase targetDatabase;
 
-        [MenuItem("Tools/Char/Unicode Prefab Importer")]
+        [MenuItem("Tools/Unicode/Unicode Prefab Importer")]
         public static void ShowWindow()
         {
             GetWindow<UnicodePrefabImporterWindow>("Unicode Importer");

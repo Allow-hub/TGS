@@ -6,15 +6,8 @@ public class My3DCharToolWindow : EditorWindow
 {
     private const string Shortcut = "Ctrl + Shift + P";
 
-    [MenuItem("TechC/3D文字ツール")] // Ctrl + Shift + P
-    public static void OpenWindow()
-    {
-        GetWindow<My3DCharToolWindow>("3D文字ツール");
-    }
-
     void OnGUI()
     {
-        GUILayout.Label("3D文字ツール", EditorStyles.boldLabel);
         GUILayout.Space(10);
         EditorGUILayout.HelpBox($"このウィンドウを開くショートカット: {Shortcut}", MessageType.Info);
         // ここにツールの内容を追加
@@ -29,7 +22,7 @@ public class UnicodePrefabFinder : EditorWindow
 
     private static readonly string prefabFolderPath = "Assets/TechC/VBattle/Prefabs/Comments/Unicode";
 
-    [MenuItem("Tools/Char/Unicode Prefab Finder %#c p")]
+    [MenuItem("Tools/Unicode/Unicode Prefab Finder")]
     public static void ShowWindow()
     {
         GetWindow<UnicodePrefabFinder>("Unicode Finder");

@@ -56,12 +56,12 @@ namespace TechC
 
                 if (entry.charText == charName)
                 {
-                    Debug.Log("一致しました！");
+                    // Debug.Log("一致しました！");
                     return entry.charPrefab;
                 }
             }
 
-            Debug.LogWarning($"文字に対応するプレハブが見つかりません: {charName}");
+            // Debug.LogWarning($"文字に対応するプレハブが見つかりません: {charName}");
             return null;
         }
 

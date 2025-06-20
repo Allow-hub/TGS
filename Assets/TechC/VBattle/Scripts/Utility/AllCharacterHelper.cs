@@ -6,12 +6,15 @@ namespace TechC
     public static class AllCharacterHelper
     {
         /// <summary>
-        /// 各文字を対応するPrefabに変換して処理
+        /// 各文字を対応するPrefabを生成する処理
         /// </summary>
         public static void ProcessCommentText(string text, Transform parent, Color color)
         {
             float spacing = 1.3f; // 文字の間隔
             float xOffset = 0f;
+
+            
+            Vector3 BOX_COLLIDER_SIZE = new Vector3(0.6f, 0.3f, 0.6f); // Boxcolliderの大きさの定数
 
             const float PLAYER_TOP_OFFSET = -5.3f;
             const float ROTATE_X_DEGREE = 90f;
@@ -28,6 +31,17 @@ namespace TechC
                 if (prefab != null)
                 {
                     GameObject obj = GameObject.Instantiate(prefab, parent);
+
+                    // BoxColliderを持っていない場合に追加
+                    if (obj.GetComponent<BoxCollider>() == null)
+                    {
+                        BoxCollider collider = obj.AddComponent<BoxCollider>();
+
+                        // isTrigger をオンにする
+                        collider.isTrigger = true;
+                        // 初期サイズを設定
+                        collider.size = BOX_COLLIDER_SIZE;
+                    }
 
                     // 文字の向きを調節する
                     obj.transform.localRotation = Quaternion.Euler(
@@ -54,16 +68,16 @@ namespace TechC
                     {
                         meshRenderer.material.color = color;
                     }
-
                 }
             }
         }
 
 
-
         private static readonly Dictionary<string, string> charToPrefabName;
 
-        // 静的コンストラクタで辞書を初期化
+        /// <summary>
+        /// 文字とそのPrefabの対応表
+        /// </summary>
         static AllCharacterHelper()
         {
             var entries = new (string, string)[]

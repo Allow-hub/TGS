@@ -18,6 +18,7 @@ namespace TechC
         [SerializeField] protected BattleJudge battleJudge;
         private readonly Dictionary<AttackType, AttackData> attackDataMap = new Dictionary<AttackType, AttackData>();
         protected bool isAttacking = false;
+        protected List<GameObject> activeEffects = new List<GameObject>();
 
         #region IAttackBaseのメソッド
         public abstract void NeutralAttack();
@@ -75,6 +76,29 @@ namespace TechC
             }
         }
 
+        protected virtual void OnDisable()
+        {
+            foreach (var obj in activeEffects)
+            {
+                if (obj != null)
+                {
+                    CharaEffectFactory.I.ReturnEffectObj(obj);
+                }
+            }
+            activeEffects.Clear();
+        }
+
+        protected void RegisterEffect(GameObject effect)
+        {
+            if (effect != null && !activeEffects.Contains(effect))
+                activeEffects.Add(effect);
+        }
+
+        protected void UnregisterEffect(GameObject effect)
+        {
+            if (effect != null)
+                activeEffects.Remove(effect);
+        }
         /// <summary>
         /// 攻撃を実行する共通処理
         /// </summary>
@@ -85,7 +109,7 @@ namespace TechC
 
             characterController.GetAnim().speed = attackData.animationSpeed;
             characterController.SetAnim(attackData.animHash, true);
-            CustomLogger.Info("アタックデータ:"+attackData.name,"comboCheck");
+            CustomLogger.Info("アタックデータ:" + attackData.name, "comboCheck");
             DelayUtility.StartDelayedActionWithPause(this, attackData.attackDuration, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 isAttacking = false;

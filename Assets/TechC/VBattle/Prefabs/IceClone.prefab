@@ -1064,8 +1064,9 @@ MonoBehaviour:
   yOffset: 1
   leftStrongVelocity: 5
   explosionDuration: 3
-  iceWallDuration: 5
-  wallOffset: 1.5
+  iceWallDuration: 3
+  wallOffsetX: 2.5
+  wallOffsetY: 0
   returnStrongUpEffectTime: 3
   upwardVelocity: 2.5
 --- !u!114 &9141137595621075143

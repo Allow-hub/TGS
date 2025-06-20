@@ -22,7 +22,7 @@ MonoBehaviour:
   animationSpeed: 1.2
   attackDuration: 1
   damage: 10
-  knockback: 10
+  knockback: 8
   canRepeat: 0
   repeatInterval: 0
   repeatDuration: 0
@@ -31,10 +31,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   hitboxOffset: {x: 0, y: 1, z: 1}
-  hitTiming: 0.5
+  hitTiming: 0
   hitStopDuration: 0.3
   hitStopTimeScale: 0.02
-  knockbackDirection: {x: 0, y: 0, z: 1}
+  knockbackDirection: {x: 0, y: 1, z: 0.2}
   useCustomKnockbackDirection: 1
   useSelfColliderForHitCheck: 1
   characterSEType: 12

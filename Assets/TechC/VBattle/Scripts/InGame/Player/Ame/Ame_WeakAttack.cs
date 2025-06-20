@@ -66,10 +66,11 @@ namespace TechC
 
             //slashEffectの取得。各段階の回転を反映
             var slObj = CharaEffectFactory.I.GetEffectObj(slash, slObjPos, currentSlashRot);
-
+            RegisterEffect(slObj);
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedActionWithPause(this, returnNeutralEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
+                UnregisterEffect(slObj);
                 CharaEffectFactory.I.ReturnEffectObj(slObj);
             });
             AudioManager.I.PlayCharacterSE(CharacterType.Ame, CharacterSEType.WeakNormalAttack_1);
@@ -100,6 +101,7 @@ namespace TechC
             if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
             {
                 var opponentController = hit.collider.GetComponentInParent<Player.CharacterController>();
+                //相手の方向を向く
                 if (opponentController != null && opponentController.PlayerID != characterController.PlayerID)
                 {
                 }
@@ -132,6 +134,7 @@ namespace TechC
                 //飛び道具の処理
                 var pos = transform.position.AddX(xOffset);
                 slObj = CharaEffectFactory.I.GetEffectObj(flyingSlash, pos, Quaternion.identity);
+                RegisterEffect(slObj);
                 var effectSetting = slObj.GetComponent<CharaEffect>();
                 effectSetting.SetAttackProcessor(attackProcessor);
                 effectSetting.SetOwnerId(characterController.PlayerID);
@@ -143,6 +146,7 @@ namespace TechC
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedActionWithPause(this, returnRightEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
+                UnregisterEffect(slObj);
                 CharaEffectFactory.I.ReturnEffectObj(slObj);
             });
         }
@@ -161,7 +165,6 @@ namespace TechC
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedActionWithPause(this, returnDownEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
-                // CharaEffectFactory.I.ReturnEffectObj(flowerEffect);
                 characterController.ResetHitCollider(chageColliderSpeed);
                 characterController.ChangeColliderTrigger(false);
             });
@@ -174,15 +177,23 @@ namespace TechC
         {
             base.UpAttack();
             GameObject obj = null;
-            DelayUtility.StartDelayedActionWithPause(this, upAttackData.hitTiming, BattleJudge.I.GetPauseStateFunc, () =>
-             {
-                 var pos = transform.position.AddX(xFlowerOffset).AddY(yFlowerOffset);
-                 obj = CharaEffectFactory.I.GetEffectObj(flower, pos, Quaternion.identity);
-             });
+            var basePos = transform.position + transform.forward * xFlowerOffset + Vector3.up * yFlowerOffset;
+            obj = CharaEffectFactory.I.GetEffectObj(flower, basePos, Quaternion.identity);
+            RegisterEffect(obj);
+            if (transform.forward.x < 0)
+            {
+                obj.transform.Rotate(0, 180, 0);
+            }
+            else if (transform.forward.x > 0)
+            {
+                obj.transform.Rotate(Vector3.zero);
+            }
+
 
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedActionWithPause(this, returnUpEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
+                UnregisterEffect(obj);
                 CharaEffectFactory.I.ReturnEffectObj(obj);
             });
         }

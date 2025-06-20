@@ -1,4 +1,4 @@
-﻿using IceMilkTea.StateMachine;
+using IceMilkTea.StateMachine;
 using UnityEngine;
 using static TechC.AttackManager;
 namespace TechC
@@ -78,7 +78,8 @@ namespace TechC
 
                 if (isEarlyExit)
                 {
-                    Context.attackManager.ForceFinish(attackStrength); Debug.Log("Early");
+                    Context.attackManager.ForceFinish(attackStrength);
+                    Debug.Log("Early");
                 }
                 Context.currentCommand = null;
             }

@@ -115,7 +115,6 @@ namespace TechC
                 isAttacking = false;
                 characterController.SetAnim(attackData.animHash, false);
                 characterController.GetAnim().speed = characterController.DefaultAnimSpeed;
-                // Debug.Log("攻撃終了: " + attackData.name);
             });
         }
     }

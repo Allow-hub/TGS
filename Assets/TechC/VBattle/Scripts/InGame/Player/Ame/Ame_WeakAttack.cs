@@ -22,8 +22,6 @@ namespace TechC
         private Quaternion currentSlashRot;
         [Header("左弱")]
         [SerializeField] private AttackData leftAttackCounter;
-        private Vector3 rightDirectionRot;
-        private Vector3 leftDirectionRot;
 
         [Header("右弱")]
         [SerializeField] private float xOffset = 3f;
@@ -94,7 +92,7 @@ namespace TechC
 
         private void CounterAttack()
         {
-            characterController.GetAnim().SetBool(leftAttackCounter.animHash, true);
+            isAttacking = false;
             // 前方にレイを飛ばして相手をチェック
             float rayDistance = 30f;
             Ray ray = new Ray(transform.position, transform.forward);
@@ -112,9 +110,9 @@ namespace TechC
             }
             // カウンター攻撃を実行
             ExecuteAttack(leftAttackCounter);
-            DelayUtility.StartDelayedActionWithPause(this, leftAttackCounter.attackDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            DelayUtility.StartDelayedActionWithPause(this, 0.1f, BattleJudge.I.GetPauseStateFunc, () =>
             {
-                characterController.GetAnim().SetBool(leftAttackCounter.animHash, false);
+                characterController.GetAnim().SetBool(leftAttackData.animHash, false);
             });
             // カウンター状態解除
             characterController.SetCanCounter(false);

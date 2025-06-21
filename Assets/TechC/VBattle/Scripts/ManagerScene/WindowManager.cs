@@ -18,29 +18,29 @@ namespace TechC
         protected override void Init()
         {
             base.Init();
-            DelayUtility.StartDelayedAction(this, 0.1f, () =>
-            {
-                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
-                uint white = 0x00FFFFFF;
-                PInvoke.SetLayeredWindowAttributes((HWND)w.Hwnd, (COLORREF)white, 100, LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
+            // DelayUtility.StartDelayedAction(this, 0.1f, () =>
+            // {
+            //     var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
+            //     uint white = 0x00FFFFFF;
+            //     PInvoke.SetLayeredWindowAttributes((HWND)w.Hwnd, (COLORREF)white, 100, LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
 
-                w.SetRect();
-                windows.Add(w);
-                var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
-                windowColliders[w] = windowCollider;
-                UpdateColliderTransform(w, windowCollider);
-            });
+            //     w.SetRect();
+            //     windows.Add(w);
+            //     var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
+            //     windowColliders[w] = windowCollider;
+            //     UpdateColliderTransform(w, windowCollider);
+            // });
         }
 
         void Update()
         {
-            foreach (var w in windows)
-            {
-                if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
-                {
-                    UpdateColliderTransform(w, colliderObj);
-                }
-            }
+            // foreach (var w in windows)
+            // {
+            //     if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
+            //     {
+            //         UpdateColliderTransform(w, colliderObj);
+            //     }
+            // }
         }
 
         private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)

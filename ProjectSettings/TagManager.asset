@@ -12,6 +12,7 @@ TagManager:
   - BattleJadge
   - Wall
   - Debirs
+  - ClonePlayer
   layers:
   - Default
   - TransparentFX
@@ -26,7 +27,7 @@ TagManager:
   - Effect
   - 3DText
   - 
-  - 
+  - ClonePlayer
   - 
   - 
   - 

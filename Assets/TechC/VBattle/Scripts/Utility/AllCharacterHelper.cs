@@ -8,46 +8,38 @@ namespace TechC
         /// <summary>
         /// 各文字を対応するPrefabを生成する処理
         /// </summary>
-        public static void ProcessCommentText(string text, Transform parent, Color color)
+        public static List<GameObject> ProcessCommentText(string text, Transform parent, Color color)
         {
             float spacing = 1.3f; // 文字の間隔
             float xOffset = 0f;
 
-            
-            Vector3 BOX_COLLIDER_SIZE = new Vector3(0.6f, 0.3f, 0.6f); // Boxcolliderの大きさの定数
-
-            const float PLAYER_TOP_OFFSET = -5.3f;
             const float ROTATE_X_DEGREE = 90f;
             const float ROTATE_Y_DEGREE = 180f;
-            const float ROTATE_Z_DEGREE = 180f;
 
             const float SCALE_MULTIPLIER = 2f;  // ここに文字のPrefabの大きさの倍率を定義
 
+            List<GameObject> spawnedChars = new List<GameObject>(); // 返却用に記録
 
             foreach (char c in text)
             {
-                var prefab = CommentFactory.I.GetChar(c.ToString());
+                GameObject obj = CommentFactory.I.GetChar(c.ToString()); // Poolから取得
 
-                if (prefab != null)
+                if (obj != null)
                 {
-                    GameObject obj = GameObject.Instantiate(prefab, parent);
+                    obj.transform.SetParent(null); // 一旦親を外す
 
-                    // BoxColliderを持っていない場合に追加
-                    if (obj.GetComponent<BoxCollider>() == null)
-                    {
-                        BoxCollider collider = obj.AddComponent<BoxCollider>();
+                    /* 文字のPrefabのプロパティをいったんリセット */
+                    // obj.transform.localPosition = Vector3.zero;
+                    obj.transform.localRotation = Quaternion.identity;
+                    obj.transform.localScale = Vector3.one;
 
-                        // isTrigger をオンにする
-                        collider.isTrigger = true;
-                        // 初期サイズを設定
-                        collider.size = BOX_COLLIDER_SIZE;
-                    }
+                    obj.transform.SetParent(parent);
 
                     // 文字の向きを調節する
                     obj.transform.localRotation = Quaternion.Euler(
                         obj.transform.localEulerAngles.x + ROTATE_X_DEGREE,
                         obj.transform.localEulerAngles.y + ROTATE_Y_DEGREE,
-                        obj.transform.localEulerAngles.z + ROTATE_Z_DEGREE
+                        obj.transform.localEulerAngles.z
                     );
 
                     obj.transform.localScale = new Vector3(SCALE_MULTIPLIER, SCALE_MULTIPLIER, SCALE_MULTIPLIER);
@@ -58,9 +50,11 @@ namespace TechC
 
                     // Y,Z座標調整
                     Vector3 pos = obj.transform.position;
-                    pos.y = parent.position.y;
-                    pos.z = PLAYER_TOP_OFFSET;
+                    pos.y = 0;
+                    pos.z = 0;
                     obj.transform.position = pos;
+
+                    // Debug.Log(obj.transform.position);
 
                     // マテリアル色変更
                     var meshRenderer = obj.GetComponent<MeshRenderer>();
@@ -68,11 +62,57 @@ namespace TechC
                     {
                         meshRenderer.material.color = color;
                     }
+                    spawnedChars.Add(obj); // リストに記録
                 }
             }
+            
+            /* Boxcolliderのサイズを再調整する */
+            if (spawnedChars.Count >= 1)
+            {
+                // ローカル座標で計算（親の座標系で）
+                Vector3 firstLocalPos = spawnedChars[0].transform.localPosition;
+                Vector3 lastLocalPos = spawnedChars[spawnedChars.Count - 1].transform.localPosition;
+
+                // ローカル座標での中央位置
+                Vector3 localCenter = (firstLocalPos + lastLocalPos) / 2f;
+
+                // BoxCollider位置調整用の定数
+                const float COLLIDER_CENTER_X_OFFSET = 0.3f;  // BoxColliderを右方向にずらす量
+                const float COLLIDER_CENTER_Y_OFFSET = 0.4f;    // BoxColliderを上方向にずらす量
+                localCenter.x += COLLIDER_CENTER_X_OFFSET;
+                localCenter.y += COLLIDER_CENTER_Y_OFFSET;
+
+                // ローカル座標での長さ
+                float localLength = Mathf.Abs(lastLocalPos.x - firstLocalPos.x);
+
+                // BoxCollider横幅の余白
+                const float COLLIDER_WIDTH_MARGIN = 1.5f;
+                float colliderLength = localLength + COLLIDER_WIDTH_MARGIN;
+
+                // 文字が1つだけの場合の最小サイズ
+                if (spawnedChars.Count == 1)
+                {
+                    colliderLength = spacing + COLLIDER_WIDTH_MARGIN;
+                }
+
+                if (parent.gameObject.TryGetComponent<BoxCollider>(out BoxCollider box))
+                {
+                    // BoxColliderサイズの調整値
+                    const float COLLIDER_HEIGHT = 1.7f;    // BoxColliderの高さ
+                    const float COLLIDER_DEPTH = 0.5f;     // BoxColliderの奥行き
+
+                    // ローカル座標で設定
+                    box.center = localCenter;
+                    box.size = new Vector3(colliderLength, COLLIDER_HEIGHT, COLLIDER_DEPTH);
+
+                    Debug.Log($"BoxCollider設定: Center={box.center}, Size={box.size}, 文字数={spawnedChars.Count}");
+                }
+            }
+            return spawnedChars;
         }
 
 
+        #region 文字とPrefabのセット
         private static readonly Dictionary<string, string> charToPrefabName;
 
         /// <summary>
@@ -1538,6 +1578,8 @@ namespace TechC
                 ("齪", "U9F6A"), ("齷", "U9F77"), ("齲", "U9F72"), ("齶", "U9F76"), ("龕", "U9F95"),
                 ("龜", "U9F9C"), ("龠", "U9FA0"),
             };
+
+            #endregion
 
             var dict = new Dictionary<string, string>();
             foreach (var entry in entries)

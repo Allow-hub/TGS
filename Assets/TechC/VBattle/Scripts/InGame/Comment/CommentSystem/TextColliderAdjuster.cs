@@ -7,7 +7,6 @@ namespace TechC
     /// テキストの長さに応じてBoxColliderを生成する（負のサイズは除外）
     /// </summary>
     [RequireComponent(typeof(BoxCollider))]
-    [RequireComponent(typeof(TextMeshProUGUI))]
     public class TextColliderAdjuster : MonoBehaviour
     {
         private TextMeshProUGUI textMeshProUGUI;

@@ -52,12 +52,6 @@ namespace TechC
         [SerializeField] private NoiseSettings defaultShakeProfile;
         private float shakeTimer;
         private float lastUpdateTime;
-
-        // プロパティ
-        public List<Transform> Players => players.ToList(); // 読み取り専用コピーを返す
-        public bool IsShaking => shakeTimer > 0f;
-        public int PlayerCount => players.Count;
-
         // イベント
         public System.Action<Transform> OnPlayerAdded;
         public System.Action<Transform> OnPlayerRemoved;
@@ -74,6 +68,7 @@ namespace TechC
                 {
                     InitializeCamera();
                     RegisterPlayers();
+                    BattleJudge.I.OnUltStart.AddListener(SetUltCamera);
                 }
                 else
                 {
@@ -86,7 +81,7 @@ namespace TechC
         {
             CustomLogger.Info("CameraManager.OnRelease() called", LOGTAG);
             base.OnRelease();
-
+            BattleJudge.I.OnUltStart.RemoveListener(SetUltCamera);
             ClearTargets();
         }
         void Update()
@@ -332,6 +327,12 @@ namespace TechC
                     RemovePlayerAtIndex(i);
                 }
             }
+        }
+
+
+        private void SetUltCamera()
+        {
+            // GameManager.I.SetActiveSceneRoot(true, "CutIn");
         }
 
         #region パブリックメソッド

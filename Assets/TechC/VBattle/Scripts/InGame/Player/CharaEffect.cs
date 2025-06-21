@@ -86,7 +86,8 @@ namespace TechC
         private void OnPauseStarted()
         {
             lastVelocity = rb != null ? rb.velocity : Vector3.zero;
-            vfx.playRate = 0; // エフェクトの再生を停止
+            if (vfx != null)
+                vfx.playRate = 0; // エフェクトの再生を停止
             // 一時停止中はエフェクトを無効化
             if (rb != null)
             {
@@ -102,7 +103,8 @@ namespace TechC
         private void OnPauseEnded()
         {
             // 一時停止終了後はエフェクトを有効化
-            vfx.playRate = 1; // エフェクトの再生を再開
+            if (vfx != null)
+                vfx.playRate = 1; // エフェクトの再生を再開
             if (rb != null)
             {
                 rb.isKinematic = false;

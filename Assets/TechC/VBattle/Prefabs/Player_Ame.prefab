@@ -1163,6 +1163,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   raycastInterval: 0.1
+  hideScreenDelay: 1.5
+  resetScreenDelay: 1
+  popupWindowDurtaion: 1
+  windowMoveSpeed_1: 0.4
+  windowMoveSpeed_2: 0.4
+  windowResizeSpeed_1: 0.4
+  windowResizeSpeed_2: 0.4
 --- !u!114 &-1963746010090248540
 MonoBehaviour:
   m_ObjectHideFlags: 0

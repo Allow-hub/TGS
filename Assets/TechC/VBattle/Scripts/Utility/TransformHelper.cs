@@ -50,6 +50,8 @@ namespace TechC
                 transform.rotation = Quaternion.LookRotation(direction);
         }
 
+        public static bool IsCloseTo(int a, int b, int threshold = 2) => Mathf.Abs(a - b) <= threshold;
+
         // 値を置き換える系
         public static Vector3 WithX(this Vector3 v, float x) => new Vector3(x, v.y, v.z);
         public static Vector3 WithY(this Vector3 v, float y) => new Vector3(v.x, y, v.z);

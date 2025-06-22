@@ -70,7 +70,10 @@ namespace TechC
             else
             {
                 // ドレイン系の攻撃が増える場合、拡張が必要
-                attackProcessor.HandleAttack(attackData, other);
+                if (attackProcessor == null)
+                    Debug.LogError("attaclProcesserを追加してください");
+
+                attackProcessor?.HandleAttack(attackData, other);
             }
 
             if (canSelfReturn)

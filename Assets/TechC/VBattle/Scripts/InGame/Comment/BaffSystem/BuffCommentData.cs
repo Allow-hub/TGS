@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 namespace TechC
@@ -13,7 +10,6 @@ namespace TechC
     {
         [Header("バフの種類")]
         public BuffType buffType;
-        [TextArea]
         public string[] comments;
     }
 }

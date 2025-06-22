@@ -84,7 +84,6 @@ MonoBehaviour:
   - physics
   - default
   _disabledCategoryIds:
-  - state
   - comboClear
   - comboCheck
   - stage
@@ -92,3 +91,4 @@ MonoBehaviour:
   - window
   - camera
   - audio
+  - state

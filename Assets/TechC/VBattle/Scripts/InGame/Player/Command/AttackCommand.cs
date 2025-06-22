@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace TechC
+﻿namespace TechC
 {
     /// <summary>
     /// 攻撃コマンド基底クラス
@@ -54,7 +50,6 @@ namespace TechC
 
         public void ExecuteAttack(CharacterState.AttackType attackType, AttackManager.AttackStrength attackStrength, AttackManager attackManager)
         {
-            Debug.Log(attackType + "  " + attackStrength + "  " + attackManager);
             attackManager.ReplayExecuteAttack(attackType, attackStrength);
         }
         public virtual void ForceFinish()

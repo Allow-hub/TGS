@@ -51,6 +51,8 @@ namespace TechC.Player
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
+        private bool canCounter = false;
+        public bool CanCounter => canCounter;
 
         [Header("エフェクトのPrefab")]
         [SerializeField] private GameObject debrisPrefab;
@@ -82,6 +84,8 @@ namespace TechC.Player
         private Vector3 defaultCenter;   // centerを戻すために保存
 
         private Player.CharacterController opponentController;
+
+        private Action onCounter;
         [SerializeField] private bool isClonePlayer = false;
         #endregion
 
@@ -467,6 +471,14 @@ namespace TechC.Player
         /// 最後に受けた攻撃データを設定
         /// </summary>
         public void SetLastHitData(HitData hitData) => lastHitData = hitData;
+
+        public void SetCanCounter(bool val) => canCounter = val;
+        public void SetCounterAction(Action action) => onCounter = action;
+        public void UseCounter()
+        {
+            onCounter.Invoke();
+            onCounter = null;
+        }
 
         /// <summary>
         /// 最後に受けた攻撃データを取得

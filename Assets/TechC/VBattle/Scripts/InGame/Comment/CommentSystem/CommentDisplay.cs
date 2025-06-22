@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 
 namespace TechC
 {
@@ -107,7 +105,6 @@ namespace TechC
             while (trans.position.x > despawnPosX) /* 左端まで */
             {
                 trans.position += Vector3.left * speed * Time.deltaTime;
-                // Debug.Log($"{trans.position},{trans.GetChild(0).transform.position}");
                 yield return null; /* 次のフレームまで待機 */
             }
             trans.gameObject.SetActive(false);

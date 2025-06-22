@@ -29,7 +29,6 @@ namespace TechC
                     obj.transform.SetParent(null); // 一旦親を外す
 
                     /* 文字のPrefabのプロパティをいったんリセット */
-                    // obj.transform.localPosition = Vector3.zero;
                     obj.transform.localRotation = Quaternion.identity;
                     obj.transform.localScale = Vector3.one;
 
@@ -54,7 +53,6 @@ namespace TechC
                     pos.z = 0;
                     obj.transform.position = pos;
 
-                    // Debug.Log(obj.transform.position);
 
                     // マテリアル色変更
                     var meshRenderer = obj.GetComponent<MeshRenderer>();
@@ -104,8 +102,6 @@ namespace TechC
                     // ローカル座標で設定
                     box.center = localCenter;
                     box.size = new Vector3(colliderLength, COLLIDER_HEIGHT, COLLIDER_DEPTH);
-
-                    Debug.Log($"BoxCollider設定: Center={box.center}, Size={box.size}, 文字数={spawnedChars.Count}");
                 }
             }
             return spawnedChars;
@@ -1587,10 +1583,6 @@ namespace TechC
                 if (!dict.ContainsKey(entry.Item1))
                 {
                     dict.Add(entry.Item1, entry.Item2);
-                }
-                else
-                {
-                    // Debug.LogWarning($"重複キーをスキップ: {entry.Item1}");
                 }
             }
             charToPrefabName = dict;

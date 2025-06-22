@@ -63,7 +63,7 @@ namespace TechC
 
             if (charPrefab == null)
             {
-                Debug.LogWarning($"文字に対応するプレハブが見つかりません: {charName}");
+                Debug.LogError($"その文字はcharPrefabDatabaseに登録されていません: {charName}");
                 return null;
             }
 

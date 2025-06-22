@@ -7,23 +7,28 @@ namespace TechC
 {
     public class CommentFactory : Singleton<CommentFactory>
     {
-        [SerializeField]
-        private ObjectPool commentPool;
+        [SerializeField] private ObjectPool commentPool;
+        // [SerializeField] private Transform threeDTextParent; // 3DText用の親を追加
 
-        public TMP_Text GetComment(CommentData commentData, GameObject commentPrefab, Transform parent)
+        [Header("文字とそのPrefabのScriptableObject")]
+        [SerializeField] private CharPrefabDatabase charPrefabDatabase;
+        protected override bool UseDontDestroyOnLoad => false;
+
+        // 3DText用のスケール定数
+        private static readonly Vector3 COMMENT_OBJ_SCALE = new Vector3(0.25f, 0.25f, 0.25f);
+
+
+        public GameObject GetComment(CommentData commentData, GameObject commentPrefab, Transform parent)
         {
             GameObject obj = commentPool.GetObject(commentPrefab);
-            // Debug.Log($"現在のcommentPrefabは{commentPrefab}");
+            obj.transform.localScale = COMMENT_OBJ_SCALE;
+         
             var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
             // Debug.Log(commentTrigger);
             commentTrigger?.Init(commentPool);
 
             if (obj != null)
             {
-                TMP_Text text = obj.GetComponent<TMP_Text>();
-                text.text = commentData.text;
-                obj.SetActive(true);
-
                 if (commentData.buffType.HasValue)
                 {
                     BuffCommentTrigger trigger = obj.GetComponent<BuffCommentTrigger>();
@@ -32,10 +37,8 @@ namespace TechC
                         trigger.buffType = commentData.buffType.Value;
                     }
                 }
-
-                return text;
+                return obj;
             }
-
             return null;
         }
 
@@ -45,7 +48,34 @@ namespace TechC
             commentPool.ReturnObject(comment);
         }
 
-        public GameObject GetChar(string charName) =>
-            commentPool.GetObjectByName(charName);
+        public GameObject GetChar(string charName)
+        {
+
+            GameObject charPrefab = null;
+            foreach (var entry in charPrefabDatabase.entries)
+            {
+                if (entry.charText == charName)
+                {
+                    charPrefab = entry.charPrefab;
+                    break;
+                }
+            }
+
+            if (charPrefab == null)
+            {
+                Debug.LogError($"その文字はcharPrefabDatabaseに登録されていません: {charName}");
+                return null;
+            }
+
+            // ObjectPoolから取得
+            GameObject charObj = commentPool.GetObject(charPrefab);
+            return charObj;
+        }
+
+        // 文字オブジェクトをプールに返却
+        public void ReturnChar(GameObject charObj)
+        {
+            commentPool.ReturnObject(charObj);
+        }
     }
 }

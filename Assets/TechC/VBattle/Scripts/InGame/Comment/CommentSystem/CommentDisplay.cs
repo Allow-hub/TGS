@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 
 namespace TechC
 {
@@ -12,10 +10,10 @@ namespace TechC
     public class CommentDisplay : MonoBehaviour
     {
         [Header("コメントのテキスト用Prefab")]
-        [SerializeField] private TMP_Text commentPrefab;
-        [SerializeField] private TMP_Text speedBuffPrefab;
-        [SerializeField] private TMP_Text attackBuffPrefab;
-        [SerializeField] private TMP_Text mapChangePrefab;
+        [SerializeField] private GameObject commentPrefab;
+        [SerializeField] private GameObject speedBuffPrefab;
+        [SerializeField] private GameObject attackBuffPrefab;
+        [SerializeField] private GameObject mapChangePrefab;
 
         [Header("コメントが流れるエリア")]
         public RectTransform commentLayer;
@@ -38,8 +36,7 @@ namespace TechC
         [Header("コメントを非表示にする場所")]
         public GameObject topLeftDespawn;
         public GameObject buttonLeftDespawn;
-        private float topLeftDespawnPosY;
-        private float buttonLeftDespawnPosY;
+
         private float despawnPosX;
 
         void Start()
@@ -57,11 +54,16 @@ namespace TechC
             }
         }
 
+        /// <summary>
+        /// コメントをcommentProviderを通じて発生させる処理
+        /// </summary>
         public void SpawnComment()
         {
             var commentData = commentProvider.GetRandomComment();
+            const float PLAYER_TOP_OFFSET = -5.3f;
 
-            TMP_Text comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData), commentLayer);
+
+            GameObject comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData), commentLayer);
 
             Color commentColor = Color.white;
             switch (commentData.type)
@@ -77,39 +79,47 @@ namespace TechC
                     break;
             }
 
-            CharacterHelper.ProcessCommentText(commentData.text, comment.transform, commentColor);
-
+            List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, commentColor);
 
             if (comment == null)
             {
-                // Debug.LogWarning("GetComment returned null for " + commentData.text);
                 return;
             }
 
-            // Debug.Log(comment);
-
             if (comment == null) return;
 
-            RectTransform rect = comment.GetComponent<RectTransform>();
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
-            rect.anchoredPosition = new Vector2(spawnPosX, randomY);
+            comment.transform.position = new Vector3(spawnPosX, randomY, PLAYER_TOP_OFFSET);
 
-            StartCoroutine(MoveComment(rect));
+            StartCoroutine(MoveComment(comment.transform, spawnedChars));
         }
 
-
-        IEnumerator MoveComment(RectTransform rect)
+        /// <summary>
+        /// コメントを画面上に流す処理
+        /// </summary>
+        /// <param name="trans"></param>
+        /// <param name="chars"></param>
+        /// <returns></returns>
+        IEnumerator MoveComment(Transform trans, List<GameObject> chars)
         {
-            while (rect.anchoredPosition.x > despawnPosX) /* 左端まで */
+            while (trans.position.x > despawnPosX) /* 左端まで */
             {
-                rect.anchoredPosition += Vector2.left * speed * Time.deltaTime;
+                trans.position += Vector3.left * speed * Time.deltaTime;
                 yield return null; /* 次のフレームまで待機 */
             }
-            rect.gameObject.SetActive(false);
-            CommentFactory.I.ReturnComment(rect.gameObject);
+            trans.gameObject.SetActive(false);
+            CommentFactory.I.ReturnComment(trans.gameObject);
+
+            foreach (var obj in chars)
+            {
+                obj.SetActive(false);
+                CommentFactory.I.ReturnChar(obj);
+            }
         }
 
-        /* 最初にコメントを表示 / 非表示にする座標を取得する */
+        /// <summary>
+        /// コメントを発生、消去する座標を取得する
+        /// </summary>
         private void InitSetPositions()
         {
             /* コメントを発生させる座標を取得する */
@@ -118,8 +128,6 @@ namespace TechC
             spawnPosX = topRightSpawn.transform.position.x;
 
             /* コメントを非表示にする座標を取得する */
-            topLeftDespawnPosY = topLeftDespawn.transform.position.y;
-            buttonLeftDespawnPosY = buttonLeftDespawn.transform.position.y;
             despawnPosX = topLeftDespawn.transform.position.x;
         }
 

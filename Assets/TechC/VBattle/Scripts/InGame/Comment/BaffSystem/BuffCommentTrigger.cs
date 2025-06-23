@@ -8,6 +8,8 @@ namespace TechC
     public class BuffCommentTrigger : MonoBehaviour
     {
         public BuffType buffType;
+        [HideInInspector] public SpecialCommentType specialCommentType;
+        [HideInInspector] public string commentText; 
         private bool alreadyApplied = false;
 
         private ObjectPool objectPool;
@@ -19,7 +21,6 @@ namespace TechC
         public void Init(ObjectPool objectPool)
         {
             this.objectPool = objectPool;
-            // Debug.Log("Init");
         }
 
         /// <summary>
@@ -31,9 +32,15 @@ namespace TechC
         {
             if (alreadyApplied) return;
 
+
             if (other.CompareTag("Player"))
             {
-                // Debug.Log("Buffコメントにあたった");
+
+                if (specialCommentType == SpecialCommentType.Grass)
+                {
+                    Debug.Log("草コメントに当りました");
+                }
+
                 BuffBase buff = BuffFactory.CreateBuff(buffType);
 
                 if (buff != null)
@@ -51,9 +58,7 @@ namespace TechC
 
                 float effectTime = buff.remainingTime; /*バフのエフェクトの継続時間にバフの効果の時間を代入 */
 
-                // Debug.Log(id);
                 /* バフの種類ごとに適用するエフェクトを変える */
-                // Debug.Log(buffType);
                 switch (buffType)
                 {
                     case BuffType.Speed:
@@ -68,7 +73,7 @@ namespace TechC
                     default:
                         // Debug.LogWarning($"未対応のバフタイプ: {buffType}");
                         break;
-                    // ここでバフを追加可能
+                        // ここでバフを追加可能
                 }
 
                 alreadyApplied = true;

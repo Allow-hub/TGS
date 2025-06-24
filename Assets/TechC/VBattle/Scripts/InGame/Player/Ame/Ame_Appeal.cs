@@ -49,7 +49,7 @@ namespace TechC
 
         public override void NeutralAttack()
         {
-            // characterController.NotBoolAddSpecialGauge(100);//デバッグ用
+            characterController.NotBoolAddSpecialGauge(100);//デバッグ用
             base.NeutralAttack();
         }
         //-------Weak、Strongに合わせたいので使わないが残す-------------------///
@@ -243,11 +243,12 @@ namespace TechC
                     // Step 1: 縦にアニメーション（高さを伸ばす）
                     DelayUtility.StartRepeatedActionWhileWithPause(this, CanMoveFunc, 0.05f, () => !WindowManager.I.AllreadyPopup, () =>
                     {
+                        image.SetImage(specialSprite.texture);
                         PInvoke.SetForegroundWindow((HWND)imageWindow.Hwnd);
                         if (!canResizeHeight)
                         {
                             WindowUtility.MoveWindowToTargetPosition((HWND)imageWindow.Hwnd, Screen.width / 2, 0, windowMoveSpeed_1);
-                            WindowUtility.AnimateResizeWindow((HWND)imageWindow.Hwnd, 10, Screen.height, windowResizeSpeed_1);
+                            WindowUtility.AnimateResizeWindow((HWND)imageWindow.Hwnd, 1, Screen.height, windowResizeSpeed_1);
                         }
                         // Y座標が0になったら、縦伸ばし完了と判定
                         if (TransformHelper.IsCloseTo(WindowUtility.GetWindowRect((HWND)imageWindow.Hwnd).Y, 0))

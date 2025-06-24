@@ -245,6 +245,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   progressImage: {fileID: 1192053698}
   loadTex: {fileID: 1938738561}
+  canvasGroup: {fileID: 1826012926}
+  fadeInDuration: 0.2
+  minimumLoadingTime: 0.5
 --- !u!1 &439661344
 GameObject:
   m_ObjectHideFlags: 0
@@ -535,6 +538,7 @@ GameObject:
   - component: {fileID: 1826012925}
   - component: {fileID: 1826012924}
   - component: {fileID: 1826012923}
+  - component: {fileID: 1826012926}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -628,6 +632,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!225 &1826012926
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826012921}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1938738560
 GameObject:
   m_ObjectHideFlags: 0

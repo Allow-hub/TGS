@@ -9,13 +9,12 @@ namespace TechC
     [System.Serializable]
     public class PlayerSelectUI
     {
-        public GameObject teramiTextImage;//キャラのテキストイメージをまとめたペアレント
-        public GameObject ameTextImage;//キャラのテキストイメージをまとめたペアレント
-
-        public GameObject ameObj;//キャラのテキストイメージをまとめたペアレント
-        public GameObject teramiObj;//キャラのテキストイメージをまとめたペアレント
-        public Button leftButton;
-        public Button rightButton;
+        public GameObject ameTextImage;//ameのテキストイメージ
+        public GameObject teramiTextImage;//teramiのテキストイメージ
+        public GameObject ameObj;//ameのモデル
+        public GameObject teramiObj;//teramiのモデル
+        public Button ameButton;
+        public Button teramiButton;
         public Button pickButton;
         public int currentCharacterIndex = 0;
     }

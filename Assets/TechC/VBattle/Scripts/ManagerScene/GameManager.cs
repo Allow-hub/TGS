@@ -1,5 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,19 +13,22 @@ namespace TechC
         Battle,
         Result,
     }
+
     /// <summary>
     /// ゲーム全体を管理するクラス
     /// </summary>
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField] private int targetFrameRate = 144;
-        [SerializeField] private bool isHighPerformanceMode = true;// 高パフォーマンスモードかどうか
-        [SerializeField] private bool canConectWifi = true;// Wi-Fi接続可能かどうか
+        [SerializeField] private bool isHighPerformanceMode = true;
+        [SerializeField] private bool canConectWifi = true;
+        [SerializeField] private bool preloadLoadingScene = true; // LoadingSceneの事前読み込み
+
         private List<(GameObject prefab, int playerId)> playerInfoList = new();
+        private Scene? preloadedLoadingScene = null;
 
         public bool IsHighPerformanceMode => isHighPerformanceMode;
         public bool CanConectWifi => canConectWifi;
-
         public GameState CurrentState => currentState;
         private GameState currentState = GameState.Title;
 
@@ -36,6 +38,11 @@ namespace TechC
             Application.runInBackground = true;
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = targetFrameRate;
+
+            // LoadingSceneを事前読み込み（オプション）
+            if (preloadLoadingScene)
+                PreloadLoadingScene().Forget();
+
             ChangeTitleState();
         }
 
@@ -99,6 +106,7 @@ namespace TechC
             Cursor.visible = visible;
             Cursor.lockState = cursorLockMode;
         }
+
         public void SetActiveSceneRoot(bool value, string sceneName)
         {
             var scene = SceneManager.GetSceneByName(sceneName);
@@ -110,66 +118,113 @@ namespace TechC
                 }
             }
         }
+
         /// <summary>
-        /// LoadingSceneをAdditiveで読み込み、LoadingManagerを使って指定シーンをロードする処理
+        /// LoadingSceneを事前読み込み（非アクティブ状態で）
+        /// </summary>
+        private async UniTask PreloadLoadingScene()
+        {
+            if (SceneManager.GetSceneByName("LoadScene").isLoaded)
+                return;
+
+            var loadOp = SceneManager.LoadSceneAsync("LoadScene", LoadSceneMode.Additive);
+            loadOp.allowSceneActivation = false; // 非アクティブで読み込み
+
+            await UniTask.WaitUntil(() => loadOp.isDone);
+            preloadedLoadingScene = SceneManager.GetSceneByName("LoadScene");
+
+            // ルートオブジェクトを非アクティブにして隠す
+            SetActiveSceneRoot(false, "LoadScene");
+        }
+
+        /// <summary>
+        /// 最適化されたLoadingSceneを使ったシーン読み込み処理
         /// </summary>
         private async UniTask LoadSceneWithLoadingAsync(int targetSceneIndex)
         {
             var previousScene = SceneManager.GetActiveScene();
 
-            // LoadingScene を Additive で読み込み
-            var loadLoadingSceneOp = SceneManager.LoadSceneAsync("LoadScene", LoadSceneMode.Additive);
-            await UniTask.WaitUntil(() => loadLoadingSceneOp.isDone);
-
-            var loadingScene = SceneManager.GetSceneByName("LoadScene");
-            if (loadingScene.IsValid())
-                SceneManager.SetActiveScene(loadingScene);
-
-            // 明示的にフレームを待つことで UI 描画を確実に行う
-            await UniTask.DelayFrame(2); // UIを表示させるため最低2フレーム待つと安定
-
-            // LoadingManager を取得
-            LoadingManager loadingManager = null;
-            await UniTask.WaitUntil(() =>
+            // LoadingSceneの準備
+            Scene loadingScene;
+            if (preloadedLoadingScene.HasValue && preloadedLoadingScene.Value.isLoaded)
             {
-                loadingManager = Object.FindObjectOfType<LoadingManager>();
-                return loadingManager != null;
-            });
+                // 事前読み込み済みの場合
+                loadingScene = preloadedLoadingScene.Value;
+                SetActiveSceneRoot(true, "LoadScene"); // アクティブ化
+                SceneManager.SetActiveScene(loadingScene);
+            }
+            else
+            {
+                // 通常の読み込み
+                var loadLoadingSceneOp = SceneManager.LoadSceneAsync("LoadScene", LoadSceneMode.Additive);
+                await UniTask.WaitUntil(() => loadLoadingSceneOp.isDone);
 
-            // 前のシーンをアンロード
+                loadingScene = SceneManager.GetSceneByName("LoadScene");
+                if (loadingScene.IsValid())
+                    SceneManager.SetActiveScene(loadingScene);
+            }
+
+            // LoadingManagerの取得
+            LoadingManager loadingManager = await GetLoadingManagerAsync();
+
+            // 前のシーンをアンロード（LoadingScene表示後）
             if (previousScene.name != "LoadScene")
             {
                 var unloadPrevOp = SceneManager.UnloadSceneAsync(previousScene);
                 await UniTask.WaitUntil(() => unloadPrevOp.isDone);
             }
 
-            // ターゲットシーン読み込み（Additive）+ 非アクティブ
+            // ターゲットシーン読み込み
             var loadTargetOp = SceneManager.LoadSceneAsync(targetSceneIndex, LoadSceneMode.Additive);
-            loadTargetOp.allowSceneActivation = false;
 
             // プログレス更新
             await loadingManager.UpdateProgressAsync(loadTargetOp);
 
-            loadTargetOp.allowSceneActivation = true;
-            await UniTask.WaitUntil(() => loadTargetOp.isDone);
-
+            // シーン切り替え
             var targetScene = SceneManager.GetSceneByBuildIndex(targetSceneIndex);
             if (targetScene.IsValid())
                 SceneManager.SetActiveScene(targetScene);
 
-            // 最後に LoadingScene をアンロード
-            var unloadLoadingOp = SceneManager.UnloadSceneAsync("LoadScene");
-            await UniTask.WaitUntil(() => unloadLoadingOp.isDone);
+            // LoadingSceneの処理
+            if (preloadLoadingScene)
+            {
+                // 事前読み込みモードの場合は非アクティブ化して保持
+                SetActiveSceneRoot(false, "LoadScene");
+            }
+            else
+            {
+                // 通常モードの場合はアンロード
+                var unloadLoadingOp = SceneManager.UnloadSceneAsync("LoadScene");
+                await UniTask.WaitUntil(() => unloadLoadingOp.isDone);
+            }
         }
 
         /// <summary>
-        /// プレイヤー情報を設定
+        /// LoadingManagerを効率的に取得
         /// </summary>
-        public void RegisterPlayer(GameObject prefab, int playerId) => playerInfoList.Add((prefab, playerId));
+        private async UniTask<LoadingManager> GetLoadingManagerAsync()
+        {
+            LoadingManager loadingManager = null;
+            int attempts = 0;
+            const int maxAttempts = 30; // 最大1秒待機（30フレーム）
 
-        /// <summary>
-        /// 指定されたIDに対応するプレイヤーの選択したキャラのGameObjectを取得する
-        /// </summary>
+            while (loadingManager == null && attempts < maxAttempts)
+            {
+                loadingManager = Object.FindObjectOfType<LoadingManager>();
+                if (loadingManager == null)
+                {
+                    attempts++;
+                    await UniTask.Yield();
+                }
+            }
+
+            if (loadingManager == null)
+                Debug.LogError("LoadingManagerが見つかりませんでした");
+
+            return loadingManager;
+        }
+
+        public void RegisterPlayer(GameObject prefab, int playerId) => playerInfoList.Add((prefab, playerId));
         public GameObject GetCharacterById(int id)
         {
             foreach (var info in playerInfoList)
@@ -179,10 +234,6 @@ namespace TechC
             }
             return null;
         }
-
-        /// <summary>
-        /// プレイヤー情報を削除
-        /// </summary>
         public void RemovePlayerById(int id) => playerInfoList.RemoveAll(info => info.playerId == id);
         public List<(GameObject prefab, int playerId)> GetPlayerInfo() => playerInfoList;
 

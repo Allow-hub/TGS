@@ -9,29 +9,30 @@ namespace TechC
     /// </summary>
     public class SelectUIManager : Singleton<SelectUIManager>
     {
-        [SerializeField] private GameObject[] characterPrefabs; // 実体として選ばれるキャラクター（任意）
+        [SerializeField] private Button npcButton;
+        [SerializeField] private GameObject[] characterPrefabs; // 実体として選ばれるキャラクター
+        [SerializeField] private GameObject[] characterNpcPrefabs; // 実体として選ばれるキャラクター
 
         [SerializeField] private Button dicisionButton;//ゲームを開始するボタン
-        [SerializeField] private PlayerSelectUI[] playerUIs; // [0]=P1, [1]=P2 のUI情報を保持
+        public PlayerSelectUI[] playerUIs; // [0]=P1, [1]=P2 のUI情報を保持
 
-        [SerializeField] private Sprite[] characterIcons; // キャラ選択時に表示するアイコン画像の一覧
-
-        // キャラ変更時に通知するイベント: (playerIndex, characterIndex)
-        public System.Action<int, int> OnCharacterChanged;
-
-        // キャラ決定時に通知するイベント: (playerIndex)
         public System.Action<int> OnCharacterPicked;
         public System.Action OnDicidePicked;
+
         /// <summary>
         /// 各プレイヤーの現在の選択状態（インデックスとオブジェクト）を保持する構造体。
         /// </summary>
         public struct CharacterPick
         {
-            public int characterIndex;
+            public int playerId;
             public GameObject characterObject;
         }
 
+        public CharacterPick[] CurrentPicks => currentPicks;
         private CharacterPick[] currentPicks = new CharacterPick[2];
+
+        public bool IsNpc => isNpc;
+        private bool isNpc;
         protected override bool UseDontDestroyOnLoad => false;
 
         /// <summary>
@@ -43,14 +44,15 @@ namespace TechC
             for (int i = 0; i < playerUIs.Length; i++)
             {
                 int index = i; // キャプチャ用ローカル変数
-                playerUIs[i].leftButton.onClick.AddListener(() => ChangeCharacter(index, -1)); // 左ボタン
-                playerUIs[i].rightButton.onClick.AddListener(() => ChangeCharacter(index, 1)); // 右ボタン
-                playerUIs[i].pickButton.onClick.AddListener(() => OnCharacterPicked?.Invoke(index)); // 決定ボタン
-                currentPicks[i].characterIndex = 0;
-                currentPicks[i].characterObject = characterPrefabs.Length > 0 ? characterPrefabs[0] : null;
-
-
+                playerUIs[i].ameButton.onClick.AddListener(() => ChangeCharacter(index, 0));
+                playerUIs[i].teramiButton.onClick.AddListener(() => ChangeCharacter(index, 1));
+                playerUIs[i].pickButton.onClick.AddListener(() => OnCharacterPicked?.Invoke(index)); // ピックボタン
             }
+
+            //どちらもあめで初期化
+            ChangeCharacter(0, 0);
+            ChangeCharacter(1, 0);
+            npcButton.onClick.AddListener(() => SetNpc());
             dicisionButton.onClick.AddListener(() => Dicide());
         }
 
@@ -58,39 +60,67 @@ namespace TechC
         /// 指定プレイヤーの選択キャラクターを変更する。
         /// </summary>
         /// <param name="playerIndex">プレイヤー番号（0 or 1）</param>
-        /// <param name="direction">変更方向（-1 = 左, 1 = 右）</param>
-        private void ChangeCharacter(int playerIndex, int direction)
+        /// <param name="characterIndex">キャラインデックス（0 = あめ,1 = てらみ</param>
+        private void ChangeCharacter(int playerIndex, int characterIndex)
         {
             var ui = playerUIs[playerIndex];
 
-            // インデックスを循環させてキャラクター選択
-            // ui.currentCharacterIndex = (ui.currentCharacterIndex + direction + characterIcons.Length) % characterIcons.Length;
-            if (direction == -1)
-            {
-                ui.teramiTextImage.SetActive(false);
-                ui.ameTextImage.SetActive(true);
-                ui.teramiObj.SetActive(false);
-                ui.ameObj.SetActive(true);
+            // UIの切り替え（片方だけアクティブにする）
+            bool isAme = characterIndex == 0;
 
+            ui.ameObj.SetActive(isAme);
+            ui.ameTextImage.SetActive(isAme);
+            ui.teramiObj.SetActive(!isAme);
+            ui.teramiTextImage.SetActive(!isAme);
+
+            // 選択情報を保存
+            ui.currentCharacterIndex = characterIndex;
+
+            // NPCが選択されているかでプレハブを切り替え
+            GameObject selectedPrefab;
+            if (isNpc)
+            {
+                if (characterNpcPrefabs != null && characterNpcPrefabs.Length > characterIndex)
+                {
+                    selectedPrefab = characterNpcPrefabs[characterIndex];
+                }
+                else
+                {
+                    Debug.LogWarning("characterNpcPrefabsが設定されていないかインデックスが範囲外です");
+                    selectedPrefab = null;
+                }
             }
             else
             {
-                ui.teramiTextImage.SetActive(true);
-                ui.ameTextImage.SetActive(false);
-                ui.teramiObj.SetActive(true);
-                ui.ameObj.SetActive(false);
-
+                if (characterPrefabs != null && characterPrefabs.Length > characterIndex)
+                {
+                    selectedPrefab = characterPrefabs[characterIndex];
+                }
+                else
+                {
+                    Debug.LogWarning("characterPrefabsが設定されていないかインデックスが範囲外です");
+                    selectedPrefab = null;
+                }
             }
-            // キャラクター画像を更新
 
-            // キャラ変更イベントを発火
-            // OnCharacterChanged?.Invoke(playerIndex, ui.currentCharacterIndex);
+            currentPicks[playerIndex] = new CharacterPick
+            {
+                playerId = playerIndex,
+                characterObject = selectedPrefab
+            };
         }
+
 
         private void Dicide()
         {
-            OnDicidePicked.Invoke();
+            OnDicidePicked?.Invoke();
         }
+
+        private void SetNpc()
+        {
+            isNpc = !isNpc;
+        }
+
         /// <summary>
         /// 指定プレイヤーの現在選択中のキャラクターインデックスを取得。
         /// </summary>

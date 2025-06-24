@@ -84,10 +84,11 @@ MonoBehaviour:
   - physics
   - default
   _disabledCategoryIds:
-  - state
   - comboClear
   - comboCheck
   - stage
   - icon
   - window
   - camera
+  - audio
+  - state

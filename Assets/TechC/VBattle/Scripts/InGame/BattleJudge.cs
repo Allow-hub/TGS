@@ -36,6 +36,8 @@ namespace TechC
         [SerializeField] private float timeLimit = 180f;  // 制限時間（秒）
         [SerializeField] private bool isTimeLimitEnabled = true;  // 制限時間の有無
         [SerializeField] private float respawnInvincibleTime = 3f;  // リスポーン無敵時間
+        [SerializeField] private GameObject ultMap;//必殺技後のステージ
+        [SerializeField] private GameObject normalMap;//2dのステージ
 
         [SerializeField] private bool isDebug = true;
         [Header("プレイヤー設定")]
@@ -48,11 +50,11 @@ namespace TechC
         #region イベント
         [Header("イベント")]
         public UnityEvent<PlayerData> OnPlayerDeath;         // プレイヤーが死亡したとき
-        public UnityEvent<PlayerData> OnPlayerRespawn;       // プレイヤーがリスポーンしたとき
         public UnityEvent<PlayerData> OnPlayerWin;           // プレイヤーが勝利したとき
         public UnityEvent<PlayerData> OnPlayerLose;          // プレイヤーが敗北したとき
         public UnityEvent OnBattleStart;                     // バトル開始時
         public UnityEvent OnBattleEnd;                       // バトル終了時
+        public UnityEvent OnUltStart;
         public UnityEvent<float> OnTimeUpdate;               // 時間更新時
         [Header("ポーズイベント")]
         public UnityEvent OnPauseStarted;
@@ -60,6 +62,8 @@ namespace TechC
         #endregion
 
         #region プライベート変数
+        private bool isUlting = false;
+        public bool IsUlting => isUlting;
         private float currentTime;              // 現在の経過時間
         private bool isBattleOngoing = false;   // バトル進行中フラグ
         private int alivePlayerCount = 0;       // 生存プレイヤー数
@@ -142,7 +146,7 @@ namespace TechC
                     Debug.LogWarning($"Player {i} にプレハブが設定されていません。");
                 }
             }
-
+            SetIsUlting(false);
             OnBattleStart?.Invoke();
         }
 
@@ -550,6 +554,15 @@ namespace TechC
             data.isAlive = true;
             data.isInvincible = false;
             players.Add(data);
+        }
+
+        public void SetIsUlting(bool value)
+        {
+            if (isUlting) return;//すでに誰かが必殺技を放っていた場合何もしない
+            isUlting = value;
+            normalMap.SetActive(!value);
+            ultMap.SetActive(value);
+            OnUltStart.Invoke();
         }
     }
 }

@@ -4,49 +4,37 @@ using UnityEngine;
 
 namespace TechC
 {
-    /// <summary>
-    /// ステージを管理するマネージャー
-    /// ステージスプライトの変更とCameraManagerの設定調整を行う
-    /// </summary>
     public class StageManager : Singleton<StageManager>
     {
         private const string LOGTAG = "stage";
-        
+
         [Header("ステージ設定")]
         [SerializeField] private SpriteRenderer stageRenderer;
-        [SerializeField] private StageData[] stageDataList; // 利用可能なステージのリスト
+        [SerializeField] private StageData[] stageDataList;
         [SerializeField] private int currentStageIndex = 0;
-        
-        // 現在のステージデータ
+
         private StageData currentStageData;
-        
-        // イベント
+
         public System.Action<StageData> OnStageChanged;
-        
-        // プロパティ
+
         public StageData CurrentStage => currentStageData;
         public int CurrentStageIndex => currentStageIndex;
         public int StageCount => stageDataList?.Length ?? 0;
         public string CurrentStageName => currentStageData?.stageName ?? "No Stage";
-        
+
         protected override bool UseDontDestroyOnLoad => false;
 
-        // protected override InitPhase GetInitPhase() => InitPhase.Late;
         protected override void Init()
         {
             base.Init();
-            DelayUtility.StartDelayedAction(this, 0.1f, () =>
+            DelayUtility.StartDelayedAction(this, 0.5f, () =>
             {
                 InitializeStage();
             });
         }
 
-        /// <summary>
-        /// ステージの初期化
-        /// </summary>
         private void InitializeStage()
         {
-            // StageRendererが設定されていない場合は自動検索
             if (stageRenderer == null)
             {
                 stageRenderer = FindObjectOfType<SpriteRenderer>();
@@ -56,7 +44,6 @@ namespace TechC
                 }
             }
 
-            // 現在のステージを適用
             if (stageDataList != null && stageDataList.Length > 0)
             {
                 currentStageIndex = Mathf.Clamp(currentStageIndex, 0, stageDataList.Length - 1);
@@ -67,11 +54,7 @@ namespace TechC
                 CustomLogger.Warning("ステージデータが設定されていません。", LOGTAG);
             }
         }
-        
-        /// <summary>
-        /// ステージデータを適用する
-        /// </summary>
-        /// <param name="stageData">適用するステージデータ</param>
+
         public void ApplyStageData(StageData stageData)
         {
             if (stageData == null)
@@ -79,24 +62,13 @@ namespace TechC
                 CustomLogger.Warning("ステージデータがnullです", LOGTAG);
                 return;
             }
-            
+
             currentStageData = stageData;
-            
-            // ステージスプライトを変更
             ApplyStageSprite(stageData);
-            
-            // カメラ設定をCameraManagerに反映
-            ApplyCameraSettings(stageData);
-            
-            // ステージ変更イベントを発火
             OnStageChanged?.Invoke(stageData);
-            
             CustomLogger.Info($"ステージ '{stageData.stageName}' を適用しました", LOGTAG);
         }
 
-        /// <summary>
-        /// ステージスプライトを適用
-        /// </summary>
         private void ApplyStageSprite(StageData stageData)
         {
             if (stageRenderer == null)
@@ -110,12 +82,11 @@ namespace TechC
                 stageRenderer.sprite = stageData.stageSprite;
                 CustomLogger.Info($"ステージスプライトを '{stageData.stageSprite.name}' に変更しました", LOGTAG);
 
-                // スプライトサイズの適用
                 if (stageData.spriteScale != Vector2.zero)
                 {
                     stageRenderer.transform.localScale = new Vector3(
                         stageData.spriteScale.x,
-                        stageData.spriteScale.y, 
+                        stageData.spriteScale.y,
                         1f
                     );
                 }
@@ -125,76 +96,7 @@ namespace TechC
                 CustomLogger.Warning($"ステージ '{stageData.stageName}' にスプライトが設定されていません", LOGTAG);
             }
         }
-        /// <summary>
-        /// カメラ設定をCameraManagerに適用
-        /// </summary>
-        private void ApplyCameraSettings(StageData stageData)
-        {
-            if (CameraManager.I == null)
-            {
-                CustomLogger.Warning("CameraManagerが見つかりません", LOGTAG);
-                return;
-            }
-            
-            // ズーム設定の適用
-            if (stageData.overrideZoomSettings)
-            {
-                CameraManager.I.SetZoomSettings(
-                    stageData.minFOV, 
-                    stageData.maxFOV, 
-                    stageData.minCameraDistance, 
-                    stageData.maxCameraDistance
-                );
-                CameraManager.I.SetCameraDistance(stageData.cameraDistance);
-                CustomLogger.Info($"カメラのズーム設定を変更しました (FOV: {stageData.minFOV}-{stageData.maxFOV}, Distance: {stageData.minCameraDistance}-{stageData.maxCameraDistance})", LOGTAG);
-            }
-            
-            // ステージ境界の適用
-            if (stageData.useCustomBounds)
-            {
-                CameraManager.I.SetStageBounds(stageData.customBounds);
-                CustomLogger.Info($"ステージ境界を設定しました (Center: {stageData.customBounds.center}, Size: {stageData.customBounds.size})", LOGTAG);
-            }
-            
-            // カメラオフセットの適用（CameraManagerに対応メソッドがある場合）
-            if (stageData.overrideCameraPosition)
-            {
-                SetCameraOffset(stageData.cameraOffset);
-                SetCameraDeadZone(stageData.cameraDeadZone);
-            }
-        }
 
-        /// <summary>
-        /// カメラのオフセットを設定
-        /// </summary>
-        /// <param name="offset"></param>
-        private void SetCameraOffset(Vector3 offset)
-        {
-            if (CameraManager.I != null)
-                CameraManager.I.SetCameraOffset(offset);
-            else
-                CustomLogger.Warning("CameraManagerが見つかりません。カメラオフセット設定に失敗しました。", LOGTAG);
-        }
-
-        /// <summary>
-        /// カメラのデッドゾーンを設定
-        /// </summary>
-        /// <param name="deadZone"></param>
-        private void SetCameraDeadZone(Vector2 deadZone)
-        {
-            if (CameraManager.I != null)
-                CameraManager.I.SetDeadZone(deadZone);
-            else
-                CustomLogger.Warning("CameraManagerが見つかりません。デッドゾーン設定に失敗しました。", LOGTAG);
-        }
-
-
-        #region パブリックメソッド
-
-        /// <summary>
-        /// ステージを変更する（インデックス指定）
-        /// </summary>
-        /// <param name="stageIndex">ステージインデックス</param>
         public void ChangeStage(int stageIndex)
         {
             if (stageDataList == null || stageDataList.Length == 0)
@@ -202,27 +104,23 @@ namespace TechC
                 CustomLogger.Warning("ステージデータが設定されていません", LOGTAG);
                 return;
             }
-            
+
             if (stageIndex < 0 || stageIndex >= stageDataList.Length)
             {
                 CustomLogger.Warning($"無効なステージインデックス {stageIndex} (有効範囲: 0-{stageDataList.Length - 1})", LOGTAG);
                 return;
             }
-            
+
             if (stageIndex == currentStageIndex)
             {
                 CustomLogger.Info($"既に同じステージ（インデックス {stageIndex}）が選択されています", LOGTAG);
                 return;
             }
-            
+
             currentStageIndex = stageIndex;
             ApplyStageData(stageDataList[stageIndex]);
         }
-        
-        /// <summary>
-        /// ステージを変更する（ステージデータ直接指定）
-        /// </summary>
-        /// <param name="stageData">適用するステージデータ</param>
+
         public void ChangeStage(StageData stageData)
         {
             if (stageData == null)
@@ -230,8 +128,7 @@ namespace TechC
                 CustomLogger.Warning("ステージデータがnullです", LOGTAG);
                 return;
             }
-            
-            // 配列内のインデックスを検索
+
             int foundIndex = -1;
             if (stageDataList != null)
             {
@@ -244,33 +141,27 @@ namespace TechC
                     }
                 }
             }
-            
+
             if (foundIndex >= 0)
             {
                 currentStageIndex = foundIndex;
             }
-            
+
             ApplyStageData(stageData);
         }
-        
-        /// <summary>
-        /// 次のステージに変更
-        /// </summary>
+
         public void NextStage()
         {
-            if (stageDataList == null || stageDataList.Length == 0) 
+            if (stageDataList == null || stageDataList.Length == 0)
             {
                 CustomLogger.Warning("ステージデータが設定されていません", LOGTAG);
                 return;
             }
-            
+
             int nextIndex = (currentStageIndex + 1) % stageDataList.Length;
             ChangeStage(nextIndex);
         }
-        
-        /// <summary>
-        /// 前のステージに変更
-        /// </summary>
+
         public void PreviousStage()
         {
             if (stageDataList == null || stageDataList.Length == 0)
@@ -278,36 +169,29 @@ namespace TechC
                 CustomLogger.Warning("ステージデータが設定されていません", LOGTAG);
                 return;
             }
-            
+
             int prevIndex = currentStageIndex - 1;
             if (prevIndex < 0) prevIndex = stageDataList.Length - 1;
             ChangeStage(prevIndex);
         }
-        
-        /// <summary>
-        /// ランダムなステージに変更
-        /// </summary>
+
         public void RandomStage()
         {
-            if (stageDataList == null || stageDataList.Length <= 1) 
+            if (stageDataList == null || stageDataList.Length <= 1)
             {
                 CustomLogger.Warning("ランダム選択できるステージが不足しています", LOGTAG);
                 return;
             }
-            
+
             int randomIndex;
             do
             {
                 randomIndex = Random.Range(0, stageDataList.Length);
             } while (randomIndex == currentStageIndex);
-            
+
             ChangeStage(randomIndex);
         }
-        
-        /// <summary>
-        /// ステージ名でステージを検索して変更
-        /// </summary>
-        /// <param name="stageName">ステージ名</param>
+
         public void ChangeStageByName(string stageName)
         {
             if (string.IsNullOrEmpty(stageName))
@@ -315,13 +199,13 @@ namespace TechC
                 CustomLogger.Warning("ステージ名が空です", LOGTAG);
                 return;
             }
-            
+
             if (stageDataList == null)
             {
                 CustomLogger.Warning("ステージデータが設定されていません", LOGTAG);
                 return;
             }
-            
+
             for (int i = 0; i < stageDataList.Length; i++)
             {
                 if (stageDataList[i] != null && stageDataList[i].stageName == stageName)
@@ -330,17 +214,15 @@ namespace TechC
                     return;
                 }
             }
-            
+
             CustomLogger.Warning($"ステージ '{stageName}' が見つかりません", LOGTAG);
         }
-        /// <summary>
-        /// 利用可能なステージ名のリストを取得
-        /// </summary>
+
         public string[] GetStageNames()
         {
-            if (stageDataList == null || stageDataList.Length == 0) 
+            if (stageDataList == null || stageDataList.Length == 0)
                 return new string[] { "No Stages Available" };
-            
+
             string[] names = new string[stageDataList.Length];
             for (int i = 0; i < stageDataList.Length; i++)
             {
@@ -348,42 +230,30 @@ namespace TechC
             }
             return names;
         }
-        
-        /// <summary>
-        /// ステージレンダラーを手動で設定
-        /// </summary>
-        /// <param name="renderer">使用するSpriteRenderer</param>
+
         public void SetStageRenderer(SpriteRenderer renderer)
         {
             stageRenderer = renderer;
             CustomLogger.Info($"StageRendererを {renderer?.name} に設定しました", LOGTAG);
         }
-        
-        /// <summary>
-        /// ステージデータリストを動的に設定
-        /// </summary>
-        /// <param name="stages">新しいステージデータリスト</param>
+
         public void SetStageDataList(StageData[] stages)
         {
             stageDataList = stages;
             currentStageIndex = 0;
-            
+
             if (stages != null && stages.Length > 0)
             {
                 ApplyStageData(stages[0]);
             }
-            
+
             CustomLogger.Info($"{stages?.Length ?? 0} 個のステージデータを設定しました", LOGTAG);
         }
-        
-        /// <summary>
-        /// ステージデータを追加
-        /// </summary>
-        /// <param name="stageData">追加するステージデータ</param>
+
         public void AddStageData(StageData stageData)
         {
             if (stageData == null) return;
-            
+
             if (stageDataList == null)
             {
                 stageDataList = new StageData[] { stageData };
@@ -395,11 +265,8 @@ namespace TechC
                 newList[stageDataList.Length] = stageData;
                 stageDataList = newList;
             }
-            
+
             CustomLogger.Info($"ステージ '{stageData.stageName}' を追加しました", LOGTAG);
         }
-        
-        #endregion
-      
     }
 }

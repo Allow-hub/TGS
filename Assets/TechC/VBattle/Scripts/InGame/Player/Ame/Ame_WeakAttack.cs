@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TechC
 {
@@ -24,6 +21,7 @@ namespace TechC
         private float returnNeutralEffectTime = 3f;
         private Quaternion currentSlashRot;
         [Header("左弱")]
+        [SerializeField] private AttackData leftAttackCounter;
 
         [Header("右弱")]
         [SerializeField] private float xOffset = 3f;
@@ -39,6 +37,8 @@ namespace TechC
 
 
         [Header("上弱")]
+        [SerializeField] private float xFlowerOffset;
+        [SerializeField] private float yFlowerOffset;
         private float returnUpEffectTime = 3f;
 
         /// <summary>
@@ -64,22 +64,61 @@ namespace TechC
 
             //slashEffectの取得。各段階の回転を反映
             var slObj = CharaEffectFactory.I.GetEffectObj(slash, slObjPos, currentSlashRot);
-
+            RegisterEffect(slObj);
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedActionWithPause(this, returnNeutralEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
+                UnregisterEffect(slObj);
                 CharaEffectFactory.I.ReturnEffectObj(slObj);
             });
-            AudioManager.I.PlayCharacterSE(CharacterType.Ame,CharacterSEType.WeakNormalAttack_1);
+            AudioManager.I.PlayCharacterSE(CharacterType.Ame, CharacterSEType.WeakNormalAttack_1);
         }
 
         /// <summary>
-        /// カウンターの予定だが後回し
+        /// カウンター
         /// </summary>
         public override void LeftAttack()
         {
-            base.LeftAttack();
+            base.LeftAttack();  
+            characterController.SetCanCounter(true);
+            characterController.SetCounterAction(CounterAttack);
+            //カウンター待機時に攻撃を受けなかった場合戻す
+            DelayUtility.StartDelayedActionWithPause(this, leftAttackData.attackDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                characterController.SetCanCounter(false);
+                characterController.SetCounterAction(null);
+            });
         }
+
+        private void CounterAttack()
+        {
+            isAttacking = false;
+            // 前方にレイを飛ばして相手をチェック
+            float rayDistance = 30f;
+            Ray ray = new Ray(transform.position, transform.forward);
+            if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
+            {
+                var opponentController = hit.collider.GetComponentInParent<Player.CharacterController>();
+                //相手の方向を向く
+                if (opponentController != null && opponentController.PlayerID != characterController.PlayerID)
+                {
+                }
+                else
+                {
+                    transform.forward = -transform.forward;
+                }
+            }
+            // カウンター攻撃を実行
+            ExecuteAttack(leftAttackCounter);
+            DelayUtility.StartDelayedActionWithPause(this, 0.1f, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                characterController.GetAnim().SetBool(leftAttackData.animHash, false);
+            });
+            // カウンター状態解除
+            characterController.SetCanCounter(false);
+            characterController.SetCounterAction(null);
+        }
+
 
         /// <summary>
         /// 氷の斬撃を飛ばす、飛び道具側の攻撃はCharaEffectが行う
@@ -93,6 +132,7 @@ namespace TechC
                 //飛び道具の処理
                 var pos = transform.position.AddX(xOffset);
                 slObj = CharaEffectFactory.I.GetEffectObj(flyingSlash, pos, Quaternion.identity);
+                RegisterEffect(slObj);
                 var effectSetting = slObj.GetComponent<CharaEffect>();
                 effectSetting.SetAttackProcessor(attackProcessor);
                 effectSetting.SetOwnerId(characterController.PlayerID);
@@ -104,6 +144,7 @@ namespace TechC
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedActionWithPause(this, returnRightEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
+                UnregisterEffect(slObj);
                 CharaEffectFactory.I.ReturnEffectObj(slObj);
             });
         }
@@ -122,7 +163,6 @@ namespace TechC
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedActionWithPause(this, returnDownEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
-                // CharaEffectFactory.I.ReturnEffectObj(flowerEffect);
                 characterController.ResetHitCollider(chageColliderSpeed);
                 characterController.ChangeColliderTrigger(false);
             });
@@ -134,12 +174,25 @@ namespace TechC
         public override void UpAttack()
         {
             base.UpAttack();
-            var flowerEffect = CharaEffectFactory.I.GetEffectObj(flower, transform.up, Quaternion.identity);
+            GameObject obj = null;
+            var basePos = transform.position + transform.forward * xFlowerOffset + Vector3.up * yFlowerOffset;
+            obj = CharaEffectFactory.I.GetEffectObj(flower, basePos, Quaternion.identity);
+            RegisterEffect(obj);
+            if (transform.forward.x < 0)
+            {
+                obj.transform.Rotate(0, 180, 0);
+            }
+            else if (transform.forward.x > 0)
+            {
+                obj.transform.Rotate(Vector3.zero);
+            }
+
 
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedActionWithPause(this, returnUpEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
-                CharaEffectFactory.I.ReturnEffectObj(flowerEffect);
+                UnregisterEffect(obj);
+                CharaEffectFactory.I.ReturnEffectObj(obj);
             });
         }
 

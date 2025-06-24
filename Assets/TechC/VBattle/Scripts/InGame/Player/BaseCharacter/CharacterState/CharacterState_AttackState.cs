@@ -1,6 +1,4 @@
-﻿using IceMilkTea.StateMachine;
-using System.Collections;
-using System.Collections.Generic;
+using IceMilkTea.StateMachine;
 using UnityEngine;
 using static TechC.AttackManager;
 namespace TechC
@@ -48,7 +46,7 @@ namespace TechC
                 // 同じ攻撃の連続使用をチェック
                 CheckConsecutiveAttacks();
 
-                Context.attackManager.ExecuteAttack(attackType, Context);
+                Context.attackManager.ExecuteAttack(attackType);
                 duration = Context.attackManager.GetDuration(attackType, attackStrength);
             }
 
@@ -80,45 +78,12 @@ namespace TechC
 
                 if (isEarlyExit)
                 {
-
-                    Context.attackManager.ForceFinish(attackStrength); Debug.Log("Earty");
+                    Context.attackManager.ForceFinish(attackStrength);
+                    Debug.Log("Early");
                 }
                 Context.currentCommand = null;
             }
 
-            /// <summary>
-            /// 攻撃種方向の確認
-            /// </summary>
-            /// <returns></returns>
-            //private AttackType CheckAttackType()
-            //{
-            //    if (Context.playerInputManager.MoveInput.x < 0)
-            //        return AttackType.Left;
-            //    if (Context.playerInputManager.MoveInput.x > 0)
-            //        return AttackType.Right;
-            //    if (Context.playerInputManager.MoveInput.y < 0)
-            //        return AttackType.Down;
-            //    if (Context.playerInputManager.MoveInput.y > 0)
-            //        return AttackType.Up;
-            //    return AttackType.Neutral;
-            //}
-            /// <summary>
-            /// 攻撃の強さの確認
-            /// </summary>
-            /// <returns></returns>
-            //private AttackStrength CheckAttackStength()
-            //{
-
-            //    // 攻撃強度の判定
-            //    if (Context.playerInputManager.IsWeakAttacking)
-            //        return AttackStrength.Weak;
-            //    else if (Context.playerInputManager.IsStrongAttacking)
-            //        return AttackStrength.Strong;
-            //    else if (Context.playerInputManager.IsAppealing)
-            //        return AttackStrength.Appeal;
-
-            //    return AttackStrength.Weak;
-            //}
             /// <summary>
             /// 同じ攻撃の連続使用をチェックし、必要に応じてゲージを減らす
             /// </summary>

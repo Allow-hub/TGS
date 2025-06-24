@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Windows.Win32.Foundation;
-using Windows.Win32;
-using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace TechC
 {
@@ -11,6 +9,8 @@ namespace TechC
         private List<NativeWindow> windows = new();
         private Dictionary<NativeWindow, GameObject> windowColliders = new();
 
+        private bool allreadyPopup = false;
+        public bool AllreadyPopup => allreadyPopup;
         [Header("コライダー移動許可範囲")]
         public Vector2 areaCenter = Vector2.zero;
         public Vector2 areaSize = new Vector2(10, 6);
@@ -18,29 +18,29 @@ namespace TechC
         protected override void Init()
         {
             base.Init();
-            DelayUtility.StartDelayedAction(this, 0.1f, () =>
-            {
-                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
-                uint white = 0x00FFFFFF;
-                PInvoke.SetLayeredWindowAttributes((HWND)w.Hwnd, (COLORREF)white, 100, LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
+            // DelayUtility.StartDelayedAction(this, 0.1f, () =>
+            // {
+            //     var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
+            //     uint white = 0x00FFFFFF;
+            //     PInvoke.SetLayeredWindowAttributes((HWND)w.Hwnd, (COLORREF)white, 100, LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
 
-                w.SetRect();
-                windows.Add(w);
-                var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
-                windowColliders[w] = windowCollider;
-                UpdateColliderTransform(w, windowCollider);
-            });
+            //     w.SetRect();
+            //     windows.Add(w);
+            //     var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
+            //     windowColliders[w] = windowCollider;
+            //     UpdateColliderTransform(w, windowCollider);
+            // });
         }
 
         void Update()
         {
-            foreach (var w in windows)
-            {
-                if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
-                {
-                    UpdateColliderTransform(w, colliderObj);
-                }
-            }
+            // foreach (var w in windows)
+            // {
+            //     if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
+            //     {
+            //         UpdateColliderTransform(w, colliderObj);
+            //     }
+            // }
         }
 
         private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)
@@ -128,7 +128,7 @@ namespace TechC
             Gizmos.DrawWireCube(new Vector3(areaCenter.x, areaCenter.y, -5.3f), new Vector3(areaSize.x, areaSize.y, 0.1f));
         }
 
-           public void PopupWindowWindow(WindowFactory.WindowType type, int maxSize = 500, int tileSize = 200, float duration = 1f, Sprite tex = null)
+        public void PopupWindowWindow(WindowFactory.WindowType type, int maxSize = 500, int tileSize = 200, float duration = 1f, Sprite tex = null)
         {
             // 画面サイズ取得
             var unityRect = WindowUtility.GetUnityGameViewRect();
@@ -165,7 +165,11 @@ namespace TechC
             int created = 0;
             DelayUtility.StartRepeatedAction(this, duration, interval, () =>
             {
-                if (created >= gridList.Count) return;
+                if (created >= gridList.Count)
+                {
+                    allreadyPopup = true;
+                    return;
+                }
 
                 var (xi, yi) = gridList[created];
 
@@ -196,7 +200,30 @@ namespace TechC
                 created++;
             });
         }
+        public void ResetAllreasyPopup() => allreadyPopup = false;
 
+        /// <summary>
+        /// アニメーション無しでウィンドウを非表示に
+        /// </summary>
+        /// <param name="returnAllWindow">WindowをすべてReturnするか</param>
+        /// <param name="nativeWindow">WindowをすべてReturnしない場合何のウィンドウを非表示にするか</param>
+        public void ResetWindow(bool returnAllWindow, NativeWindow nativeWindow = null)
+        {
+            if (returnAllWindow)
+            {
+                foreach (var window in windows)
+                    WindowFactory.I.ReturnWindow(window);
+            }
+            else
+            {
+                WindowFactory.I.ReturnWindow(nativeWindow);
+            }
+        }
+
+        private void ResetWindowWithAnimation(float duration, float speed)
+        {
+
+        }
         protected override void OnRelease()
         {
             windows.Clear();

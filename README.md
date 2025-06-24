@@ -16,7 +16,8 @@
   https://github.com/Allow-hub/TGS/tree/main/Assets/TechC/VBattle/Scripts/InGame/Npc
 - 共通インターフェース群 
   https://github.com/Allow-hub/TGS/tree/main/Assets/TechC/VBattle/Scripts/InGame/Interface
-
+- WindowsAPIを使ったギミック（途中）
+  https://github.com/Allow-hub/TGS/tree/main/Assets/TechC/VBattle/Scripts/Window
 ---
 
 ## 取り組んだ工夫・技術的挑戦
@@ -30,9 +31,8 @@
 ---
 
 ## 制作中の課題・今後の改善
-- Commandパターンの設計やinterfaceの使い方は掴めてきたが、**今後はより堅牢な状態管理・ステートマシンとの連携**が課題
 - アクション性を高めつつ、**演出・爽快感の調整に時間がかかる見込み**
-
+-　WindowsAPIを使ったゲーム内での遊びの管理に注意
 ---
 
 ## その他

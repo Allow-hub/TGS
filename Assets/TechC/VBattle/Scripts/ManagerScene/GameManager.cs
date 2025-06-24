@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace TechC
@@ -24,7 +25,7 @@ namespace TechC
         [SerializeField] private bool canConectWifi = true;
         [SerializeField] private bool preloadLoadingScene = true; // LoadingSceneの事前読み込み
 
-        private List<(GameObject prefab, int playerId)> playerInfoList = new();
+        private List<(GameObject prefab, int playerId,InputDevice inputDevice)> playerInfoList = new();
         private Scene? preloadedLoadingScene = null;
 
         public bool IsHighPerformanceMode => isHighPerformanceMode;
@@ -45,7 +46,7 @@ namespace TechC
             if (preloadLoadingScene)
                 PreloadLoadingScene().Forget();
 
-            ChangeTitleState();
+            // ChangeTitleState();
         }
 
         private void Update()
@@ -66,6 +67,7 @@ namespace TechC
             switch (state)
             {
                 case GameState.Title:
+                    LoadSceneWithLoadingAsync(0).Forget();
                     ChangeCursorMode(true, CursorLockMode.None);
                     break;
 
@@ -99,7 +101,7 @@ namespace TechC
 
         private void BattleStateInit()
         {
-            LoadSceneWithLoadingAsync(0).Forget(); // BattleScene
+            LoadSceneWithLoadingAsync(2).Forget(); // BattleScene
             ChangeCursorMode(false, CursorLockMode.Locked);
         }
 
@@ -226,7 +228,7 @@ namespace TechC
             return loadingManager;
         }
 
-        public void RegisterPlayer(GameObject prefab, int playerId) => playerInfoList.Add((prefab, playerId));
+        public void RegisterPlayer(GameObject prefab, int playerId, InputDevice inputDevice) => playerInfoList.Add((prefab, playerId, inputDevice));
         public GameObject GetCharacterById(int id)
         {
             foreach (var info in playerInfoList)
@@ -237,7 +239,7 @@ namespace TechC
             return null;
         }
         public void RemovePlayerById(int id) => playerInfoList.RemoveAll(info => info.playerId == id);
-        public List<(GameObject prefab, int playerId)> GetPlayerInfo() => playerInfoList;
+        public List<(GameObject prefab, int playerId,InputDevice inputDevice)> GetPlayerInfo() => playerInfoList;
         public bool SetIsNpc(bool value) => isNpc = value;
 
         public void ChangeTitleState() => SetState(GameState.Title);

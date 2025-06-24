@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace TechC
 {
@@ -9,6 +10,7 @@ namespace TechC
     [System.Serializable]
     public class PlayerSelectUI
     {
+        public TMP_Dropdown inputDeviceDropdown;
         public GameObject ameTextImage;//ameのテキストイメージ
         public GameObject teramiTextImage;//teramiのテキストイメージ
         public GameObject ameObj;//ameのモデル

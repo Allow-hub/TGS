@@ -13,6 +13,9 @@ namespace TechC
     /// </summary>
     public class CameraManager : Singleton<CameraManager>
     {
+        [SerializeField] private GameObject camObj;
+        [SerializeField] private BoxCollider camCol;
+        
         protected override bool UseDontDestroyOnLoad => false;
 
         [Header("Cinemachine References")]
@@ -150,7 +153,7 @@ namespace TechC
             {
                 CustomLogger.Error("CameraManager: targetGroupが設定されていません", LOGTAG);
             }
-
+            
             lastUpdateTime = Time.time;
         }
 
@@ -348,6 +351,7 @@ namespace TechC
         private void SetUltCamera()
         {
             SwitchCameraSettings(true);
+
         }
 
         #region パブリックメソッド
@@ -510,9 +514,6 @@ namespace TechC
         /// <summary>
         /// デッドゾーンを設定
         /// </summary>
-        /// <summary>
-        /// デッドゾーンを設定
-        /// </summary>
         public void SetDeadZone(float zone)
         {
             if (currentCameraSettings != null)
@@ -528,6 +529,8 @@ namespace TechC
         public void SwitchCameraSettings(bool useUlt)
         {
             currentCameraSettings = useUlt ? ultCameraSettings : normalCameraSettings;
+            camCol.center = currentCameraSettings.camColliderPos;
+            camObj.transform.eulerAngles = currentCameraSettings.camRot;
             ApplyZoomSettings();
             CustomLogger.Info($"CameraManager: Switched camera settings to {(useUlt ? "ULT" : "NORMAL")}", LOGTAG);
         }

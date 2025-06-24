@@ -9,6 +9,10 @@ namespace TechC
     [CreateAssetMenu(fileName = "CameraSettings", menuName = "TechC/Camera Settings")]
     public class CameraSettings : ScriptableObject
     {
+        [Header("CameraSettings")]
+        [SerializeField] public Vector3 camRot;
+        [SerializeField] public Vector3 camColliderPos;
+
         [Header("Zoom Settings")]
         [SerializeField] public float minDistance = 5f;
         [SerializeField] public float maxDistance = 20f;

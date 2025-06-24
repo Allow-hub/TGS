@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 302f01dae194f20468399061399eeb67, type: 3}
   m_Name: CameraSettings
   m_EditorClassIdentifier: 
+  camRot: {x: 0, y: 0, z: 0}
+  camColliderPos: {x: 0, y: 0, z: -10}
   minDistance: 5
   maxDistance: 50
   minFOV: 3

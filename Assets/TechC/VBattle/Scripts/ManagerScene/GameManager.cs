@@ -29,6 +29,8 @@ namespace TechC
 
         public bool IsHighPerformanceMode => isHighPerformanceMode;
         public bool CanConectWifi => canConectWifi;
+        public bool IsNpc => isNpc;
+        private bool isNpc;
         public GameState CurrentState => currentState;
         private GameState currentState = GameState.Title;
 
@@ -236,6 +238,7 @@ namespace TechC
         }
         public void RemovePlayerById(int id) => playerInfoList.RemoveAll(info => info.playerId == id);
         public List<(GameObject prefab, int playerId)> GetPlayerInfo() => playerInfoList;
+        public bool SetIsNpc(bool value) => isNpc = value;
 
         public void ChangeTitleState() => SetState(GameState.Title);
         public void ChangeSelectState() => SetState(GameState.Select);

@@ -9,7 +9,9 @@ namespace TechC
     /// </summary>
     public class SelectUIManager : Singleton<SelectUIManager>
     {
+        [SerializeField] private Button npcButton;
         [SerializeField] private GameObject[] characterPrefabs; // 実体として選ばれるキャラクター
+        [SerializeField] private GameObject[] characterNpcPrefabs; // 実体として選ばれるキャラクター
 
         [SerializeField] private Button dicisionButton;//ゲームを開始するボタン
         public PlayerSelectUI[] playerUIs; // [0]=P1, [1]=P2 のUI情報を保持
@@ -26,8 +28,11 @@ namespace TechC
             public GameObject characterObject;
         }
 
-        public CharacterPick[] CurrentPicks =>currentPicks;
+        public CharacterPick[] CurrentPicks => currentPicks;
         private CharacterPick[] currentPicks = new CharacterPick[2];
+
+        public bool IsNpc => isNpc;
+        private bool isNpc;
         protected override bool UseDontDestroyOnLoad => false;
 
         /// <summary>
@@ -47,7 +52,7 @@ namespace TechC
             //どちらもあめで初期化
             ChangeCharacter(0, 0);
             ChangeCharacter(1, 0);
-
+            npcButton.onClick.AddListener(() => SetNpc());
             dicisionButton.onClick.AddListener(() => Dicide());
         }
 
@@ -71,17 +76,51 @@ namespace TechC
             // 選択情報を保存
             ui.currentCharacterIndex = characterIndex;
 
+            // NPCが選択されているかでプレハブを切り替え
+            GameObject selectedPrefab;
+            if (isNpc)
+            {
+                if (characterNpcPrefabs != null && characterNpcPrefabs.Length > characterIndex)
+                {
+                    selectedPrefab = characterNpcPrefabs[characterIndex];
+                }
+                else
+                {
+                    Debug.LogWarning("characterNpcPrefabsが設定されていないかインデックスが範囲外です");
+                    selectedPrefab = null;
+                }
+            }
+            else
+            {
+                if (characterPrefabs != null && characterPrefabs.Length > characterIndex)
+                {
+                    selectedPrefab = characterPrefabs[characterIndex];
+                }
+                else
+                {
+                    Debug.LogWarning("characterPrefabsが設定されていないかインデックスが範囲外です");
+                    selectedPrefab = null;
+                }
+            }
+
             currentPicks[playerIndex] = new CharacterPick
             {
                 playerId = playerIndex,
-                characterObject = characterPrefabs[characterIndex]
+                characterObject = selectedPrefab
             };
         }
+
 
         private void Dicide()
         {
             OnDicidePicked?.Invoke();
         }
+
+        private void SetNpc()
+        {
+            isNpc = !isNpc;
+        }
+
         /// <summary>
         /// 指定プレイヤーの現在選択中のキャラクターインデックスを取得。
         /// </summary>

@@ -62,7 +62,7 @@ namespace TechC
             {
                 GameManager.I.RegisterPlayer(pick.characterObject, pick.playerId);
             }
-
+            GameManager.I.SetIsNpc(SelectUIManager.I.IsNpc);//NPCかどうかを設定
             GameManager.I.ChangeBattleState();
         }
     }

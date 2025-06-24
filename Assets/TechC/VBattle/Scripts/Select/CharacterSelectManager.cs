@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace TechC
 {
@@ -17,7 +18,10 @@ namespace TechC
             DelayUtility.StartDelayedAction(this, initializeDelay, () =>
             {
                 // 初期化処理
-                foreach (var info in GameManager.I.GetPlayerInfo())
+                // プレイヤー情報を一旦コピー
+                var playerInfos = new List<(GameObject prefab, int playerId, InputDevice inputDevice)>(GameManager.I.GetPlayerInfo());
+
+                foreach (var info in playerInfos)
                 {
                     GameManager.I.RemovePlayerById(info.playerId);
                 }
@@ -60,7 +64,7 @@ namespace TechC
             }
             foreach (var pick in SelectUIManager.I.CurrentPicks)
             {
-                GameManager.I.RegisterPlayer(pick.characterObject, pick.playerId);
+                GameManager.I.RegisterPlayer(pick.characterObject, pick.playerId, pick.inputDevice);
             }
             GameManager.I.SetIsNpc(SelectUIManager.I.IsNpc);//NPCかどうかを設定
             GameManager.I.ChangeBattleState();

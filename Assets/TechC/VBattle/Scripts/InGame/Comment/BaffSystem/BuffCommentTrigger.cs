@@ -7,11 +7,9 @@ namespace TechC
     /// </summary>
     public class BuffCommentTrigger : MonoBehaviour
     {
-        [Header("エフェクトのPrefab")]
-        [SerializeField] private GameObject debrisPrefab;
         public BuffType buffType;
         [HideInInspector] public SpecialCommentType specialCommentType;
-        [HideInInspector] public string commentText; 
+        [HideInInspector] public string commentText;
         private bool alreadyApplied = false;
 
         private ObjectPool objectPool;
@@ -37,15 +35,6 @@ namespace TechC
 
             if (other.CompareTag("Player"))
             {
-
-                if (specialCommentType == SpecialCommentType.Grass)
-                {
-                    Debug.Log("草コメントに当りました");
-                    var grass = EffectFactory.I.GetEffectObj(debrisPrefab, transform.position, Quaternion.identity);
-                    
-
-                    Debug.Log("草のエフェクトを生成しました。");
-                }
 
                 BuffBase buff = BuffFactory.CreateBuff(buffType);
 

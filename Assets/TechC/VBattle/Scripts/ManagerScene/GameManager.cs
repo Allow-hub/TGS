@@ -30,28 +30,23 @@ namespace TechC
         public GameState CurrentState => currentState;
         private GameState currentState = GameState.Title;
 
-
         protected override void Init()
         {
             base.Init();
             Application.runInBackground = true;
-            // VSyncCount を Dont Sync に変更
             QualitySettings.vSyncCount = 0;
-            // fps 144 を目標に設定
             Application.targetFrameRate = targetFrameRate;
             ChangeTitleState();
         }
 
-
         private void Update()
         {
-            //テスト用完成時に消す
             if (Input.GetKeyDown(KeyCode.Space))
                 ChangeBattleState();
 
-            //将来的にパッド対応させる必要あり、現在はPauseするとInputManagerを消しているので取れない
             if (Input.GetKeyDown(KeyCode.Escape))
                 MenuManager.I.OpenMenu();
+
             StateHandler();
         }
 
@@ -62,13 +57,11 @@ namespace TechC
             switch (state)
             {
                 case GameState.Title:
-                    // LoadSceneAsync(0); // 0 = TitleScene
-                    // AudioManager.I.PlayBGM(BGMID.Title);
                     ChangeCursorMode(true, CursorLockMode.None);
                     break;
 
                 case GameState.Select:
-                    LoadSceneAsync(1); // 1 = SelectScene
+                    LoadSceneWithLoadingAsync(1).Forget(); // SelectScene
                     ChangeCursorMode(true, CursorLockMode.None);
                     break;
 
@@ -92,40 +85,20 @@ namespace TechC
 
         private void StateHandler()
         {
-            // switch (currentState)
-            // {
-            //     case GameState.Battle:
-            //         break;
-            // }
-        }
-        private void BattleStateInit()
-        {
-            LoadSceneAsync(0);
-            ChangeCursorMode(false, CursorLockMode.Locked);
-            
-            // await LoadSceneAdditiveAsync("CutIn");
-            // SetActiveSceneRoot(false, "CutIn");
+            // 必要ならステートごとの処理をここに
         }
 
+        private void BattleStateInit()
+        {
+            LoadSceneWithLoadingAsync(0).Forget(); // BattleScene
+            ChangeCursorMode(false, CursorLockMode.Locked);
+        }
 
         private void ChangeCursorMode(bool visible, CursorLockMode cursorLockMode)
         {
             Cursor.visible = visible;
             Cursor.lockState = cursorLockMode;
         }
-
-        public async UniTask LoadSceneAdditiveAsync(int sceneIndex)
-        {
-            var op = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
-            await UniTask.WaitUntil(() => op.isDone);
-        }
-
-        public async UniTask LoadSceneAdditiveAsync(string sceneName)
-        {
-            var op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            await UniTask.WaitUntil(() => op.isDone);
-        }
-
         public void SetActiveSceneRoot(bool value, string sceneName)
         {
             var scene = SceneManager.GetSceneByName(sceneName);
@@ -137,33 +110,56 @@ namespace TechC
                 }
             }
         }
-        // 非同期でシーンをロード
-        public void LoadSceneAsync(int sceneIndex)
+        /// <summary>
+        /// LoadingSceneをAdditiveで読み込み、LoadingManagerを使って指定シーンをロードする処理
+        /// </summary>
+        private async UniTask LoadSceneWithLoadingAsync(int targetSceneIndex)
         {
-            StartCoroutine(LoadSceneCoroutine(sceneIndex));
-        }
+            var previousScene = SceneManager.GetActiveScene();
 
-        // 非同期でシーンをロードするコルーチン
-        private IEnumerator LoadSceneCoroutine(int sceneIndex)
-        {
-            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneIndex);
-            asyncOperation.allowSceneActivation = false;
+            // LoadingScene を Additive で読み込み
+            var loadLoadingSceneOp = SceneManager.LoadSceneAsync("LoadScene", LoadSceneMode.Additive);
+            await UniTask.WaitUntil(() => loadLoadingSceneOp.isDone);
 
-            // シーンのロードが終わるまで待機
-            while (!asyncOperation.isDone)
+            var loadingScene = SceneManager.GetSceneByName("LoadScene");
+            if (loadingScene.IsValid())
+                SceneManager.SetActiveScene(loadingScene);
+
+            // 明示的にフレームを待つことで UI 描画を確実に行う
+            await UniTask.DelayFrame(2); // UIを表示させるため最低2フレーム待つと安定
+
+            // LoadingManager を取得
+            LoadingManager loadingManager = null;
+            await UniTask.WaitUntil(() =>
             {
-                // ロードが進んだら進行状況を表示
-                float progress = Mathf.Clamp01(asyncOperation.progress / 0.9f);
-                Debug.Log("Loading progress: " + (progress * 100) + "%");
+                loadingManager = Object.FindObjectOfType<LoadingManager>();
+                return loadingManager != null;
+            });
 
-                // ロードが完了したらシーンをアクティブ化
-                if (asyncOperation.progress >= 0.9f)
-                {
-                    asyncOperation.allowSceneActivation = true;
-                }
-
-                yield return null;
+            // 前のシーンをアンロード
+            if (previousScene.name != "LoadScene")
+            {
+                var unloadPrevOp = SceneManager.UnloadSceneAsync(previousScene);
+                await UniTask.WaitUntil(() => unloadPrevOp.isDone);
             }
+
+            // ターゲットシーン読み込み（Additive）+ 非アクティブ
+            var loadTargetOp = SceneManager.LoadSceneAsync(targetSceneIndex, LoadSceneMode.Additive);
+            loadTargetOp.allowSceneActivation = false;
+
+            // プログレス更新
+            await loadingManager.UpdateProgressAsync(loadTargetOp);
+
+            loadTargetOp.allowSceneActivation = true;
+            await UniTask.WaitUntil(() => loadTargetOp.isDone);
+
+            var targetScene = SceneManager.GetSceneByBuildIndex(targetSceneIndex);
+            if (targetScene.IsValid())
+                SceneManager.SetActiveScene(targetScene);
+
+            // 最後に LoadingScene をアンロード
+            var unloadLoadingOp = SceneManager.UnloadSceneAsync("LoadScene");
+            await UniTask.WaitUntil(() => unloadLoadingOp.isDone);
         }
 
         /// <summary>
@@ -172,29 +168,23 @@ namespace TechC
         public void RegisterPlayer(GameObject prefab, int playerId) => playerInfoList.Add((prefab, playerId));
 
         /// <summary>
-        /// 指定されたIDに対応するプレイヤーの選択したキャラのGameObjectを取得する。
-        /// 見つからなければ null を返す。
+        /// 指定されたIDに対応するプレイヤーの選択したキャラのGameObjectを取得する
         /// </summary>
         public GameObject GetCharacterById(int id)
         {
             foreach (var info in playerInfoList)
             {
                 if (info.playerId == id)
-                {
                     return info.prefab;
-                }
             }
             return null;
         }
-
-
 
         /// <summary>
         /// プレイヤー情報を削除
         /// </summary>
         public void RemovePlayerById(int id) => playerInfoList.RemoveAll(info => info.playerId == id);
         public List<(GameObject prefab, int playerId)> GetPlayerInfo() => playerInfoList;
-
 
         public void ChangeTitleState() => SetState(GameState.Title);
         public void ChangeSelectState() => SetState(GameState.Select);

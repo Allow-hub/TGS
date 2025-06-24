@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Cysharp.Threading.Tasks;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -101,6 +102,9 @@ namespace TechC
         {
             LoadSceneAsync(0);
             ChangeCursorMode(false, CursorLockMode.Locked);
+            
+            // await LoadSceneAdditiveAsync("CutIn");
+            // SetActiveSceneRoot(false, "CutIn");
         }
 
 
@@ -110,7 +114,29 @@ namespace TechC
             Cursor.lockState = cursorLockMode;
         }
 
+        public async UniTask LoadSceneAdditiveAsync(int sceneIndex)
+        {
+            var op = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
+            await UniTask.WaitUntil(() => op.isDone);
+        }
 
+        public async UniTask LoadSceneAdditiveAsync(string sceneName)
+        {
+            var op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            await UniTask.WaitUntil(() => op.isDone);
+        }
+
+        public void SetActiveSceneRoot(bool value, string sceneName)
+        {
+            var scene = SceneManager.GetSceneByName(sceneName);
+            if (scene.isLoaded)
+            {
+                foreach (GameObject go in scene.GetRootGameObjects())
+                {
+                    go.SetActive(value);
+                }
+            }
+        }
         // 非同期でシーンをロード
         public void LoadSceneAsync(int sceneIndex)
         {

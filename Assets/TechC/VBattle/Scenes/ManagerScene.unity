@@ -443,7 +443,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetFrameRate: 144
   isHighPerformanceMode: 1
-  canConectWifi: 1
+  canConectWifi: 0
 --- !u!4 &1183286594
 Transform:
   m_ObjectHideFlags: 0

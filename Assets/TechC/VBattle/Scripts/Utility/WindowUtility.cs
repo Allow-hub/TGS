@@ -54,11 +54,11 @@ namespace TechC
         /// <returns>ゲームビューの矩形</returns>
         public static RECT GetUnityGameViewRect()
         {
-// #if UNITY_EDITOR
+            // #if UNITY_EDITOR
             return GameViewUtils.ToWin32Rect(GameViewUtils.GetGameViewScreenRect());
-// #else
+            // #else
             // return GetWindowRect(GetUnityWindowHandle());
-// #endif
+            // #endif
         }
 
         public static HWND FindWindowWithTitleSubstring(string substring)
@@ -109,7 +109,7 @@ namespace TechC
         {
             return PInvoke.GetActiveWindow();
         }
-    
+
         /// <summary>
         /// 指定したプロセス名のウィンドウハンドルを取得
         /// </summary>
@@ -446,14 +446,14 @@ namespace TechC
 
 
         /// <summary>
-        /// ウィンドウを目標位置にアニメーションで移動
+        /// ウィンドウを目標位置にアニメーションで移動（Lerp補間）
         /// </summary>
         /// <param name="hWnd">ウィンドウハンドル</param>
         /// <param name="targetX">目標X座標</param>
         /// <param name="targetY">目標Y座標</param>
-        /// <param name="speed">移動速度</param>
+        /// <param name="lerpSpeed">補間速度（0.01～0.5程度）</param>
         /// <returns>目標位置に到達した場合true</returns>
-        public static bool MoveWindowToTargetPosition(IntPtr hWnd, int targetX, int targetY, float speed)
+        public static bool MoveWindowToTargetPosition(IntPtr hWnd, int targetX, int targetY, float lerpSpeed = 0.1f)
         {
             if (!IsValidWindow(new HWND(hWnd))) return false;
 
@@ -461,65 +461,64 @@ namespace TechC
             var currentX = rect.left;
             var currentY = rect.top;
 
-            var targetPos = new Vector2(targetX, targetY);
-            var currentPos = new Vector2(currentX, currentY);
+            Vector2 currentPos = new Vector2(currentX, currentY);
+            Vector2 targetPos = new Vector2(targetX, targetY);
 
-            if (Vector2.Distance(currentPos, targetPos) < 1f)
+            // Lerp補間で移動
+            Vector2 newPos = Vector2.Lerp(currentPos, targetPos, lerpSpeed);
+
+            bool reached = Vector2.Distance(newPos, targetPos) < 1f;
+
+            if (reached)
             {
-                return true; // 到達済み
+                // 最終位置に強制セット
+                MoveWindow(new HWND(hWnd), targetX, targetY);
+            }
+            else
+            {
+                MoveWindow(new HWND(hWnd), Mathf.RoundToInt(newPos.x), Mathf.RoundToInt(newPos.y));
             }
 
-            var direction = (targetPos - currentPos).normalized;
-            var moveDistance = speed * Time.deltaTime;
-            var newPos = currentPos + direction * moveDistance;
-
-            // 目標を超えないように調整
-            if (Vector2.Distance(currentPos, targetPos) < moveDistance)
-            {
-                newPos = targetPos;
-            }
-
-            MoveWindow(new HWND(hWnd), (int)newPos.x, (int)newPos.y);
-            return Vector2.Distance(newPos, targetPos) < 1f;
+            return reached;
         }
 
+
         /// <summary>
-        /// ウィンドウサイズをアニメーションで変更
+        /// ウィンドウサイズをアニメーションで変更（Lerpによる滑らか補間）
         /// </summary>
         /// <param name="hWnd">ウィンドウハンドル</param>
         /// <param name="targetWidth">目標幅</param>
         /// <param name="targetHeight">目標高さ</param>
-        /// <param name="speed">変更速度</param>
+        /// <param name="lerpSpeed">補間速度（0.01～0.5程度）</param>
         /// <returns>目標サイズに到達した場合true</returns>
-        public static bool AnimateResizeWindow(IntPtr hWnd, int targetWidth, int targetHeight, float speed)
+        public static bool AnimateResizeWindow(IntPtr hWnd, int targetWidth, int targetHeight, float lerpSpeed = 0.1f)
         {
             if (!IsValidWindow(new HWND(hWnd))) return false;
 
             var rect = GetWindowRect(new HWND(hWnd));
-            var currentWidth = rect.right - rect.left;
-            var currentHeight = rect.bottom - rect.top;
+            int currentWidth = rect.right - rect.left;
+            int currentHeight = rect.bottom - rect.top;
 
-            var targetSize = new Vector2(targetWidth, targetHeight);
-            var currentSize = new Vector2(currentWidth, currentHeight);
+            Vector2 currentSize = new Vector2(currentWidth, currentHeight);
+            Vector2 targetSize = new Vector2(targetWidth, targetHeight);
 
-            if (Vector2.Distance(currentSize, targetSize) < 1f)
+            Vector2 newSize = Vector2.Lerp(currentSize, targetSize, lerpSpeed);
+
+            bool reached = Vector2.Distance(newSize, targetSize) < 1f;
+
+            if (reached)
             {
-                return true; // 到達済み
+                // 最終サイズに強制セット
+                ResizeWindow(new HWND(hWnd), targetWidth, targetHeight);
+            }
+            else
+            {
+                ResizeWindow(new HWND(hWnd), Mathf.RoundToInt(newSize.x), Mathf.RoundToInt(newSize.y));
             }
 
-            var direction = (targetSize - currentSize).normalized;
-            var resizeSpeed = speed * Time.deltaTime;
-            var newSize = currentSize + direction * resizeSpeed;
-
-            // 目標を超えないように調整
-            if (Vector2.Distance(currentSize, targetSize) < resizeSpeed)
-            {
-                newSize = targetSize;
-            }
-
-            ResizeWindow(new HWND(hWnd), (int)newSize.x, (int)newSize.y);
-            return Vector2.Distance(newSize, targetSize) < 1f;
+            return reached;
         }
+
 
         /// <summary>
         /// 子ウィンドウの親ウィンドウを設定
@@ -534,7 +533,7 @@ namespace TechC
                 Debug.LogWarning("SetParentWindow: childHwnd or parentHwnd is null.");
                 return false;
             }
-            var result = PInvoke.SetParent((HWND)childHwnd,(HWND)parentHwnd);
+            var result = PInvoke.SetParent((HWND)childHwnd, (HWND)parentHwnd);
             return result != HWND.Null;
         }
 

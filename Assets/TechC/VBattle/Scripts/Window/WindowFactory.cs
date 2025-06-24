@@ -17,7 +17,7 @@ namespace TechC
         Dictionary<WindowType, int> initialPoolSizes = new Dictionary<WindowType, int>
             {
                 { WindowType.Basic, 2 },
-                { WindowType.Image, 0 },
+                { WindowType.Image, 61 },
                 { WindowType.Web,   0 }
             };
         private List<NativeWindow> activeWindows = new();
@@ -123,7 +123,8 @@ namespace TechC
             {
                 // 通常ウィンドウ
                 style = (uint)WINDOW_STYLE.WS_OVERLAPPEDWINDOW;
-                exStyle = (uint)WINDOW_EX_STYLE.WS_EX_NOACTIVATE | (uint)WINDOW_EX_STYLE.WS_EX_TOPMOST | (uint)WINDOW_EX_STYLE.WS_EX_LAYERED;
+                // exStyle = (uint)WINDOW_EX_STYLE.WS_EX_NOACTIVATE | (uint)WINDOW_EX_STYLE.WS_EX_TOPMOST | (uint)WINDOW_EX_STYLE.WS_EX_LAYERED;
+                exStyle = (uint)WINDOW_EX_STYLE.WS_EX_NOACTIVATE | (uint)WINDOW_EX_STYLE.WS_EX_TOPMOST;
             }
 
             IntPtr hwnd = CustomWindowUtility.CreateWindow(
@@ -131,7 +132,7 @@ namespace TechC
                 title,
                 style,
                 exStyle,
-                100, 100, width, height,
+                100, -100, width, height,//作成時は画面外に
                 IntPtr.Zero
             );
 

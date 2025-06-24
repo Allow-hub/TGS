@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/TechC/VBattle/Scenes/WorkScene/Work_A.unity
     guid: 341014ee11f711147ba897ff8d9304c7
   - enabled: 1
+    path: Assets/TechC/VBattle/Scenes/LoadScene.unity
+    guid: cea939127666e9b4ba03ebfe3de6b7b5
+  - enabled: 1
     path: Assets/TechC/VBattle/Scenes/CutIn.unity
     guid: 513def3ad091ca341b9a1a2c12e93735
   - enabled: 0

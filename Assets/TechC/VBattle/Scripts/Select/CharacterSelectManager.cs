@@ -10,8 +10,8 @@ namespace TechC
     /// </summary>
     public class CharacterSelectManager : Singleton<CharacterSelectManager>
     {
-        [SerializeField] private GameObject amePrefab;
-        [SerializeField] private GameObject teramiPrefab;
+        // [SerializeField] private GameObject amePrefab;
+        // [SerializeField] private GameObject teramiPrefab;
         private const float initializeDelay = 0.1f;
         protected override bool UseDontDestroyOnLoad => false;
 
@@ -20,20 +20,26 @@ namespace TechC
             base.Init();
             DelayUtility.StartDelayedAction(this, initializeDelay, () =>
             {
-                foreach (var info in GameManager.I.GetPlayerInfo()) {
+                foreach (var info in GameManager.I.GetPlayerInfo())
+                {
                     GameManager.I.RemovePlayerById(info.playerId);
                 }
-                GameManager.I.RegisterPlayer(amePrefab, 0);
-                GameManager.I.RegisterPlayer(amePrefab, 1);
-                Debug.Log(GameManager.I.GetCharacterById(0));
-                Debug.Log(GameManager.I.GetCharacterById(1));
-
                 if (SelectUIManager.I == null)
                 {
                     Debug.Log("SelectUIManagerの初期化が済んでいません");
                 }
                 SelectUIManager.I.OnCharacterPicked += OnCharacterPicked;
+                SelectUIManager.I.OnDicidePicked += DicidePick;
             });
+        }
+
+        private void DicidePick()
+        {
+                // GameManager.I.RegisterPlayer(amePrefab, 0);
+                // GameManager.I.RegisterPlayer(amePrefab, 1);
+                // Debug.Log(GameManager.I.GetCharacterById(0));
+                // Debug.Log(GameManager.I.GetCharacterById(1));
+
         }
 
         private void OnCharacterPicked(int playerIndex)

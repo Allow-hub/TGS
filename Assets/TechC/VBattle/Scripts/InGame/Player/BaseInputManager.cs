@@ -85,7 +85,7 @@ namespace TechC
         {
             commands[moveCommand] = new MoveCommand(characterController, this);
             commands[jumpCommand] = new JumpCommand(characterController, this);
-            commands[attackCommand] = new AttackCommand(characterState);
+            commands[attackCommand] = new AttackCommand(characterState,characterController);
             commands[crouchCommand] = new CrouchCommand(characterController, this);
             commands[guardCommand] = new GuardCommand(characterState, characterController, this, characterController.GetCharacterData(), guardObj);
         }

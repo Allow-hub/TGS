@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.Localization.SmartFormat.PersistentVariables;
 
 namespace TechC.Player
 {
@@ -56,6 +57,13 @@ namespace TechC.Player
 
         [Header("エフェクトのPrefab")]
         [SerializeField] private GameObject debrisPrefab;
+
+        [Header("文字のPrefab")]
+        [SerializeField] private GameObject grassCharPrefab;
+
+        [Header("コメント")]
+        [SerializeField] private Transform handPos;
+        public bool hasComment;
         #endregion
 
         #region プライベート変数
@@ -714,6 +722,31 @@ namespace TechC.Player
         /// <returns></returns>
         public float GetMultipiler(BuffType type) =>
             multipliers.TryGetValue(type, out var value) ? value : 1.0f;
+
+        #endregion
+
+        #region コメント関連メソッド
+
+        /// <summary>
+        /// 草のモデルをプレイヤーに持たせる
+        /// </summary>
+        public void SpawnGrassEffect()
+        {
+            if (hasComment) return;
+            hasComment = true;
+
+            GameObject grassInstance = EffectFactory.I.GetEffectObj(grassCharPrefab, handPos.position, Quaternion.identity);
+
+            // 生成されたオブジェクトを手の位置に追従させる
+            grassInstance.transform.SetParent(handPos);
+
+            // 手の中心に合わせる（ローカル座標をゼロに）
+            grassInstance.transform.localPosition = Vector3.zero;
+            grassInstance.transform.localRotation = Quaternion.identity;
+
+            // アクティブ状態に
+            grassInstance.SetActive(true);
+        }
 
         #endregion
 

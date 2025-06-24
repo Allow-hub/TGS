@@ -11,6 +11,9 @@ namespace TechC
 
         [Header("エフェクトのPrefab")]
         [SerializeField] private GameObject grassPrefab;
+        [SerializeField] private float returnDelay = 3f;
+
+        private bool isReturning = false;
 
         /* 角度の定数 */
         private const float ROTATE_GROUND = 0f;
@@ -18,23 +21,6 @@ namespace TechC
         private const float ROTATE_RIGHT_WALL = 90f;
         private const float ROTATE_LEFT_WALL = -90f;
 
-        private Rigidbody rigidbody;
-
-        private void Start()
-        {
-            // Rigidbodyがアタッチされていなければ取得
-            if (rigidbody == null)
-            {
-                rigidbody = GetComponent<Rigidbody>();
-            }
-
-            // 上方向に力を加えてジャンプさせる（向き確認用）
-            const float TEST_FORCE = -15f;
-            if (rigidbody != null)
-            {
-                rigidbody.AddForce(Vector3.right * TEST_FORCE, ForceMode.Impulse);
-            }
-        }
         private void OnTriggerEnter(Collider other)
         {
             string layerName = LayerMask.LayerToName(other.gameObject.layer);
@@ -82,12 +68,14 @@ namespace TechC
                 grassChar.SetActive(false);
                 grassPrefab.SetActive(true);
 
-                // Rigidbodyの動きを止める
-                if (rigidbody != null)
+                if (!isReturning)
                 {
-                    rigidbody.velocity = Vector3.zero;
-                    rigidbody.angularVelocity = Vector3.zero;
-                    rigidbody.isKinematic = true;
+                    isReturning = true;
+
+                    DelayUtility.StartDelayedAction(this, returnDelay, () =>
+                    {
+                        EffectFactory.I.ReturnEffect(gameObject);
+                    });
                 }
             }
         }

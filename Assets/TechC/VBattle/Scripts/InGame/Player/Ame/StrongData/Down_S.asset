@@ -21,7 +21,7 @@ MonoBehaviour:
   animationTrigger: IsDownStrongAttack
   animationSpeed: 1
   attackDuration: 3
-  damage: 10
+  damage: 1
   knockback: 2
   canRepeat: 1
   repeatInterval: 0.01

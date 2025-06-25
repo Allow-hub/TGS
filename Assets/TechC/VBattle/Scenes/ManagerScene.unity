@@ -443,7 +443,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetFrameRate: 144
   isHighPerformanceMode: 1
-  canConectWifi: 1
+  canConectWifi: 0
+  preloadLoadingScene: 1
 --- !u!4 &1183286594
 Transform:
   m_ObjectHideFlags: 0
@@ -562,7 +563,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: d3778cd6217a8bb4ebedb3fc6085edf5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

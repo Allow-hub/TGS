@@ -26,6 +26,7 @@ namespace TechC
             public GameObject initialPosition;
             public bool isInvincible = false;    // 無敵状態
             public bool canAttack = true;        // 攻撃可能状態
+            public InputDevice inputDevice;
         }
         #endregion
 
@@ -36,6 +37,8 @@ namespace TechC
         [SerializeField] private float timeLimit = 180f;  // 制限時間（秒）
         [SerializeField] private bool isTimeLimitEnabled = true;  // 制限時間の有無
         [SerializeField] private float respawnInvincibleTime = 3f;  // リスポーン無敵時間
+        [SerializeField] private GameObject ultMap;//必殺技後のステージ
+        [SerializeField] private GameObject normalMap;//2dのステージ
 
         [SerializeField] private bool isDebug = true;
         [Header("プレイヤー設定")]
@@ -48,11 +51,11 @@ namespace TechC
         #region イベント
         [Header("イベント")]
         public UnityEvent<PlayerData> OnPlayerDeath;         // プレイヤーが死亡したとき
-        public UnityEvent<PlayerData> OnPlayerRespawn;       // プレイヤーがリスポーンしたとき
         public UnityEvent<PlayerData> OnPlayerWin;           // プレイヤーが勝利したとき
         public UnityEvent<PlayerData> OnPlayerLose;          // プレイヤーが敗北したとき
         public UnityEvent OnBattleStart;                     // バトル開始時
-        public UnityEvent OnBattleEnd;                       // バトル終了時
+        public UnityEvent<PlayerData> OnBattleEnd;
+        public UnityEvent OnUltStart;
         public UnityEvent<float> OnTimeUpdate;               // 時間更新時
         [Header("ポーズイベント")]
         public UnityEvent OnPauseStarted;
@@ -60,6 +63,8 @@ namespace TechC
         #endregion
 
         #region プライベート変数
+        private bool isUlting = false;
+        public bool IsUlting => isUlting;
         private float currentTime;              // 現在の経過時間
         private bool isBattleOngoing = false;   // バトル進行中フラグ
         private int alivePlayerCount = 0;       // 生存プレイヤー数
@@ -111,7 +116,6 @@ namespace TechC
             currentTime = timeLimit;
             isBattleOngoing = true;
             alivePlayerCount = players.Count;
-
             // タイマー表示
             timerText.text = isTimeLimitEnabled ? GetRemainingTime().ToString() : "∞";
 
@@ -120,29 +124,61 @@ namespace TechC
             {
                 ResetPlayer();
                 foreach (var info in GameManager.I.GetPlayerInfo())
-                    AddPlayer(info.prefab, info.playerId);
-            }
+                    AddPlayer(info.prefab, info.playerId,info.inputDevice);
+                for (int i = 0; i < players.Count; i++)
+                {
+                    players[i].isAlive = true;
+                    players[i].isInvincible = true;
+                    players[i].canAttack = true;
 
-            for (int i = 0; i < players.Count; i++)
+                    // プレイヤーの生成
+                    if (players[i].playerPrefab != null)
+                    {
+                        GameObject newPlayer = Instantiate(players[i].playerPrefab, players[i].initialPosition.transform.position, Quaternion.identity);
+                        if (players[i].inputDevice != null)
+                        {
+                            var playerInput = newPlayer.GetComponent<PlayerInput>();
+                            string controlScheme = players[i].inputDevice is Gamepad ? "PadScheme" : "KeyboardScheme";
+                            playerInput.SwitchCurrentControlScheme(controlScheme, players[i].inputDevice);
+                        }
+                        else
+                        {
+                            Debug.LogError("InputDeviceがnull");
+                        }
+                        players[i].playerObject = newPlayer;
+                        var characterController = newPlayer.GetComponent<Player.CharacterController>();
+                        characterController.SetPlayerID(players[i].playerID);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Player {i} にプレハブが設定されていません。");
+                    }
+                }
+            }
+            else
             {
-                players[i].isAlive = true;
-                players[i].isInvincible = true;
-                players[i].canAttack = true;
+                for (int i = 0; i < players.Count; i++)
+                {
+                    players[i].isAlive = true;
+                    players[i].isInvincible = true;
+                    players[i].canAttack = true;
 
-                // プレイヤーの生成
-                if (players[i].playerPrefab != null)
-                {
-                    GameObject newPlayer = Instantiate(players[i].playerPrefab, players[i].initialPosition.transform.position, Quaternion.identity);
-                    players[i].playerObject = newPlayer;
-                    var characterController = newPlayer.GetComponent<Player.CharacterController>();
-                    characterController.SetPlayerID(players[i].playerID);
-                }
-                else
-                {
-                    Debug.LogWarning($"Player {i} にプレハブが設定されていません。");
+                    // プレイヤーの生成
+                    if (players[i].playerPrefab != null)
+                    {
+                        GameObject newPlayer = Instantiate(players[i].playerPrefab, players[i].initialPosition.transform.position, Quaternion.identity);
+                        players[i].playerObject = newPlayer;
+                        var characterController = newPlayer.GetComponent<Player.CharacterController>();
+                        characterController.SetPlayerID(players[i].playerID);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Player {i} にプレハブが設定されていません。");
+                    }
                 }
             }
 
+            SetIsUlting(false);
             OnBattleStart?.Invoke();
         }
 
@@ -174,13 +210,13 @@ namespace TechC
                 OnPlayerWin?.Invoke(winnerPlayer);
             }
 
-            EndBattle();
+            EndBattle(winnerPlayer);
         }
 
         /// <summary>
         /// バトルを終了する
         /// </summary>
-        private void EndBattle()
+        private void EndBattle(PlayerData winnerPlayer)
         {
             isBattleOngoing = false;
 
@@ -189,8 +225,8 @@ namespace TechC
             {
                 player.canAttack = false;
             }
-
-            OnBattleEnd?.Invoke();
+            SetPause(true);
+            OnBattleEnd?.Invoke(winnerPlayer);
         }
         #endregion
 
@@ -202,6 +238,7 @@ namespace TechC
         /// <param name="playerID">死亡したプレイヤーID</param>
         public void PlayerDeath(int playerID)
         {
+            playerID--;
             if (playerID < 0 || playerID >= players.Count) return;
 
             PlayerData player = players[playerID];
@@ -229,7 +266,6 @@ namespace TechC
 
             // プレイヤー敗北イベント発火
             OnPlayerLose?.Invoke(player);
-
             // 一人だけ生き残っていたら勝利判定
             if (alivePlayerCount == 1)
             {
@@ -238,7 +274,7 @@ namespace TechC
                     if (p.isAlive)
                     {
                         OnPlayerWin?.Invoke(p);
-                        EndBattle();
+                        EndBattle(p);
                         break;
                     }
                 }
@@ -246,7 +282,7 @@ namespace TechC
             else if (alivePlayerCount <= 0)
             {
                 // 全員敗北した場合（引き分け）
-                EndBattle();
+                EndBattle(null);
             }
         }
         #endregion
@@ -533,7 +569,7 @@ namespace TechC
         /// </summary>
         /// <param name="character">characterPrefab</param>
         /// <param name="playerId">プレイヤーID</param>
-        public void AddPlayer(GameObject character, int playerId)
+        public void AddPlayer(GameObject character, int playerId,InputDevice inputDevice)
         {
             var data = new PlayerData();
             playerId++;
@@ -545,11 +581,21 @@ namespace TechC
                 data.initialPosition = p2InitialPosition;
             else
                 Debug.LogError("指定したPlayerIdは存在しえないものです");
+            data.inputDevice = inputDevice;
             data.stockCount = 1;
             data.canAttack = true;
             data.isAlive = true;
             data.isInvincible = false;
             players.Add(data);
+        }
+
+        public void SetIsUlting(bool value)
+        {
+            if (isUlting) return;//すでに誰かが必殺技を放っていた場合何もしない
+            isUlting = value;
+            normalMap.SetActive(!value);
+            ultMap.SetActive(value);
+            OnUltStart.Invoke();
         }
     }
 }

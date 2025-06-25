@@ -103,8 +103,7 @@ namespace TechC
 
         protected virtual void ExcuteSpecial()
         {
-            Debug.Log("必殺技を発動");  
-
+            BattleJudge.I.SetIsUlting(true);
         }
         /// <summary>
         /// 必殺技のチャージを可能に

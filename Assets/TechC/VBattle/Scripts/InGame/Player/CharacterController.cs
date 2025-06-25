@@ -471,8 +471,7 @@ namespace TechC.Player
         /// </summary>
         private void HandleDeath()
         {
-            // 死亡時の処理を実装
-            Debug.Log($"Player {playerID}のキャラクターが死亡しました");
+            BattleJudge.I.PlayerDeath(playerID);
         }
 
         /// <summary>

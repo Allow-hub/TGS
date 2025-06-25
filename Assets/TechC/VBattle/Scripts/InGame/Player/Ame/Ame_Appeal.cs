@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Windows.Win32;
 using Windows.Win32.Foundation;
 
 namespace TechC
@@ -11,6 +12,7 @@ namespace TechC
     public class Ame_Appeal : AppealBase
     {
         [Header("必殺技設定")]
+        [SerializeField] private GameObject ultPrefab;
         [SerializeField] private Sprite errorSprite;
         [SerializeField] private Sprite specialSprite;
         [SerializeField] private float rushDistance = 20f; // 前進距離
@@ -18,6 +20,16 @@ namespace TechC
         [SerializeField] private LayerMask targetLayerMask = 0; // 攻撃対象のレイヤー
         [SerializeField] private LayerMask wallLayerMask = 7; // 壁のレイヤー
         [SerializeField] private float raycastInterval = 0.1f; // レイキャストの間隔
+        [SerializeField] private float hideScreenDelay = 1.5f;
+        [SerializeField] private float resetScreenDelay = 1f;
+        [SerializeField] private float popupWindowDurtaion = 1f;
+
+        [Header("Windowアニメーション")]
+        [SerializeField] private float windowMoveSpeed_1 = 0.2f;
+
+        [SerializeField] private float windowMoveSpeed_2 = 0.2f;
+        [SerializeField] private float windowResizeSpeed_1 = 0.2f;
+        [SerializeField] private float windowResizeSpeed_2 = 0.2f;
         private bool isRushing = false;
         private Rigidbody rb;
         private HashSet<GameObject> hitTargets = new HashSet<GameObject>(); // 重複ヒット防止
@@ -37,7 +49,7 @@ namespace TechC
 
         public override void NeutralAttack()
         {
-            characterController.NotBoolAddSpecialGauge(100);
+            characterController.NotBoolAddSpecialGauge(100);//デバッグ用
             base.NeutralAttack();
         }
         //-------Weak、Strongに合わせたいので使わないが残す-------------------///
@@ -68,7 +80,6 @@ namespace TechC
 
         protected override void ExcuteSpecial()
         {
-            base.ExcuteSpecial();
             var opponentCharacter = characterController.OpponentController;
             BattleJudge.I.PausePlayer(opponentCharacter.PlayerID, false);
             if (!isRushing && rb != null)
@@ -157,6 +168,21 @@ namespace TechC
                     }
                 );
             }
+
+            //少し待って必殺技状態に変更しステージを変える
+            DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
+            {
+                base.ExcuteSpecial();
+            });
+
+            DelayUtility.StartDelayedActionWithPause(this, hideScreenDelay + resetScreenDelay, () => !WindowManager.I.AllreadyPopup, () =>
+            {
+                WindowManager.I.ResetWindow(true);
+                WindowManager.I.ResetAllreasyPopup();
+                BattleJudge.I.ResumePlayers();
+                GameManager.I.SetActiveSceneRoot(true, "CutIn");
+                
+            });
         }
 
         /// <summary>
@@ -164,14 +190,13 @@ namespace TechC
         /// </summary>
         private void ProcessOpponentHit(Player.CharacterController opponentController)
         {
-            BattleJudge.I.ResumePlayer(opponentController.PlayerID);
-            BattleJudge.I.PausePlayers();
+            BattleJudge.I.PausePlayer(characterController.PlayerID, false);
             //ウィンドウで画面を隠す
             WindowManager.I.PopupWindowWindow(
                 WindowFactory.WindowType.Image,
                 maxSize: 500,
                 tileSize: 200,
-                duration: 1f,
+                duration: popupWindowDurtaion,
                 tex: errorSprite
             );
 
@@ -186,12 +211,11 @@ namespace TechC
 
                 webWindow.SetRect();
                 //画面が隠れるのを待ち、Youtubeを上から降ろす
-                DelayUtility.StartDelayedAction(this, 1.5f, () =>
+                DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
                 {
                     canMove = true; // ウィンドウを動かせるようにする
                     DelayUtility.StartRepeatedActionWhile(this, CanMoveFunc, 0.05f, () =>
                     {
-                        Debug.Log(WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y);
                         // ウィンドウの位置を下に移動
                         WindowUtility.MoveWindowToTargetPosition(webWindow.WebWindowHwnd, 0, Screen.height, 2000f);
                         if (WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y >= 0)
@@ -204,25 +228,53 @@ namespace TechC
             }
             else
             {
-                var imageWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
-                WindowUtility.ResizeWindow((HWND)imageWindow.Hwnd, 0, 0);
-                WindowUtility.MoveWindow((HWND)imageWindow.Hwnd, Screen.width / 2, Screen.height / 2);
-                imageWindow.SetRect();
-                var image = imageWindow as ImageWindow;
-                image.SetImage(specialSprite.texture,imageWindow.Width, imageWindow.Height);
-                canMove = true;
-                DelayUtility.StartRepeatedActionWhile(this, CanMoveFunc, 0.05f, () =>
+                DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
                 {
-                    // ウィンドウの位置を下に移動
-                    WindowUtility.MoveWindowToTargetPosition((HWND)imageWindow.Hwnd, 0, 0, 1000f);
-                    WindowUtility.AnimateResizeWindow((HWND)imageWindow.Hwnd, Screen.width, Screen.height, 2000f);
-                    if (WindowUtility.GetWindowRect((HWND)imageWindow.Hwnd).Y == 0)
-                    {
-                        canMove = false;
-                    }
-                });
+                    var imageWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
+                    WindowUtility.ResizeWindow((HWND)imageWindow.Hwnd, 0, 0);
+                    WindowUtility.MoveWindow((HWND)imageWindow.Hwnd, Screen.width / 2, Screen.height / 2);
+                    imageWindow.SetRect();
 
+                    var image = imageWindow as ImageWindow;
+                    image.SetImage(specialSprite.texture, imageWindow.Width, imageWindow.Height);
+
+                    canMove = true;
+                    bool canResizeHeight = false;
+                    // Step 1: 縦にアニメーション（高さを伸ばす）
+                    DelayUtility.StartRepeatedActionWhileWithPause(this, CanMoveFunc, 0.05f, () => !WindowManager.I.AllreadyPopup, () =>
+                    {
+                        image.SetImage(specialSprite.texture);
+                        PInvoke.SetForegroundWindow((HWND)imageWindow.Hwnd);
+                        if (!canResizeHeight)
+                        {
+                            WindowUtility.MoveWindowToTargetPosition((HWND)imageWindow.Hwnd, Screen.width / 2, 0, windowMoveSpeed_1);
+                            WindowUtility.AnimateResizeWindow((HWND)imageWindow.Hwnd, 1, Screen.height, windowResizeSpeed_1);
+                        }
+                        // Y座標が0になったら、縦伸ばし完了と判定
+                        if (TransformHelper.IsCloseTo(WindowUtility.GetWindowRect((HWND)imageWindow.Hwnd).Y, 0))
+                        {
+                            canResizeHeight = true;
+                            WindowUtility.AnimateResizeWindow(
+                                (HWND)imageWindow.Hwnd,
+                                Screen.width,
+                                Screen.height,
+                                windowResizeSpeed_1
+                            );
+
+                            WindowUtility.MoveWindowToTargetPosition((HWND)imageWindow.Hwnd, 0, 0, windowMoveSpeed_2);
+                            if (TransformHelper.IsCloseTo(WindowUtility.GetWindowRect((HWND)imageWindow.Hwnd).X, 0))
+                            {
+                                canMove = false;
+                                DelayUtility.StartDelayedAction(this, 1.5f, () =>
+                                {
+                                    WindowManager.I.ResetWindow(false, imageWindow);
+                                });
+                            }
+                        }
+                    });
+                });
             }
+
         }
 
         /// <summary>

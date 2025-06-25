@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace TechC
 {
@@ -9,9 +10,13 @@ namespace TechC
     [System.Serializable]
     public class PlayerSelectUI
     {
-        public GameObject characterTextImages;//キャラのテキストイメージをまとめたペアレント
-        public Button leftButton;
-        public Button rightButton;
+        public TMP_Dropdown inputDeviceDropdown;
+        public GameObject ameTextImage;//ameのテキストイメージ
+        public GameObject teramiTextImage;//teramiのテキストイメージ
+        public GameObject ameObj;//ameのモデル
+        public GameObject teramiObj;//teramiのモデル
+        public Button ameButton;
+        public Button teramiButton;
         public Button pickButton;
         public int currentCharacterIndex = 0;
     }

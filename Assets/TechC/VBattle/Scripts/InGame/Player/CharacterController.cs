@@ -59,7 +59,7 @@ namespace TechC.Player
         [SerializeField] private GameObject debrisPrefab;
 
         [Header("文字のPrefab")]
-        [SerializeField] private GameObject grassCharPrefab;
+        [SerializeField] private GameObject grass;
 
         [Header("コメント")]
         [SerializeField] private Transform handPos;
@@ -735,7 +735,7 @@ namespace TechC.Player
             if (hasComment) return;
             hasComment = true;
 
-            GameObject grassInstance = EffectFactory.I.GetEffectObj(grassCharPrefab, handPos.position, Quaternion.identity);
+            GameObject grassInstance = EffectFactory.I.GetEffectObj(grass, handPos.position, Quaternion.identity);
 
             // 生成されたオブジェクトを手の位置に追従させる
             grassInstance.transform.SetParent(handPos);
@@ -745,7 +745,8 @@ namespace TechC.Player
             grassInstance.transform.localRotation = Quaternion.identity;
 
             // アクティブ状態に
-            grassInstance.SetActive(true);
+            // grassInstance.SetActive(true);
+            // hasComment = false;
         }
 
         #endregion

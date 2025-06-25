@@ -64,7 +64,7 @@ namespace TechC
                 // 親オブジェクト（このスクリプトがアタッチされているオブジェクト）を回転・移動
                 transform.position = contactPoint;
                 transform.rotation = targetRotation;
-
+                Debug.Log("AA");
                 grassChar.SetActive(false);
                 grassPrefab.SetActive(true);
 
@@ -75,6 +75,7 @@ namespace TechC
                     DelayUtility.StartDelayedAction(this, returnDelay, () =>
                     {
                         EffectFactory.I.ReturnEffect(gameObject);
+                        isReturning = false;
                     });
                 }
             }

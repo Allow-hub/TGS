@@ -43,12 +43,8 @@ namespace TechC
                     if (characterController != null)
                     {
                         characterController.SpawnGrassEffect();
+                        return;
                     }
-
-                    
-                    
-                    alreadyApplied = true;
-                    return;
                 }
 
                 BuffBase buff = BuffFactory.CreateBuff(buffType);

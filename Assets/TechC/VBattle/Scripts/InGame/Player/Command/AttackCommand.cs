@@ -1,4 +1,6 @@
-﻿namespace TechC
+﻿using TechC.Player;
+
+namespace TechC
 {
     /// <summary>
     /// 攻撃コマンド基底クラス
@@ -6,6 +8,7 @@
     public class AttackCommand : INeutralUsableCommand
     {
         private CharacterState characterState;
+        private Player.CharacterController characterController;
         protected float duration;
         protected float elapsedTime = 0;
         protected bool isForceFinished = false;
@@ -15,9 +18,10 @@
         public CharacterState.AttackType Type { get; protected set; } = CharacterState.AttackType.Neutral;
         public AttackManager.AttackStrength Strength { get; protected set; } = AttackManager.AttackStrength.Weak;
 
-        public AttackCommand(CharacterState characterState)
+        public AttackCommand(CharacterState characterState, CharacterController characterController)
         {
             this.characterState = characterState;
+            this.characterController = characterController;
         }
 
         /// <summary>
@@ -40,6 +44,12 @@
 
         public void Execute()
         {
+            if (characterController.hasComment)
+            {
+                characterController.InvokeCommentEvent();
+                return;
+            }
+
             characterState.ChangeAttackState();
         }
 

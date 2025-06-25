@@ -56,6 +56,13 @@ namespace TechC.Player
 
         [Header("エフェクトのPrefab")]
         [SerializeField] private GameObject debrisPrefab;
+
+        [Header("文字のPrefab")]
+        [SerializeField] private GameObject grass;
+
+        [Header("コメント")]
+        [SerializeField] private Transform handPos;
+        public bool hasComment;
         #endregion
 
         #region プライベート変数
@@ -95,6 +102,7 @@ namespace TechC.Player
         public CharacterType CharacterType => characterType;
         public Player.CharacterController OpponentController => opponentController;
         public int PlayerID => playerID; // PlayerIDのゲッター
+        public Action OnCommentEvent;
         #endregion
 
         #region 初期化メソッド
@@ -713,6 +721,41 @@ namespace TechC.Player
         /// <returns></returns>
         public float GetMultipiler(BuffType type) =>
             multipliers.TryGetValue(type, out var value) ? value : 1.0f;
+
+        #endregion
+
+        #region コメント関連メソッド
+
+        /// <summary>
+        /// 草のモデルをプレイヤーに持たせる
+        /// </summary>
+        public void SpawnGrassEffect()
+        {
+            if (hasComment) return;
+            hasComment = true;
+
+            GameObject grassInstance = EffectFactory.I.GetEffectObj(grass, handPos.position, Quaternion.identity);
+            var grassController = grassInstance.GetComponent<GrassController>();
+            grassController.Init();
+            OnCommentEvent = null;
+            OnCommentEvent += grassController.Throw;
+            // 生成されたオブジェクトを手の位置に追従させる
+            grassInstance.transform.SetParent(handPos);
+
+            // 手の中心に合わせる（ローカル座標をゼロに）
+            grassInstance.transform.localPosition = Vector3.zero;
+            grassInstance.transform.localRotation = Quaternion.identity;
+        }
+
+        /// <summary>
+        /// TODO:要修正、草コメント以外の対応ができない
+        /// </summary>
+        public void InvokeCommentEvent()
+        {
+            OnCommentEvent?.Invoke();
+            hasComment = false;
+        }
+
 
         #endregion
 

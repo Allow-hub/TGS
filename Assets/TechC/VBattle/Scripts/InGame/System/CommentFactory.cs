@@ -11,7 +11,6 @@ namespace TechC
 
         [Header("文字とそのPrefabのScriptableObject")]
         [SerializeField] private CharPrefabDatabase charPrefabDatabase;
-        [SerializeField] private SpecialCommentChecker commentChecker;
         protected override bool UseDontDestroyOnLoad => false;
 
         // 3DText用のスケール定数
@@ -34,7 +33,7 @@ namespace TechC
             commentTrigger?.Init(commentPool);
 
             /* コメントが特殊コメントか判別するメソッドを呼ぶ */
-            commentTrigger.specialCommentType = commentChecker.GetSpecialCommentType(commentData.text);
+            commentTrigger.specialCommentType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
             commentTrigger.commentText = commentData.text;
 
             if (obj != null)

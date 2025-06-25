@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 namespace TechC
@@ -10,7 +11,7 @@ namespace TechC
         [Header("エフェクトのPrefab")]
         [SerializeField] private GameObject grassEffect;
         [SerializeField] private float returnDelay = 3f;
-        [SerializeField] private float throwUpwardPower = 0.5f; // 斜め上成分
+        [SerializeField] private Vector2 throwUpwardPower; // 斜め上成分
         [SerializeField] private float throwPower = 10f;        // 投げる力
 
         private bool isReturning = false;
@@ -106,9 +107,10 @@ namespace TechC
 
                 collider.isTrigger = true;
                 var character = transform.root;
+                var dirZ = Random.Range(throwUpwardPower.x, throwUpwardPower.y);
 
                 // X方向（左右）＋斜め上に投げる
-                Vector3 throwDirection = (character.transform.forward  + Vector3.up * throwUpwardPower).normalized;
+                Vector3 throwDirection = (character.transform.forward  + Vector3.up * dirZ).normalized;
 
                 rb.velocity = Vector3.zero;
                 rb.AddForce(throwDirection * throwPower, ForceMode.Impulse);

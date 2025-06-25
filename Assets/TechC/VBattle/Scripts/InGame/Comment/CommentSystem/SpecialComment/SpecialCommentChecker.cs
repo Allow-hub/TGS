@@ -1,18 +1,16 @@
-using UnityEngine;
-
 namespace TechC
 {
     /// <summary>
     /// 特殊コメントのクラス
     /// </summary>
-    public class SpecialCommentChecker : MonoBehaviour
+    public static class SpecialCommentChecker
     {
         /// <summary>
         /// コメントが特殊コメントかどうかを判別し、Typeを返す
         /// </summary>
         /// <param name="commentText"></param>
         /// <returns></returns>
-        public SpecialCommentType GetSpecialCommentType(string commentText)
+        public static SpecialCommentType GetSpecialCommentType(string commentText)
         {
             if (string.IsNullOrEmpty(commentText))
             {

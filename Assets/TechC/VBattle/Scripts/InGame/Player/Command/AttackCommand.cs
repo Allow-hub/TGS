@@ -46,7 +46,7 @@ namespace TechC
         {
             if (characterController.hasComment)
             {
-                characterController.hasComment = false;
+                characterController.InvokeCommentEvent();
                 return;
             }
 

@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using UnityEngine.Localization.SmartFormat.PersistentVariables;
 
 namespace TechC.Player
 {
@@ -103,6 +102,7 @@ namespace TechC.Player
         public CharacterType CharacterType => characterType;
         public Player.CharacterController OpponentController => opponentController;
         public int PlayerID => playerID; // PlayerIDのゲッター
+        public Action OnCommentEvent;
         #endregion
 
         #region 初期化メソッド
@@ -736,18 +736,27 @@ namespace TechC.Player
             hasComment = true;
 
             GameObject grassInstance = EffectFactory.I.GetEffectObj(grass, handPos.position, Quaternion.identity);
-
+            var grassController = grassInstance.GetComponent<GrassController>();
+            grassController.Init();
+            OnCommentEvent = null;
+            OnCommentEvent += grassController.Throw;
             // 生成されたオブジェクトを手の位置に追従させる
             grassInstance.transform.SetParent(handPos);
 
             // 手の中心に合わせる（ローカル座標をゼロに）
             grassInstance.transform.localPosition = Vector3.zero;
             grassInstance.transform.localRotation = Quaternion.identity;
-
-            // アクティブ状態に
-            // grassInstance.SetActive(true);
-            // hasComment = false;
         }
+
+        /// <summary>
+        /// TODO:要修正、草コメント以外の対応ができない
+        /// </summary>
+        public void InvokeCommentEvent()
+        {
+            OnCommentEvent?.Invoke();
+            hasComment = false;
+        }
+
 
         #endregion
 

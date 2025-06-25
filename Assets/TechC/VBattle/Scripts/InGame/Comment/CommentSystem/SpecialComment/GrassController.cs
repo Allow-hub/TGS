@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
@@ -10,16 +8,18 @@ namespace TechC
         [SerializeField] private GameObject grassChar;
 
         [Header("エフェクトのPrefab")]
-        [SerializeField] private GameObject grassPrefab;
+        [SerializeField] private GameObject grassEffect;
         [SerializeField] private float returnDelay = 3f;
+        [SerializeField] private float throwUpwardPower = 0.5f; // 斜め上成分
+        [SerializeField] private float throwPower = 10f;        // 投げる力
 
         private bool isReturning = false;
 
         /* 角度の定数 */
         private const float ROTATE_GROUND = 0f;
         private const float ROTATE_CEILING = 180f;
-        private const float ROTATE_RIGHT_WALL = 90f;
-        private const float ROTATE_LEFT_WALL = -90f;
+        private const float ROTATE_RIGHT_WALL = -90f;
+        private const float ROTATE_LEFT_WALL = 90f;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -64,9 +64,13 @@ namespace TechC
                 // 親オブジェクト（このスクリプトがアタッチされているオブジェクト）を回転・移動
                 transform.position = contactPoint;
                 transform.rotation = targetRotation;
-                Debug.Log("AA");
+
+                var rb = GetComponent<Rigidbody>();
+                rb.constraints = RigidbodyConstraints.FreezeAll;  // 位置、回転を固定
+
                 grassChar.SetActive(false);
-                grassPrefab.SetActive(true);
+                grassEffect.SetActive(true);
+                Debug.Log(grassEffect.activeSelf);
 
                 if (!isReturning)
                 {
@@ -78,6 +82,39 @@ namespace TechC
                         isReturning = false;
                     });
                 }
+            }
+        }
+
+
+        public void Init()
+        {
+            grassChar.SetActive(true);
+            grassEffect.SetActive(false);
+        }
+        /// <summary>
+        /// 草を投げる処理
+        /// </summary>
+        public void Throw()
+        {
+            var rb = GetComponent<Rigidbody>();
+            var collider = GetComponent<BoxCollider>();
+            if (rb != null)
+            {
+                rb.constraints = RigidbodyConstraints.None;
+                rb.isKinematic = false;
+                rb.useGravity = true;
+
+                collider.isTrigger = true;
+                var character = transform.root;
+
+                // X方向（左右）＋斜め上に投げる
+                Vector3 throwDirection = (character.transform.forward  + Vector3.up * throwUpwardPower).normalized;
+
+                rb.velocity = Vector3.zero;
+                rb.AddForce(throwDirection * throwPower, ForceMode.Impulse);
+                transform.SetParent(null);
+                // Z軸の移動を完全に固定
+                rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
             }
         }
     }

@@ -54,11 +54,13 @@ namespace TechC
         /// <returns>ゲームビューの矩形</returns>
         public static RECT GetUnityGameViewRect()
         {
-            // #if UNITY_EDITOR
-            return GameViewUtils.ToWin32Rect(GameViewUtils.GetGameViewScreenRect());
-            // #else
-            // return GetWindowRect(GetUnityWindowHandle());
-            // #endif
+#if UNITY_EDITOR
+            var gameView = FindWindowWithTitleSubstring("Game");
+            var rect = GetWindowRect(gameView);
+            return rect;
+#else
+            return GetWindowRect(GetUnityWindowHandle());
+#endif
         }
 
         public static HWND FindWindowWithTitleSubstring(string substring)

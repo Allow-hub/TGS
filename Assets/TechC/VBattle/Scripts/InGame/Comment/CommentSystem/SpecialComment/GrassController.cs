@@ -71,7 +71,6 @@ namespace TechC
 
                 grassChar.SetActive(false);
                 grassEffect.SetActive(true);
-                Debug.Log(grassEffect.activeSelf);
 
                 if (!isReturning)
                 {

@@ -27,14 +27,18 @@ namespace TechC
         {
             GameObject obj = commentPool.GetObject(commentPrefab);
             obj.transform.localScale = COMMENT_OBJ_SCALE;
-         
+
             var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
+            // Debug.Log(commentTrigger);
             // Debug.Log(commentTrigger);
             commentTrigger?.Init(commentPool);
 
             /* コメントが特殊コメントか判別するメソッドを呼ぶ */
-            commentTrigger.specialCommentType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
-            commentTrigger.commentText = commentData.text;
+            if (commentTrigger != null)
+            {
+                commentTrigger.specialCommentType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
+                commentTrigger.commentText = commentData.text;
+            }
 
             if (obj != null)
             {

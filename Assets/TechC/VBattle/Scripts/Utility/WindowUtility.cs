@@ -59,7 +59,9 @@ namespace TechC
             var rect = GetWindowRect(gameView);
             return rect;
 #else
-            return GetWindowRect(GetUnityWindowHandle());
+            RECT rect; 
+            GetClientRect(GetUnityWindowHandle(),out rect);
+            return rect;
 #endif
         }
 

@@ -742,7 +742,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 48}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &168710294
@@ -7772,8 +7772,8 @@ MonoBehaviour:
   - {fileID: 7627828736903395385, guid: 01e31a08014b679499c665bdfbef363f, type: 3}
   - {fileID: 7627828736903395385, guid: 10f0ab4c65588784091056c4bbc13ba4, type: 3}
   characterNpcPrefabs:
-  - {fileID: 5692221464495195100, guid: 27341eb2040e33648a0fb5fa3a2fe781, type: 3}
-  - {fileID: 5692221464495195100, guid: 27341eb2040e33648a0fb5fa3a2fe781, type: 3}
+  - {fileID: 7627828736903395385, guid: 43e7eef4f047d634cb562ad3512e9954, type: 3}
+  - {fileID: 7627828736903395385, guid: 43e7eef4f047d634cb562ad3512e9954, type: 3}
   dicisionButton: {fileID: 2056114163}
   playerUIs:
   - inputDeviceDropdown: {fileID: 1811822693}
@@ -9035,7 +9035,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000022888184}
+  m_AnchoredPosition: {x: 0, y: 0.0000076293945}
   m_SizeDelta: {x: 0, y: 48}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1869680519

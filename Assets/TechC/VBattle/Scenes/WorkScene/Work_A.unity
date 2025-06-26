@@ -254,33 +254,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be4470c5cf998ed43a9a68f88fbddb06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1409202346 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8985290580223415232, guid: c2ba8867f924fc444b667e30e329ad17,
-    type: 3}
-  m_PrefabInstance: {fileID: 2523554890568117842}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1583574014 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8423456040715877671, guid: c2ba8867f924fc444b667e30e329ad17,
-    type: 3}
-  m_PrefabInstance: {fileID: 2523554890568117842}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1583574017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1583574014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c324c1bfa25bf4c4980e4715014a9afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tabGimickController:
-    normalTabObj: {fileID: 1409202346}
-    intervalRange: {x: 7, y: 15}
 --- !u!1 &1873482525
 GameObject:
   m_ObjectHideFlags: 0
@@ -362,11 +335,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 251769477297456472, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_VertexColorAlwaysGammaSpace
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1947574187364501273, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -392,12 +360,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: InGame
       objectReference: {fileID: 0}
-    - target: {fileID: 4482340062913306867, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: windowImage
-      value: 
-      objectReference: {fileID: 21300000, guid: 2e38ac7f367655c45a3f6caf407875b0,
-        type: 3}
     - target: {fileID: 5547016823962536969, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -417,16 +379,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6738107775698861270, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_ReferenceResolution.x
-      value: 1920
-      objectReference: {fileID: 0}
-    - target: {fileID: 6738107775698861270, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: m_ReferenceResolution.y
-      value: 1080
       objectReference: {fileID: 0}
     - target: {fileID: 7736416039240772365, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -488,11 +440,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7981336831571438261, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: isDebug
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8021778234465506351, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -514,14 +461,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 9191717151707714148, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8423456040715877671, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1583574017}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -21,92 +21,92 @@ namespace TechC
         [SerializeField] private float inputSmoothness = 0.1f; // 入力の滑らかさ
         private Vector2 targetMoveInput; // 目標とする移動入力
 
-        private void OnGUI()
-        {
-            if (!enableDebugUI) return;
+        // private void OnGUI()
+        // {
+        //     if (!enableDebugUI) return;
 
-            float currentY = startY;
+        //     float currentY = startY;
 
-            // 移動ボタン（左）
-            if (GUI.Button(new Rect(startX, currentY, buttonWidth, buttonHeight), "左移動"))
-            {
-                OnMove(new Vector2(-1, 0), true, false);
-            }
+        //     // 移動ボタン（左）
+        //     if (GUI.Button(new Rect(startX, currentY, buttonWidth, buttonHeight), "左移動"))
+        //     {
+        //         OnMove(new Vector2(-1, 0), true, false);
+        //     }
 
-            // 移動ボタン（右）
-            if (GUI.Button(new Rect(startX + buttonWidth + padding, currentY, buttonWidth, buttonHeight), "右移動"))
-            {
-                OnMove(new Vector2(1, 0), true, false);
-            }
+        //     // 移動ボタン（右）
+        //     if (GUI.Button(new Rect(startX + buttonWidth + padding, currentY, buttonWidth, buttonHeight), "右移動"))
+        //     {
+        //         OnMove(new Vector2(1, 0), true, false);
+        //     }
 
-            // 移動停止ボタン
-            if (GUI.Button(new Rect(startX + (buttonWidth + padding) * 2, currentY, buttonWidth, buttonHeight), "移動停止"))
-            {
-                OnMove(Vector2.zero, false, true);
-            }
+        //     // 移動停止ボタン
+        //     if (GUI.Button(new Rect(startX + (buttonWidth + padding) * 2, currentY, buttonWidth, buttonHeight), "移動停止"))
+        //     {
+        //         OnMove(Vector2.zero, false, true);
+        //     }
 
-            currentY += buttonHeight + padding;
+        //     currentY += buttonHeight + padding;
 
-            // ジャンプボタン
-            if (GUI.Button(new Rect(startX, currentY, buttonWidth, buttonHeight), "ジャンプ"))
-            {
-                OnJump(true, false);
-                StartCoroutine(AutoRelease(ActionType.Jump));
-            }
+        //     // ジャンプボタン
+        //     if (GUI.Button(new Rect(startX, currentY, buttonWidth, buttonHeight), "ジャンプ"))
+        //     {
+        //         OnJump(true, false);
+        //         StartCoroutine(AutoRelease(ActionType.Jump));
+        //     }
 
-            // しゃがみボタン
-            if (GUI.Button(new Rect(startX + buttonWidth + padding, currentY, buttonWidth, buttonHeight), isCrouching ? "しゃがみ解除" : "しゃがみ"))
-            {
-                if (isCrouching)
-                    OnCrouch(false, true);
-                else
-                    OnCrouch(true, false);
-            }
+        //     // しゃがみボタン
+        //     if (GUI.Button(new Rect(startX + buttonWidth + padding, currentY, buttonWidth, buttonHeight), isCrouching ? "しゃがみ解除" : "しゃがみ"))
+        //     {
+        //         if (isCrouching)
+        //             OnCrouch(false, true);
+        //         else
+        //             OnCrouch(true, false);
+        //     }
 
-            currentY += buttonHeight + padding;
+        //     currentY += buttonHeight + padding;
 
-            // 弱攻撃ボタン
-            if (GUI.Button(new Rect(startX, currentY, buttonWidth, buttonHeight), "弱攻撃"))
-            {
-                OnWeakAttack(true, false);
-                StartCoroutine(AutoRelease(ActionType.WeakAttack));
-            }
-            // 右弱攻撃ボタン
-            if (GUI.Button(new Rect(startX + buttonWidth + padding, currentY, buttonWidth, buttonHeight), "右弱攻撃"))
-            {
-                WeakAttack(true, false, 1, 0);
-                StartCoroutine(AutoRelease(ActionType.WeakAttack));
-            }
+        //     // 弱攻撃ボタン
+        //     if (GUI.Button(new Rect(startX, currentY, buttonWidth, buttonHeight), "弱攻撃"))
+        //     {
+        //         OnWeakAttack(true, false);
+        //         StartCoroutine(AutoRelease(ActionType.WeakAttack));
+        //     }
+        //     // 右弱攻撃ボタン
+        //     if (GUI.Button(new Rect(startX + buttonWidth + padding, currentY, buttonWidth, buttonHeight), "右弱攻撃"))
+        //     {
+        //         WeakAttack(true, false, 1, 0);
+        //         StartCoroutine(AutoRelease(ActionType.WeakAttack));
+        //     }
 
-            currentY += buttonHeight + padding;
+        //     currentY += buttonHeight + padding;
 
-            // 強攻撃ボタン
-            if (GUI.Button(new Rect(startX , currentY, buttonWidth, buttonHeight), "強攻撃"))
-            {
-                OnStrongAttack(true, false);
-                StartCoroutine(AutoRelease(ActionType.StrongAttack));
-            }
+        //     // 強攻撃ボタン
+        //     if (GUI.Button(new Rect(startX , currentY, buttonWidth, buttonHeight), "強攻撃"))
+        //     {
+        //         OnStrongAttack(true, false);
+        //         StartCoroutine(AutoRelease(ActionType.StrongAttack));
+        //     }
 
-            currentY += buttonHeight + padding;
+        //     currentY += buttonHeight + padding;
 
-            // ガードボタン
-            if (GUI.Button(new Rect(startX, currentY, buttonWidth, buttonHeight), isGuarding ? "ガード解除" : "ガード"))
-            {
-                if (isGuarding)
-                    OnGuard(false, true);
-                else
-                    OnGuard(true, false);
-            }
+        //     // ガードボタン
+        //     if (GUI.Button(new Rect(startX, currentY, buttonWidth, buttonHeight), isGuarding ? "ガード解除" : "ガード"))
+        //     {
+        //         if (isGuarding)
+        //             OnGuard(false, true);
+        //         else
+        //             OnGuard(true, false);
+        //     }
 
-            // アピールボタン
-            if (GUI.Button(new Rect(startX + buttonWidth + padding, currentY, buttonWidth, buttonHeight), "アピール"))
-            {
-                OnAppeal(true, false);
-                StartCoroutine(AutoRelease(ActionType.Appeal));
-            }
+        //     // アピールボタン
+        //     if (GUI.Button(new Rect(startX + buttonWidth + padding, currentY, buttonWidth, buttonHeight), "アピール"))
+        //     {
+        //         OnAppeal(true, false);
+        //         StartCoroutine(AutoRelease(ActionType.Appeal));
+        //     }
 
-            currentY += buttonHeight + padding;
-        }
+        //     currentY += buttonHeight + padding;
+        // }
 
         private enum ActionType
         {

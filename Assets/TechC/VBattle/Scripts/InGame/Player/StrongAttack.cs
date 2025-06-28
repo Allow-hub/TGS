@@ -39,8 +39,9 @@ namespace TechC
             upAttackData = attackSet.strongUp;
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             InitializeAttackDataMap();
         }
 

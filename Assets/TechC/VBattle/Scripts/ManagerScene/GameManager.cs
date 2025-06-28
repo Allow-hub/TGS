@@ -102,7 +102,7 @@ namespace TechC
         private void BattleStateInit()
         {
             LoadSceneWithLoadingAsync(2).Forget(); // BattleScene
-            ChangeCursorMode(false, CursorLockMode.Locked);
+            // ChangeCursorMode(false, CursorLockMode.Locked);
         }
 
         private void ChangeCursorMode(bool visible, CursorLockMode cursorLockMode)

@@ -78,7 +78,7 @@ namespace TechC
             base.ExecuteAttack(attackData);
         }
 
-        protected override void ExcuteSpecial()
+        protected override void ExcuteSpecial(AttackData attackData)
         {
             var opponentCharacter = characterController.OpponentController;
             BattleJudge.I.PausePlayer(opponentCharacter.PlayerID, false);
@@ -107,7 +107,7 @@ namespace TechC
                     if (Physics.Raycast(checkPositions[i], forwardDirection, out hit, rushDistance, wallLayerMask | targetLayerMask))
                     {
                         // 自分自身に当たった場合は無視
-                        if (hit.collider.gameObject == this.gameObject || hit.collider.transform.root == this.transform.root)
+                        if (hit.collider.gameObject == gameObject || hit.collider.transform.root == transform.root)
                             continue;
 
                         if (hit.distance < minHitDistance)
@@ -172,7 +172,7 @@ namespace TechC
             //少し待って必殺技状態に変更しステージを変える
             DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
             {
-                base.ExcuteSpecial();
+                base.ExcuteSpecial(attackData);
             });
 
             DelayUtility.StartDelayedActionWithPause(this, hideScreenDelay + resetScreenDelay, () => !WindowManager.I.AllreadyPopup, () =>

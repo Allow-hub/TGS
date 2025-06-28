@@ -56,15 +56,27 @@ namespace TechC
         {
 #if UNITY_EDITOR
             var gameView = FindWindowWithTitleSubstring("Game");
-            var rect = GetWindowRect(gameView);
-            return rect;
+            if (gameView != IntPtr.Zero)
+            {
+                return GetWindowRect(gameView);
+            }
+            else
+            {
+                // 画面全体の解像度をRECTで返す
+                return new RECT
+                {
+                    left = 0,
+                    top = 0,
+                    right = Screen.width,
+                    bottom = Screen.height
+                };
+            }
 #else
-            RECT rect; 
-            GetClientRect(GetUnityWindowHandle(),out rect);
-            return rect;
+    RECT rect;
+    GetClientRect(GetUnityWindowHandle(), out rect);
+    return rect;
 #endif
         }
-
         public static HWND FindWindowWithTitleSubstring(string substring)
         {
             HWND result = default;

@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Windows.Win32.Foundation;
+using Windows.Win32;
 
 namespace TechC
 {
     public class WindowManager : Singleton<WindowManager>
     {
-        private List<NativeWindow> windows = new();
+        private List<NativeWindow> normalWindows = new();
+        private List<NativeWindow> colliderWindows = new();
+
         private Dictionary<NativeWindow, GameObject> windowColliders = new();
 
         private bool allreadyPopup = false;
@@ -18,70 +21,54 @@ namespace TechC
         protected override void Init()
         {
             base.Init();
-            // DelayUtility.StartDelayedAction(this, 0.1f, () =>
-            // {
-            //     var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
-            //     uint white = 0x00FFFFFF;
-            //     PInvoke.SetLayeredWindowAttributes((HWND)w.Hwnd, (COLORREF)white, 100, LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
+            DelayUtility.StartDelayedAction(this, 0.1f, () =>
+            {
+                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
+                WindowUtility.MoveWindow((HWND)w.Hwnd, Screen.width / 2, Screen.height / 2);
 
-            //     w.SetRect();
-            //     windows.Add(w);
-            //     var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
-            //     windowColliders[w] = windowCollider;
-            //     UpdateColliderTransform(w, windowCollider);
-            // });
+                w.SetRect();
+                colliderWindows.Add(w);
+                var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
+                windowColliders[w] = windowCollider;
+                UpdateColliderTransform(w, windowCollider);
+            });
         }
 
         void Update()
         {
-            // foreach (var w in windows)
-            // {
-            //     if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
-            //     {
-            //         UpdateColliderTransform(w, colliderObj);
-            //     }
-            // }
+            foreach (var w in colliderWindows)
+            {
+                if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
+                {
+                    UpdateColliderTransform(w, colliderObj);
+                }   
+            }
         }
 
         private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)
         {
             window.SetRect();
+            var unityRect = WindowUtility.GetUnityGameViewRect();//gameWindow
+            PInvoke.GetWindowRect((HWND)window.Hwnd, out var nativeRect);
+            int centerX = (nativeRect.left + nativeRect.right) / 2;//オブジェクトの原点をウィンドウの中心に置くため
+            int centerY = (nativeRect.top + nativeRect.bottom) / 2;
+            int relativeX = centerX - unityRect.left;
+            int relativeY = centerY - unityRect.top;
+            int flippedY = unityRect.Height - relativeY;//UnityとWindowsの座標系はyが反転
 
-            float dpiScale = WindowUtility.GetDpiScaleRatio((HWND)window.Hwnd);
-            var (nativeX, nativeY) = window.GetScreenPosition();
+            float targetZ = -5.3f;
+            float camZ = Camera.main.transform.position.z;
+            float depth = Mathf.Abs(targetZ - camZ);//カメラからターゲットの位置までの距離
 
-            float correctedX = nativeX / dpiScale;
-            float correctedY = nativeY / dpiScale;
-            float correctedWidth = window.Width / dpiScale;
-            float correctedHeight = window.Height / dpiScale;
-
-            float windowCenterX = correctedX + correctedWidth * 0.5f;
-            float windowCenterY = correctedY + correctedHeight * 0.5f;
-
-            var unityRect = WindowUtility.GetUnityGameViewRect();
-            float unityHeight = Screen.height;
-
-            float offsetY = windowCenterY - unityRect.top;
-            float unityScreenY = unityHeight - offsetY;
-            float unityScreenX = windowCenterX - unityRect.left;
-
-            Camera cam = Camera.main;
-            if (cam == null)
-            {
-                Debug.LogError("Main Camera not found!");
-                return;
-            }
-            var colliderPos = new Vector3(colliderObj.transform.position.x, colliderObj.transform.position.y, -5.3f);
-
-            var screenPos = cam.WorldToScreenPoint(colliderPos);
-            screenPos.x = unityScreenX;
-            screenPos.y = unityScreenY;
-            var worldPos = cam.ScreenToWorldPoint(screenPos);
-
-            Vector3 clampedPos = ClampToAllowedArea(worldPos);
-            colliderObj.transform.position = clampedPos;
-
-            colliderObj.transform.localScale = GetWindowSizeInWorldUnits(correctedWidth, correctedHeight, cam);
+            Vector3 screenPos = new Vector3(relativeX, flippedY, depth);
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+            worldPos.z = targetZ; // 安全のため上書き
+            Vector3 clampPos = ClampToAllowedArea(worldPos);
+            //オブジェクトの原点ではなくオブジェクトの前面の中心を使う
+            Vector3 frontOffset = colliderObj.transform.forward * (colliderObj.transform.localScale.z * 0.5f);
+            colliderObj.transform.position = clampPos - frontOffset;
+            Vector3 worldSize = GetWindowSizeInWorldUnits(nativeRect.Width, nativeRect.Height, Camera.main);
+            colliderObj.transform.localScale =worldSize;
         }
 
 
@@ -95,6 +82,7 @@ namespace TechC
 
             return new Vector3(clampedX, clampedY, worldPos.z);
         }
+
         private Vector3 GetWindowSizeInWorldUnits(float pixelWidth, float pixelHeight, Camera camera)
         {
             if (camera == null)
@@ -119,8 +107,6 @@ namespace TechC
 
             return new Vector3(worldWidth, worldHeight, 1f);
         }
-
-
 
         private void OnDrawGizmos()
         {
@@ -196,7 +182,7 @@ namespace TechC
                 {
                     imageWindow.SetImage(tex.texture, w, h);
                 }
-                windows.Add(win);
+                normalWindows.Add(win);
                 created++;
             });
         }
@@ -211,7 +197,7 @@ namespace TechC
         {
             if (returnAllWindow)
             {
-                foreach (var window in windows)
+                foreach (var window in normalWindows)
                     WindowFactory.I.ReturnWindow(window);
             }
             else
@@ -220,13 +206,10 @@ namespace TechC
             }
         }
 
-        private void ResetWindowWithAnimation(float duration, float speed)
-        {
-
-        }
         protected override void OnRelease()
         {
-            windows.Clear();
+            normalWindows.Clear();
+            colliderWindows.Clear();
             base.OnRelease();
         }
     }

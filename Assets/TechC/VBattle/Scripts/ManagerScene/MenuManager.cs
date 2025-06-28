@@ -22,11 +22,9 @@ namespace TechC
         {
             menuCanvasObj.SetActive(!isMenu);
             isMenu = !isMenu;
-            // if (GameManager.I.CurrentState == GameState.Battle)
-            // {
-                if (BattleJudge.I == null) return;
-                BattleJudge.I.SetPause(!BattleJudge.I.IsPaused);
-            // }
+            if (BattleJudge.I == null) return;
+            BattleJudge.I.SetPause(!BattleJudge.I.IsPaused);
+            
         }
     }
 }

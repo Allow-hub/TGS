@@ -360,6 +360,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: InGame
       objectReference: {fileID: 0}
+    - target: {fileID: 4482340062913306867, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: visiblePos.y
+      value: -6
+      objectReference: {fileID: 0}
     - target: {fileID: 4617180796909768218, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_Material

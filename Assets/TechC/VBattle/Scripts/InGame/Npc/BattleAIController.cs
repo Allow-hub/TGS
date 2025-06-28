@@ -155,6 +155,11 @@ namespace TechC
             {
                 Vector2 direction = GetDirectionToOpponent();
                 inputManager.OnMove(direction, true, false);
+                /* ===============================
+                 * TODO: 
+                 *  - 
+                 *  - 
+                 * =============================== */
                 //攻撃はInputManagerのMoveInputの値によって攻撃派生をしているので
                 //攻撃の直前でどの派生かを選んでください
                 inputManager.OnWeakAttack(true, false);

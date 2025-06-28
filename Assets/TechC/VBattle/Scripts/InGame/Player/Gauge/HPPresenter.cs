@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using TechC.Player;
 using UnityEngine;
 
@@ -23,7 +21,11 @@ namespace TechC
 
         protected override void InitializeModel()
         {
-            hpModel = new HPModel(characterData.Hp);
+            var obj = BattleJudge.I.GetPlayerObjById(playerId);
+            var controller = obj.GetComponent<Player.CharacterController>();
+            var data = controller.CharacterData;
+
+            hpModel = new HPModel(data.Hp);
             model = hpModel;
             hpModel.FillValue();
         }

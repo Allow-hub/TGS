@@ -70,6 +70,10 @@ MonoBehaviour:
     displayName: Icon
     color: {r: 0.05873976, g: 0.8301887, b: 0.54089534, a: 1}
     enabledByDefault: 0
+  - categoryId: npc
+    displayName: Npc
+    color: {r: 0.8794044, g: 0.8867924, b: 0.1966002, a: 1}
+    enabledByDefault: 0
   defaultCategory:
     categoryId: default
     displayName: Default
@@ -83,6 +87,7 @@ MonoBehaviour:
   - gamePlay
   - physics
   - default
+  - npc
   _disabledCategoryIds:
   - comboClear
   - comboCheck

@@ -1,24 +1,41 @@
 using System.Collections;
 using UnityEngine;
+using Windows.Win32.Foundation;
 
 
 namespace TechC
 {
+
+    public enum TabType
+    {
+        Normal,//コメント早くなるやつ
+
+    }
     [RequireComponent(typeof(RectTransform))]
     public class BaseTab : MonoBehaviour, ITab
     {
+        [SerializeField] private Sprite windowImage;
         [SerializeField] protected float slideDuration = 0.5f;    // スライドアニメ時間
         [SerializeField] protected float visibleTime = 3f;        // 表示持続時間
+        public float VisibleTime => visibleTime;
 
         protected RectTransform rectTransform;
         [SerializeField] protected Vector2 hiddenPos = new Vector2(0, 100);   // 画面外（上）
         [SerializeField] protected Vector2 visiblePos = new Vector2(0, -50);  // 表示位置
+        public TabType TabType => tabType;
+        protected TabType tabType;
+
+        private float lerpSpeed = 0.3f;
+        private float repeatInterval = 0.01f;
+        private NativeWindow nativeWindow;
+        private RECT viewRect;
 
         protected virtual void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
             rectTransform.anchoredPosition = hiddenPos;
             gameObject.SetActive(false);
+            viewRect = WindowUtility.GetUnityGameViewRect();
         }
 
         public virtual void Show()
@@ -32,6 +49,7 @@ namespace TechC
         {
             StopAllCoroutines();
             StartCoroutine(SlideOut());
+
         }
 
         public virtual void Excute()
@@ -41,6 +59,7 @@ namespace TechC
 
         protected IEnumerator SlideIn()
         {
+            SlideInWindow();
             float time = 0f;
             while (time < slideDuration)
             {
@@ -56,6 +75,7 @@ namespace TechC
 
         protected IEnumerator SlideOut()
         {
+            SlideOutWindow();
             float time = 0f;
             while (time < slideDuration)
             {
@@ -65,6 +85,36 @@ namespace TechC
             }
             rectTransform.anchoredPosition = hiddenPos;
             gameObject.SetActive(false);
+        }
+
+        protected virtual void SlideInWindow()
+        {
+            nativeWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
+            WindowUtility.MoveWindow((HWND)nativeWindow.Hwnd, viewRect.top, -viewRect.Height / 4);
+            if (!WindowUtility.ResizeWindow((HWND)nativeWindow.Hwnd, viewRect.Width, viewRect.Height / 4))
+            {
+                Debug.LogError("Windowのリサイズに失敗");
+            }
+            nativeWindow.SetRect();
+            var imageWindow = nativeWindow as ImageWindow;
+            DelayUtility.StartRepeatedAction(this, slideDuration, repeatInterval, () =>
+            {
+                imageWindow.SetImage(windowImage.texture);
+                WindowUtility.MoveWindowToTargetPosition((HWND)imageWindow.Hwnd, viewRect.top, viewRect.top, lerpSpeed);
+            });
+        }
+        protected virtual void SlideOutWindow()
+        {
+            var imageWindow = nativeWindow as ImageWindow;
+            DelayUtility.StartRepeatedAction(this, slideDuration, repeatInterval, () =>
+            {
+                imageWindow.SetImage(windowImage.texture);
+                WindowUtility.MoveWindowToTargetPosition((HWND)imageWindow.Hwnd, viewRect.top, -viewRect.Height / 4, lerpSpeed);
+                if (WindowUtility.GetWindowRect((HWND)imageWindow.Hwnd).Y == -viewRect.Height / 4)
+                {
+                    WindowFactory.I.ReturnWindow(imageWindow);
+                }
+            });
         }
     }
 }

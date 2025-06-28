@@ -8,6 +8,7 @@ namespace TechC
 {
     public class HPPresenter : ParameterPresenter
     {
+        [SerializeField] private int playerId = 1;
         [SerializeField] private CharacterData characterData;
 
         [SerializeField] private HPView hpView;
@@ -29,6 +30,9 @@ namespace TechC
 
         protected override void InitializeView()
         {
+            var obj = BattleJudge.I.GetPlayerObjById(playerId);
+            var controller = obj.GetComponent<Player.CharacterController>();
+            hpView.SetIcon(controller.CharacterType);
             view = hpView;
             HandleValueChanged(GetMaxValue());
         }

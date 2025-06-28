@@ -100,6 +100,7 @@ namespace TechC.Player
         public Rigidbody Rb => rb;
         public float DefaultAnimSpeed => defaultAnimSpeed;
         public CharacterType CharacterType => characterType;
+        public CharacterData CharacterData => characterData;
         public Player.CharacterController OpponentController => opponentController;
         public int PlayerID => playerID; // PlayerIDのゲッター
         public Action OnCommentEvent;

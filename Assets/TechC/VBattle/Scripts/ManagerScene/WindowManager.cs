@@ -131,7 +131,7 @@ namespace TechC
         public void PopupWindowWindow(WindowFactory.WindowType type, int maxSize = 500, int tileSize = 200, float duration = 1f, Sprite tex = null)
         {
             // 画面サイズ取得
-            var unityRect = WindowUtility.GetUnityGameViewRect();
+            var unityRect = GameViewUtils.ToWin32Rect(GameViewUtils.GetGameViewScreenRect());
             int unityScreenX = unityRect.left;
             int unityScreenY = unityRect.top;
             int unityScreenWidth = unityRect.right - unityRect.left;

@@ -8,7 +8,6 @@ namespace TechC
     public class CommentFactory : Singleton<CommentFactory>
     {
         [SerializeField] private ObjectPool commentPool;
-        // [SerializeField] private Transform threeDTextParent; // 3DText用の親を追加
 
         [Header("文字とそのPrefabのScriptableObject")]
         [SerializeField] private CharPrefabDatabase charPrefabDatabase;
@@ -17,15 +16,29 @@ namespace TechC
         // 3DText用のスケール定数
         private static readonly Vector3 COMMENT_OBJ_SCALE = new Vector3(0.25f, 0.25f, 0.25f);
 
-
+        /// <summary>
+        /// コメントを取得する
+        /// </summary>
+        /// <param name="commentData"></param>
+        /// <param name="commentPrefab"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
         public GameObject GetComment(CommentData commentData, GameObject commentPrefab, Transform parent)
         {
             GameObject obj = commentPool.GetObject(commentPrefab);
             obj.transform.localScale = COMMENT_OBJ_SCALE;
-         
+
             var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
             // Debug.Log(commentTrigger);
+            // Debug.Log(commentTrigger);
             commentTrigger?.Init(commentPool);
+
+            /* コメントが特殊コメントか判別するメソッドを呼ぶ */
+            if (commentTrigger != null)
+            {
+                commentTrigger.specialCommentType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
+                commentTrigger.commentText = commentData.text;
+            }
 
             if (obj != null)
             {

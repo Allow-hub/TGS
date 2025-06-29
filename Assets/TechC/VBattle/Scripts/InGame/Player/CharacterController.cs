@@ -56,6 +56,13 @@ namespace TechC.Player
 
         [Header("エフェクトのPrefab")]
         [SerializeField] private GameObject debrisPrefab;
+
+        [Header("文字のPrefab")]
+        [SerializeField] private GameObject grass;
+
+        [Header("コメント")]
+        [SerializeField] private Transform handPos;
+        public bool hasComment;
         #endregion
 
         #region プライベート変数
@@ -93,8 +100,10 @@ namespace TechC.Player
         public Rigidbody Rb => rb;
         public float DefaultAnimSpeed => defaultAnimSpeed;
         public CharacterType CharacterType => characterType;
+        public CharacterData CharacterData => characterData;
         public Player.CharacterController OpponentController => opponentController;
         public int PlayerID => playerID; // PlayerIDのゲッター
+        public Action OnCommentEvent;
         #endregion
 
         #region 初期化メソッド
@@ -463,8 +472,7 @@ namespace TechC.Player
         /// </summary>
         private void HandleDeath()
         {
-            // 死亡時の処理を実装
-            Debug.Log($"Player {playerID}のキャラクターが死亡しました");
+            BattleJudge.I.PlayerDeath(playerID);
         }
 
         /// <summary>
@@ -714,6 +722,56 @@ namespace TechC.Player
         /// <returns></returns>
         public float GetMultipiler(BuffType type) =>
             multipliers.TryGetValue(type, out var value) ? value : 1.0f;
+
+        #endregion
+
+        #region コメント関連メソッド
+
+        /// <summary>
+        /// 草のモデルをプレイヤーに持たせる
+        /// </summary>
+        public void SpawnGrassEffect()
+        {
+            if (hasComment) return;
+            hasComment = true;
+
+            if (grass == null)
+            {
+                Debug.LogError("grassプレハブがCharacterControllerにセットされていません");
+                return;
+            }
+
+            GameObject grassInstance = EffectFactory.I.GetEffectObj(grass, handPos.position, Quaternion.identity);
+            if (grassInstance == null)
+            {
+                Debug.LogError("grassInstanceが取得できませんでした。ObjectPool/EffectFactoryの設定を確認してください");
+                return;
+            }
+
+            var grassController = grassInstance.GetComponent<GrassController>();
+            if (grassController == null)
+            {
+                Debug.LogError("grassInstanceにGrassControllerがアタッチされていません");
+                return;
+            }
+
+            grassController.Init();
+            OnCommentEvent = null;
+            OnCommentEvent += grassController.Throw;
+            grassInstance.transform.SetParent(handPos);
+            grassInstance.transform.localPosition = Vector3.zero;
+            grassInstance.transform.localRotation = Quaternion.identity;
+        }
+
+        /// <summary>
+        /// TODO:要修正、草コメント以外の対応ができない
+        /// </summary>
+        public void InvokeCommentEvent()
+        {
+            OnCommentEvent?.Invoke();
+            hasComment = false;
+        }
+
 
         #endregion
 

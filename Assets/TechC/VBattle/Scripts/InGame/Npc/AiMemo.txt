@@ -1,0 +1,71 @@
+ 全体構造（概要）
+BattleAIController（実際に動くAIの本体）
+└── BattleAIStrategy（状況に応じたAI戦略を提供）
+    └── BattleRangeStrategy（距離別の行動方針を持つ）
+        └── AIActionWeight（各行動の重みを定義）
+🧠 各クラスの役割
+🔹 BattleAIController（AIの実行者）
+実際のAIキャラクターが持つスクリプト。
+相手との距離を計測し、BattleAIStrategy から最適な行動を取得して、コマンドを発火させる
+
+自身の Transform とターゲットの距離を測る
+
+現在の距離に応じた行動 (AIActionType) を BattleAIStrategy から選択
+
+行動に応じた攻撃処理などを実行
+
+行動タイマーで一定間隔ごとに判断を繰り返す
+
+🔹 BattleAIStrategy（戦略マネージャー）
+距離に応じて適切な BattleRangeStrategy を提供する戦略本部。
+攻撃・ガード・待機などの行動を、重み（確率）に基づいて選びます。
+
+Close, Medium, Far の距離定義をもとに BattleRange を判定
+
+各距離に対して BattleRangeStrategy を保持
+
+ランダムかつ重みに応じて AIActionType を選ぶ（例：攻撃40%、待機20%）
+
+public AIActionType SelectAction(BattleRange range)
+→ 重みに従って AIActionType をランダムで返す関数
+
+🔹 BattleRangeStrategy（距離別戦略クラス）
+近・中・遠距離ごとに「どの行動をどれくらいの確率で選ぶか」を管理。
+
+range（近・中・遠）ごとに戦略を構成
+
+各行動（Attack, Guard, Jump...）に「重み」を設定
+
+aggressiveness や mobility などの性格値で行動の比率を補正可能
+
+[Range(0f, 2f)] public float aggressiveness;
+→ 1.0が通常。2.0なら攻撃重視、0.5なら攻撃控えめ
+
+ApplyPersonalityAdjustments()：性格パラメータで重みを再調整
+
+SelectAction()：自分の中の行動リストから確率で選択
+
+🧩 関連タイプと補足
+🔸 BattleRange
+距離区分の列挙型（例：Close, Medium, Far）
+
+🔸 AIActionType
+AIの行動種類（例：Attack, Guard, Wait, Approach, Retreat, Jump）
+
+🔸 AIActionWeight
+(AIActionType, 重み) のペアを保持するクラス。
+
+🔁 どう動いているか（フロー例）
+距離を計測
+
+
+float distance = Vector3.Distance(transform.position, target.position);
+距離から戦略を取得
+
+
+var range = strategyManager.GetBattleRange(distance);
+戦略から行動をランダム選択
+
+
+var action = strategyManager.SelectAction(range);
+行動に応じて攻撃や移動など実行

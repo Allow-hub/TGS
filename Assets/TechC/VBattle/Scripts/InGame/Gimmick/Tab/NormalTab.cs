@@ -12,6 +12,12 @@ namespace TechC
 
         private float originalSpeed;
 
+        protected override void Awake()
+        {
+            base.Awake();
+            tabType = TabType.Normal;
+        }
+
         [ContextMenu("Show")]
         public override void Show()
         {

@@ -11,7 +11,7 @@ namespace TechC
     {
         [SerializeField]
         private ObjectPool effectPool;
-    
+
         protected override bool UseDontDestroyOnLoad => false;
         protected override void Init()
         {
@@ -22,7 +22,7 @@ namespace TechC
                 charaEffect?.Init(effectPool);
             });
         }
-        
+
         /// <summary>
         /// 位置だけを指定してエフェクトを再生（回転はデフォルト値）
         /// </summary>
@@ -60,6 +60,14 @@ namespace TechC
 
             effectPool.ReturnObject(effect);
         }
-            
+
+        /// <summary>
+        /// エフェクトをプールに返却する
+        /// </summary>
+        /// <param name="effect">返却するエフェクトのゲームオブジェクト</param>
+        public void ReturnEffect(GameObject effect)
+        {
+            effectPool.ReturnObject(effect);
+        }
     }
 }

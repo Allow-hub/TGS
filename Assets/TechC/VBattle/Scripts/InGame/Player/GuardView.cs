@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+
 namespace TechC
 {
     /// <summary>
@@ -19,6 +18,7 @@ namespace TechC
         [SerializeField] private Vector3 maxScale;
         [Tooltip("ガードの最小サイズの比率(0～1)")]
         [SerializeField] private float minScaleRatio = 0.5f;
+        [SerializeField, Tooltip("ガードの中心Yオフセット")] private float centerYOffset = 1f;
 
         private float lastGuardPower;
 
@@ -27,7 +27,7 @@ namespace TechC
 
             lastGuardPower = characterController.GetCharacterData().GuardPower;
             transform.localScale = maxScale;
-            point = characterController.transform.position.AddY(1f);
+            point = characterController.transform.position.AddY(centerYOffset);
 
             PositionShields();
         }
@@ -57,7 +57,7 @@ namespace TechC
         private void Update()
         {
             // プレイヤーの移動に追従するように中心点を更新
-            point = characterController.transform.position + Vector3.up * 1f;
+            point = characterController.transform.position + Vector3.up;
 
             // シールドを回転させる
             foreach (var obj in shieldObj)
@@ -85,7 +85,7 @@ namespace TechC
             // ガードの数によって表示非表示を制御
             float currentGuard = characterController.GetGuardPower();
             float maxGuard = characterController.GetCharacterData().GuardPower;
-            float guardPerShield = maxGuard / 3f;
+            float guardPerShield = maxGuard / shieldObj.Length;
             int shieldCount = Mathf.CeilToInt(currentGuard / guardPerShield);
 
             for (int i = 0; i < shieldObj.Length; i++)

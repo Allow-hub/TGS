@@ -5,16 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/TechC/VBattle/Scenes/Title.unity
     guid: 7cd417aed0840e24bb025648a57aa649
-  - enabled: 0
+  - enabled: 1
     path: Assets/TechC/VBattle/Scenes/CharaSelect.unity
     guid: 1fbd9999482c78e4bbff1084f669311b
   - enabled: 1
     path: Assets/TechC/VBattle/Scenes/WorkScene/Work_A.unity
     guid: 341014ee11f711147ba897ff8d9304c7
-  - enabled: 0
+  - enabled: 1
     path: Assets/TechC/VBattle/Scenes/CutIn.unity
     guid: 513def3ad091ca341b9a1a2c12e93735
   - enabled: 1

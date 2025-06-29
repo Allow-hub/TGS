@@ -51,8 +51,8 @@ namespace TechC
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-                ChangeBattleState();
+            // if (Input.GetKeyDown(KeyCode.Space))
+            //     ChangeBattleState();
 
             if (Input.GetKeyDown(KeyCode.Escape))
                 MenuManager.I.OpenMenu();

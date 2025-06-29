@@ -21,28 +21,28 @@ namespace TechC
         protected override void Init()
         {
             base.Init();
-            DelayUtility.StartDelayedAction(this, 0.1f, () =>
-            {
-                var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
-                WindowUtility.MoveWindow((HWND)w.Hwnd, Screen.width / 2, Screen.height / 2);
+            // DelayUtility.StartDelayedAction(this, 0.1f, () =>
+            // {
+            //     var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
+            //     WindowUtility.MoveWindow((HWND)w.Hwnd, Screen.width / 2, Screen.height / 2);
 
-                w.SetRect();
-                colliderWindows.Add(w);
-                var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
-                windowColliders[w] = windowCollider;
-                UpdateColliderTransform(w, windowCollider);
-            });
+            //     w.SetRect();
+            //     colliderWindows.Add(w);
+            //     var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
+            //     windowColliders[w] = windowCollider;
+            //     UpdateColliderTransform(w, windowCollider);
+            // });
         }
 
         void Update()
         {
-            foreach (var w in colliderWindows)
-            {
-                if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
-                {
-                    UpdateColliderTransform(w, colliderObj);
-                }   
-            }
+            // foreach (var w in colliderWindows)
+            // {
+            //     if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
+            //     {
+            //         UpdateColliderTransform(w, colliderObj);
+            //     }   
+            // }
         }
 
         private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)

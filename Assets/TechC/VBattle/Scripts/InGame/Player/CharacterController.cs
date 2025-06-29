@@ -100,6 +100,7 @@ namespace TechC.Player
         public Rigidbody Rb => rb;
         public float DefaultAnimSpeed => defaultAnimSpeed;
         public CharacterType CharacterType => characterType;
+        public CharacterData CharacterData => characterData;
         public Player.CharacterController OpponentController => opponentController;
         public int PlayerID => playerID; // PlayerIDのゲッター
         public Action OnCommentEvent;
@@ -734,15 +735,30 @@ namespace TechC.Player
             if (hasComment) return;
             hasComment = true;
 
+            if (grass == null)
+            {
+                Debug.LogError("grassプレハブがCharacterControllerにセットされていません");
+                return;
+            }
+
             GameObject grassInstance = EffectFactory.I.GetEffectObj(grass, handPos.position, Quaternion.identity);
+            if (grassInstance == null)
+            {
+                Debug.LogError("grassInstanceが取得できませんでした。ObjectPool/EffectFactoryの設定を確認してください");
+                return;
+            }
+
             var grassController = grassInstance.GetComponent<GrassController>();
+            if (grassController == null)
+            {
+                Debug.LogError("grassInstanceにGrassControllerがアタッチされていません");
+                return;
+            }
+
             grassController.Init();
             OnCommentEvent = null;
             OnCommentEvent += grassController.Throw;
-            // 生成されたオブジェクトを手の位置に追従させる
             grassInstance.transform.SetParent(handPos);
-
-            // 手の中心に合わせる（ローカル座標をゼロに）
             grassInstance.transform.localPosition = Vector3.zero;
             grassInstance.transform.localRotation = Quaternion.identity;
         }

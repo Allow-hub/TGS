@@ -24,16 +24,7 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614555}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614611}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614558}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614580}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614621}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614583}
@@ -43,15 +34,6 @@ MonoBehaviour:
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614606}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614618}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614680}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 0}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614692}
@@ -78,24 +60,15 @@ MonoBehaviour:
   - title: StormLayer
     position:
       serializedVersion: 2
-      x: 0
-      y: 0
-      width: 100
-      height: 100
+      x: 2183
+      y: -162
+      width: 1264
+      height: 1839
     contents:
     - model: {fileID: 8926484042661614706}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614708}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614712}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614727}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614730}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614736}
@@ -108,9 +81,6 @@ MonoBehaviour:
       id: 1
       isStickyNote: 0
     - model: {fileID: 8926484042661614738}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 0}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614786}
@@ -144,7 +114,7 @@ MonoBehaviour:
     x: 127
     y: -249
     width: 7761
-    height: 2088
+    height: 2072
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -316,7 +286,7 @@ VisualEffectResource:
   m_Infos:
     m_RendererSettings:
       motionVectorGenerationMode: 0
-      shadowCastingMode: 0
+      shadowCastingMode: 1
       receiveShadows: 0
       reflectionProbeUsage: 0
       lightProbeUsage: 0
@@ -1052,8 +1022,12 @@ MonoBehaviour:
   shaderGraph: {fileID: 4333940904281232215, guid: fd41a54f437ee61438736840a76ad08d,
     type: 3}
   materialSettings:
-    m_PropertyNames: []
-    m_PropertyValues: []
+    m_PropertyNames:
+    - _QueueOffset
+    - _QueueControl
+    m_PropertyValues:
+    - 0
+    - 0
   MeshCount: 1
   lod: 0
 --- !u!114 &8926484042661614607
@@ -4539,8 +4513,12 @@ MonoBehaviour:
   shaderGraph: {fileID: 4333940904281232215, guid: fd41a54f437ee61438736840a76ad08d,
     type: 3}
   materialSettings:
-    m_PropertyNames: []
-    m_PropertyValues: []
+    m_PropertyNames:
+    - _QueueOffset
+    - _QueueControl
+    m_PropertyValues:
+    - 0
+    - 0
   MeshCount: 1
   lod: 0
 --- !u!114 &8926484042661614739
@@ -5985,7 +5963,7 @@ MonoBehaviour:
       inputSlot: {fileID: 8926484042661614796}
     - outputSlot: {fileID: 8926484042661614790}
       inputSlot: {fileID: 8926484042661614767}
-    position: {x: 2511.3335, y: 1224.6666}
+    position: {x: 2511.3335, y: 1372}
     expandedSlots:
     - {fileID: 8926484042661614787}
     expanded: 1
@@ -6151,7 +6129,7 @@ MonoBehaviour:
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
-  m_UIPosition: {x: 2733, y: 1181}
+  m_UIPosition: {x: 2730, y: 1141}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
@@ -6287,7 +6265,7 @@ MonoBehaviour:
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
-  m_UIPosition: {x: 2733, y: 1289}
+  m_UIPosition: {x: 2733, y: 1261}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
@@ -7496,8 +7474,12 @@ MonoBehaviour:
   shaderGraph: {fileID: 4333940904281232215, guid: fd41a54f437ee61438736840a76ad08d,
     type: 3}
   materialSettings:
-    m_PropertyNames: []
-    m_PropertyValues: []
+    m_PropertyNames:
+    - _QueueOffset
+    - _QueueControl
+    m_PropertyValues:
+    - 0
+    - 0
   MeshCount: 1
   lod: 0
 --- !u!114 &8926484042661614832
@@ -9315,8 +9297,12 @@ MonoBehaviour:
   shaderGraph: {fileID: 4333940904281232215, guid: fd41a54f437ee61438736840a76ad08d,
     type: 3}
   materialSettings:
-    m_PropertyNames: []
-    m_PropertyValues: []
+    m_PropertyNames:
+    - _QueueOffset
+    - _QueueControl
+    m_PropertyValues:
+    - 0
+    - 0
   MeshCount: 1
   lod: 0
 --- !u!114 &8926484042661614901

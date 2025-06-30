@@ -12,7 +12,13 @@ public class ScreenBreak : MonoBehaviour
     void Start()
     {
         rigidBodies = GetComponentsInChildren<Rigidbody>();                     // 子(破片)のRigidbodyを取得しておく
-        StartCoroutine("BreakStart");                                           // 動作にディレイを掛けるためコルーチンを使用
+        StartCoroutine(DelayedBreakStart());
+    }
+
+    IEnumerator DelayedBreakStart()
+    {
+        yield return new WaitForSeconds(3f);
+        yield return StartCoroutine("BreakStart");                // 動作にディレイを掛けるためコルーチンを使用
     }
 
     IEnumerator BreakStart()

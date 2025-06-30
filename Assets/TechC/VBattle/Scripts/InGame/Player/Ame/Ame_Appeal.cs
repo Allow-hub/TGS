@@ -258,7 +258,7 @@ namespace TechC
                                 (HWND)imageWindow.Hwnd,
                                 Screen.width,
                                 Screen.height,
-                                windowResizeSpeed_1
+                                windowResizeSpeed_2
                             );
 
                             WindowUtility.MoveWindowToTargetPosition((HWND)imageWindow.Hwnd, 0, 0, windowMoveSpeed_2);

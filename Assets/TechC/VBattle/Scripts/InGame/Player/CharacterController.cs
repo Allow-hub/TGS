@@ -30,7 +30,6 @@ namespace TechC.Player
         [SerializeField] private float bounceStopTime = 0.5f;
         [SerializeField] private float maxBounceForce = 30f;
 
-        [SerializeField] private float addY = 1;
         [SerializeField] private float wallBounceMultiplier = 1.5f; // 壁からの反発倍率
         [SerializeField] private bool enableWallBounce = true; // 壁反発機能の有効/無効
         [Header("プレイヤー設定")]
@@ -45,7 +44,6 @@ namespace TechC.Player
 
         [Header("必殺技設定")]
         [SerializeField] private GaugePresenter gaugePresenter;
-        [SerializeField] private float maxGauge = 100f;
 
         [Header("移動・ジャンプ設定")]
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値

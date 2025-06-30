@@ -23,7 +23,6 @@ namespace TechC
         private Quaternion currentSwingRot;
 
         [Header("左弱")]
-        [SerializeField] private float LeftXOffset = 3f;
         [SerializeField] private float LeftYOffset = 1f;
 
         [SerializeField] private float marshmallowThrowSpeed = 10f;
@@ -36,7 +35,6 @@ namespace TechC
 
 
         [Header("下弱")]
-        [SerializeField] private float donutLifetime = 5f;
         [SerializeField] private float donutCooldown = 5f;
         [SerializeField] private float donutXOffset = 2f;
         private Vector3 donutScale = new Vector3(1f, 0.1f, 1f); // 仮の大きさのためモデルができたら調整する

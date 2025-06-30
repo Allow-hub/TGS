@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
@@ -20,6 +19,24 @@ namespace TechC
 
         [Header("デバッグ")]
         [SerializeField] private bool showDebugInfo = true;
+
+        [Header("各行動の時間")]
+        [Tooltip("接近行動の継続時間（秒）")]
+        [SerializeField] private float approachTime = 0.3f;      // 接近
+        [Tooltip("後退行動の継続時間（秒）")]
+        [SerializeField] private float retreatTime = 0.3f;       // 後退
+        [Tooltip("弱攻撃の入力継続時間（秒）")]
+        [SerializeField] private float weakAttackTime = 0.15f;   // 弱攻撃
+        [Tooltip("強攻撃の入力継続時間（秒）")]
+        [SerializeField] private float strongAttackTime = 0.3f;  // 強攻撃
+        [Tooltip("ガードの継続時間（秒）")]
+        [SerializeField] private float guardTime = 0.3f;         // ガード
+        [Tooltip("ジャンプの入力継続時間（秒）")]
+        [SerializeField] private float jumpTime = 0.12f;         // ジャンプ
+        [Tooltip("しゃがみの継続時間（秒）")]
+        [SerializeField] private float crouchTime = 0.25f;       // しゃがみ
+        [Tooltip("待機行動の継続時間（秒）")]
+        [SerializeField] private float waitTime = 0.25f;         // 待機
 
         private float lastActionTime;
         private BattleRange currentRange;
@@ -127,7 +144,7 @@ namespace TechC
             Vector2 direction = GetDirectionToOpponent();
             inputManager.OnMove(direction, true, false);
 
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(approachTime);
 
             inputManager.OnMove(Vector2.zero, false, true);
         }
@@ -140,7 +157,7 @@ namespace TechC
             Vector2 direction = -GetDirectionToOpponent();
             inputManager.OnMove(direction, true, false);
 
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(retreatTime);
 
             inputManager.OnMove(Vector2.zero, false, true);
         }
@@ -150,34 +167,35 @@ namespace TechC
         /// </summary>
         private IEnumerator PerformAttack()
         {
+            const float WEAK_ATTACK_CHANCE = 0.7f;
+            
             // ランダムで弱攻撃か強攻撃を選択
-            if (Random.Range(0f, 1f) < 0.7f)
+            if (Random.Range(0f, 1f) < WEAK_ATTACK_CHANCE)
             {
-                Vector2 direction = GetDirectionToOpponent();
+                Vector2 direction = GetAttackDirection();
                 inputManager.OnMove(direction, true, false);
-                /* ===============================
-                 * TODO: 
-                 *  - 
-                 *  - 
-                 * =============================== */
-                //攻撃はInputManagerのMoveInputの値によって攻撃派生をしているので
-                //攻撃の直前でどの派生かを選んでください
+
+                // ここで攻撃方向をログ出力
+                CustomLogger.Info($"[Npc] WeakAttack Direction: {DirectionToString(direction)}", AIWeightUtility.NPCLOGTAG);
+
                 inputManager.OnWeakAttack(true, false);
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(weakAttackTime);
                 inputManager.OnWeakAttack(false, true);
                 inputManager.OnMove(Vector2.zero, false, true);
 
             }
             else
             {
-                Vector2 direction = GetDirectionToOpponent();
+                Vector2 direction = GetAttackDirection();
                 inputManager.OnMove(direction, true, false);
 
+                // ここで攻撃方向をログ出力
+                CustomLogger.Info($"[Npc] StrongAttack Direction: {DirectionToString(direction)}", AIWeightUtility.NPCLOGTAG);
+
                 inputManager.OnStrongAttack(true, false);
-                yield return new WaitForSeconds(0.3f);
+                yield return new WaitForSeconds(strongAttackTime);
                 inputManager.OnStrongAttack(false, true);
                 inputManager.OnMove(Vector2.zero, false, true);
-
             }
         }
 
@@ -187,7 +205,7 @@ namespace TechC
         private IEnumerator PerformGuard()
         {
             inputManager.OnGuard(true, false);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(guardTime);
             inputManager.OnGuard(false, true);
         }
 
@@ -197,7 +215,7 @@ namespace TechC
         private IEnumerator PerformJump()
         {
             inputManager.OnJump(true, false);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(jumpTime);
             inputManager.OnJump(false, true);
         }
 
@@ -207,7 +225,7 @@ namespace TechC
         private IEnumerator PerformCrouch()
         {
             inputManager.OnCrouch(true, false);
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(crouchTime);
             inputManager.OnCrouch(false, true);
         }
 
@@ -216,7 +234,7 @@ namespace TechC
         /// </summary>
         private IEnumerator PerformWait()
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(waitTime);
         }
 
         /// <summary>
@@ -226,6 +244,38 @@ namespace TechC
         {
             Vector3 direction = opponent.position - transform.position;
             return new Vector2(Mathf.Sign(direction.x), 0);
+        }
+
+        /// <summary>
+        /// 攻撃する方向ベクトルをランダムに取得する
+        /// </summary>
+        /// <returns></returns>
+        private Vector2 GetAttackDirection()
+        {
+            const int DIRECTION_COUNT = 4;
+            int dir = Random.Range(0, DIRECTION_COUNT);
+
+            switch (dir)
+            {
+                case 0: return Vector2.right;   // 右
+                case 1: return Vector2.left;    // 左
+                case 2: return Vector2.up;      // 上
+                case 3: return Vector2.down;    // 下
+                default: return Vector2.right;
+            }
+        }
+
+        /* ===============================
+         * TODO: 攻撃方向を分かりやすくする補助メソッド
+         * 不要になったら削除すること
+         * =============================== */
+        private string DirectionToString(Vector2 dir)
+        {
+            if (dir == Vector2.right) return "Right";
+            if (dir == Vector2.left) return "Left";
+            if (dir == Vector2.up) return "Up";
+            if (dir == Vector2.down) return "Down";
+            return dir.ToString();
         }
     }
 }

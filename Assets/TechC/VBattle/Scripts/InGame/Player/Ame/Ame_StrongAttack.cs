@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using Windows.Win32.Foundation;
 
 namespace TechC
 {
@@ -29,9 +31,11 @@ namespace TechC
         [SerializeField] private float yOffset = 2;
         [SerializeField] private float leftStrongVelocity;
         [SerializeField] private float explosionDuration = 3f;
+        [SerializeField] private Sprite zipSprite;
         private GameObject currentIceObj;
         private const int MAXCOUNT = 2;
         private int currentCount;
+        private NativeWindow nativeWindow;
 
         [Header("右強")]
         [SerializeField] private float iceWallDuration = 5.0f;
@@ -91,6 +95,22 @@ namespace TechC
 
                 var pos = transform.position.AddY(yOffset);
                 currentIceObj = CharaEffectFactory.I.GetEffectObj(iceDataPrefab, pos, Quaternion.identity);
+                nativeWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
+                // WindowManager.I.AddColliderWindow(nativeWindow);
+                var imageWindow = nativeWindow as ImageWindow;
+                var screenPos = WindowManager.I.WorldToScreenPosition(currentIceObj.transform.position);
+                imageWindow.SetImage(zipSprite.texture);
+                WindowUtility.MoveWindow((HWND)nativeWindow.Hwnd, (int)screenPos.x, (int)screenPos.y);
+                WindowUtility.ResizeWindow((HWND)nativeWindow.Hwnd, 300, 300);
+                nativeWindow.SetRect();
+                if (characterController.transform.forward.x < 0)
+                {
+                    WindowUtility.MoveWindowToTargetAsync(nativeWindow, -Screen.width, (int)screenPos.y, 0.01f, 16, zipSprite.texture).Forget();
+                }
+                else
+                {
+                    WindowUtility.MoveWindowToTargetAsync(nativeWindow, Screen.width, (int)screenPos.y, 0.01f, 16, zipSprite.texture).Forget();
+                }
                 RegisterEffect(currentIceObj);
 
                 var rb = currentIceObj.GetComponent<Rigidbody>();
@@ -102,12 +122,23 @@ namespace TechC
                         UnregisterEffect(currentIceObj);
                         CharaEffectFactory.I.ReturnEffectObj(currentIceObj);
                         currentCount = 0;
+                        if (nativeWindow != null)
+                        {
+                            WindowFactory.I.ReturnWindow(nativeWindow);
+                            nativeWindow = null;
+                        }
                         currentIceObj = null; // 明示的にクリア
                     }
                 });
             }
             else
             {
+                WindowUtility.AnimateResizeWindowAsync(nativeWindow.Hwnd, 0, 0, 0.3f).Forget();
+                DelayUtility.StartDelayedActionWithPause(this, 0.3f, BattleJudge.I.GetPauseStateFunc, () =>
+                {
+                    WindowFactory.I.ReturnWindow(nativeWindow);
+                    nativeWindow = null;
+                });
                 var createPos = currentIceObj.transform.position;
                 UnregisterEffect(currentIceObj);
                 CharaEffectFactory.I.ReturnEffectObj(currentIceObj);
@@ -123,6 +154,8 @@ namespace TechC
                 {
                     UnregisterEffect(explosionObj);
                     CharaEffectFactory.I.ReturnEffectObj(explosionObj);
+                    if(nativeWindow!=null)
+                        WindowFactory.I.ReturnWindow(nativeWindow);
                 });
 
                 currentCount = 0;

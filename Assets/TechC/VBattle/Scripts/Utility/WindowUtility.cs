@@ -5,6 +5,8 @@ using UnityEngine;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Cysharp.Threading.Tasks;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -459,7 +461,33 @@ namespace TechC
         #endregion
 
         #region アニメーション用メソッド
+        public static async UniTask MoveWindowToTargetAsync(NativeWindow nativeWindow, int targetX, int targetY, float lerpSpeed = 0.1f, int intervalMs = 16, Texture2D texture=null)
+        {
+            if (!IsValidWindow(new HWND(nativeWindow.Hwnd))) return;
 
+            HWND hwnd = new HWND(nativeWindow.Hwnd);
+
+            while (true)
+            {
+                var rect = GetWindowRect(hwnd);
+                Vector2 currentPos = new Vector2(rect.left, rect.top);
+                Vector2 targetPos = new Vector2(targetX, targetY);
+
+                Vector2 newPos = Vector2.Lerp(currentPos, targetPos, lerpSpeed);
+                float distance = Vector2.Distance(newPos, targetPos);
+
+                if (distance < 1f)
+                {
+                    MoveWindow(hwnd, targetX, targetY);
+                    break;
+                }
+
+                MoveWindow(hwnd, Mathf.RoundToInt(newPos.x), Mathf.RoundToInt(newPos.y));
+                if (nativeWindow is ImageWindow imageWindow)
+                    imageWindow.SetImage(texture);
+                await UniTask.Delay(intervalMs);
+            }
+        }
 
         /// <summary>
         /// ウィンドウを目標位置にアニメーションで移動（Lerp補間）
@@ -497,8 +525,45 @@ namespace TechC
 
             return reached;
         }
+        /// <summary>
+        /// ウィンドウサイズをアニメーションで変更（Lerp補間）
+        /// </summary>
+        /// <param name="hWnd">ウィンドウハンドル</param>
+        /// <param name="targetWidth">目標の幅</param>
+        /// <param name="targetHeight">目標の高さ</param>
+        /// <param name="lerpSpeed">補間スピード（0.01～0.5推奨）</param>
+        /// <param name="intervalMs">1ステップの間隔（デフォルト16ms = 約60fps）</param>
+        public static async UniTask AnimateResizeWindowAsync(IntPtr hWnd, int targetWidth, int targetHeight, float lerpSpeed = 0.1f, int intervalMs = 16)
+        {
+            if (!IsValidWindow(new HWND(hWnd))) return;
 
+            HWND hwnd = new HWND(hWnd);
 
+            while (true)
+            {
+                var rect = GetWindowRect(hwnd);
+                int currentWidth = rect.right - rect.left;
+                int currentHeight = rect.bottom - rect.top;
+
+                Vector2 currentSize = new Vector2(currentWidth, currentHeight);
+                Vector2 targetSize = new Vector2(targetWidth, targetHeight);
+
+                Vector2 newSize = Vector2.Lerp(currentSize, targetSize, lerpSpeed);
+                bool reached = Vector2.Distance(newSize, targetSize) < 1f;
+
+                if (reached)
+                {
+                    ResizeWindow(hwnd, targetWidth, targetHeight);
+                    break;
+                }
+                else
+                {
+                    ResizeWindow(hwnd, Mathf.RoundToInt(newSize.x), Mathf.RoundToInt(newSize.y));
+                }
+
+                await UniTask.Delay(intervalMs);
+            }
+        }
         /// <summary>
         /// ウィンドウサイズをアニメーションで変更（Lerpによる滑らか補間）
         /// </summary>

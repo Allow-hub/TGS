@@ -381,6 +381,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5765492298797278120, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 6316166609013908819, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -464,12 +469,23 @@ PrefabInstance:
     - target: {fileID: 7981336831571438261, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: isDebug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7981336831571438261, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: players.Array.data[1].playerPrefab
+      value: 
+      objectReference: {fileID: 7627828736903395385, guid: 01e31a08014b679499c665bdfbef363f,
+        type: 3}
     - target: {fileID: 8021778234465506351, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081371985461252521, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8362738887710539125, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}

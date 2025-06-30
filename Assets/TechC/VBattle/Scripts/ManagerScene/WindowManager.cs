@@ -36,14 +36,15 @@ namespace TechC
 
         void Update()
         {
-            // foreach (var w in colliderWindows)
-            // {
-            //     if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
-            //     {
-            //         UpdateColliderTransform(w, colliderObj);
-            //     }   
-            // }
+            foreach (var w in colliderWindows)
+            {
+                if (windowColliders.TryGetValue(w, out var colliderObj) && colliderObj != null)
+                {
+                    UpdateColliderTransform(w, colliderObj);
+                }   
+            }
         }
+        
 
         private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)
         {
@@ -68,7 +69,7 @@ namespace TechC
             Vector3 frontOffset = colliderObj.transform.forward * (colliderObj.transform.localScale.z * 0.5f);
             colliderObj.transform.position = clampPos - frontOffset;
             Vector3 worldSize = GetWindowSizeInWorldUnits(nativeRect.Width, nativeRect.Height, Camera.main);
-            colliderObj.transform.localScale =worldSize;
+            colliderObj.transform.localScale = worldSize;
         }
 
 
@@ -187,6 +188,21 @@ namespace TechC
             });
         }
         public void ResetAllreasyPopup() => allreadyPopup = false;
+
+        public  Vector2 WorldToScreenPosition(Vector3 worldPosition, Camera camera = null)
+        {
+            if (camera == null) camera = Camera.main;
+            if (camera == null)
+            {
+                Debug.LogError("Camera is null!");
+                return Vector2.zero;
+            }
+
+            Vector3 screenPos = camera.WorldToScreenPoint(worldPosition);
+            return new Vector2(screenPos.x, screenPos.y);
+        }
+
+        public void AddColliderWindow(NativeWindow nativeWindow) => colliderWindows.Add(nativeWindow);
 
         /// <summary>
         /// アニメーション無しでウィンドウを非表示に

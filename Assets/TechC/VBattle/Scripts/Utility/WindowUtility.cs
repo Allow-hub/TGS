@@ -461,7 +461,13 @@ namespace TechC
         #endregion
 
         #region アニメーション用メソッド
-        public static async UniTask MoveWindowToTargetAsync(NativeWindow nativeWindow, int targetX, int targetY, float lerpSpeed = 0.1f, int intervalMs = 16, Texture2D texture=null)
+        public static async UniTask MoveWindowToTargetAsync(
+            NativeWindow nativeWindow,
+            int targetX,
+            int targetY,
+            float moveSpeedPerFrame = 10f,
+            int intervalMs = 16,
+            Texture2D texture = null)
         {
             if (!IsValidWindow(new HWND(nativeWindow.Hwnd))) return;
 
@@ -472,22 +478,27 @@ namespace TechC
                 var rect = GetWindowRect(hwnd);
                 Vector2 currentPos = new Vector2(rect.left, rect.top);
                 Vector2 targetPos = new Vector2(targetX, targetY);
+                Vector2 toTarget = targetPos - currentPos;
+                float distance = toTarget.magnitude;
 
-                Vector2 newPos = Vector2.Lerp(currentPos, targetPos, lerpSpeed);
-                float distance = Vector2.Distance(newPos, targetPos);
-
-                if (distance < 1f)
+                if (distance < moveSpeedPerFrame)
                 {
                     MoveWindow(hwnd, targetX, targetY);
                     break;
                 }
 
+                Vector2 direction = toTarget.normalized;
+                Vector2 newPos = currentPos + direction * moveSpeedPerFrame;
+
                 MoveWindow(hwnd, Mathf.RoundToInt(newPos.x), Mathf.RoundToInt(newPos.y));
+
                 if (nativeWindow is ImageWindow imageWindow)
                     imageWindow.SetImage(texture);
+
                 await UniTask.Delay(intervalMs);
             }
         }
+
 
         /// <summary>
         /// ウィンドウを目標位置にアニメーションで移動（Lerp補間）

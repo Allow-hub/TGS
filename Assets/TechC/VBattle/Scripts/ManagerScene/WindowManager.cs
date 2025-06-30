@@ -189,7 +189,7 @@ namespace TechC
         }
         public void ResetAllreasyPopup() => allreadyPopup = false;
 
-        public  Vector2 WorldToScreenPosition(Vector3 worldPosition, Camera camera = null)
+        public Vector2 WorldToWindowsScreenPosition(Vector3 worldPosition, Camera camera = null)
         {
             if (camera == null) camera = Camera.main;
             if (camera == null)
@@ -198,11 +198,31 @@ namespace TechC
                 return Vector2.zero;
             }
 
-            Vector3 screenPos = camera.WorldToScreenPoint(worldPosition);
-            return new Vector2(screenPos.x, screenPos.y);
+
+            Vector3 unityScreenPos = camera.WorldToScreenPoint(worldPosition);
+
+            var gameViewRect = WindowUtility.GetUnityGameViewRect(); // RECT
+
+            // RECTの値を直接使用
+            float winX = gameViewRect.left + unityScreenPos.x;
+            float winY = gameViewRect.top + (gameViewRect.Height - unityScreenPos.y);
+
+            return new Vector2(winX, winY);
         }
 
         public void AddColliderWindow(NativeWindow nativeWindow) => colliderWindows.Add(nativeWindow);
+        public void RemoveColliderWindow(NativeWindow nativeWindow)
+        {
+            if (colliderWindows.Contains(nativeWindow))
+            {
+                colliderWindows.Remove(nativeWindow);
+
+                if (windowColliders.TryGetValue(nativeWindow, out var obj))
+                {
+                    windowColliders.Remove(nativeWindow);
+                }
+            }
+        }
 
         /// <summary>
         /// アニメーション無しでウィンドウを非表示に

@@ -9,8 +9,11 @@ public class ScreenBreak : MonoBehaviour
     [SerializeField] private float explodeRange = 10f;                          // 爆発の範囲
     private Rigidbody[] rigidBodies;
 
+    [SerializeField] private Material freezeMaterial;
+    [SerializeField] private float freezeDuration = 3.0f;
+    private float freezeProgress = 0f;
     // マジックナンバーを定数化
-    private const float DelayBeforeBreak = 1f;
+    private const float DelayBeforeBreak = 1f; // ここを使う
     private const float CrackEffectDuration = 0.02f;
     private const float WaitAfterCrack = 0.8f;
     private const float FirstExplosionForceDivisor = 6f;
@@ -19,13 +22,21 @@ public class ScreenBreak : MonoBehaviour
     void Start()
     {
         rigidBodies = GetComponentsInChildren<Rigidbody>();                     // 子(破片)のRigidbodyを取得しておく
-        StartCoroutine(DelayedBreakStart());
+        StartCoroutine(FreezeStart());
     }
 
-    IEnumerator DelayedBreakStart()
+    IEnumerator FreezeStart()
     {
-        yield return new WaitForSeconds(DelayBeforeBreak);
-        yield return StartCoroutine("BreakStart");                // 動作にディレイを掛けるためコルーチンを使用
+        float elapsed = 0f;
+        while (elapsed < freezeDuration)
+        {
+            elapsed += Time.deltaTime;
+            freezeProgress = Mathf.Clamp01(elapsed / freezeDuration);
+            freezeMaterial.SetFloat("_FreezeAmount", freezeProgress);
+            yield return null;
+        }
+        yield return new WaitForSeconds(DelayBeforeBreak); // ← ここで凍り終わった後に待つ
+        StartCoroutine(BreakStart());
     }
 
     IEnumerator BreakStart()

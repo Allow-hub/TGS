@@ -9,6 +9,13 @@ public class ScreenBreak : MonoBehaviour
     [SerializeField] private float explodeRange = 10f;                          // 爆発の範囲
     private Rigidbody[] rigidBodies;
 
+    // マジックナンバーを定数化
+    private const float DelayBeforeBreak = 1f;
+    private const float CrackEffectDuration = 0.02f;
+    private const float WaitAfterCrack = 0.8f;
+    private const float FirstExplosionForceDivisor = 6f;
+    private const float WaitAfterExplosion = 2f; // 追加：爆発後に非表示にするまでの待機時間
+
     void Start()
     {
         rigidBodies = GetComponentsInChildren<Rigidbody>();                     // 子(破片)のRigidbodyを取得しておく
@@ -17,30 +24,39 @@ public class ScreenBreak : MonoBehaviour
 
     IEnumerator DelayedBreakStart()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(DelayBeforeBreak);
         yield return StartCoroutine("BreakStart");                // 動作にディレイを掛けるためコルーチンを使用
     }
 
     IEnumerator BreakStart()
     {
+        // 破片を全てアクティブにする
+        foreach (Rigidbody rb in rigidBodies)
+        {
+            rb.gameObject.SetActive(true);
+        }
+
         foreach (Rigidbody rb in rigidBodies)
         {
             rb.isKinematic = false;
             rb.useGravity = useGravity;
-            rb.AddExplosionForce(explodeForce / 5, transform.position + explodeVel, explodeRange);
+            rb.AddExplosionForce(explodeForce / FirstExplosionForceDivisor, transform.position + explodeVel, explodeRange);
         }
-        yield return new WaitForSeconds(0.02f);                                 // 一瞬動かすことでひび割れを演出
+        yield return new WaitForSeconds(CrackEffectDuration); // 一瞬動かすことでひび割れを演出
 
         foreach (Rigidbody rb in rigidBodies)
         {
             rb.isKinematic = true;
         }
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(WaitAfterCrack);
 
         foreach (Rigidbody rb in rigidBodies)
         {
             rb.isKinematic = false;
             rb.AddExplosionForce(explodeForce, transform.position + explodeVel, explodeRange);
         }
+        // 爆発後に非表示にするまでの待機時間も定数で管理
+        yield return new WaitForSeconds(WaitAfterExplosion);
+        gameObject.SetActive(false);
     }
 }

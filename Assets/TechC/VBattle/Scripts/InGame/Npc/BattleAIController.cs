@@ -41,6 +41,9 @@ namespace TechC
         [Tooltip("待機行動の継続時間（秒）")]
         [SerializeField] private float waitTime = 0.25f;         // 待機
 
+        [Header("通常攻撃設定")]
+        [SerializeField, Range(0, 1)] private float weakAttackChance = 0.7f;
+
         [Header("攻撃方向の確率（通常時）")]
         [Tooltip("左方向への攻撃確率（通常時）")]
         [SerializeField, ReadOnly] private float baseLeftPercent = 25f;
@@ -61,6 +64,16 @@ namespace TechC
         [SerializeField] private float preferRightPercent = 40f;
         [SerializeField] private float lessLeftPercent = 10f;
         [SerializeField] private float lessRightPercent = 10f;
+
+        [Header("ジャンプ攻撃設定")]
+        [SerializeField, Range(0, 1)] private float jumpAttackChance = 0.8f;
+        [SerializeField, Range(0, 1)] private float jumpWeakAttackChance = 0.7f;
+
+        [Header("しゃがみの攻撃設定")]
+        [SerializeField, Range(0, 1)] private float crouchAttackChance = 0.6f;
+        [SerializeField, Range(0, 1)] private float crouchWeakAttackChance = 0.7f;
+
+        private const float ATTACK_DELAY_RATE = 0.5f;
 
         private float lastActionTime;
         private BattleRange currentRange;
@@ -193,28 +206,33 @@ namespace TechC
         /// </summary>
         private IEnumerator PerformAttack()
         {
-            const float WEAK_ATTACK_CHANCE = 0.7f;
-
-            // ランダムで弱攻撃か強攻撃を選択
-            if (Random.Range(0f, 1f) < WEAK_ATTACK_CHANCE)
+            Vector2 direction = GetAttackDirection();
+            inputManager.OnMove(direction, true, false);
+            if (Random.value < weakAttackChance)
             {
-                Vector2 direction = GetAttackDirection();
-                inputManager.OnMove(direction, true, false);
-
-                inputManager.OnWeakAttack(true, false);
-                yield return new WaitForSeconds(weakAttackTime);
-                inputManager.OnWeakAttack(false, true);
-                inputManager.OnMove(Vector2.zero, false, true);
+                yield return StartCoroutine(DoAttack(true));
             }
             else
             {
-                Vector2 direction = GetAttackDirection();
-                inputManager.OnMove(direction, true, false);
+                yield return StartCoroutine(DoAttack(false));
+            }
+            inputManager.OnMove(Vector2.zero, false, true);
+        }
 
+        // 攻撃入力の共通処理
+        private IEnumerator DoAttack(bool isWeak)
+        {
+            if (isWeak)
+            {
+                inputManager.OnWeakAttack(true, false);
+                yield return new WaitForSeconds(weakAttackTime);
+                inputManager.OnWeakAttack(false, true);
+            }
+            else
+            {
                 inputManager.OnStrongAttack(true, false);
                 yield return new WaitForSeconds(strongAttackTime);
                 inputManager.OnStrongAttack(false, true);
-                inputManager.OnMove(Vector2.zero, false, true);
             }
         }
 
@@ -234,24 +252,18 @@ namespace TechC
         private IEnumerator PerformJump()
         {
             inputManager.OnJump(true, false);
-            float attackDelay = jumpTime * 0.5f; // ジャンプ中盤で攻撃入力
+            float attackDelay = jumpTime * ATTACK_DELAY_RATE;
             yield return new WaitForSeconds(attackDelay);
-            // ジャンプ中に上下攻撃を一定確率で発動
-            if (Random.value < 0.6f) // 難易度で確率調整も可
+            if (Random.value < jumpAttackChance)
             {
-                Vector2 dir = Vector2.up;
-                inputManager.OnMove(dir, true, false);
-                if (Random.value < 0.7f)
+                inputManager.OnMove(Vector2.up, true, false);
+                if (Random.value < jumpWeakAttackChance)
                 {
-                    inputManager.OnWeakAttack(true, false);
-                    yield return new WaitForSeconds(weakAttackTime);
-                    inputManager.OnWeakAttack(false, true);
+                    yield return StartCoroutine(DoAttack(true));
                 }
                 else
                 {
-                    inputManager.OnStrongAttack(true, false);
-                    yield return new WaitForSeconds(strongAttackTime);
-                    inputManager.OnStrongAttack(false, true);
+                    yield return StartCoroutine(DoAttack(false));
                 }
                 inputManager.OnMove(Vector2.zero, false, true);
             }
@@ -265,24 +277,18 @@ namespace TechC
         private IEnumerator PerformCrouch()
         {
             inputManager.OnCrouch(true, false);
-            float attackDelay = crouchTime * 0.5f; // しゃがみ中盤で攻撃入力
+            float attackDelay = crouchTime * ATTACK_DELAY_RATE;
             yield return new WaitForSeconds(attackDelay);
-            // しゃがみ中に下攻撃を一定確率で発動
-            if (Random.value < 0.6f)
+            if (Random.value < crouchAttackChance)
             {
-                Vector2 dir = Vector2.down;
-                inputManager.OnMove(dir, true, false);
-                if (Random.value < 0.7f)
+                inputManager.OnMove(Vector2.down, true, false);
+                if (Random.value < crouchWeakAttackChance)
                 {
-                    inputManager.OnWeakAttack(true, false);
-                    yield return new WaitForSeconds(weakAttackTime);
-                    inputManager.OnWeakAttack(false, true);
+                    yield return StartCoroutine(DoAttack(true));
                 }
                 else
                 {
-                    inputManager.OnStrongAttack(true, false);
-                    yield return new WaitForSeconds(strongAttackTime);
-                    inputManager.OnStrongAttack(false, true);
+                    yield return StartCoroutine(DoAttack(false));
                 }
                 inputManager.OnMove(Vector2.zero, false, true);
             }
@@ -335,22 +341,6 @@ namespace TechC
             float total = leftPercent + rightPercent + upPercent + downPercent;
 
             /* 0〜totalの中からランダムな値を取得 */
-            float rand = Random.Range(0f, total);
-
-            if (rand < leftPercent) return Vector2.left;
-            rand -= leftPercent;
-            if (rand < rightPercent) return Vector2.right;
-            rand -= rightPercent;
-            if (rand < upPercent) return Vector2.up;
-            return Vector2.down;
-        }
-
-        /// <summary>
-        /// 基本方向を取得
-        /// </summary>
-        private Vector2 GetBaseDirection(float leftPercent, float rightPercent, float upPercent, float downPercent)
-        {
-            float total = leftPercent + rightPercent + upPercent + downPercent;
             float rand = Random.Range(0f, total);
 
             if (rand < leftPercent) return Vector2.left;

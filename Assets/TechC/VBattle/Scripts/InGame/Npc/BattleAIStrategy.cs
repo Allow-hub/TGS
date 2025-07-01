@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +14,11 @@ namespace TechC
         [Header("距離設定")]
         [SerializeField] private float closeRange = 2.0f;
         [SerializeField] private float mediumRange = 5.0f;
+
+        // 性格パラメータ
+        private float aggressiveness = 1.0f;
+        private float defensiveness = 1.0f;
+        private float mobility = 1.0f;
 
         private void Awake()
         {
@@ -78,6 +82,14 @@ namespace TechC
 
             // 調整された重みで行動選択
             return strategy.SelectAction();
+        }
+
+         // 性格パラメータを設定するメソッド
+        public void SetPersonality(float aggressiveness, float defensiveness, float mobility)
+        {
+            this.aggressiveness = aggressiveness;
+            this.defensiveness = defensiveness;
+            this.mobility = mobility;
         }
     }
 }

@@ -20,7 +20,10 @@ namespace TechC
         [Header("デバッグ")]
         [SerializeField] private bool showDebugInfo = true;
 
-        [Header("各行動の時間")]
+        [Header("難易度")]
+        [SerializeField] private EnemyDifficulty difficulty = EnemyDifficulty.Easy;
+
+        [Header("【重要】各行動の時間（※難易度をDEBUGにすることで反映）")]
         [Tooltip("接近行動の継続時間（秒）")]
         [SerializeField] private float approachTime = 0.3f;      // 接近
         [Tooltip("後退行動の継続時間（秒）")]
@@ -37,6 +40,27 @@ namespace TechC
         [SerializeField] private float crouchTime = 0.25f;       // しゃがみ
         [Tooltip("待機行動の継続時間（秒）")]
         [SerializeField] private float waitTime = 0.25f;         // 待機
+
+        [Header("攻撃方向の確率（通常時）")]
+        [Tooltip("左方向への攻撃確率（通常時）")]
+        [SerializeField, ReadOnly] private float baseLeftPercent = 25f;
+
+        [Tooltip("右方向への攻撃確率（通常時）")]
+        [SerializeField, ReadOnly] private float baseRightPercent = 25f;
+
+        [Tooltip("上方向への攻撃確率（通常時）")]
+        [SerializeField, ReadOnly] private float baseUpPercent = 25f;
+
+        [Tooltip("下方向への攻撃確率（通常時）")]
+        [SerializeField, ReadOnly] private float baseDownPercent = 25f;
+
+        // 攻撃方向の確率（優遇時）
+        [Header("攻撃方向の確率（優遇時）")]
+
+        [SerializeField] private float preferLeftPercent = 40f;
+        [SerializeField] private float preferRightPercent = 40f;
+        [SerializeField] private float lessLeftPercent = 10f;
+        [SerializeField] private float lessRightPercent = 10f;
 
         private float lastActionTime;
         private BattleRange currentRange;
@@ -56,6 +80,8 @@ namespace TechC
                 //二人対戦の場合1p(人)対2p（AI）の構図になる
                 opponent = BattleJudge.I.GetPlayerObjById(1).transform;
             }
+
+            ApplyDifficultySettings();
         }
 
         private void Update()
@@ -168,29 +194,22 @@ namespace TechC
         private IEnumerator PerformAttack()
         {
             const float WEAK_ATTACK_CHANCE = 0.7f;
-            
+
             // ランダムで弱攻撃か強攻撃を選択
             if (Random.Range(0f, 1f) < WEAK_ATTACK_CHANCE)
             {
                 Vector2 direction = GetAttackDirection();
                 inputManager.OnMove(direction, true, false);
 
-                // ここで攻撃方向をログ出力
-                CustomLogger.Info($"[Npc] WeakAttack Direction: {DirectionToString(direction)}", AIWeightUtility.NPCLOGTAG);
-
                 inputManager.OnWeakAttack(true, false);
                 yield return new WaitForSeconds(weakAttackTime);
                 inputManager.OnWeakAttack(false, true);
                 inputManager.OnMove(Vector2.zero, false, true);
-
             }
             else
             {
                 Vector2 direction = GetAttackDirection();
                 inputManager.OnMove(direction, true, false);
-
-                // ここで攻撃方向をログ出力
-                CustomLogger.Info($"[Npc] StrongAttack Direction: {DirectionToString(direction)}", AIWeightUtility.NPCLOGTAG);
 
                 inputManager.OnStrongAttack(true, false);
                 yield return new WaitForSeconds(strongAttackTime);
@@ -215,7 +234,28 @@ namespace TechC
         private IEnumerator PerformJump()
         {
             inputManager.OnJump(true, false);
-            yield return new WaitForSeconds(jumpTime);
+            float attackDelay = jumpTime * 0.5f; // ジャンプ中盤で攻撃入力
+            yield return new WaitForSeconds(attackDelay);
+            // ジャンプ中に上下攻撃を一定確率で発動
+            if (Random.value < 0.6f) // 難易度で確率調整も可
+            {
+                Vector2 dir = Vector2.up;
+                inputManager.OnMove(dir, true, false);
+                if (Random.value < 0.7f)
+                {
+                    inputManager.OnWeakAttack(true, false);
+                    yield return new WaitForSeconds(weakAttackTime);
+                    inputManager.OnWeakAttack(false, true);
+                }
+                else
+                {
+                    inputManager.OnStrongAttack(true, false);
+                    yield return new WaitForSeconds(strongAttackTime);
+                    inputManager.OnStrongAttack(false, true);
+                }
+                inputManager.OnMove(Vector2.zero, false, true);
+            }
+            yield return new WaitForSeconds(jumpTime - attackDelay);
             inputManager.OnJump(false, true);
         }
 
@@ -225,7 +265,28 @@ namespace TechC
         private IEnumerator PerformCrouch()
         {
             inputManager.OnCrouch(true, false);
-            yield return new WaitForSeconds(crouchTime);
+            float attackDelay = crouchTime * 0.5f; // しゃがみ中盤で攻撃入力
+            yield return new WaitForSeconds(attackDelay);
+            // しゃがみ中に下攻撃を一定確率で発動
+            if (Random.value < 0.6f)
+            {
+                Vector2 dir = Vector2.down;
+                inputManager.OnMove(dir, true, false);
+                if (Random.value < 0.7f)
+                {
+                    inputManager.OnWeakAttack(true, false);
+                    yield return new WaitForSeconds(weakAttackTime);
+                    inputManager.OnWeakAttack(false, true);
+                }
+                else
+                {
+                    inputManager.OnStrongAttack(true, false);
+                    yield return new WaitForSeconds(strongAttackTime);
+                    inputManager.OnStrongAttack(false, true);
+                }
+                inputManager.OnMove(Vector2.zero, false, true);
+            }
+            yield return new WaitForSeconds(crouchTime - attackDelay);
             inputManager.OnCrouch(false, true);
         }
 
@@ -252,30 +313,91 @@ namespace TechC
         /// <returns></returns>
         private Vector2 GetAttackDirection()
         {
-            const int DIRECTION_COUNT = 4;
-            int dir = Random.Range(0, DIRECTION_COUNT);
+            float dx = opponent.position.x - transform.position.x;
 
-            switch (dir)
+            /* 初期値として設定 */
+            float leftPercent = baseLeftPercent;
+            float rightPercent = baseRightPercent;
+            float upPercent = baseUpPercent;
+            float downPercent = baseDownPercent;
+
+            if (dx < 0)
             {
-                case 0: return Vector2.right;   // 右
-                case 1: return Vector2.left;    // 左
-                case 2: return Vector2.up;      // 上
-                case 3: return Vector2.down;    // 下
-                default: return Vector2.right;
+                leftPercent = preferLeftPercent;
+                rightPercent = lessRightPercent;
             }
+            else if (dx > 0)
+            {
+                rightPercent = preferRightPercent;
+                leftPercent = lessLeftPercent;
+            }
+
+            float total = leftPercent + rightPercent + upPercent + downPercent;
+
+            /* 0〜totalの中からランダムな値を取得 */
+            float rand = Random.Range(0f, total);
+
+            if (rand < leftPercent) return Vector2.left;
+            rand -= leftPercent;
+            if (rand < rightPercent) return Vector2.right;
+            rand -= rightPercent;
+            if (rand < upPercent) return Vector2.up;
+            return Vector2.down;
         }
 
-        /* ===============================
-         * TODO: 攻撃方向を分かりやすくする補助メソッド
-         * 不要になったら削除すること
-         * =============================== */
-        private string DirectionToString(Vector2 dir)
+        /// <summary>
+        /// 基本方向を取得
+        /// </summary>
+        private Vector2 GetBaseDirection(float leftPercent, float rightPercent, float upPercent, float downPercent)
         {
-            if (dir == Vector2.right) return "Right";
-            if (dir == Vector2.left) return "Left";
-            if (dir == Vector2.up) return "Up";
-            if (dir == Vector2.down) return "Down";
-            return dir.ToString();
+            float total = leftPercent + rightPercent + upPercent + downPercent;
+            float rand = Random.Range(0f, total);
+
+            if (rand < leftPercent) return Vector2.left;
+            rand -= leftPercent;
+            if (rand < rightPercent) return Vector2.right;
+            rand -= rightPercent;
+            if (rand < upPercent) return Vector2.up;
+            return Vector2.down;
+        }
+
+        /// <summary>
+        /// 難易度に応じて、CPUのパラメータを変更する
+        /// </summary>
+
+        private void ApplyDifficultySettings()
+        {
+            switch (difficulty)
+            {
+                case EnemyDifficulty.Debug:
+                    break;
+                case EnemyDifficulty.Easy:
+                    actionInterval = 0.8f;
+                    reactionTime = 0.3f;
+                    approachTime = 0.4f;
+                    retreatTime = 0.4f;
+                    weakAttackTime = 0.18f;
+                    strongAttackTime = 0.35f;
+                    guardTime = 0.35f;
+                    jumpTime = 0.22f;
+                    crouchTime = 0.36f;
+                    waitTime = 0.35f;
+                    strategy.SetPersonality(0.7f, 1.2f, 0.8f);
+                    break;
+                case EnemyDifficulty.Normal:
+                    actionInterval = 0.5f;
+                    reactionTime = 0.1f;
+                    approachTime = 0.3f;
+                    retreatTime = 0.3f;
+                    weakAttackTime = 0.15f;
+                    strongAttackTime = 0.3f;
+                    guardTime = 0.3f;
+                    jumpTime = 0.16f;
+                    crouchTime = 0.28f;
+                    waitTime = 0.25f;
+                    strategy.SetPersonality(1.0f, 1.0f, 1.0f);
+                    break;
+            }
         }
     }
 }

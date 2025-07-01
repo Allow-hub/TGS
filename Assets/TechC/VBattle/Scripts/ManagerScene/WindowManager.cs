@@ -210,7 +210,13 @@ namespace TechC
             return new Vector2(winX, winY);
         }
 
-        public void AddColliderWindow(NativeWindow nativeWindow) => colliderWindows.Add(nativeWindow);
+        public void AddColliderWindow(NativeWindow nativeWindow)
+        {
+            var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
+            windowColliders[nativeWindow] = windowCollider;
+
+            colliderWindows.Add(nativeWindow);
+        }
         public void RemoveColliderWindow(NativeWindow nativeWindow)
         {
             if (colliderWindows.Contains(nativeWindow))
@@ -219,6 +225,7 @@ namespace TechC
 
                 if (windowColliders.TryGetValue(nativeWindow, out var obj))
                 {
+                    WindowColliderFactory.I.ReturnWindowCollider(obj);
                     windowColliders.Remove(nativeWindow);
                 }
             }

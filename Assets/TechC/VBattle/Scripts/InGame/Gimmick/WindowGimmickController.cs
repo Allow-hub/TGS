@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using Windows.Win32.Foundation;
 
@@ -15,6 +14,7 @@ namespace TechC
         [SerializeField] private Vector2 intervalRange;
         [SerializeField] private float appearTime = 5f;
         [SerializeField] private MonoBehaviour monoBehaviour;
+        private int initWindowPosX = -50;
         private float timer;
         private float currentInterval;
         private bool isEventRunning = false;
@@ -48,7 +48,7 @@ namespace TechC
             nativeWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
             WindowManager.I.AddColliderWindow(nativeWindow);
             WindowUtility.ResizeWindow((HWND)nativeWindow.Hwnd, 10, Screen.height);
-            WindowUtility.MoveWindow((HWND)nativeWindow.Hwnd, -5, 0);
+            WindowUtility.MoveWindow((HWND)nativeWindow.Hwnd, initWindowPosX, 0);
 
             WindowUtility.MoveWindowToTargetAsync(nativeWindow, Screen.width / 3, 0).Forget();
             DelayUtility.StartDelayedActionWithPause(monoBehaviour, appearTime, BattleJudge.I.GetPauseStateFunc, () =>

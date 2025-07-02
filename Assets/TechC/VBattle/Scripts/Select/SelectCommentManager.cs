@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CommentManager : MonoBehaviour
+public class SelectCommentManager : MonoBehaviour
 {
     [SerializeField] private List<string> commentList = new List<string>();
     [SerializeField] private GameObject commentPrefab;
@@ -30,7 +30,7 @@ public class CommentManager : MonoBehaviour
                 float yPos = Random.Range(minYPosition, maxYPosition);
                 float speed = Random.Range(minSpeed, maxSpeed);
 
-                obj.GetComponent<CommentMover>().Initialize(message, speed, yPos);
+                obj.GetComponent<SelectCommentMover>().Initialize(message, speed, yPos);
             }
 
             yield return new WaitForSeconds(spawnInterval);

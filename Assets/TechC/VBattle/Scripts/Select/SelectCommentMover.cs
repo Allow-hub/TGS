@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class CommentMover : MonoBehaviour
+public class SelectCommentMover : MonoBehaviour
 {
     [SerializeField] private float startOffsetX = 200f;    // 画面右端からの初期出現位置
     [SerializeField] private float destroyOffsetX = 300f;  // 画面左端を超えたときの削除位置

@@ -15,6 +15,12 @@ namespace TechC
         [SerializeField] private GameObject attackBuffPrefab;
         [SerializeField] private GameObject mapChangePrefab;
 
+        [Header("コメントのマテリアル")]
+        [SerializeField] Material normalCommentMaterial;
+        [SerializeField] Material speedBuffCommentMaterial;
+        [SerializeField] Material attackBuffCommentMaterial;
+        [SerializeField] Material mapChangeCommentMaterial;
+
         [Header("コメントが流れるエリア")]
         public RectTransform commentLayer;
 
@@ -63,36 +69,59 @@ namespace TechC
             var commentData = commentProvider.GetRandomComment();
             const float PLAYER_TOP_OFFSET = -5.3f;
 
-
             GameObject comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData), commentLayer);
 
-            Color commentColor = Color.white;
-            switch (commentData.type)
-            {
-                case CommentType.AttackBuff:
-                    commentColor = Color.red;
-                    break;
-                case CommentType.SpeedBuff:
-                    commentColor = Color.blue;
-                    break;
-                case CommentType.MapChange:
-                    commentColor = Color.yellow;
-                    break;
-            }
+            Material commentMaterial = GetCommentMaterial(commentData.type);
+            
+            List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, Color.white);
 
-            List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, commentColor);
+            ApplyMaterialToCharacters(spawnedChars, commentMaterial);
 
             if (comment == null)
             {
                 return;
             }
 
-            if (comment == null) return;
-
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
             comment.transform.position = new Vector3(spawnPosX, randomY, PLAYER_TOP_OFFSET);
 
             StartCoroutine(MoveComment(comment.transform, spawnedChars));
+        }
+
+        /// <summary>
+        /// コメントタイプに応じたMaterialを取得
+        /// </summary>
+        private Material GetCommentMaterial(CommentType commentType)
+        {
+            switch (commentType)
+            {
+                case CommentType.AttackBuff:
+                    return attackBuffCommentMaterial;
+                case CommentType.SpeedBuff:
+                    return speedBuffCommentMaterial;
+                case CommentType.MapChange:
+                    return mapChangeCommentMaterial;
+                case CommentType.Normal:
+                default:
+                    return normalCommentMaterial;
+            }
+        }
+
+        /// <summary>
+        /// 生成された文字オブジェクトリストにMaterialを適用
+        /// </summary>
+        private void ApplyMaterialToCharacters(List<GameObject> characters, Material material)
+        {
+            foreach (var charObj in characters)
+            {
+                if (charObj == null) continue;
+
+                var meshRenderer = charObj.GetComponent<MeshRenderer>();
+                if (meshRenderer != null)
+                {
+                    meshRenderer.material = material;
+                }
+            }
         }
 
         /// <summary>
@@ -157,7 +186,6 @@ namespace TechC
                     return null;
             }
         }
-        
 
         public float GetCurrentSpeed()
         {

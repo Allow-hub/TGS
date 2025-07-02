@@ -11,14 +11,30 @@ namespace TechC
     [Serializable]
     public class WindowGimmickController : IGimmick
     {
+        [SerializeField] private LayerMask groundLayer;
+
         [SerializeField] private Vector2 intervalRange;
         [SerializeField] private float appearTime = 5f;
         [SerializeField] private MonoBehaviour monoBehaviour;
+        [SerializeField] private Sprite wallSprite;
         private int initWindowPosX = -50;
+        private int initWindowPosY = -50;
         private float timer;
         private float currentInterval;
         private bool isEventRunning = false;
         private NativeWindow nativeWindow;
+        private int height = 50;
+
+        /// <summary>
+        /// ウィンドウの出現方向
+        /// </summary>
+        public enum WindowDirection
+        {
+            LeftToRight,  // 左から右
+            RightToLeft,  // 右から左
+            TopToBottom,  // 上から下
+            BottomToTop   // 下から上
+        }
 
         public void OnEnter()
         {
@@ -45,12 +61,36 @@ namespace TechC
 
         private void ExcuteEvent()
         {
-            nativeWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
-            WindowManager.I.AddColliderWindow(nativeWindow);
-            WindowUtility.ResizeWindow((HWND)nativeWindow.Hwnd, 10, Screen.height);
-            WindowUtility.MoveWindow((HWND)nativeWindow.Hwnd, initWindowPosX, 0);
+            // ランダムに方向を選択（4方向）
+            WindowDirection direction = (WindowDirection)UnityEngine.Random.Range(0, 4);
+            
+            if (GameManager.I.CanConectWifi)
+            {
+                nativeWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
+                var web = nativeWindow as WebWindow;
+                if (direction == WindowDirection.BottomToTop)
+                    WindowManager.I.AddColliderWindow(nativeWindow, groundLayer);
+                else
+                    WindowManager.I.AddColliderWindow(nativeWindow);
 
-            WindowUtility.MoveWindowToTargetAsync(nativeWindow, Screen.width / 3, 0).Forget();
+                SetupWindowByDirection(web.WebWindowHwnd, direction);
+                web.SetUrl(null, HtmlNames.HtmlFileName.Wall);
+                MoveWindowByDirection(web, direction).Forget();
+            }
+            else
+            {
+                nativeWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
+                if (direction == WindowDirection.BottomToTop)
+                    WindowManager.I.AddColliderWindow(nativeWindow, groundLayer);
+                else
+                    WindowManager.I.AddColliderWindow(nativeWindow);
+                SetupWindowByDirection((HWND)nativeWindow.Hwnd, direction);
+                var image = nativeWindow as ImageWindow;
+                nativeWindow.SetRect();
+                image.SetImage(wallSprite.texture);
+                MoveWindowByDirectionWithTexture(nativeWindow, direction).Forget();
+            }
+
             DelayUtility.StartDelayedActionWithPause(monoBehaviour, appearTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 WindowFactory.I.ReturnWindow(nativeWindow);
@@ -58,6 +98,85 @@ namespace TechC
                 isEventRunning = false;
             });
         }
-    }
 
+        /// <summary>
+        /// 方向に応じてウィンドウの初期サイズと位置を設定
+        /// </summary>
+        private void SetupWindowByDirection(HWND hwnd, WindowDirection direction)
+        {
+            switch (direction)
+            {
+                case WindowDirection.LeftToRight:
+                    WindowUtility.ResizeWindow(hwnd, 10, Screen.height);
+                    WindowUtility.MoveWindow(hwnd, initWindowPosX, 0);
+                    break;
+                    
+                case WindowDirection.RightToLeft:
+                    WindowUtility.ResizeWindow(hwnd, 10, Screen.height);
+                    WindowUtility.MoveWindow(hwnd, Screen.width + Math.Abs(initWindowPosX), 0);
+                    break;
+                    
+                case WindowDirection.TopToBottom:
+                    WindowUtility.ResizeWindow(hwnd, Screen.width, height);
+                    WindowUtility.MoveWindow(hwnd, 0, initWindowPosY);
+                    break;
+                    
+                case WindowDirection.BottomToTop:
+                    WindowUtility.ResizeWindow(hwnd, Screen.width, height);
+                    WindowUtility.MoveWindow(hwnd, 0, Screen.height + Math.Abs(initWindowPosY));
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 方向に応じてWebウィンドウを移動
+        /// </summary>
+        private async UniTask MoveWindowByDirection(WebWindow web, WindowDirection direction)
+        {
+            web.SetRect();
+            switch (direction)
+            {
+                case WindowDirection.LeftToRight:
+                    await WindowUtility.MoveWindowToTargetAsync(web, Screen.width / 3, 0);
+                    break;
+
+                case WindowDirection.RightToLeft:
+                    await WindowUtility.MoveWindowToTargetAsync(web, Screen.width * 2 / 3, 0);
+                    break;
+
+                case WindowDirection.TopToBottom:
+                    await WindowUtility.MoveWindowToTargetAsync(web, 0, Screen.height / 3);
+                    break;
+
+                case WindowDirection.BottomToTop:
+                    await WindowUtility.MoveWindowToTargetAsync(web, 0, Screen.height * 2 / 3);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 方向に応じてImageウィンドウを移動（テクスチャ付き）
+        /// </summary>
+        private async UniTask MoveWindowByDirectionWithTexture(NativeWindow window, WindowDirection direction)
+        {
+            switch (direction)
+            {
+                case WindowDirection.LeftToRight:
+                    await WindowUtility.MoveWindowToTargetAsync(window, Screen.width / 3, 0, 10, 16, wallSprite.texture);
+                    break;
+                    
+                case WindowDirection.RightToLeft:
+                    await WindowUtility.MoveWindowToTargetAsync(window, Screen.width * 2 / 3, 0, 10, 16, wallSprite.texture);
+                    break;
+                    
+                case WindowDirection.TopToBottom:
+                    await WindowUtility.MoveWindowToTargetAsync(window, 0, Screen.height / 3, 16, 10, wallSprite.texture);
+                    break;
+                    
+                case WindowDirection.BottomToTop:
+                    await WindowUtility.MoveWindowToTargetAsync(window, 0, Screen.height * 2 / 3, 16, 10, wallSprite.texture);
+                    break;
+            }
+        }
+    }
 }

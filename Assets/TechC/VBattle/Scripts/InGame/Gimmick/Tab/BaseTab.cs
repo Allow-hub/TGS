@@ -91,7 +91,7 @@ namespace TechC
         {
             nativeWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
             WindowUtility.MoveWindow((HWND)nativeWindow.Hwnd, viewRect.top, -viewRect.Height / 3);
-            if (!WindowUtility.ResizeWindow((HWND)nativeWindow.Hwnd, viewRect.Width, viewRect.Height / 4))
+            if (!WindowUtility.ResizeWindow((HWND)nativeWindow.Hwnd, viewRect.Width, (int)(viewRect.Height / 3.5f)))
             {
                 Debug.LogError("Windowのリサイズに失敗");
             }

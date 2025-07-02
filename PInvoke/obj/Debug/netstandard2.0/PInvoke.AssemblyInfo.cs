@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PInvoke")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9091e386ebf4791485f72700104c096f2abbe1fc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cfcbf9588c549106025c15558a7a171b1c3b9de0")]
 [assembly: System.Reflection.AssemblyProductAttribute("PInvoke")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PInvoke")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

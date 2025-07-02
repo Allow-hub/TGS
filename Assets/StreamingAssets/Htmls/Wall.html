@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>かべ</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .wall {
+      width: 120px;
+      height: 100vh;
+      background: linear-gradient(to bottom, #444, #888);
+      border: 5px solid #aaa;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .wall-scroll {
+      position: absolute;
+      width: 100%;
+      animation: scrollText 40s linear infinite;
+    }
+
+    @keyframes scrollText {
+      0% {
+        transform: translateY(0%);
+      }
+      100% {
+        transform: translateY(-50%);
+      }
+    }
+
+.wall-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 120px;
+  font-weight: bold;
+  color: #fff;
+  line-height: 1;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-shadow:
+    -4px -4px 0 #000,
+     4px -4px 0 #000,
+    -4px  4px 0 #000,
+     4px  4px 0 #000;
+}
+
+  </style>
+</head>
+<body>
+  <div class="wall">
+    <div class="wall-scroll" id="scroll">
+      <div class="wall-text" id="text1"></div>
+      <div class="wall-text" id="text2"></div> <!-- コピーしてループ -->
+    </div>
+  </div>
+
+  <script>
+    const repeatCount = 30; // 高さに合わせて調整
+    const content = ' かべ'.repeat(repeatCount);
+
+    document.getElementById('text1').innerText = content;
+    document.getElementById('text2').innerText = content;
+  </script>
+</body>
+</html>

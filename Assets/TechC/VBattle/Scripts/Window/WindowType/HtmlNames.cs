@@ -10,7 +10,7 @@ namespace TechC
             //必要に応じて定義してください
             Test,
             Error,//Ame必殺用
-            // Hello,
+            Wall,
             // About
         }
         /// <summary>
@@ -22,7 +22,7 @@ namespace TechC
             {
                 HtmlFileName.Test => "Test.html",
                 HtmlFileName.Error => "Error.html",
-                // HtmlFileName.Hello => "Hello.html",
+                HtmlFileName.Wall => "Wall.html",
                 // HtmlFileName.About => "About.html",
                 _ => null
             };

@@ -471,11 +471,15 @@ namespace TechC
         {
             if (!IsValidWindow(new HWND(nativeWindow.Hwnd))) return;
 
-            HWND hwnd = new HWND(nativeWindow.Hwnd);
+            HWND hWnd= HWND.Null;
+            if (nativeWindow is WebWindow webWindow)
+                hWnd = webWindow.WebWindowHwnd;
+            else
+                hWnd = (HWND)nativeWindow.Hwnd;
 
             while (true)
             {
-                var rect = GetWindowRect(hwnd);
+                var rect = GetWindowRect(hWnd);
                 Vector2 currentPos = new Vector2(rect.left, rect.top);
                 Vector2 targetPos = new Vector2(targetX, targetY);
                 Vector2 toTarget = targetPos - currentPos;
@@ -483,14 +487,14 @@ namespace TechC
 
                 if (distance < moveSpeedPerFrame)
                 {
-                    MoveWindow(hwnd, targetX, targetY);
+                    MoveWindow(hWnd, targetX, targetY);
                     break;
                 }
 
                 Vector2 direction = toTarget.normalized;
                 Vector2 newPos = currentPos + direction * moveSpeedPerFrame;
 
-                MoveWindow(hwnd, Mathf.RoundToInt(newPos.x), Mathf.RoundToInt(newPos.y));
+                MoveWindow(hWnd, Mathf.RoundToInt(newPos.x), Mathf.RoundToInt(newPos.y));
 
                 if (nativeWindow is ImageWindow imageWindow)
                     imageWindow.SetImage(texture);

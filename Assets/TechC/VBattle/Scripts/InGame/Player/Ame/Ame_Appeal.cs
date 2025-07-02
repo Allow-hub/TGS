@@ -200,34 +200,34 @@ namespace TechC
                 tex: errorSprite
             );
 
-            if (GameManager.I.CanConectWifi)
-            {
-                var webWindowParent = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
-                var webWindow = webWindowParent as WebWindow;
-                WindowUtility.ResizeWindow(webWindow.WebWindowHwnd, Screen.width, Screen.height);
-                //画面上部にいったんWebWindowを隠す
-                WindowUtility.MoveWindow(webWindow.WebWindowHwnd, 0, -Screen.height);
-                webWindow.SetUrl("https://www.youtube.com/watch?v=CBYSqKn1vpQ");
+            // if (GameManager.I.CanConectWifi)
+            // {
+            //     var webWindowParent = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
+            //     var webWindow = webWindowParent as WebWindow;
+            //     WindowUtility.ResizeWindow(webWindow.WebWindowHwnd, Screen.width, Screen.height);
+            //     //画面上部にいったんWebWindowを隠す
+            //     WindowUtility.MoveWindow(webWindow.WebWindowHwnd, 0, -Screen.height);
+            //     webWindow.SetUrl("https://www.youtube.com/watch?v=CBYSqKn1vpQ");
 
-                webWindow.SetRect();
-                //画面が隠れるのを待ち、Youtubeを上から降ろす
-                DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
-                {
-                    canMove = true; // ウィンドウを動かせるようにする
-                    DelayUtility.StartRepeatedActionWhile(this, CanMoveFunc, 0.05f, () =>
-                    {
-                        // ウィンドウの位置を下に移動
-                        WindowUtility.MoveWindowToTargetPosition(webWindow.WebWindowHwnd, 0, Screen.height, 2000f);
-                        if (WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y >= 0)
-                        {
-                            Debug.Log("WebWindowが画面内に戻りました。");
-                            canMove = false; // ウィンドウが画面内に戻ったら停止
-                        }
-                    });
-                });
-            }
-            else
-            {
+            //     webWindow.SetRect();
+            //     //画面が隠れるのを待ち、Youtubeを上から降ろす
+            //     DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
+            //     {
+            //         canMove = true; // ウィンドウを動かせるようにする
+            //         DelayUtility.StartRepeatedActionWhile(this, CanMoveFunc, 0.05f, () =>
+            //         {
+            //             // ウィンドウの位置を下に移動
+            //             WindowUtility.MoveWindowToTargetPosition(webWindow.WebWindowHwnd, 0, Screen.height, 2000f);
+            //             if (WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y >= 0)
+            //             {
+            //                 Debug.Log("WebWindowが画面内に戻りました。");
+            //                 canMove = false; // ウィンドウが画面内に戻ったら停止
+            //             }
+            //         });
+            //     });
+            // }
+            // else
+            // {
                 DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
                 {
                     var imageWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
@@ -273,7 +273,7 @@ namespace TechC
                         }
                     });
                 });
-            }
+            // }
 
         }
 

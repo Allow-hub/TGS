@@ -44,13 +44,18 @@ namespace TechC
                 }   
             }
         }
-        
+
 
         private void UpdateColliderTransform(NativeWindow window, GameObject colliderObj)
         {
             window.SetRect();
             var unityRect = WindowUtility.GetUnityGameViewRect();//gameWindow
-            PInvoke.GetWindowRect((HWND)window.Hwnd, out var nativeRect);
+            RECT nativeRect;
+            if (window is WebWindow webWindow)
+                PInvoke.GetWindowRect(webWindow.WebWindowHwnd, out nativeRect);
+            else
+                PInvoke.GetWindowRect((HWND)window.Hwnd, out nativeRect);
+
             int centerX = (nativeRect.left + nativeRect.right) / 2;//オブジェクトの原点をウィンドウの中心に置くため
             int centerY = (nativeRect.top + nativeRect.bottom) / 2;
             int relativeX = centerX - unityRect.left;
@@ -210,13 +215,28 @@ namespace TechC
             return new Vector2(winX, winY);
         }
 
-        public void AddColliderWindow(NativeWindow nativeWindow)
+        private int GetLayerFromMask(int mask)
         {
+            for (int i = 0; i < 32; i++)
+            {
+                if ((mask & (1 << i)) != 0)
+                    return i;
+            }
+            Debug.LogWarning("No valid layer found in mask. Defaulting to 0.");
+            return 0;
+        }
+
+        public void AddColliderWindow(NativeWindow nativeWindow, LayerMask? layerMask = null)
+        {
+            LayerMask actualLayerMask = layerMask ?? (1 << LayerMask.NameToLayer("WindowObj"));
+
             var windowCollider = WindowColliderFactory.I.GetWindowColliderPrefab();
+            windowCollider.layer = GetLayerFromMask(actualLayerMask.value);
             windowColliders[nativeWindow] = windowCollider;
 
             colliderWindows.Add(nativeWindow);
         }
+
         public void RemoveColliderWindow(NativeWindow nativeWindow)
         {
             if (colliderWindows.Contains(nativeWindow))

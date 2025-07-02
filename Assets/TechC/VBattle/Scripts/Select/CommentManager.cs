@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class CommentManager : MonoBehaviour
 {
-    public List<string> commentList = new List<string>();
+    [SerializeField] private List<string> commentList = new List<string>();
+    [SerializeField] private GameObject commentPrefab;
+    [SerializeField] private RectTransform commentParent;
+    [SerializeField] private float spawnInterval = 1.0f;
 
-    public GameObject commentPrefab;
-    public RectTransform commentParent;
-
-    public float spawnInterval = 1.0f;
-
-    // マジックナンバー → SerializeFieldでインスペクタから編集可能に
     [SerializeField] private float minYPosition = -50f;
     [SerializeField] private float maxYPosition = 50f;
     [SerializeField] private float minSpeed = 150f;

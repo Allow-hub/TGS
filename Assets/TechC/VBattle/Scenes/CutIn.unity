@@ -2101,7 +2101,7 @@ MonoBehaviour:
   explodeRange: 10
   freezeMaterial: {fileID: -876546973899608171, guid: f58d73118e493634aa534cc62f492ec7,
     type: 3}
-  freezeDuration: 5
+  freezeDuration: 3
 --- !u!1 &827099179 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3320526402584797368, guid: 1a09fbe3b9572324690c86f32ae84f4d,

@@ -24,15 +24,16 @@ namespace TechC
         [Header("ランダムなコメントを表示するためのスクリプトを取得")]
         [SerializeField] private CommentProvider commentProvider;
 
+        [Header("特殊コメントの設定")]
+        [SerializeField] private float freezeTime = 3f;
+
         [Header("コメントが出現する場所")]
-        /* コメントが出現する場所 */
         public GameObject topRightSpawn;
         public GameObject bottomRightSpawn;
         private float topRightSpawnPosY;
         private float bottomRightSpawnPosY;
         private float spawnPosX;
 
-        /* コメントが消滅する場所 */
         [Header("コメントを非表示にする場所")]
         public GameObject topLeftDespawn;
         public GameObject buttonLeftDespawn;

@@ -21,6 +21,12 @@ namespace TechC
             {
                 return SpecialCommentType.Grass;
             }
+
+            if (commentText.Contains("固定"))
+            {
+                return SpecialCommentType.Freeze;
+            }
+
             return SpecialCommentType.None; // 当てはまってなかったらNone 
         }
     }

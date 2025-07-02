@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static TechC.CharacterState;
@@ -59,7 +58,11 @@ namespace TechC
         protected virtual void Awake()
         {
             objectPool = GameObject.FindWithTag("EffectPool").GetComponent<ObjectPool>();
-            battleJudge = GameObject.FindWithTag("BattleJadge").GetComponent<BattleJudge>();
+        }
+
+        protected virtual void Start()
+        {
+            battleJudge = BattleJudge.I;   
         }
         /// <summary>
         /// 攻撃データをマップに登録

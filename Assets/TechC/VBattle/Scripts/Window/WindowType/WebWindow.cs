@@ -28,13 +28,18 @@ namespace TechC
         public override void Show()
         {
             base.Show();
-            WindowUtility.SetWindowVisibility(webWindow, (int)SHOW_WINDOW_CMD.SW_SHOW);
-            WindowUtility.SetWindowPos(
-                webWindow,
-                HWND.HWND_TOPMOST,
-                0, 0, 0, 0,
-                SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE
-            );
+            WindowUtility.SetWindowVisibility(webWindow, (int)SHOW_WINDOW_CMD.SW_SHOWNOACTIVATE);
+            // WindowUtility.SetWindowPos(
+            //     webWindow,
+            //     HWND.HWND_TOPMOST,
+            //     0, 0, 0, 0,
+            //     SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE
+            // );
+        }
+        public override void Hide()
+        {
+            base.Hide();
+            WindowUtility.SetWindowVisibility(webWindow, (int)SHOW_WINDOW_CMD.SW_HIDE);
         }
 
         public override void Destroy()
@@ -91,7 +96,7 @@ namespace TechC
                         webWindow,
                         HWND.HWND_TOPMOST,
                         0, 0, 0, 0,
-                        SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE
+                        SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE
                     );
                     WindowUtility.SetWindowVisibility(webWindow, (int)SHOW_WINDOW_CMD.SW_HIDE);
                 });
@@ -122,6 +127,12 @@ namespace TechC
             {
                 Debug.LogWarning("SetUrl: url か htmlFile のどちらかを指定してください。");
             }
+        }
+
+        public override void SetRect()
+        {
+            var rect = WindowUtility.GetWindowRect(webWindow);
+            SetRect(rect.Width, rect.Height);
         }
     }
 }

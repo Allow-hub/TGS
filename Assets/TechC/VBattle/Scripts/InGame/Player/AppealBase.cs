@@ -96,14 +96,16 @@ namespace TechC
             }
             else
             {
-                ExcuteSpecial();
+                ExcuteSpecial(attackData);
                 characterController.ResetSpecial();
             }
         }
 
-        protected virtual void ExcuteSpecial()
+        protected virtual void ExcuteSpecial(AttackData attackData)
         {
             BattleJudge.I.SetIsUlting(true);
+            var opponentController = characterController.OpponentController;
+            opponentController.TakeDamage(attackData.damage);
         }
         /// <summary>
         /// 必殺技のチャージを可能に

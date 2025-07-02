@@ -5,6 +5,8 @@ using UnityEngine;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Cysharp.Threading.Tasks;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -56,15 +58,27 @@ namespace TechC
         {
 #if UNITY_EDITOR
             var gameView = FindWindowWithTitleSubstring("Game");
-            var rect = GetWindowRect(gameView);
-            return rect;
+            if (gameView != IntPtr.Zero)
+            {
+                return GetWindowRect(gameView);
+            }
+            else
+            {
+                // 画面全体の解像度をRECTで返す
+                return new RECT
+                {
+                    left = 0,
+                    top = 0,
+                    right = Screen.width,
+                    bottom = Screen.height
+                };
+            }
 #else
-            RECT rect; 
-            GetClientRect(GetUnityWindowHandle(),out rect);
-            return rect;
+    RECT rect;
+    GetClientRect(GetUnityWindowHandle(), out rect);
+    return rect;
 #endif
         }
-
         public static HWND FindWindowWithTitleSubstring(string substring)
         {
             HWND result = default;
@@ -447,6 +461,47 @@ namespace TechC
         #endregion
 
         #region アニメーション用メソッド
+        public static async UniTask MoveWindowToTargetAsync(
+            NativeWindow nativeWindow,
+            int targetX,
+            int targetY,
+            float moveSpeedPerFrame = 10f,
+            int intervalMs = 16,
+            Texture2D texture = null)
+        {
+            if (!IsValidWindow(new HWND(nativeWindow.Hwnd))) return;
+
+            HWND hWnd= HWND.Null;
+            if (nativeWindow is WebWindow webWindow)
+                hWnd = webWindow.WebWindowHwnd;
+            else
+                hWnd = (HWND)nativeWindow.Hwnd;
+
+            while (true)
+            {
+                var rect = GetWindowRect(hWnd);
+                Vector2 currentPos = new Vector2(rect.left, rect.top);
+                Vector2 targetPos = new Vector2(targetX, targetY);
+                Vector2 toTarget = targetPos - currentPos;
+                float distance = toTarget.magnitude;
+
+                if (distance < moveSpeedPerFrame)
+                {
+                    MoveWindow(hWnd, targetX, targetY);
+                    break;
+                }
+
+                Vector2 direction = toTarget.normalized;
+                Vector2 newPos = currentPos + direction * moveSpeedPerFrame;
+
+                MoveWindow(hWnd, Mathf.RoundToInt(newPos.x), Mathf.RoundToInt(newPos.y));
+
+                if (nativeWindow is ImageWindow imageWindow)
+                    imageWindow.SetImage(texture);
+
+                await UniTask.Delay(intervalMs);
+            }
+        }
 
 
         /// <summary>
@@ -485,8 +540,45 @@ namespace TechC
 
             return reached;
         }
+        /// <summary>
+        /// ウィンドウサイズをアニメーションで変更（Lerp補間）
+        /// </summary>
+        /// <param name="hWnd">ウィンドウハンドル</param>
+        /// <param name="targetWidth">目標の幅</param>
+        /// <param name="targetHeight">目標の高さ</param>
+        /// <param name="lerpSpeed">補間スピード（0.01～0.5推奨）</param>
+        /// <param name="intervalMs">1ステップの間隔（デフォルト16ms = 約60fps）</param>
+        public static async UniTask AnimateResizeWindowAsync(IntPtr hWnd, int targetWidth, int targetHeight, float lerpSpeed = 0.1f, int intervalMs = 16)
+        {
+            if (!IsValidWindow(new HWND(hWnd))) return;
 
+            HWND hwnd = new HWND(hWnd);
 
+            while (true)
+            {
+                var rect = GetWindowRect(hwnd);
+                int currentWidth = rect.right - rect.left;
+                int currentHeight = rect.bottom - rect.top;
+
+                Vector2 currentSize = new Vector2(currentWidth, currentHeight);
+                Vector2 targetSize = new Vector2(targetWidth, targetHeight);
+
+                Vector2 newSize = Vector2.Lerp(currentSize, targetSize, lerpSpeed);
+                bool reached = Vector2.Distance(newSize, targetSize) < 1f;
+
+                if (reached)
+                {
+                    ResizeWindow(hwnd, targetWidth, targetHeight);
+                    break;
+                }
+                else
+                {
+                    ResizeWindow(hwnd, Mathf.RoundToInt(newSize.x), Mathf.RoundToInt(newSize.y));
+                }
+
+                await UniTask.Delay(intervalMs);
+            }
+        }
         /// <summary>
         /// ウィンドウサイズをアニメーションで変更（Lerpによる滑らか補間）
         /// </summary>

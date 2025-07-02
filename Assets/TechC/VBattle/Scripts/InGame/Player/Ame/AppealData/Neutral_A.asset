@@ -21,8 +21,11 @@ MonoBehaviour:
   animationTrigger: IsAppealing
   animationSpeed: 1.2
   attackDuration: 2
-  damage: 0
+  damage: 150
   knockback: 0
+  canRepeat: 0
+  repeatInterval: 0
+  repeatDuration: 0
   radius: 0
   targetLayers:
     serializedVersion: 2
@@ -33,6 +36,7 @@ MonoBehaviour:
   hitStopTimeScale: 0
   knockbackDirection: {x: 0, y: 0, z: 1}
   useCustomKnockbackDirection: 0
+  useSelfColliderForHitCheck: 0
   characterSEType: 0
   characterVoiceType: 0
   effectPrefab: {fileID: 0}

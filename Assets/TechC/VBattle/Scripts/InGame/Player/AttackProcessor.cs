@@ -177,7 +177,7 @@ namespace TechC
             {
                 objectPool.ReturnObject(retrunObj);
                 retrunObj = null;
-                Debug.Log("ヒットエフェクトをプールに返却しました");
+                // Debug.Log("ヒットエフェクトをプールに返却しました");
             }
         }
 
@@ -231,7 +231,7 @@ namespace TechC
             // 親オブジェクトのnullチェック
             if (parentTransform == null)
             {
-                Debug.LogWarning($"No parent transform found for collider on object: {collider.gameObject.name}");
+                // Debug.LogWarning($"No parent transform found for collider on object: {collider.gameObject.name}");
                 return null;
             }
 
@@ -241,7 +241,7 @@ namespace TechC
             // コンポーネントのnullチェック
             if (opponentController == null)
             {
-                Debug.LogWarning($"No CharacterController found on parent of object: {collider.gameObject.name}");
+                // Debug.LogWarning($"No CharacterController found on parent of object: {collider.gameObject.name}");
                 return null;
             }
 
@@ -260,7 +260,7 @@ namespace TechC
                 {
                     var opponentState = targetController.GetCharacterState();
                     guardable.GuardDamage(attackData.damage, opponentState.GetCurrentCommand());
-                    Debug.Log("対象がガード中です");
+                    // Debug.Log("対象がガード中です");
                     return true;
                 }
             }

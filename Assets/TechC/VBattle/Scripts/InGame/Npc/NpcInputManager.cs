@@ -8,13 +8,13 @@ namespace TechC
     /// </summary>
     public class NpcInputManager : BaseInputManager
     {
-        [Header("デバッグUI")]
-        [SerializeField] private bool enableDebugUI = true;
-        [SerializeField] private float buttonWidth = 100f;
-        [SerializeField] private float buttonHeight = 40f;
-        [SerializeField] private float startX = 10f;
-        [SerializeField] private float startY = 10f;
-        [SerializeField] private float padding = 5f;
+        // [Header("デバッグUI")]
+        // [SerializeField] private bool enableDebugUI = true;
+        // [SerializeField] private float buttonWidth = 100f;
+        // [SerializeField] private float buttonHeight = 40f;
+        // [SerializeField] private float startX = 10f;
+        // [SerializeField] private float startY = 10f;
+        // [SerializeField] private float padding = 5f;
 
         [Header("NPCの移動設定")]
         [SerializeField] private float inputSmoothness = 0.1f; // 入力の滑らかさ

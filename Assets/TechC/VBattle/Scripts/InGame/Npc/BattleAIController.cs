@@ -17,9 +17,6 @@ namespace TechC
         [SerializeField] private float actionInterval = 0.5f; // 行動間隔
         [SerializeField] private float reactionTime = 0.1f; // 反応時間
 
-        [Header("デバッグ")]
-        [SerializeField] private bool showDebugInfo = true;
-
         [Header("難易度")]
         [SerializeField] private EnemyDifficulty difficulty = EnemyDifficulty.Easy;
 

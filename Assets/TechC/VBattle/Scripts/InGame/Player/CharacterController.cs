@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.InputSystem;
 
 namespace TechC.Player
 {
@@ -41,6 +42,9 @@ namespace TechC.Player
         [SerializeField] private HPPresenter hpPresenter;
         [Header("ガード設定")]
         [SerializeField] private float defaultAnimSpeed = 1.0f;
+        [SerializeField] private float lowFrequency;
+        [SerializeField] private float highFrequency;
+        [SerializeField] private float duration;
 
         [Header("必殺技設定")]
         [SerializeField] private GaugePresenter gaugePresenter;
@@ -92,6 +96,7 @@ namespace TechC.Player
         private Player.CharacterController opponentController;
 
         private Action onCounter;
+        private InputDevice inputDevice;
         [SerializeField] private bool isClonePlayer = false;
         #endregion
 
@@ -163,13 +168,14 @@ namespace TechC.Player
         /// <summary>
         /// プレイヤーIDを設定する（生成時に呼び出す）
         /// </summary>
-        public void SetPlayerID(int id)
+        public void SetPlayerID(int id,InputDevice inputDevice)
         {
             playerID = id;
             if (id == 1)
                 gameObject.transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
             else if (id == 2)
                 gameObject.transform.rotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
+            this.inputDevice = inputDevice;
             // IDが変更された場合は、対応するPresenterを再取得
             FindPresenters();
         }
@@ -524,7 +530,8 @@ namespace TechC.Player
         public void GuardDamage(float damage, ICommand guardCommand)
         {
             currentGuardPower -= damage;
-            Debug.Log(currentGuardPower);
+            if (inputDevice is Gamepad gamepad)
+                GamepadVibrationUtility.Vibrate(lowFrequency, highFrequency, duration, gamepad);
             if (currentGuardPower > 0) return;
             currentGuardPower = 0;
             GuardBreak(guardCommand);

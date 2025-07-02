@@ -17,7 +17,7 @@ MonoBehaviour:
   GuardPower: 100
   GuardDecreasePower: 0.1
   GuardRecoverySpeed: 0.3
-  GuardRecoveryInterval: 8
+  GuardRecoveryInterval: 2
   GuardBreakDuration: 2
   MoveSpeed: 3
   Acceleration: 10

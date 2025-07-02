@@ -85,6 +85,7 @@ namespace TechC
                     break;
 
                 case GameState.Result:
+                    WindowManager.I.ReleaseAllWindows();
                     ChangeCursorMode(true, CursorLockMode.None);
                     break;
 

@@ -147,7 +147,7 @@ namespace TechC
                         }
                         players[i].playerObject = newPlayer;
                         var characterController = newPlayer.GetComponent<Player.CharacterController>();
-                        characterController.SetPlayerID(players[i].playerID);
+                        characterController.SetPlayerID(players[i].playerID,players[i].inputDevice);
                     }
                     else
                     {
@@ -169,7 +169,7 @@ namespace TechC
                         GameObject newPlayer = Instantiate(players[i].playerPrefab, players[i].initialPosition.transform.position, Quaternion.identity);
                         players[i].playerObject = newPlayer;
                         var characterController = newPlayer.GetComponent<Player.CharacterController>();
-                        characterController.SetPlayerID(players[i].playerID);
+                        characterController.SetPlayerID(players[i].playerID,players[i].inputDevice);
                     }
                     else
                     {
@@ -564,12 +564,13 @@ namespace TechC
         /// プレイヤーの初期化
         /// </summary>
         public void ResetPlayer() => players.Clear();
+        public PlayerData GetPlayerData(int id) => players[id];
         /// <summary>
         /// GameManagerを使ってセレクト画面で選んだ項目をプレイヤーに反映する
         /// </summary>
         /// <param name="character">characterPrefab</param>
         /// <param name="playerId">プレイヤーID</param>
-        public void AddPlayer(GameObject character, int playerId,InputDevice inputDevice)
+        public void AddPlayer(GameObject character, int playerId, InputDevice inputDevice)
         {
             var data = new PlayerData();
             playerId++;

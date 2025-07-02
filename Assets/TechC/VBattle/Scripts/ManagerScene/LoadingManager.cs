@@ -213,7 +213,7 @@ namespace TechC
         
         private void OnDestroy()
         {
-            Debug.Log("LoadingManager: OnDestroy実行");
+            // Debug.Log("LoadingManager: OnDestroy実行");
         }
     }
 }

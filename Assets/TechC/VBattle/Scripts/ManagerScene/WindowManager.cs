@@ -192,6 +192,34 @@ namespace TechC
                 created++;
             });
         }
+        
+        /// <summary>
+        /// すべてのウィンドウとコライダーをリリース・破棄する
+        /// </summary>
+        public void ReleaseAllWindows()
+        {
+            // 通常ウィンドウをリリース
+            foreach (var window in normalWindows)
+            {
+                WindowFactory.I.ReturnWindow(window);
+            }
+            normalWindows.Clear();
+
+            // コライダーウィンドウをリリース
+            foreach (var window in colliderWindows)
+            {
+                if (windowColliders.TryGetValue(window, out var obj))
+                {
+                    WindowColliderFactory.I.ReturnWindowCollider(obj);
+                }
+            }
+            colliderWindows.Clear();
+            windowColliders.Clear();
+
+            // フラグもリセット
+            allreadyPopup = false;
+        }
+
         public void ResetAllreasyPopup() => allreadyPopup = false;
 
         public Vector2 WorldToWindowsScreenPosition(Vector3 worldPosition, Camera camera = null)

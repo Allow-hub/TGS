@@ -249,7 +249,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 203844586}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be4470c5cf998ed43a9a68f88fbddb06, type: 3}
   m_Name: 
@@ -440,6 +440,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7981336831571438261, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: isDebug
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7981336831571438261, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: players.Array.data[1].playerPrefab
+      value: 
+      objectReference: {fileID: 7627828736903395385, guid: e380d83f8c899224e9add7ac33924e01,
+        type: 3}
     - target: {fileID: 8021778234465506351, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y

@@ -57,7 +57,13 @@ namespace TechC
             }
         }
 
-        public void OnExit() { }
+        public void OnExit()
+        {
+            if (nativeWindow != null && WindowFactory.I != null)
+            {
+                WindowFactory.I.ReturnWindow(nativeWindow);
+            }
+        }
 
         private void ExcuteEvent()
         {

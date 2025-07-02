@@ -16,16 +16,11 @@ namespace TechC
         private Vector3 point;
         [Tooltip("ガードの最大サイズ")]
         [SerializeField] private Vector3 maxScale;
-        [Tooltip("ガードの最小サイズの比率(0～1)")]
-        [SerializeField] private float minScaleRatio = 0.5f;
         [SerializeField, Tooltip("ガードの中心Yオフセット")] private float centerYOffset = 1f;
 
-        private float lastGuardPower;
 
         private void Start()
         {
-
-            lastGuardPower = characterController.GetCharacterData().GuardPower;
             transform.localScale = maxScale;
             point = characterController.transform.position.AddY(centerYOffset);
 
@@ -50,7 +45,7 @@ namespace TechC
 
                 shieldObj[i].transform.position = center + offset;
 
-                // プレイヤーの方向を向かせたい場合（任意）
+                // プレイヤーの方向を向かせる
                 shieldObj[i].transform.LookAt(center);
             }
         }
@@ -95,8 +90,6 @@ namespace TechC
                     shieldObj[i].SetActive(i < shieldCount);
                 }
             }
-
-            lastGuardPower = currentGuard;
         }
     }
 }

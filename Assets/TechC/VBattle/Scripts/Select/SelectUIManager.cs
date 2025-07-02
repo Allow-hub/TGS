@@ -177,6 +177,7 @@ namespace TechC
         private void SetNpc()
         {
             isNpc = !isNpc;
+            currentPicks[1].characterObject = characterNpcPrefabs[0];
         }
 
         /// <summary>

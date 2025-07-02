@@ -20,5 +20,10 @@ namespace TechC
             }
             return obj;
         }
+
+        public void ReturnWindowCollider(GameObject obj)
+        {
+            objectPool.ReturnObject(obj);
+        }
     }
 }

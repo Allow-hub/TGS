@@ -147,7 +147,7 @@ namespace TechC
                         }
                         players[i].playerObject = newPlayer;
                         var characterController = newPlayer.GetComponent<Player.CharacterController>();
-                        characterController.SetPlayerID(players[i].playerID);
+                        characterController.SetPlayerID(players[i].playerID,players[i].inputDevice);
                     }
                     else
                     {
@@ -169,7 +169,7 @@ namespace TechC
                         GameObject newPlayer = Instantiate(players[i].playerPrefab, players[i].initialPosition.transform.position, Quaternion.identity);
                         players[i].playerObject = newPlayer;
                         var characterController = newPlayer.GetComponent<Player.CharacterController>();
-                        characterController.SetPlayerID(players[i].playerID);
+                        characterController.SetPlayerID(players[i].playerID,players[i].inputDevice);
                     }
                     else
                     {
@@ -539,6 +539,7 @@ namespace TechC
             return currentTime;
         }
         #endregion
+        public PlayerData GetPlayerData(int id) => players[id];
         public GameObject GetPlayerObjById(int id) => players[id - 1].playerObject;
         /// <summary>
         /// 指定したプレイヤーID以外の全プレイヤーのGameObjectを取得する

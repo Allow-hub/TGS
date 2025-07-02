@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using Windows.Win32.Foundation;
+using System.Collections.Generic;
 
 namespace TechC
 {
@@ -16,7 +19,6 @@ namespace TechC
         [SerializeField] private GameObject iceWallPrefab;
         [SerializeField] private GameObject bladeStormPrefab;
 
-
         [Header("ニュートラル強")]
         [SerializeField] private TransformRecorder transformRecorder;
         [SerializeField] private CommandHistory commandHistory;
@@ -29,9 +31,24 @@ namespace TechC
         [SerializeField] private float yOffset = 2;
         [SerializeField] private float leftStrongVelocity;
         [SerializeField] private float explosionDuration = 3f;
-        private GameObject currentIceObj;
-        private const int MAXCOUNT = 2;
-        private int currentCount;
+        [SerializeField] private Sprite zipSprite;
+        [SerializeField] private Vector2 zipSize = new Vector2(200, 200);
+        [SerializeField] private float moveSpeed = 10f;
+
+        [SerializeField] private int smooth = 16;
+        [SerializeField] private Vector2 windowOffeset = new Vector2(20, -100);
+        // 左強攻撃用のデータクラス
+        private class LeftAttackData
+        {
+            public GameObject iceObj;
+            public NativeWindow window;
+            public int attackId;
+            public int count;
+            public bool isReadyForExplosion;
+        }
+        
+        private List<LeftAttackData> activeLeftAttacks = new List<LeftAttackData>();
+        private int leftAttackIdCounter = 0;
 
         [Header("右強")]
         [SerializeField] private float iceWallDuration = 5.0f;
@@ -41,8 +58,6 @@ namespace TechC
         [Header("上強")]
         [SerializeField] private float returnStrongUpEffectTime = 3f;
         [SerializeField] private float upwardVelocity = 2.5f;
-
-
 
         /// <summary>
         /// 数秒前の自分が氷で実体化し、攻撃も記録通りなぞってくれる
@@ -71,7 +86,6 @@ namespace TechC
             });
         }
 
-
         /// <summary>
         /// 氷の魔法を圧縮データにして飛ばす、二回目の入力で解凍
         /// その場で爆発が起こる
@@ -79,56 +93,169 @@ namespace TechC
         public override void LeftAttack()
         {
             base.LeftAttack();
-            currentCount++;
-
-            if (currentCount < MAXCOUNT)
+            
+            // 爆発可能な攻撃データを探す
+            var explosionTarget = GetExplosionReadyAttack();
+            
+            if (explosionTarget != null)
             {
-                magicCircle.SetActive(true);
-                DelayUtility.StartDelayedActionWithPause(this, magicDuration, BattleJudge.I.GetPauseStateFunc, () =>
-                {
-                    magicCircle.SetActive(false);
-                });
-
-                var pos = transform.position.AddY(yOffset);
-                currentIceObj = CharaEffectFactory.I.GetEffectObj(iceDataPrefab, pos, Quaternion.identity);
-                RegisterEffect(currentIceObj);
-
-                var rb = currentIceObj.GetComponent<Rigidbody>();
-                rb.velocity = transform.forward * leftStrongVelocity;
-                DelayUtility.StartDelayedActionWithPause(this, explosionDuration, BattleJudge.I.GetPauseStateFunc, () =>
-                {
-                    if (currentIceObj != null)
-                    {
-                        UnregisterEffect(currentIceObj);
-                        CharaEffectFactory.I.ReturnEffectObj(currentIceObj);
-                        currentCount = 0;
-                        currentIceObj = null; // 明示的にクリア
-                    }
-                });
+                // 爆発処理
+                ExecuteExplosion(explosionTarget);
             }
             else
             {
-                var createPos = currentIceObj.transform.position;
-                UnregisterEffect(currentIceObj);
-                CharaEffectFactory.I.ReturnEffectObj(currentIceObj);
-
-                var explosionObj = CharaEffectFactory.I.GetEffectObj(iceExplosionPrefab, createPos, Quaternion.identity);
-                RegisterEffect(explosionObj);
-
-                var charaEffectSetting = explosionObj.GetComponent<CharaEffect>();
-                charaEffectSetting.SetOwnerId(characterController.PlayerID);
-                charaEffectSetting.SetAttackProcessor(attackProcessor);
-
-                DelayUtility.StartDelayedActionWithPause(this, explosionDuration, BattleJudge.I.GetPauseStateFunc, () =>
-                {
-                    UnregisterEffect(explosionObj);
-                    CharaEffectFactory.I.ReturnEffectObj(explosionObj);
-                });
-
-                currentCount = 0;
+                // 新しいアイスデータを作成
+                CreateNewIceData();
             }
 
             AudioManager.I.PlayCharacterSE(CharacterType.Ame, CharacterSEType.StrongLeftAttack);
+        }
+
+        /// <summary>
+        /// 爆発可能な攻撃データを取得
+        /// </summary>
+        private LeftAttackData GetExplosionReadyAttack()
+        {
+            foreach (var attack in activeLeftAttacks)
+            {
+                if (attack.isReadyForExplosion)
+                {
+                    return attack;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 新しいアイスデータを作成
+        /// </summary>
+        private void CreateNewIceData()
+        {
+            // 新しい攻撃データを作成
+            var attackData = new LeftAttackData
+            {
+                attackId = ++leftAttackIdCounter,
+                count = 1,
+                isReadyForExplosion = false
+            };
+
+            magicCircle.SetActive(true);
+            DelayUtility.StartDelayedActionWithPause(this, magicDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                magicCircle.SetActive(false);
+            });
+
+            var pos = transform.position.AddY(yOffset);
+            attackData.iceObj = CharaEffectFactory.I.GetEffectObj(iceDataPrefab, pos, Quaternion.identity);
+            attackData.window = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
+            
+            var imageWindow = attackData.window as ImageWindow;
+            var offsetX = windowOffeset.x * characterController.transform.forward.x;
+            var windowPos = attackData.iceObj.transform.position.AddX(offsetX).AddY(windowOffeset.y);
+            var screenPos = WindowManager.I.WorldToWindowsScreenPosition(windowPos);
+            imageWindow.SetImage(zipSprite.texture);
+            WindowUtility.MoveWindow((HWND)attackData.window.Hwnd, (int)screenPos.x, (int)screenPos.y);
+            WindowUtility.ResizeWindow((HWND)attackData.window.Hwnd, (int)zipSize.x, (int)zipSize.y);
+            attackData.window.SetRect();
+            
+            if (characterController.transform.forward.x < 0)
+            {
+                WindowUtility.MoveWindowToTargetAsync(attackData.window, -Screen.width, (int)screenPos.y, moveSpeed, smooth, zipSprite.texture).Forget();
+            }
+            else
+            {
+                WindowUtility.MoveWindowToTargetAsync(attackData.window, Screen.width, (int)screenPos.y, moveSpeed, smooth, zipSprite.texture).Forget();
+            }
+            
+            RegisterEffect(attackData.iceObj);
+            activeLeftAttacks.Add(attackData);
+
+            var rb = attackData.iceObj.GetComponent<Rigidbody>();
+            rb.velocity = transform.forward * leftStrongVelocity;
+            
+            // 少し遅れて爆発可能状態にする
+            var capturedAttackData = attackData;
+            DelayUtility.StartDelayedActionWithPause(this, 0.5f, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                if (capturedAttackData != null && activeLeftAttacks.Contains(capturedAttackData))
+                {
+                    capturedAttackData.isReadyForExplosion = true;
+                }
+            });
+            
+            // 自動クリーンアップ（爆発されなかった場合）
+            DelayUtility.StartDelayedActionWithPause(this, explosionDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                if (activeLeftAttacks.Contains(capturedAttackData))
+                {
+                    CleanupLeftAttackData(capturedAttackData, true);
+                }
+            });
+        }
+
+        /// <summary>
+        /// 爆発処理を実行
+        /// </summary>
+        private void ExecuteExplosion(LeftAttackData explosionTarget)
+        {
+            if (explosionTarget.window != null)
+            {
+                WindowUtility.AnimateResizeWindowAsync(explosionTarget.window.Hwnd, 0, 0, 0.3f).Forget();
+                DelayUtility.StartDelayedActionWithPause(this, 0.3f, BattleJudge.I.GetPauseStateFunc, () =>
+                {
+                    if (explosionTarget.window != null)
+                    {
+                        WindowFactory.I.ReturnWindow(explosionTarget.window);
+                        explosionTarget.window = null;
+                    }
+                });
+            }
+            
+            var createPos = explosionTarget.iceObj.transform.position;
+            UnregisterEffect(explosionTarget.iceObj);
+            CharaEffectFactory.I.ReturnEffectObj(explosionTarget.iceObj);
+
+            var explosionObj = CharaEffectFactory.I.GetEffectObj(iceExplosionPrefab, createPos, Quaternion.identity);
+            RegisterEffect(explosionObj);
+
+            var charaEffectSetting = explosionObj.GetComponent<CharaEffect>();
+            charaEffectSetting.SetOwnerId(characterController.PlayerID);
+            charaEffectSetting.SetAttackProcessor(attackProcessor);
+
+            DelayUtility.StartDelayedActionWithPause(this, explosionDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                UnregisterEffect(explosionObj);
+                CharaEffectFactory.I.ReturnEffectObj(explosionObj);
+            });
+
+            // 使用した攻撃データを削除
+            activeLeftAttacks.Remove(explosionTarget);
+        }
+
+        /// <summary>
+        /// 左強攻撃データのクリーンアップ
+        /// </summary>
+        private void CleanupLeftAttackData(LeftAttackData attackData, bool removeFromList = true)
+        {
+            if (attackData == null) return;
+
+            if (attackData.iceObj != null)
+            {
+                UnregisterEffect(attackData.iceObj);
+                CharaEffectFactory.I.ReturnEffectObj(attackData.iceObj);
+                attackData.iceObj = null;
+            }
+
+            if (attackData.window != null)
+            {
+                WindowFactory.I.ReturnWindow(attackData.window);
+                attackData.window = null;
+            }
+
+            if (removeFromList)
+            {
+                activeLeftAttacks.Remove(attackData);
+            }
         }
 
         /// <summary>
@@ -202,13 +329,10 @@ namespace TechC
             });
         }
 
-
-
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
             ActiveSword(upAttackData.attackDuration);
-
         }
 
         private void ActiveSword(float duration)
@@ -218,6 +342,19 @@ namespace TechC
             {
                 swordObj.gameObject.SetActive(false);
             });
+        }
+
+        /// <summary>
+        /// オブジェクト破棄時のクリーンアップ
+        /// </summary>
+        protected override void OnDisable()
+        {
+            // 残っている左強攻撃データをすべてクリーンアップ
+            foreach (var attackData in activeLeftAttacks)
+            {
+                CleanupLeftAttackData(attackData, false);
+            }
+            activeLeftAttacks.Clear();
         }
     }
 }

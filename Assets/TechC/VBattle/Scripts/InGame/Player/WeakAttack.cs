@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using TechC.Player;
 using UnityEngine;
 using static TechC.CharacterState;
 
@@ -49,8 +46,9 @@ namespace TechC
             upAttackData = attackSet.weakUp;
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             InitializeAttackDataMap();
         }
 

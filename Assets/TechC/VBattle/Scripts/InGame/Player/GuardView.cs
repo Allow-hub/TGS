@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace TechC
 {
@@ -13,24 +14,30 @@ namespace TechC
         [SerializeField] private Vector3 rotateAxis;
         [SerializeField] private float speedFactor;
         [SerializeField] private float radius = 1f;
+        [SerializeField] private float minScale = 0.3f;
+        [SerializeField] private GameObject breakPrefab;
+        [SerializeField] private float apearEffect = 2f;
         private Vector3 point;
         [Tooltip("ガードの最大サイズ")]
         [SerializeField] private Vector3 maxScale;
-        [Tooltip("ガードの最小サイズの比率(0～1)")]
-        [SerializeField] private float minScaleRatio = 0.5f;
         [SerializeField, Tooltip("ガードの中心Yオフセット")] private float centerYOffset = 1f;
 
-        private float lastGuardPower;
+
+        private bool[] previousShieldActiveStates;
 
         private void Start()
         {
-
-            lastGuardPower = characterController.GetCharacterData().GuardPower;
             transform.localScale = maxScale;
             point = characterController.transform.position.AddY(centerYOffset);
 
+            // 初期化
+            previousShieldActiveStates = new bool[shieldObj.Length];
+            for (int i = 0; i < shieldObj.Length; i++)
+                previousShieldActiveStates[i] = shieldObj[i] != null && shieldObj[i].activeSelf;
+
             PositionShields();
         }
+
         private void PositionShields()
         {
             // 配置する中心（プレイヤーの位置）
@@ -50,7 +57,7 @@ namespace TechC
 
                 shieldObj[i].transform.position = center + offset;
 
-                // プレイヤーの方向を向かせたい場合（任意）
+                // プレイヤーの方向を向かせる
                 shieldObj[i].transform.LookAt(center);
             }
         }
@@ -87,16 +94,40 @@ namespace TechC
             float maxGuard = characterController.GetCharacterData().GuardPower;
             float guardPerShield = maxGuard / shieldObj.Length;
             int shieldCount = Mathf.CeilToInt(currentGuard / guardPerShield);
-
             for (int i = 0; i < shieldObj.Length; i++)
             {
                 if (shieldObj[i] != null)
                 {
-                    shieldObj[i].SetActive(i < shieldCount);
+                    bool isActive = i < shieldCount;
+
+                    // 🔥 シールドがアクティブから非アクティブになったタイミングを検出
+                    if (previousShieldActiveStates[i] && !isActive)
+                    {
+                        // 破壊エフェクトを生成
+                        if (breakPrefab != null)
+                        {
+                            var obj =  EffectFactory.I.GetEffectObj(breakPrefab, shieldObj[i].transform.position, Quaternion.identity);
+                            DelayUtility.RunAfterDelay(apearEffect, () =>
+                            {
+                                EffectFactory.I.ReturnEffect(obj);
+                            }).Forget();
+                        }
+                    }
+
+                    // 表示状態を更新
+                    shieldObj[i].SetActive(isActive);
+                    previousShieldActiveStates[i] = isActive;
+
+                    if (isActive)
+                    {
+                        float shieldStart = i * guardPerShield;
+                        float shieldEnd = (i + 1) * guardPerShield;
+                        float scaleFactor = Mathf.Clamp01((currentGuard - shieldStart) / guardPerShield);
+                        float size = Mathf.Lerp(minScale, 1f, scaleFactor);
+                        shieldObj[i].transform.localScale = maxScale * size;
+                    }
                 }
             }
-
-            lastGuardPower = currentGuard;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.InputSystem;
 
 namespace TechC.Player
 {
@@ -30,7 +31,6 @@ namespace TechC.Player
         [SerializeField] private float bounceStopTime = 0.5f;
         [SerializeField] private float maxBounceForce = 30f;
 
-        [SerializeField] private float addY = 1;
         [SerializeField] private float wallBounceMultiplier = 1.5f; // 壁からの反発倍率
         [SerializeField] private bool enableWallBounce = true; // 壁反発機能の有効/無効
         [Header("プレイヤー設定")]
@@ -42,12 +42,15 @@ namespace TechC.Player
         [SerializeField] private HPPresenter hpPresenter;
         [Header("ガード設定")]
         [SerializeField] private float defaultAnimSpeed = 1.0f;
+        [SerializeField] private float lowFrequency;
+        [SerializeField] private float highFrequency;
+        [SerializeField] private float duration;
 
         [Header("必殺技設定")]
         [SerializeField] private GaugePresenter gaugePresenter;
-        [SerializeField] private float maxGauge = 100f;
 
         [Header("移動・ジャンプ設定")]
+        [SerializeField] private LayerMask obstacleLayer;
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
@@ -93,6 +96,7 @@ namespace TechC.Player
         private Player.CharacterController opponentController;
 
         private Action onCounter;
+        private InputDevice inputDevice;
         [SerializeField] private bool isClonePlayer = false;
         #endregion
 
@@ -164,13 +168,14 @@ namespace TechC.Player
         /// <summary>
         /// プレイヤーIDを設定する（生成時に呼び出す）
         /// </summary>
-        public void SetPlayerID(int id)
+        public void SetPlayerID(int id,InputDevice inputDevice)
         {
             playerID = id;
             if (id == 1)
                 gameObject.transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
             else if (id == 2)
                 gameObject.transform.rotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
+            this.inputDevice = inputDevice;
             // IDが変更された場合は、対応するPresenterを再取得
             FindPresenters();
         }
@@ -249,29 +254,38 @@ namespace TechC.Player
         /// </summary>
         public void MoveCharacter(float controlMultiplier)
         {
-            // X軸のみの移動方向を取得（Z軸は無視）
             float horizontalInput = playerInputManager.MoveInput.x;
             Vector3 moveDirection = new Vector3(horizontalInput, 0, 0).normalized;
+
+            // 正面に壁があるかをチェック（Raycast）
+            float rayDistance = 1f; // 判定距離
+            Vector3 origin = transform.position + Vector3.up * 0.5f; // 足元でなく胸元から前方をチェック
+            Vector3 direction = moveDirection;
+
+            if (horizontalInput != 0 && Physics.Raycast(origin, direction, rayDistance, obstacleLayer))
+            {
+                // 障害物があるので進行しない
+                Debug.DrawRay(origin, direction * rayDistance, Color.red, 0.1f); // デバッグ表示
+                return;
+            }
+
+            Debug.DrawRay(origin, direction * rayDistance, Color.green, 0.1f); // デバッグ表示
 
             // 接地判定に基づいて異なる挙動を適用
             if (IsGrounded())
             {
-                // 着地したらジャンプ状態をリセット
                 if (hasDoubleJumped)
                 {
                     ResetJump();
                 }
 
-                // 地上での移動
                 GroundMovement(moveDirection, horizontalInput, controlMultiplier);
             }
             else
             {
-                // 空中での移動
                 AirMovement(moveDirection, horizontalInput);
             }
         }
-
         /// <summary>
         /// 地上での移動処理
         /// </summary>
@@ -516,7 +530,8 @@ namespace TechC.Player
         public void GuardDamage(float damage, ICommand guardCommand)
         {
             currentGuardPower -= damage;
-            Debug.Log(currentGuardPower);
+            if (inputDevice is Gamepad gamepad)
+                GamepadVibrationUtility.Vibrate(lowFrequency, highFrequency, duration, gamepad);
             if (currentGuardPower > 0) return;
             currentGuardPower = 0;
             GuardBreak(guardCommand);

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,11 +11,14 @@ namespace TechC
         [Header("通知タブ")]
         private readonly List<IGimmick> gimmicks = new();
         [SerializeField] private TabGimickController tabGimickController;
+        [SerializeField] private WindowGimmickController windowGimmickController;
+
         protected override bool UseDontDestroyOnLoad => false;
         protected override void Init()
         {
             base.Init();
             gimmicks.Add(tabGimickController);
+            gimmicks.Add(windowGimmickController);
             foreach (var gimmick in gimmicks)
                 gimmick.OnEnter();
         }

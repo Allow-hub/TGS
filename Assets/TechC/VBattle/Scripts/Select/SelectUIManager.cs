@@ -177,6 +177,10 @@ namespace TechC
         private void SetNpc()
         {
             isNpc = !isNpc;
+            currentPicks[1].characterObject = characterNpcPrefabs[0];
+            currentPicks[1].playerId = 1;
+            currentPicks[1].inputDevice = null;
+            OnCharacterPicked?.Invoke(1);
         }
 
         /// <summary>

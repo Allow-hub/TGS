@@ -51,8 +51,8 @@ namespace TechC
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-                ChangeBattleState();
+            // if (Input.GetKeyDown(KeyCode.Space))
+            //     ChangeBattleState();
 
             if (Input.GetKeyDown(KeyCode.Escape))
                 MenuManager.I.OpenMenu();
@@ -85,6 +85,7 @@ namespace TechC
                     break;
 
                 case GameState.Result:
+                    WindowManager.I.ReleaseAllWindows();
                     ChangeCursorMode(true, CursorLockMode.None);
                     break;
 
@@ -102,7 +103,7 @@ namespace TechC
         private void BattleStateInit()
         {
             LoadSceneWithLoadingAsync(2).Forget(); // BattleScene
-            ChangeCursorMode(false, CursorLockMode.Locked);
+            // ChangeCursorMode(false, CursorLockMode.Locked);
         }
 
         private void ChangeCursorMode(bool visible, CursorLockMode cursorLockMode)

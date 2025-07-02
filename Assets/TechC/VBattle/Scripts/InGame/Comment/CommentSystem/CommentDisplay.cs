@@ -20,6 +20,7 @@ namespace TechC
         [SerializeField] Material speedBuffCommentMaterial;
         [SerializeField] Material attackBuffCommentMaterial;
         [SerializeField] Material mapChangeCommentMaterial;
+        [SerializeField] Material freezeCommentMaterial;
 
         [Header("コメントが流れるエリア")]
         public RectTransform commentLayer;
@@ -133,19 +134,32 @@ namespace TechC
         IEnumerator MoveComment(Transform trans, List<GameObject> chars)
         {
             NormalCommentTrigger normalTrigger = trans.GetComponent<NormalCommentTrigger>();
+            bool freezeMaterialApplied = false;
 
             while (trans.position.x > despawnPosX)
             {
-                // 「固定」コメントで停止中なら流さない
+                /* 「固定」コメントで停止中ならfreezeCommentMaterialを適用 */
                 if (normalTrigger != null && normalTrigger.specialCommentType == SpecialCommentType.Freeze && normalTrigger.IsFrozen)
                 {
+                    if (!freezeMaterialApplied)
+                    {
+                        ApplyMaterialToCharacters(chars, freezeCommentMaterial);
+                        freezeMaterialApplied = true;
+                    }
                     yield return null;
                     continue;
+                }
+                else if (freezeMaterialApplied)
+                {
+                    ApplyMaterialToCharacters(chars, normalCommentMaterial);
+                    freezeMaterialApplied = false;
                 }
 
                 trans.position += Vector3.left * speed * Time.deltaTime;
                 yield return null;
             }
+
+            
             trans.gameObject.SetActive(false);
             CommentFactory.I.ReturnComment(trans.gameObject);
 

@@ -15,11 +15,11 @@ namespace TechC
         private Dictionary<WindowType, Queue<NativeWindow>> poolByType = new();
         private const int InitialPoolSize = 1;
         Dictionary<WindowType, int> initialPoolSizes = new Dictionary<WindowType, int>
-            {
-                { WindowType.Basic, 2 },
-                { WindowType.Image, 81 },
-                { WindowType.Web,   0 }
-            };
+        {
+            { WindowType.Basic, 2 },
+            { WindowType.Image, 81 },
+            { WindowType.Web,   0 }
+        };
         private List<NativeWindow> activeWindows = new();
 
         protected override void Init()
@@ -55,7 +55,6 @@ namespace TechC
             if (poolByType.TryGetValue(type, out var queue) && queue.Count > 0)
             {
                 window = queue.Dequeue(); // 再利用
-                // Debug.Log(window);
             }
             else
             {
@@ -132,7 +131,7 @@ namespace TechC
                 title,
                 style,
                 exStyle,
-                100, -100, width, height,//作成時は画面外に
+                100, -500, width, height,//作成時は画面外に
                 IntPtr.Zero
             );
 

@@ -47,6 +47,7 @@ ReleaseDC
 StretchDIBits
 SetParent
 HWND_TOPMOST
+HWND_BOTTOM
 GetWindowThreadProcessId
 EnumWindows
 GetClassName

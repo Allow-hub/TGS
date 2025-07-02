@@ -78,7 +78,7 @@ namespace TechC
             base.ExecuteAttack(attackData);
         }
 
-        protected override void ExcuteSpecial()
+        protected override void ExcuteSpecial(AttackData attackData)
         {
             var opponentCharacter = characterController.OpponentController;
             BattleJudge.I.PausePlayer(opponentCharacter.PlayerID, false);
@@ -107,7 +107,7 @@ namespace TechC
                     if (Physics.Raycast(checkPositions[i], forwardDirection, out hit, rushDistance, wallLayerMask | targetLayerMask))
                     {
                         // 自分自身に当たった場合は無視
-                        if (hit.collider.gameObject == this.gameObject || hit.collider.transform.root == this.transform.root)
+                        if (hit.collider.gameObject == gameObject || hit.collider.transform.root == transform.root)
                             continue;
 
                         if (hit.distance < minHitDistance)
@@ -172,7 +172,7 @@ namespace TechC
             //少し待って必殺技状態に変更しステージを変える
             DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
             {
-                base.ExcuteSpecial();
+                base.ExcuteSpecial(attackData);
             });
 
             DelayUtility.StartDelayedActionWithPause(this, hideScreenDelay + resetScreenDelay, () => !WindowManager.I.AllreadyPopup, () =>
@@ -200,34 +200,34 @@ namespace TechC
                 tex: errorSprite
             );
 
-            if (GameManager.I.CanConectWifi)
-            {
-                var webWindowParent = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
-                var webWindow = webWindowParent as WebWindow;
-                WindowUtility.ResizeWindow(webWindow.WebWindowHwnd, Screen.width, Screen.height);
-                //画面上部にいったんWebWindowを隠す
-                WindowUtility.MoveWindow(webWindow.WebWindowHwnd, 0, -Screen.height);
-                webWindow.SetUrl("https://www.youtube.com/watch?v=CBYSqKn1vpQ");
+            // if (GameManager.I.CanConectWifi)
+            // {
+            //     var webWindowParent = WindowFactory.I.GetWindow(WindowFactory.WindowType.Web);
+            //     var webWindow = webWindowParent as WebWindow;
+            //     WindowUtility.ResizeWindow(webWindow.WebWindowHwnd, Screen.width, Screen.height);
+            //     //画面上部にいったんWebWindowを隠す
+            //     WindowUtility.MoveWindow(webWindow.WebWindowHwnd, 0, -Screen.height);
+            //     webWindow.SetUrl("https://www.youtube.com/watch?v=CBYSqKn1vpQ");
 
-                webWindow.SetRect();
-                //画面が隠れるのを待ち、Youtubeを上から降ろす
-                DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
-                {
-                    canMove = true; // ウィンドウを動かせるようにする
-                    DelayUtility.StartRepeatedActionWhile(this, CanMoveFunc, 0.05f, () =>
-                    {
-                        // ウィンドウの位置を下に移動
-                        WindowUtility.MoveWindowToTargetPosition(webWindow.WebWindowHwnd, 0, Screen.height, 2000f);
-                        if (WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y >= 0)
-                        {
-                            Debug.Log("WebWindowが画面内に戻りました。");
-                            canMove = false; // ウィンドウが画面内に戻ったら停止
-                        }
-                    });
-                });
-            }
-            else
-            {
+            //     webWindow.SetRect();
+            //     //画面が隠れるのを待ち、Youtubeを上から降ろす
+            //     DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
+            //     {
+            //         canMove = true; // ウィンドウを動かせるようにする
+            //         DelayUtility.StartRepeatedActionWhile(this, CanMoveFunc, 0.05f, () =>
+            //         {
+            //             // ウィンドウの位置を下に移動
+            //             WindowUtility.MoveWindowToTargetPosition(webWindow.WebWindowHwnd, 0, Screen.height, 2000f);
+            //             if (WindowUtility.GetWindowRect(webWindow.WebWindowHwnd).Y >= 0)
+            //             {
+            //                 Debug.Log("WebWindowが画面内に戻りました。");
+            //                 canMove = false; // ウィンドウが画面内に戻ったら停止
+            //             }
+            //         });
+            //     });
+            // }
+            // else
+            // {
                 DelayUtility.StartDelayedAction(this, hideScreenDelay, () =>
                 {
                     var imageWindow = WindowFactory.I.GetWindow(WindowFactory.WindowType.Image);
@@ -258,7 +258,7 @@ namespace TechC
                                 (HWND)imageWindow.Hwnd,
                                 Screen.width,
                                 Screen.height,
-                                windowResizeSpeed_1
+                                windowResizeSpeed_2
                             );
 
                             WindowUtility.MoveWindowToTargetPosition((HWND)imageWindow.Hwnd, 0, 0, windowMoveSpeed_2);
@@ -273,7 +273,7 @@ namespace TechC
                         }
                     });
                 });
-            }
+            // }
 
         }
 

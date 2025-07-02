@@ -56,7 +56,6 @@ namespace TechC
             var rect = WindowUtility.GetWindowRect((HWND)Hwnd);
             Width = rect.Width;
             Height = rect.Height;
-
         }
 
         public virtual void MoveWindowToTargetPosition(IntPtr hWnd, int targetX, int targetY, float speed) => WindowUtility.MoveWindowToTargetPosition(hWnd, targetX, targetY, speed);
@@ -69,6 +68,12 @@ namespace TechC
         {
             var rect = WindowUtility.GetWindowRect((HWND)Hwnd);
             return (rect.X, rect.Y);
+        }
+
+        public void SetRect(int width, int height)
+        {
+            Width = width;
+            Height = height;
         }
     }
 

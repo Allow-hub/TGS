@@ -103,10 +103,34 @@ namespace TechC
         /// <returns></returns>
         IEnumerator MoveComment(Transform trans, List<GameObject> chars)
         {
-            while (trans.position.x > despawnPosX) /* 左端まで */
+            // BuffCommentTriggerまたはNormalCommentTriggerのどちらかを取得
+            SpecialCommentType specialType = SpecialCommentType.None;
+            var buffTrigger = trans.GetComponent<BuffCommentTrigger>();
+            if (buffTrigger != null)
+                specialType = buffTrigger.specialCommentType;
+            else
+            {
+                var normalTrigger = trans.GetComponent<NormalCommentTrigger>();
+                if (normalTrigger != null)
+                    specialType = normalTrigger.specialCommentType;
+            }
+
+            // 固定コメントなら3秒停止
+            if (specialType == SpecialCommentType.Freeze)
+            {
+                float elapsed = 0f;
+                while (elapsed < freezeTime)
+                {
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+            }
+
+            // その後、通常通り左に流す
+            while (trans.position.x > despawnPosX)
             {
                 trans.position += Vector3.left * speed * Time.deltaTime;
-                yield return null; /* 次のフレームまで待機 */
+                yield return null;
             }
             trans.gameObject.SetActive(false);
             CommentFactory.I.ReturnComment(trans.gameObject);

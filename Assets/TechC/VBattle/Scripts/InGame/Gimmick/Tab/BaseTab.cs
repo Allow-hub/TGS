@@ -116,5 +116,13 @@ namespace TechC
                 }
             });
         }
+
+        protected virtual void OnDestroy()
+        {
+            if (nativeWindow != null && WindowFactory.I != null)
+            {
+                WindowFactory.I.ReturnWindow(nativeWindow);
+            }
+        }
     }
 }

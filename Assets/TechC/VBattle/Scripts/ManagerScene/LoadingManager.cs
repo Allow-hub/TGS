@@ -12,15 +12,15 @@ namespace TechC
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private float fadeInDuration = 0.2f;
         [SerializeField] private float minimumLoadingTime = 0.5f;
-        
+
         private bool isInitialized = false;
         private bool isUpdatingProgress = false; // プログレス更新中フラグ
-        
+
         private void Awake()
         {
             InitializeUI();
         }
-        
+
         private void InitializeUI()
         {
             try
@@ -33,7 +33,7 @@ namespace TechC
                 {
                     Debug.LogWarning("ProgressImageが設定されていません");
                 }
-                
+
                 if (loadTex != null)
                 {
                     loadTex.text = "0%";
@@ -42,7 +42,7 @@ namespace TechC
                 {
                     Debug.LogWarning("LoadTextが設定されていません");
                 }
-                    
+
                 if (canvasGroup != null)
                 {
                     canvasGroup.alpha = 0f;
@@ -51,7 +51,7 @@ namespace TechC
                 {
                     Debug.LogWarning("CanvasGroupが設定されていません");
                 }
-                    
+
                 isInitialized = true;
             }
             catch (System.Exception e)
@@ -60,13 +60,13 @@ namespace TechC
                 isInitialized = true; // エラーが発生してもフラグを立てる
             }
         }
-        
+
         private void Start()
         {
             if (canvasGroup != null)
                 FadeIn().Forget();
         }
-        
+
         private async UniTask FadeIn()
         {
             try
@@ -81,10 +81,10 @@ namespace TechC
                     }
                     await UniTask.Yield();
                 }
-                
+
                 if (canvasGroup != null)
                     canvasGroup.alpha = 1f;
-                    
+
             }
             catch (System.Exception e)
             {
@@ -105,7 +105,7 @@ namespace TechC
 
             try
             {
-                
+
                 // 初期化完了まで待機（タイムアウト付き）
                 int initWaitCount = 0;
                 while (!isInitialized && initWaitCount < 60) // 最大2秒待機
@@ -119,10 +119,10 @@ namespace TechC
                     Debug.LogError("LoadingManager初期化がタイムアウトしました");
                     return;
                 }
-                
+
                 float startTime = Time.time;
                 float displayedProgress = 0f;
-                
+
                 // allowSceneActivationの設定を確認
                 if (op.allowSceneActivation)
                 {
@@ -136,7 +136,7 @@ namespace TechC
                 while ((op.progress < 0.9f || (Time.time - startTime) < minimumLoadingTime) && loopCount < maxLoopCount)
                 {
                     loopCount++;
-                    
+
                     // 定期的にログ出力
                     if (loopCount % 300 == 0)
                     {
@@ -145,7 +145,7 @@ namespace TechC
 
                     // 実際のロード進捗（0〜0.9を0〜1にマッピング）
                     float actualProgress = Mathf.Clamp01(op.progress / 0.9f);
-                    
+
                     // 最小表示時間を考慮した進捗計算
                     float timeProgress = Mathf.Clamp01((Time.time - startTime) / minimumLoadingTime);
                     float targetProgress = Mathf.Min(actualProgress, timeProgress);
@@ -166,19 +166,19 @@ namespace TechC
 
                 // 最終的に100%表示
                 UpdateUI(1f);
-                
+
                 // 少し待機してからシーン切り替えを許可
                 await UniTask.Delay(200);
-                
+
                 op.allowSceneActivation = true;
-                
+
                 // シーンが実際に切り替わるまで待機
                 await UniTask.WaitUntil(() => op.isDone);
             }
             catch (System.Exception e)
             {
                 Debug.LogError($"プログレス更新エラー: {e.Message}\n{e.StackTrace}");
-                
+
                 // エラーが発生した場合もシーン切り替えを許可
                 try
                 {
@@ -194,7 +194,7 @@ namespace TechC
                 isUpdatingProgress = false;
             }
         }
-        
+
         private void UpdateUI(float progress)
         {
             try
@@ -210,10 +210,10 @@ namespace TechC
                 Debug.LogError($"UI更新エラー: {e.Message}");
             }
         }
-        
+
         private void OnDestroy()
         {
-            Debug.Log("LoadingManager: OnDestroy実行");
+            // Debug.Log("LoadingManager: OnDestroy実行");
         }
     }
 }

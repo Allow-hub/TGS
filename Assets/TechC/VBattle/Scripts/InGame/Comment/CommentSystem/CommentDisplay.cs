@@ -9,6 +9,8 @@ namespace TechC
     /// </summary>
     public class CommentDisplay : MonoBehaviour
     {
+        public static CommentDisplay I { get; private set; }
+
         [Header("コメントのテキスト用Prefab")]
         [SerializeField] private GameObject commentPrefab;
         [SerializeField] private GameObject speedBuffPrefab;
@@ -47,6 +49,19 @@ namespace TechC
 
         private float despawnPosX;
 
+        private void Awake()
+        {
+            if (I == null)
+            {
+                I = this;
+                DontDestroyOnLoad(gameObject); // シングルトンとして永続化
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
         void Start()
         {
             InitSetPositions(); /* コメントを表示 / 非表示にするメソッドを呼ぶ */
@@ -79,17 +94,16 @@ namespace TechC
             ApplyMaterialToCharacters(spawnedChars, commentMaterial);
 
             var abilityTrigger = comment.GetComponent<AbilityCommentTrigger>();
-            if (abilityTrigger != null)
-            {
-                abilityTrigger.OnFreezeTriggered += () =>
-                {
-                    // 必要ならここで追加の処理を書く
-                };
-            }
 
             if (comment == null)
             {
                 return;
+            }
+
+            // AbilityCommentTriggerの特殊タイプを設定
+            if (abilityTrigger != null && commentData.text.Contains("固定"))
+            {
+                abilityTrigger.SetSpecialType(SpecialCommentType.Freeze);
             }
 
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
@@ -207,6 +221,15 @@ namespace TechC
                 default:
                     return null;
             }
+        }
+
+        /// <summary>
+        /// AbilityCommentTriggerから直接呼ばれるメソッド
+        /// </summary>
+        public void OnFreezeTriggered(AbilityCommentTrigger trigger)
+        {
+            Debug.Log("FreezeコメントがPlayerに当たりました（CommentDisplay経由）");
+            // 必要ならここで追加の処理が可能
         }
 
         public float GetCurrentSpeed()

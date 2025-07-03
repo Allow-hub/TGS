@@ -261,17 +261,17 @@ PrefabInstance:
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: mapChangeChance
-      value: 0.203
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: speedBuffChance
-      value: 0.171
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: attackBuffChance
-      value: 0.138
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2490087638690234640, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -296,7 +296,7 @@ PrefabInstance:
     - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: spawnInterval
-      value: 100
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5547016823962536969, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}

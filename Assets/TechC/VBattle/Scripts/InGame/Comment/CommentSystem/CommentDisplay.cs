@@ -45,8 +45,9 @@ namespace TechC
         [Header("コメントを非表示にする場所")]
         public GameObject topLeftDespawn;
         public GameObject buttonLeftDespawn;
-
         private float despawnPosX;
+
+        protected override bool UseDontDestroyOnLoad => false;
 
         void Start()
         {

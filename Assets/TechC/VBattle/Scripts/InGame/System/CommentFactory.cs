@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 namespace TechC
 {
@@ -11,7 +8,6 @@ namespace TechC
 
         [Header("文字とそのPrefabのScriptableObject")]
         [SerializeField] private CharPrefabDatabase charPrefabDatabase;
-        private NormalCommentTrigger normalCommentTrigger;
         protected override bool UseDontDestroyOnLoad => false;
 
         // 3DText用のスケール定数
@@ -31,11 +27,11 @@ namespace TechC
 
             if (commentData.type == CommentType.Normal)
             {
-                var normalTrigger = obj.GetComponent<NormalCommentTrigger>();
-                if (normalTrigger == null)
-                    normalTrigger = obj.AddComponent<NormalCommentTrigger>();
-                normalTrigger.specialCommentType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
-                normalTrigger.commentText = commentData.text;
+                var abilityTrigger = obj.GetComponent<AbilityCommentTrigger>();
+                if (abilityTrigger == null)
+                    abilityTrigger = obj.AddComponent<AbilityCommentTrigger>();
+                abilityTrigger.GetType().GetProperty("SpecialType").SetValue(abilityTrigger, SpecialCommentChecker.GetSpecialCommentType(commentData.text));
+                abilityTrigger.GetType().GetProperty("CommentText").SetValue(abilityTrigger, commentData.text);
             }
             else
             {

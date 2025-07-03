@@ -133,13 +133,13 @@ namespace TechC
         /// <returns></returns>
         IEnumerator MoveComment(Transform trans, List<GameObject> chars)
         {
-            NormalCommentTrigger normalTrigger = trans.GetComponent<NormalCommentTrigger>();
+            AbilityCommentTrigger abilityCommentTrigger = trans.GetComponent<AbilityCommentTrigger>();
             bool freezeMaterialApplied = false;
 
             while (trans.position.x > despawnPosX)
             {
                 /* 「固定」コメントで停止中ならfreezeCommentMaterialを適用 */
-                if (normalTrigger != null && normalTrigger.specialCommentType == SpecialCommentType.Freeze && normalTrigger.IsFrozen)
+                if (abilityCommentTrigger != null && abilityCommentTrigger.SpecialType == SpecialCommentType.Freeze && abilityCommentTrigger.IsFrozen)
                 {
                     if (!freezeMaterialApplied)
                     {
@@ -159,7 +159,6 @@ namespace TechC
                 yield return null;
             }
 
-            
             trans.gameObject.SetActive(false);
             CommentFactory.I.ReturnComment(trans.gameObject);
 

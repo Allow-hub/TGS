@@ -73,10 +73,19 @@ namespace TechC
             GameObject comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData), commentLayer);
 
             Material commentMaterial = GetCommentMaterial(commentData.type);
-            
+
             List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, Color.white);
 
             ApplyMaterialToCharacters(spawnedChars, commentMaterial);
+
+            var abilityTrigger = comment.GetComponent<AbilityCommentTrigger>();
+            if (abilityTrigger != null)
+            {
+                abilityTrigger.OnFreezeTriggered += () =>
+                {
+                    // 必要ならここで追加の処理を書く
+                };
+            }
 
             if (comment == null)
             {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 namespace TechC
 {
@@ -17,14 +18,22 @@ namespace TechC
         private Coroutine freezeCoroutine;
         private bool isFrozen = false;
         public bool IsFrozen => isFrozen;
+
+        // 1度だけ停止用フラグ
+        private bool hasFrozenOnce = false;
+        // 停止時イベント
+        public event Action OnFreezeTriggered;
         
         private void OnTriggerEnter(Collider other)
         {
-            if (SpecialType == SpecialCommentType.Freeze && other.CompareTag("Player") && !isFrozen)
+            if (SpecialType == SpecialCommentType.Freeze && other.CompareTag("Player") && !isFrozen && !hasFrozenOnce)
             {
                 isFrozen = true;
+                hasFrozenOnce = true;
                 if (freezeCoroutine != null) StopCoroutine(freezeCoroutine);
                 freezeCoroutine = StartCoroutine(FreezeTimerCoroutine());
+                
+                OnFreezeTriggered?.Invoke();
             }
         }
 
@@ -34,10 +43,19 @@ namespace TechC
             isFrozen = false;
         }
 
-        private void OnDisable()
+        // コメント再利用時に明示的にリセットしたい場合はこのメソッドを呼ぶ
+        public void ResetFreezeState()
         {
             isFrozen = false;
+            hasFrozenOnce = false;
             if (freezeCoroutine != null) StopCoroutine(freezeCoroutine);
+        }
+
+        private void OnDisable()
+        {
+            if (freezeCoroutine != null) StopCoroutine(freezeCoroutine);
+            isFrozen = false;
+            // hasFrozenOnceはリセットしない（再利用時はResetFreezeStateを呼ぶこと）
         }
     }
 }

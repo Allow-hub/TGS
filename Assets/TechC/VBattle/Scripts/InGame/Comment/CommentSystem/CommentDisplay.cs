@@ -7,9 +7,8 @@ namespace TechC
     /// <summary>
     /// コメントを画面上に流す処理
     /// </summary>
-    public class CommentDisplay : MonoBehaviour
+    public class CommentDisplay : Singleton<CommentDisplay>
     {
-        public static CommentDisplay I { get; private set; }
 
         [Header("コメントのテキスト用Prefab")]
         [SerializeField] private GameObject commentPrefab;
@@ -48,19 +47,6 @@ namespace TechC
         public GameObject buttonLeftDespawn;
 
         private float despawnPosX;
-
-        private void Awake()
-        {
-            if (I == null)
-            {
-                I = this;
-                DontDestroyOnLoad(gameObject); // シングルトンとして永続化
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
-        }
 
         void Start()
         {

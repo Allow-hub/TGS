@@ -83,7 +83,9 @@ namespace TechC
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
             comment.transform.position = new Vector3(spawnPosX, randomY, PLAYER_TOP_OFFSET);
 
-            StartCoroutine(MoveComment(comment.transform, spawnedChars));
+            var freezeCommentTrigger = comment.GetComponent<FreezeCommentTrigger>();
+
+            StartCoroutine(MoveComment(comment.transform, spawnedChars, freezeCommentTrigger));
         }
 
         /// <summary>
@@ -128,10 +130,8 @@ namespace TechC
         /// <param name="trans"></param>
         /// <param name="chars"></param>
         /// <returns></returns>
-        IEnumerator MoveComment(Transform trans, List<GameObject> chars)
+        IEnumerator MoveComment(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger)
         {
-            var freezeCommentTrigger = trans.GetComponent<FreezeCommentTrigger>();
-
             // 本来のマテリアルを保持
             Material originalMaterial = null;
             if (chars.Count > 0)

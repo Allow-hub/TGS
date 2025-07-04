@@ -25,6 +25,9 @@ namespace TechC
             foreach (var kvp in keywordMap)
             {
                 if (commentText.Contains(kvp.Key))
+                /* ===============================
+                 * TODO: Containsを使用しないように今後修正する
+                 * =============================== */
                     return kvp.Value;
             }
             return SpecialCommentType.None;

@@ -11,9 +11,12 @@ namespace TechC
         public string CommentText { get; private set; }
         public bool IsFrozen { get; private set; } = false;
 
-                private bool hasFrozenOnce = false; // 1度だけ停止用フラグ
+        private bool hasFrozenOnce = false; // 1度だけ停止用フラグ
 
-        // 固定コメントとしてセット
+        /// <summary>
+        /// 特殊コメントタイプの設定
+        /// </summary>
+        /// <param name="type"></param>
         public void SetSpecialType(SpecialCommentType type)
         {
             SpecialType = type;
@@ -33,17 +36,9 @@ namespace TechC
             }
         }
 
-        // フリーズ解除（CommentDisplayから呼ばれる）
         public void ResetFreezeState()
         {
             IsFrozen = false;
-        }
-
-        // 再利用時にリセット
-        public void ResetAllState()
-        {
-            IsFrozen = false;
-            hasFrozenOnce = false;
         }
     }
 }

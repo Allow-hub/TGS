@@ -27,11 +27,15 @@ namespace TechC
 
             if (commentData.type == CommentType.Normal)
             {
-                var abilityTrigger = obj.GetComponent<FreezeCommentTrigger>();
-                if (abilityTrigger == null)
-                    abilityTrigger = obj.AddComponent<FreezeCommentTrigger>();
-                abilityTrigger.GetType().GetProperty("SpecialType").SetValue(abilityTrigger, SpecialCommentChecker.GetSpecialCommentType(commentData.text));
-                abilityTrigger.GetType().GetProperty("CommentText").SetValue(abilityTrigger, commentData.text);
+                var freezeCommentTrigger = obj.GetComponent<FreezeCommentTrigger>();
+                if (freezeCommentTrigger == null)
+                {
+                    freezeCommentTrigger = obj.AddComponent<FreezeCommentTrigger>();
+                }
+
+                // 明示的にメソッドで設定
+                var specialType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
+                freezeCommentTrigger.SetSpecialType(specialType); // ここでコメントタイプを設定する
             }
             else
             {

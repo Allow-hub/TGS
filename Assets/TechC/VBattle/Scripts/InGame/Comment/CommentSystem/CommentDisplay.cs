@@ -80,19 +80,6 @@ namespace TechC
 
             ApplyMaterialToCharacters(spawnedChars, commentMaterial);
 
-            var abilityTrigger = comment.GetComponent<AbilityCommentTrigger>();
-
-            if (comment == null)
-            {
-                return;
-            }
-
-            // AbilityCommentTriggerの特殊タイプを設定
-            if (abilityTrigger != null && commentData.text.Contains("固定"))
-            {
-                abilityTrigger.SetSpecialType(SpecialCommentType.Freeze);
-            }
-
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
             comment.transform.position = new Vector3(spawnPosX, randomY, PLAYER_TOP_OFFSET);
 
@@ -143,13 +130,22 @@ namespace TechC
         /// <returns></returns>
         IEnumerator MoveComment(Transform trans, List<GameObject> chars)
         {
-            AbilityCommentTrigger abilityCommentTrigger = trans.GetComponent<AbilityCommentTrigger>();
+            var freezeCommentTrigger = trans.GetComponent<FreezeCommentTrigger>();
+
+            // 本来のマテリアルを保持
+            Material originalMaterial = null;
+            if (chars.Count > 0)
+            {
+                var meshRenderer = chars[0].GetComponent<MeshRenderer>();
+                if (meshRenderer != null)
+                    originalMaterial = meshRenderer.sharedMaterial;
+            }
+
             bool freezeMaterialApplied = false;
 
             while (trans.position.x > despawnPosX)
             {
-                /* 「固定」コメントで停止中ならfreezeCommentMaterialを適用 */
-                if (abilityCommentTrigger != null && abilityCommentTrigger.SpecialType == SpecialCommentType.Freeze && abilityCommentTrigger.IsFrozen)
+                if (freezeCommentTrigger != null && freezeCommentTrigger.IsFrozen)
                 {
                     if (!freezeMaterialApplied)
                     {
@@ -161,7 +157,8 @@ namespace TechC
                 }
                 else if (freezeMaterialApplied)
                 {
-                    ApplyMaterialToCharacters(chars, normalCommentMaterial);
+                    // フリーズ解除直後のみ元のマテリアルに戻す
+                    ApplyMaterialToCharacters(chars, originalMaterial);
                     freezeMaterialApplied = false;
                 }
 
@@ -178,6 +175,7 @@ namespace TechC
                 CommentFactory.I.ReturnChar(obj);
             }
         }
+
 
         /// <summary>
         /// コメントを発生、消去する座標を取得する
@@ -211,12 +209,17 @@ namespace TechC
         }
 
         /// <summary>
-        /// AbilityCommentTriggerから直接呼ばれるメソッド
+        /// FreezeCommentTriggerから直接呼ばれるメソッド
         /// </summary>
-        public void OnFreezeTriggered(AbilityCommentTrigger trigger)
+        public void OnFreezeTriggered(FreezeCommentTrigger trigger)
         {
-            Debug.Log("FreezeコメントがPlayerに当たりました（CommentDisplay経由）");
-            // 必要ならここで追加の処理が可能
+            StartCoroutine(FreezeOnlyThisCommentCoroutine(trigger));
+        }
+
+        private IEnumerator FreezeOnlyThisCommentCoroutine(FreezeCommentTrigger trigger)
+        {
+            yield return new WaitForSeconds(freezeTime);
+            trigger.ResetFreezeState(); // フリーズ状態をリセット
         }
 
         public float GetCurrentSpeed()

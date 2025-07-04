@@ -27,9 +27,9 @@ namespace TechC
 
             if (commentData.type == CommentType.Normal)
             {
-                var abilityTrigger = obj.GetComponent<AbilityCommentTrigger>();
+                var abilityTrigger = obj.GetComponent<FreezeCommentTrigger>();
                 if (abilityTrigger == null)
-                    abilityTrigger = obj.AddComponent<AbilityCommentTrigger>();
+                    abilityTrigger = obj.AddComponent<FreezeCommentTrigger>();
                 abilityTrigger.GetType().GetProperty("SpecialType").SetValue(abilityTrigger, SpecialCommentChecker.GetSpecialCommentType(commentData.text));
                 abilityTrigger.GetType().GetProperty("CommentText").SetValue(abilityTrigger, commentData.text);
             }

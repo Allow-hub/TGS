@@ -34,7 +34,7 @@ namespace TechC
 
         [Header("特殊コメントの設定")]
         [SerializeField] private float freezeTime = 3f;
-        private bool isCommentFrozen = false;
+        public bool IsCommentFrozen { get; private set; } = false;
 
         [Header("コメントが出現する場所")]
         public GameObject topRightSpawn;
@@ -75,7 +75,14 @@ namespace TechC
 
             GameObject comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData), commentLayer);
 
-            Material commentMaterial = GetCommentMaterial(commentData.type);
+            var sp = comment.GetComponent<FreezeCommentTrigger>();
+            var spType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
+            Material commentMaterial;
+
+            if (spType != SpecialCommentType.None && sp != null)
+                commentMaterial = GetCommentMaterial(null, sp.SpecialType);
+            else
+                commentMaterial = GetCommentMaterial(commentData.type);
 
             List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, Color.white);
 
@@ -95,20 +102,32 @@ namespace TechC
         /// <summary>
         /// コメントタイプに応じたMaterialを取得
         /// </summary>
-        private Material GetCommentMaterial(CommentType commentType)
+        private Material GetCommentMaterial(CommentType? commentType, SpecialCommentType? specialCommentType = SpecialCommentType.None)
         {
-            switch (commentType)
+            if (commentType != null)
             {
-                case CommentType.AttackBuff:
-                    return attackBuffCommentMaterial;
-                case CommentType.SpeedBuff:
-                    return speedBuffCommentMaterial;
-                case CommentType.MapChange:
-                    return mapChangeCommentMaterial;
-                case CommentType.Normal:
-                default:
-                    return normalCommentMaterial;
+                switch (commentType)
+                {
+                    case CommentType.AttackBuff:
+                        return attackBuffCommentMaterial;
+                    case CommentType.SpeedBuff:
+                        return speedBuffCommentMaterial;
+                    case CommentType.MapChange:
+                        return mapChangeCommentMaterial;
+                    case CommentType.Normal:
+                    default:
+                        return normalCommentMaterial;
+                }
             }
+            else if (specialCommentType != SpecialCommentType.None)
+            {
+                switch (specialCommentType)
+                {
+                    case SpecialCommentType.Freeze:
+                        return attackBuffCommentMaterial;
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -138,7 +157,7 @@ namespace TechC
             while (trans.position.x > despawnPosX)
             {
                 // 全コメントのフリーズ状態をチェック（メソッド名変更）
-                if (isCommentFrozen)
+                if (IsCommentFrozen)
                 {
                     if (!freezeMaterialApplied)
                     {
@@ -206,7 +225,7 @@ namespace TechC
         public void OnFreezeTriggered()
         {
             // 既にフリーズ中でない場合のみフリーズ開始
-            if (!isCommentFrozen)
+            if (!IsCommentFrozen)
             {
                 StartCoroutine(FreezeAllCommentsCoroutine());
             }
@@ -214,10 +233,12 @@ namespace TechC
 
         private IEnumerator FreezeAllCommentsCoroutine()
         {
-            isCommentFrozen = true;
+            IsCommentFrozen = true;
             yield return new WaitForSeconds(freezeTime);
-            isCommentFrozen = false;
+            IsCommentFrozen = false;
         }
+
+        
 
         public float GetCurrentSpeed()
         {

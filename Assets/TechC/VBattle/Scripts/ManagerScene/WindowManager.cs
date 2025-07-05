@@ -120,7 +120,7 @@ namespace TechC
             Gizmos.DrawWireCube(new Vector3(areaCenter.x, areaCenter.y, -5.3f), new Vector3(areaSize.x, areaSize.y, 0.1f));
         }
 
-        public void PopupWindowWindow(WindowFactory.WindowType type, int maxSize = 500, int tileSize = 200, float duration = 1f, Sprite tex = null)
+        public void PopupWindowWindow(WindowFactory.WindowType type, int maxSize = 500, float duration = 1f, Sprite tex = null)
         {
             // 画面サイズ取得
             var unityRect = GameViewUtils.ToWin32Rect(GameViewUtils.GetGameViewScreenRect());
@@ -128,6 +128,8 @@ namespace TechC
             int unityScreenY = unityRect.top;
             int unityScreenWidth = unityRect.right - unityRect.left;
             int unityScreenHeight = unityRect.bottom - unityRect.top;
+            int tileSize = unityScreenHeight / 6;
+
 
             // Windowで隙間なく覆うための分割数を計算
             var rnd = new System.Random();

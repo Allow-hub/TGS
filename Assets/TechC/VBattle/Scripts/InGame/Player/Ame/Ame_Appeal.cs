@@ -195,7 +195,6 @@ namespace TechC
             WindowManager.I.PopupWindowWindow(
                 WindowFactory.WindowType.Image,
                 maxSize: 500,
-                tileSize: 200,
                 duration: popupWindowDurtaion,
                 tex: errorSprite
             );

@@ -1,27 +1,36 @@
+using System.Collections.Generic;
+
 namespace TechC
 {
     /// <summary>
-    /// 特殊コメントのクラス
+    /// 特殊コメントの判定クラス
     /// </summary>
     public static class SpecialCommentChecker
     {
+        // キーワードとタイプのマッピング
+        private static readonly Dictionary<string, SpecialCommentType> keywordMap = new()
+        {
+            { "草", SpecialCommentType.Grass },
+            { "固定", SpecialCommentType.Freeze },
+        };
+
         /// <summary>
         /// コメントが特殊コメントかどうかを判別し、Typeを返す
         /// </summary>
-        /// <param name="commentText"></param>
-        /// <returns></returns>
         public static SpecialCommentType GetSpecialCommentType(string commentText)
         {
             if (string.IsNullOrEmpty(commentText))
-            {
                 return SpecialCommentType.None;
-            }
 
-            if (commentText == "草")
+            foreach (var kvp in keywordMap)
             {
-                return SpecialCommentType.Grass;
+                if (commentText.Contains(kvp.Key))
+                /* ===============================
+                 * TODO: Containsを使用しないように今後修正する
+                 * =============================== */
+                    return kvp.Value;
             }
-            return SpecialCommentType.None; // 当てはまってなかったらNone 
+            return SpecialCommentType.None;
         }
     }
 }

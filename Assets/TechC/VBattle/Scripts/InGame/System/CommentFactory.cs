@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 namespace TechC
 {
@@ -28,31 +25,33 @@ namespace TechC
             GameObject obj = commentPool.GetObject(commentPrefab);
             obj.transform.localScale = COMMENT_OBJ_SCALE;
 
-            var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
-            // Debug.Log(commentTrigger);
-            // Debug.Log(commentTrigger);
-            commentTrigger?.Init(commentPool);
-
-            /* コメントが特殊コメントか判別するメソッドを呼ぶ */
-            if (commentTrigger != null)
+            if (commentData.type == CommentType.Normal)
             {
-                commentTrigger.specialCommentType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
-                commentTrigger.commentText = commentData.text;
+                var freezeCommentTrigger = obj.GetComponent<FreezeCommentTrigger>();
+                if (freezeCommentTrigger == null)
+                {
+                    freezeCommentTrigger = obj.AddComponent<FreezeCommentTrigger>();
+                }
+
+                // 明示的にメソッドで設定
+                var specialType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
+                freezeCommentTrigger.SetSpecialType(specialType); // ここでコメントタイプを設定する
             }
-
-            if (obj != null)
+            else
             {
+                var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
+                commentTrigger?.Init(commentPool);
+                if (commentTrigger != null)
+                {
+                    commentTrigger.specialCommentType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
+                    commentTrigger.commentText = commentData.text;
+                }
                 if (commentData.buffType.HasValue)
                 {
-                    BuffCommentTrigger trigger = obj.GetComponent<BuffCommentTrigger>();
-                    if (trigger != null)
-                    {
-                        trigger.buffType = commentData.buffType.Value;
-                    }
+                    commentTrigger.buffType = commentData.buffType.Value;
                 }
-                return obj;
             }
-            return null;
+            return obj;
         }
 
 

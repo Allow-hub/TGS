@@ -7,13 +7,21 @@ namespace TechC
     /// <summary>
     /// コメントを画面上に流す処理
     /// </summary>
-    public class CommentDisplay : MonoBehaviour
+    public class CommentDisplay : Singleton<CommentDisplay>
     {
+
         [Header("コメントのテキスト用Prefab")]
         [SerializeField] private GameObject commentPrefab;
         [SerializeField] private GameObject speedBuffPrefab;
         [SerializeField] private GameObject attackBuffPrefab;
         [SerializeField] private GameObject mapChangePrefab;
+
+        [Header("コメントのマテリアル")]
+        [SerializeField] Material normalCommentMaterial;
+        [SerializeField] Material speedBuffCommentMaterial;
+        [SerializeField] Material attackBuffCommentMaterial;
+        [SerializeField] Material mapChangeCommentMaterial;
+        [SerializeField] Material freezeCommentMaterial;
 
         [Header("コメントが流れるエリア")]
         public RectTransform commentLayer;
@@ -24,20 +32,23 @@ namespace TechC
         [Header("ランダムなコメントを表示するためのスクリプトを取得")]
         [SerializeField] private CommentProvider commentProvider;
 
+        [Header("特殊コメントの設定")]
+        [SerializeField] private float freezeTime = 3f;
+        private bool isCommentFrozen = false;
+
         [Header("コメントが出現する場所")]
-        /* コメントが出現する場所 */
         public GameObject topRightSpawn;
         public GameObject bottomRightSpawn;
         private float topRightSpawnPosY;
         private float bottomRightSpawnPosY;
         private float spawnPosX;
 
-        /* コメントが消滅する場所 */
         [Header("コメントを非表示にする場所")]
         public GameObject topLeftDespawn;
         public GameObject buttonLeftDespawn;
-
         private float despawnPosX;
+
+        protected override bool UseDontDestroyOnLoad => false;
 
         void Start()
         {
@@ -62,51 +73,91 @@ namespace TechC
             var commentData = commentProvider.GetRandomComment();
             const float PLAYER_TOP_OFFSET = -5.3f;
 
-
             GameObject comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData), commentLayer);
 
-            Color commentColor = Color.white;
-            switch (commentData.type)
-            {
-                case CommentType.AttackBuff:
-                    commentColor = Color.red;
-                    break;
-                case CommentType.SpeedBuff:
-                    commentColor = Color.blue;
-                    break;
-                case CommentType.MapChange:
-                    commentColor = Color.yellow;
-                    break;
-            }
+            Material commentMaterial = GetCommentMaterial(commentData.type);
 
-            List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, commentColor);
+            List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, Color.white);
 
-            if (comment == null)
-            {
-                return;
-            }
-
-            if (comment == null) return;
+            // 元のマテリアルを適用してから、そのマテリアルを保持
+            ApplyMaterialToCharacters(spawnedChars, commentMaterial);
 
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
             comment.transform.position = new Vector3(spawnPosX, randomY, PLAYER_TOP_OFFSET);
 
-            StartCoroutine(MoveComment(comment.transform, spawnedChars));
+            var freezeCommentTrigger = comment.GetComponent<FreezeCommentTrigger>();
+
+            // commentMaterialを直接渡す
+            StartCoroutine(MoveComment(comment.transform, spawnedChars, freezeCommentTrigger, commentMaterial));
+        }
+
+
+        /// <summary>
+        /// コメントタイプに応じたMaterialを取得
+        /// </summary>
+        private Material GetCommentMaterial(CommentType commentType)
+        {
+            switch (commentType)
+            {
+                case CommentType.AttackBuff:
+                    return attackBuffCommentMaterial;
+                case CommentType.SpeedBuff:
+                    return speedBuffCommentMaterial;
+                case CommentType.MapChange:
+                    return mapChangeCommentMaterial;
+                case CommentType.Normal:
+                default:
+                    return normalCommentMaterial;
+            }
+        }
+
+        /// <summary>
+        /// 生成された文字オブジェクトリストにMaterialを適用
+        /// </summary>
+        private void ApplyMaterialToCharacters(List<GameObject> characters, Material material)
+        {
+            foreach (var charObj in characters)
+            {
+                if (charObj == null) continue;
+
+                var meshRenderer = charObj.GetComponent<MeshRenderer>();
+                if (meshRenderer != null)
+                {
+                    meshRenderer.material = material;
+                }
+            }
         }
 
         /// <summary>
         /// コメントを画面上に流す処理
         /// </summary>
-        /// <param name="trans"></param>
-        /// <param name="chars"></param>
-        /// <returns></returns>
-        IEnumerator MoveComment(Transform trans, List<GameObject> chars)
+        IEnumerator MoveComment(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger, Material originalMaterial)
         {
-            while (trans.position.x > despawnPosX) /* 左端まで */
+            bool freezeMaterialApplied = false;
+
+            while (trans.position.x > despawnPosX)
             {
+                // 全コメントのフリーズ状態をチェック（メソッド名変更）
+                if (isCommentFrozen)
+                {
+                    if (!freezeMaterialApplied)
+                    {
+                        ApplyMaterialToCharacters(chars, freezeCommentMaterial);
+                        freezeMaterialApplied = true;
+                    }
+                    yield return null;
+                    continue;
+                }
+                else if (freezeMaterialApplied)
+                {
+                    ApplyMaterialToCharacters(chars, originalMaterial);
+                    freezeMaterialApplied = false;
+                }
+
                 trans.position += Vector3.left * speed * Time.deltaTime;
-                yield return null; /* 次のフレームまで待機 */
+                yield return null;
             }
+
             trans.gameObject.SetActive(false);
             CommentFactory.I.ReturnComment(trans.gameObject);
 
@@ -116,6 +167,7 @@ namespace TechC
                 CommentFactory.I.ReturnChar(obj);
             }
         }
+
 
         /// <summary>
         /// コメントを発生、消去する座標を取得する
@@ -147,7 +199,25 @@ namespace TechC
                     return null;
             }
         }
-        
+
+        /// <summary>
+        /// FreezeCommentTriggerから直接呼ばれるメソッド
+        /// </summary>
+        public void OnFreezeTriggered()
+        {
+            // 既にフリーズ中でない場合のみフリーズ開始
+            if (!isCommentFrozen)
+            {
+                StartCoroutine(FreezeAllCommentsCoroutine());
+            }
+        }
+
+        private IEnumerator FreezeAllCommentsCoroutine()
+        {
+            isCommentFrozen = true;
+            yield return new WaitForSeconds(freezeTime);
+            isCommentFrozen = false;
+        }
 
         public float GetCurrentSpeed()
         {

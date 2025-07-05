@@ -124,7 +124,7 @@ namespace TechC
                 switch (specialCommentType)
                 {
                     case SpecialCommentType.Freeze:
-                        return attackBuffCommentMaterial;
+                        return freezeCommentMaterial;
                 }
             }
             return null;

@@ -19,13 +19,13 @@ MonoBehaviour:
     attackType: 1
     attackStrength: 0
   animationTrigger: IsRightWeakAttack
-  animationSpeed: 1.8
+  animationSpeed: 2
   attackDuration: 0.5
   damage: 10
   knockback: 3
-  canRepeat: 0
+  canRepeat: 1
   repeatInterval: 0.1
-  repeatDuration: 2
+  repeatDuration: 1
   radius: 1
   targetLayers:
     serializedVersion: 2

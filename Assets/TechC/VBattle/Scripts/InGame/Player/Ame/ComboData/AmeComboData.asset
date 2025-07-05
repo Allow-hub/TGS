@@ -10,21 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01f576a6842c0284c845df63b9c7993f, type: 3}
-  m_Name: ComboData
+  m_Name: AmeComboData
   m_EditorClassIdentifier: 
   comboName: NormalCombo
   description: huttuunokonbo
   excludedCommandScripts:
   - {fileID: 11500000, guid: 9a812eb0c65069c48b6bcc4a94c89b8b, type: 3}
   - {fileID: 11500000, guid: e8b92da9d80611f43a42dd0bd75c639e, type: 3}
+  - {fileID: 11500000, guid: 35d27b7a7a5e165428f7d0596d3821dc, type: 3}
   sequence:
-  - attackType: 2
+  - attackType: 4
+    attackStrength: 0
+  - attackType: 1
     attackStrength: 0
   - attackType: 0
     attackStrength: 0
-  - attackType: 0
-    attackStrength: 0
-  timeWindow: 2
+  timeWindow: 3
   gaugeBonus: 10
   requiresCharge: 1
   effectPrefab: {fileID: 5673904798865036489, guid: 5fd168fb5c569014d8ee5ca4151dacaa,

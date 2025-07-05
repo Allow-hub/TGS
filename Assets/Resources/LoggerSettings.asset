@@ -88,8 +88,6 @@ MonoBehaviour:
   - physics
   - default
   _disabledCategoryIds:
-  - comboClear
-  - comboCheck
   - stage
   - icon
   - window
@@ -97,3 +95,5 @@ MonoBehaviour:
   - audio
   - state
   - npc
+  - comboClear
+  - comboCheck

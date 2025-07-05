@@ -899,7 +899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetFrameRate: 144
   isHighPerformanceMode: 1
-  canConectWifi: 1
+  canConectWifi: 0
   preloadLoadingScene: 1
 --- !u!4 &1183286594
 Transform:

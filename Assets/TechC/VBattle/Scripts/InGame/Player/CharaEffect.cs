@@ -73,7 +73,17 @@ namespace TechC
                 if (attackProcessor == null)
                     Debug.LogError("attaclProcesserを追加してください");
 
-                attackProcessor?.HandleAttack(attackData, other);
+                if (attackData.canRepeat)
+                {
+                    DelayUtility.StartRepeatedActionWithPause(this, attackData.repeatDuration, attackData.repeatInterval, BattleJudge.I.GetPauseStateFunc, () =>
+                    {
+                        attackProcessor?.HandleAttack(attackData, other);
+                    });
+                }
+                else
+                {
+                    attackProcessor?.HandleAttack(attackData, other);
+                }
             }
 
             if (canSelfReturn)

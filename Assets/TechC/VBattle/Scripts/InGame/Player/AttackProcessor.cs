@@ -34,9 +34,13 @@ namespace TechC
         }
         public void HandleAttack(AttackData attackData, Collider hitCollider)
         {
-            if (TryProcessHit(hitCollider, attackData))
+            // if (TryProcessHit(hitCollider, attackData))
+            // {
+            //     HitConfirmed(hitCollider.transform.position);
+            // }
+            if (PerformAttackHitCheck(attackData))
             {
-                HitConfirmed(hitCollider.transform.position);
+                HitStopManager.I.DoHitStop(attackData.hitStopDuration, attackData.hitStopTimeScale);
             }
         }
         

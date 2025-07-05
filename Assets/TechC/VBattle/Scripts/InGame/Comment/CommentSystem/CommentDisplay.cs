@@ -34,6 +34,7 @@ namespace TechC
 
         [Header("特殊コメントの設定")]
         [SerializeField] private float freezeTime = 3f;
+        private bool isCommentFrozen = false;
 
         [Header("コメントが出現する場所")]
         public GameObject topRightSpawn;
@@ -78,6 +79,7 @@ namespace TechC
 
             List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, Color.white);
 
+            // 元のマテリアルを適用してから、そのマテリアルを保持
             ApplyMaterialToCharacters(spawnedChars, commentMaterial);
 
             float randomY = Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
@@ -85,8 +87,10 @@ namespace TechC
 
             var freezeCommentTrigger = comment.GetComponent<FreezeCommentTrigger>();
 
-            StartCoroutine(MoveComment(comment.transform, spawnedChars, freezeCommentTrigger));
+            // commentMaterialを直接渡す
+            StartCoroutine(MoveComment(comment.transform, spawnedChars, freezeCommentTrigger, commentMaterial));
         }
+
 
         /// <summary>
         /// コメントタイプに応じたMaterialを取得
@@ -127,25 +131,14 @@ namespace TechC
         /// <summary>
         /// コメントを画面上に流す処理
         /// </summary>
-        /// <param name="trans"></param>
-        /// <param name="chars"></param>
-        /// <returns></returns>
-        IEnumerator MoveComment(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger)
+        IEnumerator MoveComment(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger, Material originalMaterial)
         {
-            // 本来のマテリアルを保持
-            Material originalMaterial = null;
-            if (chars.Count > 0)
-            {
-                var meshRenderer = chars[0].GetComponent<MeshRenderer>();
-                if (meshRenderer != null)
-                    originalMaterial = meshRenderer.sharedMaterial;
-            }
-
             bool freezeMaterialApplied = false;
 
             while (trans.position.x > despawnPosX)
             {
-                if (freezeCommentTrigger != null && freezeCommentTrigger.IsFrozen)
+                // 全コメントのフリーズ状態をチェック（メソッド名変更）
+                if (isCommentFrozen)
                 {
                     if (!freezeMaterialApplied)
                     {
@@ -157,7 +150,6 @@ namespace TechC
                 }
                 else if (freezeMaterialApplied)
                 {
-                    // フリーズ解除直後のみ元のマテリアルに戻す
                     ApplyMaterialToCharacters(chars, originalMaterial);
                     freezeMaterialApplied = false;
                 }
@@ -211,15 +203,20 @@ namespace TechC
         /// <summary>
         /// FreezeCommentTriggerから直接呼ばれるメソッド
         /// </summary>
-        public void OnFreezeTriggered(FreezeCommentTrigger trigger)
+        public void OnFreezeTriggered()
         {
-            StartCoroutine(FreezeOnlyThisCommentCoroutine(trigger));
+            // 既にフリーズ中でない場合のみフリーズ開始
+            if (!isCommentFrozen)
+            {
+                StartCoroutine(FreezeAllCommentsCoroutine());
+            }
         }
 
-        private IEnumerator FreezeOnlyThisCommentCoroutine(FreezeCommentTrigger trigger)
+        private IEnumerator FreezeAllCommentsCoroutine()
         {
+            isCommentFrozen = true;
             yield return new WaitForSeconds(freezeTime);
-            trigger.ResetFreezeState(); // フリーズ状態をリセット
+            isCommentFrozen = false;
         }
 
         public float GetCurrentSpeed()

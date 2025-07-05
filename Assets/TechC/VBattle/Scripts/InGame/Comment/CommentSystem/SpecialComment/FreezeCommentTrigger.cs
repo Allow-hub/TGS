@@ -9,9 +9,6 @@ namespace TechC
     {
         public SpecialCommentType SpecialType { get; private set; }
         public string CommentText { get; private set; }
-        public bool IsFrozen { get; private set; } = false;
-
-        private bool hasFrozenOnce = false; // 1度だけ停止用フラグ
 
         /// <summary>
         /// 特殊コメントタイプの設定
@@ -24,21 +21,13 @@ namespace TechC
 
         private void OnTriggerEnter(Collider other)
         {
-            // 1回目だけフリーズ、それ以降は何もしない
-            if (SpecialType == SpecialCommentType.Freeze && other.CompareTag("Player") && !hasFrozenOnce)
+            if (SpecialType == SpecialCommentType.Freeze && other.CompareTag("Player"))
             {
-                IsFrozen = true;
-                hasFrozenOnce = true;
                 if (CommentDisplay.I != null)
                 {
-                    CommentDisplay.I.OnFreezeTriggered(this);
+                    CommentDisplay.I.OnFreezeTriggered();
                 }
             }
-        }
-
-        public void ResetFreezeState()
-        {
-            IsFrozen = false;
         }
     }
 }

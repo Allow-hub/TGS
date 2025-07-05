@@ -34,7 +34,7 @@ namespace TechC
 
         [Header("特殊コメントの設定")]
         [SerializeField] private float freezeTime = 3f;
-        private bool isCommentFrozen = false;
+        public bool IsCommentFrozen { get; private set; } = false;
 
         [Header("コメントが出現する場所")]
         public GameObject topRightSpawn;
@@ -138,7 +138,7 @@ namespace TechC
             while (trans.position.x > despawnPosX)
             {
                 // 全コメントのフリーズ状態をチェック（メソッド名変更）
-                if (isCommentFrozen)
+                if (IsCommentFrozen)
                 {
                     if (!freezeMaterialApplied)
                     {
@@ -206,7 +206,7 @@ namespace TechC
         public void OnFreezeTriggered()
         {
             // 既にフリーズ中でない場合のみフリーズ開始
-            if (!isCommentFrozen)
+            if (!IsCommentFrozen)
             {
                 StartCoroutine(FreezeAllCommentsCoroutine());
             }
@@ -214,10 +214,12 @@ namespace TechC
 
         private IEnumerator FreezeAllCommentsCoroutine()
         {
-            isCommentFrozen = true;
+            IsCommentFrozen = true;
             yield return new WaitForSeconds(freezeTime);
-            isCommentFrozen = false;
+            IsCommentFrozen = false;
         }
+
+        
 
         public float GetCurrentSpeed()
         {

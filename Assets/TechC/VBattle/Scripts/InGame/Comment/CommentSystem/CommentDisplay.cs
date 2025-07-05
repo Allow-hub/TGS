@@ -78,7 +78,8 @@ namespace TechC
             var sp = comment.GetComponent<FreezeCommentTrigger>();
             var spType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
             Material commentMaterial;
-            if (spType != SpecialCommentType.None)
+
+            if (spType != SpecialCommentType.None && sp != null)
                 commentMaterial = GetCommentMaterial(null, sp.SpecialType);
             else
                 commentMaterial = GetCommentMaterial(commentData.type);
@@ -123,9 +124,7 @@ namespace TechC
                 switch (specialCommentType)
                 {
                     case SpecialCommentType.Freeze:
-                        return freezeCommentMaterial;
-                    default:
-                        return normalCommentMaterial;
+                        return attackBuffCommentMaterial;
                 }
             }
             return null;
@@ -238,7 +237,9 @@ namespace TechC
             yield return new WaitForSeconds(freezeTime);
             IsCommentFrozen = false;
         }
+
         
+
         public float GetCurrentSpeed()
         {
             return speed;

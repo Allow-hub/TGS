@@ -7,6 +7,10 @@ namespace TechC
     /// </summary>
     public class FreezeCommentTrigger : MonoBehaviour
     {
+
+        /* ===============================
+         * TODO: NormalCommentにスクリプトをアタッチしないように修正する
+         * =============================== */
         public SpecialCommentType SpecialType { get; private set; }
         public string CommentText { get; private set; }
 
@@ -27,6 +31,16 @@ namespace TechC
                 {
                     CommentDisplay.I.OnFreezeTriggered();
                 }
+
+                foreach (Transform child in transform)
+                {
+                    CommentFactory.I.ReturnChar(child.gameObject);
+                    child.gameObject.SetActive(false);
+                }
+
+                /* 固定コメントを非表示いして、Poolに返却する */
+                gameObject.SetActive(false);
+                CommentFactory.I.ReturnComment(gameObject);
             }
         }
     }

@@ -445,31 +445,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[8].initialSize
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[10].initialSize
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[11].initialSize
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[13].initialSize
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[14].initialSize
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8362738887710539125, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.x

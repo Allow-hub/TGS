@@ -15,6 +15,7 @@ namespace TechC
         private ObjectPool objectPool;
         private AttackProcessor attackProcessor;
         private int ownerId;
+        private bool isHitting = false;
 
         [SerializeField] private bool canHeal;
         [SerializeField] private bool canSelfReturn;
@@ -36,7 +37,7 @@ namespace TechC
             BattleJudge.I.OnPauseStarted.AddListener(OnPauseStarted);
             BattleJudge.I.OnPauseEnded.AddListener(OnPauseEnded);
         }
-        private void ODisable()
+        private void OnDisable()
         {
             // 一時停止イベントの解除
             if (BattleJudge.I != null)
@@ -59,6 +60,7 @@ namespace TechC
         private void OnTriggerEnter(Collider other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
+            isHitting = true;
             var opponentController = other.gameObject.GetComponentInParent<Player.CharacterController>();
             var opponentId = opponentController.PlayerID;
 
@@ -72,14 +74,27 @@ namespace TechC
                 // ドレイン系の攻撃が増える場合、拡張が必要
                 if (attackProcessor == null)
                     Debug.LogError("attaclProcesserを追加してください");
-
-                attackProcessor?.HandleAttack(attackData, other);
+                if (attackData.canRepeat)
+                {
+                    DelayUtility.StartRepeatedActionWhileWithPause(this, () => isHitting, attackData.repeatInterval, BattleJudge.I.GetPauseStateFunc, () =>
+                    {
+                        //この時点で当たっているので当たっているかの判定をスキップ
+                        attackProcessor?.HandleAttack(attackData, other);
+                    });
+                } else
+                    attackProcessor?.HandleAttack(attackData, other);
             }
 
             if (canSelfReturn)
             {
                 CharaEffectFactory.I.ReturnEffectObj(gameObject);
             }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (!other.gameObject.CompareTag("Player")) return;
+            isHitting = false;
         }
 
         /// <summary>

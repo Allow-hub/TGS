@@ -29,6 +29,8 @@ namespace TechC
         MenuOpen,
         MenuClose,
         CommentGet,
+        Guard,
+        Hit
     }
 
     /// <summary>

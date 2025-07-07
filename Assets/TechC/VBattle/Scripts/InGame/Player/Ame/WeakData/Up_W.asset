@@ -19,29 +19,29 @@ MonoBehaviour:
     attackType: 4
     attackStrength: 0
   animationTrigger: IsUpWeakAttack
-  animationSpeed: 1.5
+  animationSpeed: 1.7
   attackDuration: 0.7
-  damage: 10
-  knockback: 10
-  canRepeat: 0
-  repeatInterval: 0
-  repeatDuration: 0
+  damage: 5
+  knockback: 7
+  canRepeat: 1
+  repeatInterval: 0.1
+  repeatDuration: 0.2
   radius: 1.3
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
   hitboxOffset: {x: 0, y: 1.8, z: 0.7}
-  hitTiming: 0.2
+  hitTiming: 0.15
   hitStopDuration: 0.1
-  hitStopTimeScale: 0.5
+  hitStopTimeScale: 0.9
   knockbackDirection: {x: 0, y: 1, z: 0}
   useCustomKnockbackDirection: 1
   useSelfColliderForHitCheck: 0
+  shakeIntensity: 0.1
+  shakeDuraion: 0.3
+  noiseSettings: {fileID: 11400000, guid: 9a2d0babd3aac64449f78be89dadea22, type: 2}
   characterSEType: 0
   characterVoiceType: 0
-  effectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
-    type: 3}
-  effectOffset: {x: 0, y: 0, z: 0}
   hitStunDuration: 0.5
   hitStunLevel: 0
   isLaunchAttack: 0

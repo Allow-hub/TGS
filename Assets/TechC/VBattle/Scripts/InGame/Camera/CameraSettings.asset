@@ -21,7 +21,7 @@ MonoBehaviour:
   zoomSpeed: 10
   zoomMargin: 0
   enableYAxisFollow: 0
-  enableCameraShake: 0
+  enableCameraShake: 1
   defaultShakeIntensity: 1
   defaultShakeDuration: 0.2
   defaultShakeProfile: {fileID: 11400000, guid: 9732ea7bbbbb1b94095361c051dd9db6,

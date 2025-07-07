@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TechC.Player
 {
@@ -23,10 +21,22 @@ namespace TechC.Player
         public float GuardBreakDuration;
         [Tooltip("移動速度")]
         public float MoveSpeed;
+        [Tooltip("最大地上移動速度")]
+        public float MaxGroundSpeed = 10f;
+
         [Tooltip("加速度")]
         public float Acceleration = 10f;
         [Tooltip("減速度")]
         public float Deceleration = 8f;
+
+        /* ===============================
+         * TODO: バランス調整が終わり次第このフラグを消すこと
+         * ・trueになったらQuickStopMultiplierも消してCharacterDataの値を直接変更すること
+         * =============================== */
+        [Tooltip("瞬間方向転換の有効/無効（true=格闘ゲーム風、false=もともとの移動方法）")]
+        public bool UseInstantTurn = true;
+        [Tooltip("瞬間停止時の減速倍率（UseInstantTurn=trueの場合）")]
+        public float QuickStopMultiplier = 10f;
         [Tooltip("ジャンプ力")]
         public float JumpForce = 10f;
         [Tooltip("2段ジャンプの力")]

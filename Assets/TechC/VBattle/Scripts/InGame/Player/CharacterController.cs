@@ -54,6 +54,7 @@ namespace TechC.Player
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
+        private const float STOP_THRESHOLD = 0.1f;
         private bool canCounter = false;
         public bool CanCounter => canCounter;
 
@@ -168,7 +169,7 @@ namespace TechC.Player
         /// <summary>
         /// プレイヤーIDを設定する（生成時に呼び出す）
         /// </summary>
-        public void SetPlayerID(int id,InputDevice inputDevice)
+        public void SetPlayerID(int id, InputDevice inputDevice)
         {
             playerID = id;
             if (id == 1)
@@ -291,25 +292,57 @@ namespace TechC.Player
         /// </summary>
         private void GroundMovement(Vector3 moveDirection, float horizontalInput, float controlMultiplier)
         {
-            // 地上での移動速度
             float groundSpeed = characterData.MoveSpeed * controlMultiplier * GetMultipiler(BuffType.Speed);
-            // 入力があれば移動方向に速度を設定
-            if (Mathf.Abs(horizontalInput) > 0.1f)
+            groundSpeed = Mathf.Clamp(groundSpeed, 0f, characterData.MaxGroundSpeed);
+
+            if (Mathf.Abs(horizontalInput) > STOP_THRESHOLD)
             {
-                // X軸方向の向きを設定（キャラクターの向き）
                 transform.forward = new Vector3(Mathf.Sign(horizontalInput), 0, 0);
 
-                // 新しい速度を計算（スムーズに変化するためのLerp）
-                velocity = Vector3.Lerp(velocity, moveDirection * groundSpeed, characterData.Acceleration * Time.deltaTime);
+                // 格闘ゲーム風：瞬間的な速度変更
+                if (characterData.UseInstantTurn)
+                {
+                    float targetVelocityX = horizontalInput * groundSpeed;
+                    rb.velocity = new Vector3(targetVelocityX, rb.velocity.y, 0);
+                }
+                else
+                {
+                    // 従来のスムーズな加速
+                    velocity = Vector3.Lerp(velocity, moveDirection * groundSpeed, characterData.Acceleration * Time.deltaTime);
+                    rb.velocity = new Vector3(velocity.x, rb.velocity.y, 0);
+                }
             }
             else
             {
-                // 入力がない場合は減速
-                velocity = Vector3.Lerp(velocity, Vector3.zero, characterData.Deceleration * Time.deltaTime);
+                if (characterData.UseInstantTurn)
+                {
+                    // 高速減速（一瞬だけ滑る）
+                    float quickStopDeceleration = characterData.Deceleration * characterData.QuickStopMultiplier;
+                    
+                    if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
+                    {
+                        float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, quickStopDeceleration * Time.fixedDeltaTime);
+                        rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
+                    }
+                    else
+                    {
+                        rb.velocity = new Vector3(0f, rb.velocity.y, 0);
+                    }
+                }
+                else
+                {
+                    // 従来の減速処理
+                    if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
+                    {
+                        float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, characterData.Deceleration * Time.fixedDeltaTime);
+                        rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
+                    }
+                    else
+                    {
+                        rb.velocity = new Vector3(0f, rb.velocity.y, 0);
+                    }
+                }
             }
-
-            // 移動適用（Z軸の速度は常に0）
-            rb.velocity = new Vector3(velocity.x, rb.velocity.y, 0);
         }
 
         /// <summary>

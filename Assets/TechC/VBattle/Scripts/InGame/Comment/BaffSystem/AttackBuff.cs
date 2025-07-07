@@ -14,7 +14,7 @@ namespace TechC
         {
             buffName = "AttackBuff";
             description = "攻撃力が上昇する";
-            buffDuration = 2.0f;
+            buffDuration = 5.0f;
             remainingTime = buffDuration;
         }
 

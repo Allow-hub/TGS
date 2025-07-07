@@ -9,7 +9,7 @@ namespace TechC
     [Serializable]
     public class SpeedBuff : BuffBase
     {
-        [SerializeField] private float speedMultiplier = 3.0f;
+        [SerializeField] private float speedMultiplier = 1.5f;
 
         [SerializeField] private GameObject effectInstance; /* 実際にInstantiateで生成されたエフェクトのインスタンス */
 
@@ -17,7 +17,7 @@ namespace TechC
         {
             buffName = "SpeedBuff";
             description = "移動速度が上昇する";
-            buffDuration = 3.0f;
+            buffDuration = 5.0f;
             remainingTime = buffDuration;
         }
 

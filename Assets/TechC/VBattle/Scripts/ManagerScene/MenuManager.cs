@@ -36,6 +36,7 @@ namespace TechC
         }
         private void OnSoundVolumeChange(float value)
         {
+            AudioManager.I.PlaySE(SEID.ButtonClick);
             audioSlider.value += value;
         }
 
@@ -43,6 +44,8 @@ namespace TechC
         {
             menuCanvasObj.SetActive(!isMenu);
             isMenu = !isMenu;
+            if (isMenu)
+                AudioManager.I.PlaySE(SEID.MenuOpen);
             if (BattleJudge.I == null) return;
             BattleJudge.I.SetPause(!BattleJudge.I.IsPaused);
 

@@ -49,7 +49,7 @@ namespace TechC
 
         public override void NeutralAttack()
         {
-            // characterController.NotBoolAddSpecialGauge(100);//デバッグ用
+            characterController.NotBoolAddSpecialGauge(100);//デバッグ用
             base.NeutralAttack();
         }
         //-------Weak、Strongに合わせたいので使わないが残す-------------------///

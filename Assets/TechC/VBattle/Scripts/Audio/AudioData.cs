@@ -30,7 +30,8 @@ namespace TechC
         MenuClose,
         CommentGet,
         Guard,
-        Hit
+        Hit,
+        TabNotification
     }
 
     /// <summary>
@@ -85,7 +86,8 @@ namespace TechC
         Ult,
 
         //コンボ
-        Combo
+        Combo,
+        GuardBreak
     }
 
     /// <summary>

@@ -598,7 +598,7 @@ namespace TechC.Player
         public void GuardDamage(float damage, ICommand guardCommand)
         {
             currentGuardPower -= damage;
-            AudioManager.I.PlaySE(SEID.Guard);
+            AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Guard);
             if (inputDevice is Gamepad gamepad)
                 GamepadVibrationUtility.Vibrate(lowFrequency, highFrequency, duration, gamepad);
             if (currentGuardPower > 0) return;
@@ -611,6 +611,7 @@ namespace TechC.Player
         /// </summary>
         public void GuardBreak(ICommand guardCommand)
         {
+            AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.GuardBreak);
             guardCommand.ForceFinish();
             currentGuardPower = 0; // ガードがマイナスで保存されないように
             Debug.Log("Guardが破壊されました");

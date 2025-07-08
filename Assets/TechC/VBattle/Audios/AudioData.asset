@@ -29,7 +29,7 @@ MonoBehaviour:
     fadeOutTime: 0
   - id: 2
     clip: {fileID: 8300000, guid: 55f0c4aec7b15c545bf4c6af0917e481, type: 3}
-    volume: 0.7
+    volume: 0.5
     pitch: 1
     loop: 1
     fadeInTime: 0
@@ -50,12 +50,12 @@ MonoBehaviour:
     fadeOutTime: 0
   seList:
   - id: 0
-    clip: {fileID: 0}
-    volume: 1
+    clip: {fileID: 8300000, guid: bcb66339f3d1de34eadf2a9e8bd20200, type: 3}
+    volume: 0.6
     pitch: 1
     loop: 0
   - id: 1
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: bf1a8e79972dc4e4193e9a5a08a49646, type: 3}
     volume: 1
     pitch: 1
     loop: 0
@@ -69,13 +69,13 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     loop: 0
-  - id: 4
-    clip: {fileID: 8300000, guid: 228cb4384d3a1014eb25e84e955fc83d, type: 3}
-    volume: 0.7
-    pitch: 1
-    loop: 0
   - id: 5
-    clip: {fileID: 8300000, guid: 7f39fbb00d689b44882d95c840fb9f12, type: 3}
-    volume: 0.12
-    pitch: 0.09
+    clip: {fileID: 8300000, guid: ab59f6ae000645d4087caccde091bfbd, type: 3}
+    volume: 0.1
+    pitch: 0.8
+    loop: 0
+  - id: 6
+    clip: {fileID: 8300000, guid: 78e1777e7b32f1d4c8d98119fbbb3143, type: 3}
+    volume: 1
+    pitch: 1
     loop: 0

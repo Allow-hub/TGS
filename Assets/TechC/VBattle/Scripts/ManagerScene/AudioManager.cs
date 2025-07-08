@@ -305,6 +305,92 @@ namespace TechC
         }
 
         /// <summary>
+        /// 指定したSEが再生中でなければ再生する
+        /// </summary>
+        public AudioSource PlaySE(SEID id, bool preventDuplicate)
+        {
+            if (!preventDuplicate)
+            {
+                return PlaySE(id);
+            }
+
+            AudioData.SEInfo seInfo = audioData.GetSE(id);
+            if (seInfo == null || seInfo.clip == null)
+            {
+                CustomLogger.Warning($"SE の ID {id} が見つかりません", audioLogId);
+                return null;
+            }
+
+            // すでに同じクリップが再生中かチェック
+            foreach (AudioSource source in seSources)
+            {
+                if (source.isPlaying && source.clip == seInfo.clip)
+                {
+                    // すでに再生中
+                    return null;
+                }
+            }
+
+            // 未使用のAudioSourceを探す
+            AudioSource availableSource = GetAvailableAudioSource(seSources);
+            if (availableSource == null)
+            {
+                CustomLogger.Warning("利用可能な SE AudioSource が見つかりません。プールのサイズを増やすことを検討してください。", audioLogId);
+                return null;
+            }
+
+            availableSource.clip = seInfo.clip;
+            availableSource.volume = seInfo.volume * seVolume * masterVolume;
+            availableSource.pitch = seInfo.pitch;
+            availableSource.loop = seInfo.loop;
+            availableSource.Play();
+
+            return availableSource;
+        }
+
+        /// <summary>
+        /// 指定したSEが再生中かつ、再生開始からminSeconds経過していなければ再生しない
+        /// minSeconds以上経過していれば再生する
+        /// </summary>
+        public AudioSource PlaySE(SEID id, float minSeconds)
+        {
+            AudioData.SEInfo seInfo = audioData.GetSE(id);
+            if (seInfo == null || seInfo.clip == null)
+            {
+                CustomLogger.Warning($"SE の ID {id} が見つかりません", audioLogId);
+                return null;
+            }
+
+            foreach (AudioSource source in seSources)
+            {
+                if (source.isPlaying && source.clip == seInfo.clip)
+                {
+                    if (source.time < minSeconds)
+                    {
+                        // 指定秒数未満なら再生しない
+                        return null;
+                    }
+                    // 指定秒数以上経過していれば再生許可
+                }
+            }
+
+            AudioSource availableSource = GetAvailableAudioSource(seSources);
+            if (availableSource == null)
+            {
+                CustomLogger.Warning("利用可能な SE AudioSource が見つかりません。プールのサイズを増やすことを検討してください。", audioLogId);
+                return null;
+            }
+
+            availableSource.clip = seInfo.clip;
+            availableSource.volume = seInfo.volume * seVolume * masterVolume;
+            availableSource.pitch = seInfo.pitch;
+            availableSource.loop = seInfo.loop;
+            availableSource.Play();
+
+            return availableSource;
+        }
+
+        /// <summary>
         /// キャラクター固有のSEを再生
         /// </summary>
         public AudioSource PlayCharacterSE(CharacterType characterType, CharacterSEType seType)

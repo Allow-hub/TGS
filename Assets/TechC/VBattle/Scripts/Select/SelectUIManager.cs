@@ -58,7 +58,10 @@ namespace TechC
                 int index = i; // キャプチャ用ローカル変数
                 playerUIs[i].ameButton.onClick.AddListener(() => ChangeCharacter(index, 0));
                 playerUIs[i].teramiButton.onClick.AddListener(() => ChangeCharacter(index, 1));
-                playerUIs[i].pickButton.onClick.AddListener(() => OnCharacterPicked?.Invoke(index)); // ピックボタン
+                playerUIs[i].pickButton.onClick.AddListener(() => {
+                    AudioManager.I.PlaySE(SEID.ButtonClick);
+                    OnCharacterPicked?.Invoke(index); // ピックボタン
+                });
                 var dropdown = playerUIs[i].inputDeviceDropdown;
                 dropdown.ClearOptions();
                 dropdown.AddOptions(deviceNames);
@@ -82,6 +85,7 @@ namespace TechC
         /// <param name="characterIndex">キャラインデックス（0 = あめ,1 = てらみ</param>
         private void ChangeCharacter(int playerIndex, int characterIndex)
         {
+            AudioManager.I.PlaySE(SEID.ButtonClick);
             var ui = playerUIs[playerIndex];
 
             // UIの切り替え（片方だけアクティブにする）
@@ -171,11 +175,13 @@ namespace TechC
         }
         private void Dicide()
         {
+            AudioManager.I.PlaySE(SEID.ButtonClick);
             OnDicidePicked?.Invoke();
         }
 
         private void SetNpc()
         {
+            AudioManager.I.PlaySE(SEID.ButtonClick);
             isNpc = !isNpc;
             currentPicks[1].characterObject = characterNpcPrefabs[0];
             currentPicks[1].playerId = 1;

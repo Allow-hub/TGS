@@ -40,6 +40,7 @@ namespace TechC
 
         public virtual void Show()
         {
+            AudioManager.I.PlaySE(SEID.TabNotification);
             gameObject.SetActive(true);
             StopAllCoroutines();
             StartCoroutine(SlideIn());
@@ -49,7 +50,6 @@ namespace TechC
         {
             StopAllCoroutines();
             StartCoroutine(SlideOut());
-
         }
 
         public virtual void Excute()

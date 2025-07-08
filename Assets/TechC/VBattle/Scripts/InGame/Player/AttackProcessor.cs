@@ -126,7 +126,7 @@ namespace TechC
         private void HitConfirmed(Vector3 pos)
         {
             currentHitEffect = objectPool.GetObject(hitEffectPrefab);
-            AudioManager.I.PlaySE(SEID.Hit);
+            AudioManager.I.PlaySE(SEID.Hit, 0.3f);
             if (currentHitEffect != null)
             {
                 currentHitEffect.transform.position = pos;

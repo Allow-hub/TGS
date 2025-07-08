@@ -24,11 +24,6 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     loop: 0
-  - seType: 2
-    clip: {fileID: 0}
-    volume: 1
-    pitch: 1
-    loop: 0
   - seType: 3
     clip: {fileID: 0}
     volume: 1
@@ -131,6 +126,16 @@ MonoBehaviour:
     loop: 0
   - seType: 23
     clip: {fileID: 8300000, guid: 3f7da6a4ac96d344d908c3c795625f0c, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+  - seType: 2
+    clip: {fileID: 8300000, guid: 18bc6240182589a42b9390e062459147, type: 3}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+  - seType: 24
+    clip: {fileID: 8300000, guid: f1a6efbae8269974ea3da638a84d3dfa, type: 3}
     volume: 1
     pitch: 1
     loop: 0

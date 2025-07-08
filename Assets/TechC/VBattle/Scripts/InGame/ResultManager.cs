@@ -22,6 +22,7 @@ namespace TechC
             {
                 titleButton.onClick.AddListener(() =>
                 {
+                    AudioManager.I.PlaySE(SEID.ButtonClick);
                     GameManager.I.ChangeTitleState();
                 });
                 BattleJudge.I.OnBattleEnd.AddListener((winner) => ShowResult(winner));

@@ -502,6 +502,38 @@ namespace TechC
                 await UniTask.Delay(intervalMs);
             }
         }
+        public static async UniTask MoveWindowInDirectionAsync(
+            NativeWindow nativeWindow,
+            Vector2 direction,
+            float moveSpeedPerFrame = 10f,
+            int intervalMs = 16,
+            Texture2D texture = null,
+            float durationSeconds = -1f) // duration < 0 で無限に動く
+        {
+            if (!IsValidWindow(new HWND(nativeWindow.Hwnd))) return;
+
+            HWND hWnd = nativeWindow is WebWindow webWindow
+                ? webWindow.WebWindowHwnd
+                : (HWND)nativeWindow.Hwnd;
+
+            direction = direction.normalized;
+
+            float elapsed = 0f;
+            while (durationSeconds < 0f || elapsed < durationSeconds)
+            {
+                var rect = GetWindowRect(hWnd);
+                Vector2 currentPos = new Vector2(rect.left, rect.top);
+                Vector2 newPos = currentPos + direction * moveSpeedPerFrame;
+
+                MoveWindow(hWnd, Mathf.RoundToInt(newPos.x), Mathf.RoundToInt(newPos.y));
+
+                if (nativeWindow is ImageWindow imageWindow)
+                    imageWindow.SetImage(texture);
+
+                await UniTask.Delay(intervalMs);
+                elapsed += intervalMs / 1000f;
+            }
+        }
 
 
         /// <summary>

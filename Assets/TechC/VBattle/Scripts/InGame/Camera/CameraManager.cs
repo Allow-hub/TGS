@@ -309,7 +309,6 @@ namespace TechC
         /// </summary>
         private void UpdateCameraShake()
         {
-            CustomLogger.Info("UpdateCameraShake() called", LOGTAG);
             if (!EnableCameraShake || noiseComponent == null)
             {
                 CustomLogger.Warning("Camera shake disabled or noiseComponent is null", LOGTAG);
@@ -434,7 +433,7 @@ namespace TechC
         /// カメラシェイクを開始,CM Vcam1->Noise->NoiseProfileの歯車からEditで
         /// Shakeのデータを拾えます
         /// </summary>
-        public void StartShake(NoiseSettings noiseSettings = null, float intensity = -1f, float duration = -1f)
+        public void StartShake(float intensity = -1f, float duration = -1f,NoiseSettings noiseSettings = null)
         {
             if (!EnableCameraShake) return;
 

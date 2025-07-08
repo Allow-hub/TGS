@@ -36,6 +36,7 @@ namespace TechC
         {
             if (TryProcessHit(hitCollider, attackData))
             {
+                CameraManager.I.StartShake(attackData.shakeIntensity, attackData.shakeDuraion, attackData.noiseSettings);
                 HitConfirmed(hitCollider.transform.position);
             }
         }
@@ -47,6 +48,7 @@ namespace TechC
                 // ヒットチェックを実行し、ヒットした場合にヒットストップを発生させる
                 if (PerformAttackHitCheck(attackData))
                 {
+                    CameraManager.I.StartShake(attackData.shakeIntensity, attackData.shakeDuraion, attackData.noiseSettings);
                     // ヒットストップを実行
                     HitStopManager.I.DoHitStop(attackData.hitStopDuration, attackData.hitStopTimeScale);
                 }
@@ -124,6 +126,7 @@ namespace TechC
         private void HitConfirmed(Vector3 pos)
         {
             currentHitEffect = objectPool.GetObject(hitEffectPrefab);
+            AudioManager.I.PlaySE(SEID.Hit);
             if (currentHitEffect != null)
             {
                 currentHitEffect.transform.position = pos;

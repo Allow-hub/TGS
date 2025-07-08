@@ -20,6 +20,7 @@ namespace TechC
         [SerializeField] private GameObject bladeStormPrefab;
 
         [Header("ニュートラル強")]
+        [SerializeField] private float magicDuration = 2f;
         [SerializeField] private TransformRecorder transformRecorder;
         [SerializeField] private CommandHistory commandHistory;
         [SerializeField] private GameObject iceCloneObj; // 分身のプレハブ
@@ -27,7 +28,6 @@ namespace TechC
         private bool isCloneAttacking = false;
 
         [Header("左強")]
-        [SerializeField] private float magicDuration = 2f;
         [SerializeField] private float yOffset = 2;
         [SerializeField] private float leftStrongVelocity;
         [SerializeField] private float explosionDuration = 3f;
@@ -66,19 +66,30 @@ namespace TechC
         {
             if (isCloneAttacking) return;
             base.NeutralAttack();
-            var cloneObj = Instantiate(iceCloneObj);
-            transformRecorder.StartReplayFromSecondsAgo(echoTimeInterval, cloneObj.transform);
+            GameObject cloneObj = null;
 
-            if (commandHistory == null)
+            magicCircle.SetActive(true);
+            DelayUtility.StartDelayedActionWithPause(this, magicDuration, BattleJudge.I.GetPauseStateFunc, () =>
             {
-                Debug.LogWarning("CommandHistoryが見つかりませんでした");
-                return;
-            }
-            var cloneController = cloneObj.GetComponent<Player.CharacterController>();
-            cloneController.SetClonePlayerID(characterController.PlayerID);
-            if (characterController.GetCharacterState().AttackManager == null) return;
-            commandHistory.ReplayAttackCommandsFromSecondsAgo(echoTimeInterval, cloneController.GetCharacterState().AttackManager);
-            isCloneAttacking = true;
+                magicCircle.SetActive(false);
+            });
+            DelayUtility.StartDelayedActionWithPause(this, neutralAttackData.hitTiming, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                cloneObj = Instantiate(iceCloneObj);
+                transformRecorder.StartReplayFromSecondsAgo(echoTimeInterval, cloneObj.transform);
+
+                if (commandHistory == null)
+                {
+                    Debug.LogWarning("CommandHistoryが見つかりませんでした");
+                    return;
+                }
+                var cloneController = cloneObj.GetComponent<Player.CharacterController>();
+                cloneController.SetClonePlayerID(characterController.PlayerID);
+                if (characterController.GetCharacterState().AttackManager == null) return;
+                commandHistory.ReplayAttackCommandsFromSecondsAgo(echoTimeInterval, cloneController.GetCharacterState().AttackManager);
+                isCloneAttacking = true;
+
+            });
             DelayUtility.StartDelayedActionWithPause(this, echoTimeInterval, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 Destroy(cloneObj);
@@ -138,12 +149,6 @@ namespace TechC
                 count = 1,
                 isReadyForExplosion = false
             };
-
-            magicCircle.SetActive(true);
-            DelayUtility.StartDelayedActionWithPause(this, magicDuration, BattleJudge.I.GetPauseStateFunc, () =>
-            {
-                magicCircle.SetActive(false);
-            });
 
             var pos = transform.position.AddY(yOffset);
             attackData.iceObj = CharaEffectFactory.I.GetEffectObj(iceDataPrefab, pos, Quaternion.identity);
@@ -332,7 +337,7 @@ namespace TechC
         protected override void ExecuteAttack(AttackData attackData)
         {
             base.ExecuteAttack(attackData);
-            ActiveSword(upAttackData.attackDuration);
+            ActiveSword(attackData.attackDuration);
         }
 
         private void ActiveSword(float duration)
@@ -349,6 +354,7 @@ namespace TechC
         /// </summary>
         protected override void OnDisable()
         {
+            base.OnDisable();
             // 残っている左強攻撃データをすべてクリーンアップ
             foreach (var attackData in activeLeftAttacks)
             {

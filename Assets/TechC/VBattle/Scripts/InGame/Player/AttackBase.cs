@@ -85,6 +85,7 @@ namespace TechC
             {
                 if (obj != null)
                 {
+                    Debug.Log(obj.name);
                     CharaEffectFactory.I.ReturnEffectObj(obj);
                 }
             }

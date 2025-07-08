@@ -20,13 +20,14 @@ MonoBehaviour:
   GuardRecoveryInterval: 2
   GuardBreakDuration: 2
   MoveSpeed: 2.5
-  MaxGroundSpeed: 6
+  MaxGroundSpeed: 100
   Acceleration: 10
   Deceleration: 8
   UseInstantTurn: 1
-  JumpForce: 5
-  DoubleJumpForce: 6
+  QuickStopMultiplier: 10
+  JumpForce: 4.5
+  DoubleJumpForce: 5.5
   AirControlMultiplier: 0.7
   AirAcceleration: 5
   FastFallSpeed: 15
-  RotationSpeed: 10
+  RotationSpeed: 20

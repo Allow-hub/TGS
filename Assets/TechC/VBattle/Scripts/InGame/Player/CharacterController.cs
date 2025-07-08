@@ -55,6 +55,8 @@ namespace TechC.Player
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
         private const float STOP_THRESHOLD = 0.1f;
+        [SerializeField] private const float FallingJumpForceMultiplier = 0.8f;
+
         private bool canCounter = false;
         public bool CanCounter => canCounter;
 
@@ -432,7 +434,17 @@ namespace TechC.Player
         {
             if (IsGrounded())
             {
-                rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
+                if (characterData.UseInstantTurn)
+                {
+                    // 格闘ゲーム風: Y速度リセット + 即座にジャンプ力適用
+                    rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+                    rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
+                }
+                else
+                {
+                    // 従来: そのまま力を加算
+                    rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
+                }
             }
         }
 
@@ -441,11 +453,26 @@ namespace TechC.Player
         /// </summary>
         public void DoubleJump()
         {
-            // 空中での二段ジャンプ 
             if (CanDoubleJump() && !IsGrounded())
             {
-                rb.velocity = new Vector3(rb.velocity.x, 0, 0); // 上方向の速度をリセット
-                rb.AddForce(Vector3.up * characterData.DoubleJumpForce, ForceMode.Impulse);
+                if (characterData.UseInstantTurn)
+                {
+                    // 完全にY速度リセット + 2段ジャンプ力
+                    rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+                    rb.AddForce(Vector3.up * characterData.DoubleJumpForce, ForceMode.Impulse);
+                }
+                else
+                {
+                    // 従来: 落下速度を一部残してよりスムーズな2段ジャンプ
+                    float adjustedDoubleJumpForce = characterData.DoubleJumpForce;
+                    if (rb.velocity.y < 0)
+                    {
+                        // 落下中なら少し弱めのジャンプ力で自然な感じに
+                        adjustedDoubleJumpForce *= FallingJumpForceMultiplier;
+                    }
+                    rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 0.3f, rb.velocity.z);
+                    rb.AddForce(Vector3.up * adjustedDoubleJumpForce, ForceMode.Impulse);
+                }
                 UseDoubleJump();
             }
         }

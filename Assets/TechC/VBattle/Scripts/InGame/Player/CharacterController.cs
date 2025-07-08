@@ -55,7 +55,6 @@ namespace TechC.Player
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
         private const float STOP_THRESHOLD = 0.1f;
-        [SerializeField] private const float FallingJumpForceMultiplier = 0.8f;
 
         private bool canCounter = false;
         public bool CanCounter => canCounter;
@@ -299,53 +298,85 @@ namespace TechC.Player
 
             if (Mathf.Abs(horizontalInput) > STOP_THRESHOLD)
             {
-                transform.forward = new Vector3(Mathf.Sign(horizontalInput), 0, 0);
+                // キャラクターの向きをY軸回転でスムーズに変更
+                float targetYRotation = horizontalInput > 0 ? 90f : -90f;
+                float currentYRotation = transform.eulerAngles.y;
 
-                // 格闘ゲーム風：瞬間的な速度変更
-                if (characterData.UseInstantTurn)
+                // 現在の向きと目標の向きが大きく異なる場合のみ回転を実行
+                float angleDifference = Mathf.DeltaAngle(currentYRotation, targetYRotation);
+
+                // 既に正しい方向を向いている場合は回転しない（許容誤差5度）
+                if (Mathf.Abs(angleDifference) > 5f)
                 {
-                    float targetVelocityX = horizontalInput * groundSpeed;
-                    rb.velocity = new Vector3(targetVelocityX, rb.velocity.y, 0);
+                    float rotationStep = characterData.RotationSpeed * 90f * Time.deltaTime;
+
+                    if (Mathf.Abs(angleDifference) > 0.1f)
+                    {
+                        float newYRotation = currentYRotation + Mathf.Sign(angleDifference) * Mathf.Min(rotationStep, Mathf.Abs(angleDifference));
+                        transform.rotation = Quaternion.Euler(0, newYRotation, 0);
+                    }
+                    else
+                    {
+                        // 微小な差の場合は完全に目標角度に合わせる
+                        transform.rotation = Quaternion.Euler(0, targetYRotation, 0);
+                    }
                 }
-                else
-                {
-                    // 従来のスムーズな加速
-                    velocity = Vector3.Lerp(velocity, moveDirection * groundSpeed, characterData.Acceleration * Time.deltaTime);
-                    rb.velocity = new Vector3(velocity.x, rb.velocity.y, 0);
-                }
+
+
+                float targetVelocityX = horizontalInput * groundSpeed;
+                rb.velocity = new Vector3(targetVelocityX, rb.velocity.y, 0);
+
+
             }
             else
             {
-                if (characterData.UseInstantTurn)
+                // 入力が止まった時：最終的に完全に左右どちらかを向くように調整
+                float currentYRotation = transform.eulerAngles.y;
+
+                // 現在の角度から最も近い目標角度（90度または-90度）を決定
+                float targetYRotation;
+                float diffTo90 = Mathf.Abs(Mathf.DeltaAngle(currentYRotation, 90f));
+                float diffToMinus90 = Mathf.Abs(Mathf.DeltaAngle(currentYRotation, -90f));
+
+                targetYRotation = diffTo90 < diffToMinus90 ? 90f : -90f;
+
+                // 目標角度への最終調整
+                float angleDifference = Mathf.DeltaAngle(currentYRotation, targetYRotation);
+                if (Mathf.Abs(angleDifference) > 1f) // 1度以上のずれがある場合のみ調整
                 {
-                    // 高速減速（一瞬だけ滑る）
-                    float quickStopDeceleration = characterData.Deceleration * characterData.QuickStopMultiplier;
-                    
-                    if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
-                    {
-                        float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, quickStopDeceleration * Time.fixedDeltaTime);
-                        rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
-                    }
-                    else
-                    {
-                        rb.velocity = new Vector3(0f, rb.velocity.y, 0);
-                    }
+                    float rotationStep = characterData.RotationSpeed * 90f * Time.deltaTime;
+                    float newYRotation = currentYRotation + Mathf.Sign(angleDifference) * Mathf.Min(rotationStep, Mathf.Abs(angleDifference));
+                    transform.rotation = Quaternion.Euler(0, newYRotation, 0);
+                }
+                else if (Mathf.Abs(angleDifference) > 0.1f)
+                {
+                    // 微小な差の場合は完全に目標角度に合わせる
+                    transform.rotation = Quaternion.Euler(0, targetYRotation, 0);
+                }
+
+
+
+                if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
+                {
+                    float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, characterData.Deceleration * Time.fixedDeltaTime);
+                    rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
                 }
                 else
                 {
-                    // 従来の減速処理
-                    if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
-                    {
-                        float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, characterData.Deceleration * Time.fixedDeltaTime);
-                        rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
-                    }
-                    else
-                    {
-                        rb.velocity = new Vector3(0f, rb.velocity.y, 0);
-                    }
+                    rb.velocity = new Vector3(0f, rb.velocity.y, 0);
                 }
+
+
+                // 従来の減速処理
+                if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
+                {
+                    float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, characterData.Deceleration * Time.fixedDeltaTime);
+                    rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
+                }
+
             }
         }
+
 
         /// <summary>
         /// 空中での移動処理
@@ -434,17 +465,9 @@ namespace TechC.Player
         {
             if (IsGrounded())
             {
-                if (characterData.UseInstantTurn)
-                {
-                    // 格闘ゲーム風: Y速度リセット + 即座にジャンプ力適用
-                    rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-                    rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
-                }
-                else
-                {
-                    // 従来: そのまま力を加算
-                    rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
-                }
+                // 格闘ゲーム風: Y速度リセット + 即座にジャンプ力適用
+                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+                rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
             }
         }
 
@@ -455,24 +478,9 @@ namespace TechC.Player
         {
             if (CanDoubleJump() && !IsGrounded())
             {
-                if (characterData.UseInstantTurn)
-                {
-                    // 完全にY速度リセット + 2段ジャンプ力
-                    rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-                    rb.AddForce(Vector3.up * characterData.DoubleJumpForce, ForceMode.Impulse);
-                }
-                else
-                {
-                    // 従来: 落下速度を一部残してよりスムーズな2段ジャンプ
-                    float adjustedDoubleJumpForce = characterData.DoubleJumpForce;
-                    if (rb.velocity.y < 0)
-                    {
-                        // 落下中なら少し弱めのジャンプ力で自然な感じに
-                        adjustedDoubleJumpForce *= FallingJumpForceMultiplier;
-                    }
-                    rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 0.3f, rb.velocity.z);
-                    rb.AddForce(Vector3.up * adjustedDoubleJumpForce, ForceMode.Impulse);
-                }
+                // 完全にY速度リセット + 2段ジャンプ力
+                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+                rb.AddForce(Vector3.up * characterData.DoubleJumpForce, ForceMode.Impulse);
                 UseDoubleJump();
             }
         }

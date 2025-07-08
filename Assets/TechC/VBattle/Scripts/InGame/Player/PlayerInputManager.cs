@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using TechC.Player;
-using TechC;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
 
 namespace TechC.Player
 {
@@ -19,7 +13,8 @@ namespace TechC.Player
         // スナップ方向入力用の設定
         [Header("スナップ方向設定")]
         [SerializeField] private float directionDeadzone = 0.3f; // 方向入力のデッドゾーン
-        [SerializeField] private bool restrictCrouchToPureDown = true; // しゃがみを純粋な下方向のみに制限するか
+        [SerializeField] private bool restrictCrouchToPureDown = false; // しゃがみを純粋な下方向のみに制限するか
+        [SerializeField] private float crouchAngleRange = 45f; // しゃがみ判定の角度範囲（度）
 
         // 内部状態管理
         private bool isUpPressedDuringJump = false;
@@ -48,6 +43,30 @@ namespace TechC.Player
             }
             else
                 jumpInputTime = 0;
+                
+            // しゃがみ状態の継続監視（スティック入力のリアルタイム変化に対応）
+            if (isCrouching && !isCrouchButtonPressed) // ボタンではなくスティックでしゃがんでいる場合のみ
+            {
+                bool shouldStopCrouching = false;
+                
+                if (restrictCrouchToPureDown)
+                {
+                    // 純粋な下方向のみの場合
+                    InputDirection currentDir = DirectionInputHandler.GetSnappedDirection(moveInput, directionDeadzone);
+                    shouldStopCrouching = (currentDir != InputDirection.Down && currentDir != InputDirection.None);
+                }
+                else
+                {
+                    // カスタム角度範囲での判定
+                    shouldStopCrouching = !DirectionInputHandler.IsCrouchDirectionCustom(moveInput, directionDeadzone, crouchAngleRange);
+                }
+                
+                if (shouldStopCrouching)
+                {
+                    isCrouching = false;
+                    OnCrouch(false, true);
+                }
+            }
         }
         // 移動入力処理
         public void OnMove(InputAction.CallbackContext context)
@@ -63,10 +82,42 @@ namespace TechC.Player
                 isMoving = false;
                 isDashing = false;
                 currentDirection = InputDirection.None;
+                
+                // スティック入力が完全に停止した場合、しゃがみ状態も解除
+                if (isCrouching)
+                {
+                    isCrouching = false;
+                    OnCrouch(false, true);
+                }
             }
 
             // スナップされた方向を取得
-            currentDirection = DirectionInputHandler.GetSnappedDirection(moveInput, directionDeadzone);
+            InputDirection newDirection = DirectionInputHandler.GetSnappedDirection(moveInput, directionDeadzone);
+            
+            // しゃがみ状態の監視：適切な範囲外になったらしゃがみ解除
+            if (isCrouching && !isCrouchButtonPressed) // ボタンではなくスティックでしゃがんでいる場合のみ
+            {
+                bool shouldStopCrouching = false;
+                
+                if (restrictCrouchToPureDown)
+                {
+                    // 純粋な下方向のみの場合：下方向以外になったら解除
+                    shouldStopCrouching = (newDirection != InputDirection.Down && newDirection != InputDirection.None);
+                }
+                else
+                {
+                    // カスタム角度範囲でのしゃがみ判定：範囲外になったら解除
+                    shouldStopCrouching = !DirectionInputHandler.IsCrouchDirectionCustom(moveInput, directionDeadzone, crouchAngleRange);
+                }
+                
+                if (shouldStopCrouching)
+                {
+                    isCrouching = false;
+                    OnCrouch(false, true);
+                }
+            }
+            
+            currentDirection = newDirection;
 
             // 入力を保存
             lastMoveInput = moveInput;
@@ -153,11 +204,8 @@ namespace TechC.Player
                     }
                     else
                     {
-                        // 従来のロジック：下方向への強い入力があればしゃがみを許可
-                        if (moveInput.y < -crouchButtonPriority)
-                        {
-                            shouldCrouch = true;
-                        }
+                        // カスタム角度範囲でのしゃがみ判定
+                        shouldCrouch = DirectionInputHandler.IsCrouchDirectionCustom(moveInput, directionDeadzone, crouchAngleRange);
                     }
                 }
 

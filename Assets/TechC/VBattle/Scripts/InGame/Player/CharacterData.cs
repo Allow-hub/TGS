@@ -23,7 +23,6 @@ namespace TechC.Player
         public float MoveSpeed;
         [Tooltip("最大地上移動速度")]
         public float MaxGroundSpeed = 10f;
-
         [Tooltip("加速度")]
         public float Acceleration = 10f;
         [Tooltip("減速度")]

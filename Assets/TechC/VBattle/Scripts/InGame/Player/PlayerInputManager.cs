@@ -14,7 +14,7 @@ namespace TechC.Player
         [Header("スナップ方向設定")]
         [SerializeField] private float directionDeadzone = 0.3f; // 方向入力のデッドゾーン
         [SerializeField] private bool restrictCrouchToPureDown = false; // しゃがみを純粋な下方向のみに制限するか
-        [SerializeField] private float crouchAngleRange = 45f; // しゃがみ判定の角度範囲（度）
+        [SerializeField] private float crouchAngleRange = 15f; // しゃがみ判定の角度範囲（度）
 
         // 内部状態管理
         private bool isUpPressedDuringJump = false;

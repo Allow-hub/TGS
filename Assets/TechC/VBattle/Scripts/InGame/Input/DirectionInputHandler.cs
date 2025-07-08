@@ -152,25 +152,12 @@ namespace TechC
             // 下方向（270度）を中心とした角度範囲をチェック
             float downAngle = 270f;
             float halfRange = crouchAngleRange / 2f;
-            float minAngle = downAngle - halfRange;
-            float maxAngle = downAngle + halfRange;
             
-            // 角度範囲の調整（0-360度の境界を考慮）
-            if (minAngle < 0)
-            {
-                // 範囲が0度をまたぐ場合
-                return (angle >= (360f + minAngle)) || (angle <= maxAngle);
-            }
-            else if (maxAngle > 360)
-            {
-                // 範囲が360度をまたぐ場合
-                return (angle >= minAngle) || (angle <= (maxAngle - 360f));
-            }
-            else
-            {
-                // 通常の範囲内
-                return (angle >= minAngle) && (angle <= maxAngle);
-            }
+            // 角度差を計算（最短距離での角度差）
+            float angleDifference = Mathf.Abs(Mathf.DeltaAngle(angle, downAngle));
+            
+            // 角度差が半分の範囲以内かどうかをチェック
+            return angleDifference <= halfRange;
         }
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmList:
   - id: 0
-    clip: {fileID: 8300000, guid: 8adf597a53b1aca4e904d5a3b2abd06d, type: 3}
+    clip: {fileID: 8300000, guid: 667cf6990881f44428cdd77321472bff, type: 3}
     volume: 1
     pitch: 1
     loop: 1
@@ -28,10 +28,10 @@ MonoBehaviour:
     fadeInTime: 0
     fadeOutTime: 0
   - id: 2
-    clip: {fileID: 0}
-    volume: 1
+    clip: {fileID: 8300000, guid: 55f0c4aec7b15c545bf4c6af0917e481, type: 3}
+    volume: 0.7
     pitch: 1
-    loop: 0
+    loop: 1
     fadeInTime: 0
     fadeOutTime: 0
   - id: 3
@@ -68,4 +68,14 @@ MonoBehaviour:
     clip: {fileID: 0}
     volume: 1
     pitch: 1
+    loop: 0
+  - id: 4
+    clip: {fileID: 8300000, guid: 228cb4384d3a1014eb25e84e955fc83d, type: 3}
+    volume: 0.7
+    pitch: 1
+    loop: 0
+  - id: 5
+    clip: {fileID: 8300000, guid: 7f39fbb00d689b44882d95c840fb9f12, type: 3}
+    volume: 0.12
+    pitch: 0.09
     loop: 0

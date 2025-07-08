@@ -380,6 +380,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7462807888179640186, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7736416039240772365, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -440,34 +445,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7981336831571438261, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: players.Array.data[1].playerPrefab
+      value: 
+      objectReference: {fileID: 7627828736903395385, guid: 79a465377545c1648bbef77b5a111683,
+        type: 3}
     - target: {fileID: 8021778234465506351, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[8].initialSize
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[10].initialSize
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[11].initialSize
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[13].initialSize
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8058803600275324131, guid: c2ba8867f924fc444b667e30e329ad17,
-        type: 3}
-      propertyPath: poolItems.Array.data[14].initialSize
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8362738887710539125, guid: c2ba8867f924fc444b667e30e329ad17,

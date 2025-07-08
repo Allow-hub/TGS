@@ -492,46 +492,67 @@ namespace TechC
         /// <summary>
         /// マスター音量設定
         /// </summary>
+        /// <summary>
+        /// マスター音量設定
+        /// </summary>
         public void SetMasterVolume(float volume)
         {
             float prevMasterVolume = masterVolume;
             masterVolume = Mathf.Clamp01(volume);
-            float volumeRatio = masterVolume / prevMasterVolume;
 
-            // BGMの音量調整
-            if (bgmSource.isPlaying && !isBgmFading)
+            if (Mathf.Approximately(prevMasterVolume, 0f))
             {
-                bgmSource.volume *= volumeRatio;
-            }
-
-            // 共通SEの音量調整
-            foreach (AudioSource source in seSources)
-            {
-                if (source.isPlaying)
+                // 再計算方式：現在のBGMがあれば情報から設定
+                if (bgmSource.isPlaying && !isBgmFading)
                 {
-                    source.volume *= volumeRatio;
+                    AudioData.BGMInfo bgmInfo = audioData.GetBGM(currentBGM);
+                    if (bgmInfo != null)
+                    {
+                        bgmSource.volume = bgmInfo.volume * bgmVolume * masterVolume;
+                    }
                 }
-            }
 
-            // キャラクターSEの音量調整
-            foreach (AudioSource source in characterSESources)
+                ResetAudioSourceVolumes(seSources, seVolume);
+                ResetAudioSourceVolumes(characterSESources, seVolume);
+                ResetAudioSourceVolumes(characterVoiceSources, voiceVolume);
+            }
+            else
             {
-                if (source.isPlaying)
+                float volumeRatio = masterVolume / prevMasterVolume;
+
+                if (bgmSource.isPlaying && !isBgmFading)
                 {
-                    source.volume *= volumeRatio;
+                    bgmSource.volume *= volumeRatio;
                 }
-            }
 
-            // キャラクターボイスの音量調整
-            foreach (AudioSource source in characterVoiceSources)
-            {
-                if (source.isPlaying)
+                foreach (AudioSource source in seSources)
                 {
-                    source.volume *= volumeRatio;
+                    if (source.isPlaying) source.volume *= volumeRatio;
+                }
+                foreach (AudioSource source in characterSESources)
+                {
+                    if (source.isPlaying) source.volume *= volumeRatio;
+                }
+                foreach (AudioSource source in characterVoiceSources)
+                {
+                    if (source.isPlaying) source.volume *= volumeRatio;
                 }
             }
         }
 
+        /// <summary>
+        /// 再生中のAudioSourceの音量を再計算する補助メソッド
+        /// </summary>
+        private void ResetAudioSourceVolumes(List<AudioSource> sources, float categoryVolume)
+        {
+            foreach (var source in sources)
+            {
+                if (source.isPlaying && source.clip != null)
+                {
+                    source.volume = categoryVolume * masterVolume;
+                }
+            }
+        }
         /// <summary>
         /// 未使用のAudioSourceを取得
         /// </summary>

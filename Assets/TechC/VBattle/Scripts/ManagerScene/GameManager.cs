@@ -33,7 +33,7 @@ namespace TechC
         public bool IsNpc => isNpc;
         private bool isNpc;
         public GameState CurrentState => currentState;
-        private GameState currentState = GameState.Title;
+        [SerializeField, ReadOnly] private GameState currentState = GameState.Title;
 
         protected override void Init()
         {
@@ -45,6 +45,7 @@ namespace TechC
             // LoadingSceneを事前読み込み（オプション）
             if (preloadLoadingScene)
                 PreloadLoadingScene().Forget();
+            // AudioManager.I.PlayBGM(BGMID.Title);
 
             // ChangeTitleState();
         }
@@ -103,6 +104,7 @@ namespace TechC
         private void BattleStateInit()
         {
             LoadSceneWithLoadingAsync(2).Forget(); // BattleScene
+            AudioManager.I.PlayBGM(BGMID.Battle);
             // ChangeCursorMode(false, CursorLockMode.Locked);
         }
 

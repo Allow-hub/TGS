@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Cinemachine;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -66,13 +67,14 @@ namespace TechC
         public bool useCustomKnockbackDirection = false;
         public bool useSelfColliderForHitCheck = false;
 
+        public float shakeIntensity = 0.1f;
+        public float shakeDuraion = 0.1f;
+        public NoiseSettings noiseSettings;
+
 
         [Header("エフェクト")]
         public CharacterSEType characterSEType;
         public CharacterVoiceType characterVoiceType;
-        public GameObject effectPrefab;
-        public Vector3 effectOffset;
-        
         [Header("ヒットスタン設定")]
 
         [Tooltip("ヒットスタンの持続時間")]

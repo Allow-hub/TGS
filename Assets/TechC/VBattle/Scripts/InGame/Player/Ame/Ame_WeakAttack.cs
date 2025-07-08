@@ -15,11 +15,11 @@ namespace TechC
 
         [Header("ニュートラルアタックの設定")]
         [SerializeField] private float slashEffectDistance = 2f;
-        [SerializeField] private Quaternion n1Rot;
-        [SerializeField] private Quaternion n2Rot;
-        [SerializeField] private Quaternion n3Rot;
+        [SerializeField] private Vector3 n1Angle;
+        [SerializeField] private Vector3 n2Angle;
+        [SerializeField] private Vector3 n3Angle;
         private float returnNeutralEffectTime = 3f;
-        private Quaternion currentSlashRot;
+        private Vector3 currentSlashAngle;
         [Header("左弱")]
         [SerializeField] private AttackData leftAttackCounter;
 
@@ -50,20 +50,21 @@ namespace TechC
 
             //ニュートラルが何段階目かを確かめる
             if (currentNeutral == neutralAttackData_1)
-                currentSlashRot = n1Rot;
+                currentSlashAngle = n1Angle;
             else if (currentNeutral == neutralAttackData_2)
-                currentSlashRot = n2Rot;
+                currentSlashAngle = n2Angle;
             else if (currentNeutral == neutralAttackData_3)
-                currentSlashRot = n3Rot;
+                currentSlashAngle = n3Angle;
             var slObjPos = transform.position.AddY(slashEffectDistance);
             // 向きに応じて回転反転
             if (transform.forward.x < 0)
             {
-                currentSlashRot = Quaternion.Euler(0, 180, 0) * currentSlashRot;
+                currentSlashAngle.y = 180 - currentSlashAngle.y;
             }
+            var rotation = Quaternion.Euler(currentSlashAngle);
 
             //slashEffectの取得。各段階の回転を反映
-            var slObj = CharaEffectFactory.I.GetEffectObj(slash, slObjPos, currentSlashRot);
+            var slObj = CharaEffectFactory.I.GetEffectObj(slash, slObjPos, rotation);
             RegisterEffect(slObj);
             //エフェクトの返却時間分待ったらReturn。実行はヘルパーメソッドで
             DelayUtility.StartDelayedActionWithPause(this, returnNeutralEffectTime, BattleJudge.I.GetPauseStateFunc, () =>

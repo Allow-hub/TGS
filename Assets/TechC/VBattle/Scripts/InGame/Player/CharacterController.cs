@@ -598,6 +598,7 @@ namespace TechC.Player
         public void GuardDamage(float damage, ICommand guardCommand)
         {
             currentGuardPower -= damage;
+            AudioManager.I.PlaySE(SEID.Guard);
             if (inputDevice is Gamepad gamepad)
                 GamepadVibrationUtility.Vibrate(lowFrequency, highFrequency, duration, gamepad);
             if (currentGuardPower > 0) return;

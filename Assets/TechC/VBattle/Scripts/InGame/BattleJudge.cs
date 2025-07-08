@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -39,6 +38,8 @@ namespace TechC
         [SerializeField] private float respawnInvincibleTime = 3f;  // リスポーン無敵時間
         [SerializeField] private GameObject ultMap;//必殺技後のステージ
         [SerializeField] private GameObject normalMap;//2dのステージ
+
+        [SerializeField] private TextMeshProUGUI countDownText; // カウントダウン表示用
 
         [SerializeField] private bool isDebug = true;
         [Header("プレイヤー設定")]
@@ -114,7 +115,6 @@ namespace TechC
         public void InitializeBattle()
         {
             currentTime = timeLimit;
-            isBattleOngoing = true;
             alivePlayerCount = players.Count;
             // タイマー表示
             timerText.text = isTimeLimitEnabled ? GetRemainingTime().ToString() : "∞";
@@ -124,7 +124,7 @@ namespace TechC
             {
                 ResetPlayer();
                 foreach (var info in GameManager.I.GetPlayerInfo())
-                    AddPlayer(info.prefab, info.playerId,info.inputDevice);
+                    AddPlayer(info.prefab, info.playerId, info.inputDevice);
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].isAlive = true;
@@ -147,16 +147,24 @@ namespace TechC
                         }
                         players[i].playerObject = newPlayer;
                         var characterController = newPlayer.GetComponent<Player.CharacterController>();
-                        characterController.SetPlayerID(players[i].playerID,players[i].inputDevice);
+                        var inputManager = newPlayer.GetComponent<BaseInputManager>();
+                        inputManager.enabled = false;
+                        characterController.SetPlayerID(players[i].playerID, players[i].inputDevice);
                     }
                     else
                     {
                         Debug.LogWarning($"Player {i} にプレハブが設定されていません。");
                     }
                 }
+
+
+                float startTime = 5f;
+                float repeatTime = 1f;
+                StartCountDown(startTime, repeatTime);
             }
             else
             {
+                isBattleOngoing = true;
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].isAlive = true;
@@ -169,19 +177,47 @@ namespace TechC
                         GameObject newPlayer = Instantiate(players[i].playerPrefab, players[i].initialPosition.transform.position, Quaternion.identity);
                         players[i].playerObject = newPlayer;
                         var characterController = newPlayer.GetComponent<Player.CharacterController>();
-                        characterController.SetPlayerID(players[i].playerID,players[i].inputDevice);
+                        characterController.SetPlayerID(players[i].playerID, players[i].inputDevice);
                     }
                     else
                     {
                         Debug.LogWarning($"Player {i} にプレハブが設定されていません。");
                     }
                 }
+                countDownText.gameObject.SetActive(false);
+                OnBattleStart?.Invoke();
             }
 
             SetIsUlting(false);
-            OnBattleStart?.Invoke();
         }
 
+        private void StartCountDown(float startTime, float repeatTime)
+        {
+            float count = startTime - 2;//Start!!を出す用の調整
+            countDownText.gameObject.SetActive(true);
+
+            OnBattleStart?.Invoke();
+            DelayUtility.StartRepeatedActionWithPause(this, startTime, repeatTime, GetPauseStateFunc, () =>
+            {
+                countDownText.text = count.ToString();
+                if (count <= 0)
+                {
+                    countDownText.text = "Start!!";
+                    DelayUtility.StartDelayedActionWithPause(this, 1f, GetPauseStateFunc, () =>
+                    {
+                        countDownText.gameObject.SetActive(false);
+                    });
+                    foreach (var player in players)
+                    {
+                        var input = player.playerObject.GetComponent<BaseInputManager>();
+                        input.enabled = true;
+                        isBattleOngoing = true;
+                    }
+                }
+                
+                count--;
+            });
+        }
 
         /// <summary>
         /// 時間切れでバトルを終了

@@ -45,7 +45,7 @@ namespace TechC
         [SerializeField] protected float dashTimeWindow = 0.3f;
         protected bool hasMoved = false;
         protected int lastMoveDirection = 0;
-
+        protected int currentMoveDirection = 0;
         // プロパティ
         public Vector2 MoveInput => moveInput;
         public bool IsMoving => isMoving;
@@ -85,7 +85,7 @@ namespace TechC
         {
             commands[moveCommand] = new MoveCommand(characterController, this);
             commands[jumpCommand] = new JumpCommand(characterController, this);
-            commands[attackCommand] = new AttackCommand(characterState,characterController);
+            commands[attackCommand] = new AttackCommand(characterState, characterController);
             commands[crouchCommand] = new CrouchCommand(characterController, this);
             commands[guardCommand] = new GuardCommand(characterState, characterController, this, characterController.GetCharacterData(), guardObj);
         }
@@ -100,40 +100,35 @@ namespace TechC
         /// </summary>
         protected virtual void CheckDash()
         {
-            // 移動入力がある場合
             if (moveInput.x != 0)
             {
-                // 現在の移動方向を取得
-                int currentDirection = moveInput.x > 0 ? 1 : -1;
+                currentMoveDirection = moveInput.x > 0 ? 1 : -1;
                 characterState.EnqueueCommand(commands[moveCommand]);
 
-
-                // 以前に移動したことがあり、かつ前回の移動終了から一定時間内、かつ同じ方向であればダッシュ
                 if (hasMoved &&
                     Time.time - lastMoveEndTime <= dashTimeWindow &&
-                    currentDirection == lastMoveDirection)
+                    currentMoveDirection == lastMoveDirection)
                 {
                     isDashing = true;
-                    hasMoved = false; // ダッシュ後はフラグをリセット
+                    hasMoved = false;
                 }
-
-                // 現在の方向を保存
-                lastMoveDirection = currentDirection;
             }
-            // 移動入力がない場合
             else
             {
-                if (lastIsMoving && !isMoving) // 移動が終了した瞬間
+                if (lastIsMoving && !isMoving)
                 {
-                    lastMoveEndTime = Time.time; // 移動終了時間を記録
-                    hasMoved = true; // 移動履歴フラグを立てる
+                    lastMoveEndTime = Time.time;
+                    hasMoved = true;
+                    lastMoveDirection = currentMoveDirection;
                 }
 
-                isDashing = false; // 移動していない場合はダッシュ解除
+                isDashing = false;
+                currentMoveDirection = 0;
             }
 
-            lastIsMoving = isMoving; // 現在の移動状態を保存
+            lastIsMoving = isMoving;
         }
+
 
         /// <summary>
         /// 全ての入力をリセット

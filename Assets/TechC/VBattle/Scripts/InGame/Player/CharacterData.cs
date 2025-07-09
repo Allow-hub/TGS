@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TechC.Player
 {
@@ -23,6 +21,8 @@ namespace TechC.Player
         public float GuardBreakDuration;
         [Tooltip("移動速度")]
         public float MoveSpeed;
+        [Tooltip("最大地上移動速度")]
+        public float MaxGroundSpeed = 10f;
         [Tooltip("加速度")]
         public float Acceleration = 10f;
         [Tooltip("減速度")]

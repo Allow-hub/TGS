@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace TechC
 {
@@ -131,6 +129,35 @@ namespace TechC
         public static bool IsCrouchDirection(InputDirection direction)
         {
             return direction == InputDirection.Down;
+        }
+        
+        /// <summary>
+        /// カスタム角度範囲でしゃがみ判定を行う
+        /// </summary>
+        /// <param name="input">入力ベクトル</param>
+        /// <param name="deadzone">デッドゾーン</param>
+        /// <param name="crouchAngleRange">しゃがみ判定の角度範囲（度）デフォルト60度</param>
+        /// <returns></returns>
+        public static bool IsCrouchDirectionCustom(Vector2 input, float deadzone = 0.3f, float crouchAngleRange = 60f)
+        {
+            // 入力が閾値以下なら false
+            if (input.magnitude <= deadzone)
+                return false;
+                
+            // 角度を計算（度）- 0度は右方向、270度は下方向
+            float angle = Mathf.Atan2(input.y, input.x) * Mathf.Rad2Deg;
+            // 負の角度を 0-360 の範囲に変換
+            if (angle < 0) angle += 360f;
+            
+            // 下方向（270度）を中心とした角度範囲をチェック
+            float downAngle = 270f;
+            float halfRange = crouchAngleRange / 2f;
+            
+            // 角度差を計算（最短距離での角度差）
+            float angleDifference = Mathf.Abs(Mathf.DeltaAngle(angle, downAngle));
+            
+            // 角度差が半分の範囲以内かどうかをチェック
+            return angleDifference <= halfRange;
         }
     }
 }

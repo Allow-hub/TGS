@@ -9,14 +9,10 @@ namespace TechC
     {
         private class AirState : ImtStateMachine<CharacterState>.State
         {
-
-
-
             protected internal override void Enter()
             {
                 base.Enter(); 
                 Context.currentCommand = null;
-
             }
 
             protected internal override void Update()

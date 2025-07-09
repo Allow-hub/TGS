@@ -505,6 +505,7 @@ namespace TechC.Player
         {
             if (IsGrounded())
             {
+                AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Jump);
                 rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
                 rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
             }
@@ -517,6 +518,7 @@ namespace TechC.Player
         {
             if (CanDoubleJump() && !IsGrounded())
             {
+                AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Jump);
                 // 完全にY速度リセット + 2段ジャンプ力
                 rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
                 rb.AddForce(Vector3.up * characterData.DoubleJumpForce, ForceMode.Impulse);

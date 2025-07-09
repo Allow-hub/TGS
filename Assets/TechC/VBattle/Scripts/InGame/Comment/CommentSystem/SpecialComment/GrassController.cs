@@ -71,6 +71,7 @@ namespace TechC
 
                 grassChar.SetActive(false);
                 grassEffect.SetActive(true);
+                AudioManager.I.PlaySE(SEID.Grass);
 
                 if (!isReturning)
                 {

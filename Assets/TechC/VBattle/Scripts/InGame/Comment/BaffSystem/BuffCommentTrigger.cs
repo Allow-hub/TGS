@@ -84,7 +84,7 @@ namespace TechC
                 }
 
                 alreadyApplied = true;
-                objectPool.ReturnObject(gameObject);
+                CommentFactory.I.ReturnComment(gameObject);
             }
         }
     }

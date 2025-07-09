@@ -70,6 +70,7 @@ namespace TechC
         /// </summary>
         public void SpawnComment()
         {
+            if (IsCommentFrozen) return;
             var commentData = commentProvider.GetRandomComment();
             const float PLAYER_TOP_OFFSET = -5.3f;
 
@@ -85,7 +86,6 @@ namespace TechC
                 commentMaterial = GetCommentMaterial(commentData.type);
 
             List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, Color.white);
-
             // 元のマテリアルを適用してから、そのマテリアルを保持
             ApplyMaterialToCharacters(spawnedChars, commentMaterial);
 
@@ -127,7 +127,7 @@ namespace TechC
                         return freezeCommentMaterial;
                 }
             }
-            return null;
+            return normalCommentMaterial;
         }
 
         /// <summary>
@@ -237,8 +237,6 @@ namespace TechC
             yield return new WaitForSeconds(freezeTime);
             IsCommentFrozen = false;
         }
-
-        
 
         public float GetCurrentSpeed()
         {

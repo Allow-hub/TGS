@@ -985,12 +985,7 @@ namespace TechC.Player
             // 破片のリターン
             await UniTask.Delay(TimeSpan.FromSeconds(3f));
             debris.GetComponent<ExplosionDebris>()?.ResetExplosion();
-            effectPool.ReturnObject(debris);
-
-            // Debug: 反射方向の確認
-            // Debug.DrawRay(hitPos, wallNormal, Color.red, 2f);      // 法線
-            // Debug.DrawRay(hitPos, inDirection.normalized, Color.blue, 2f); // 入射
-            // Debug.DrawRay(hitPos, reflected, Color.green, 2f);     // 反射
+            EffectFactory.I.ReturnEffect(debris);
         }
 
         private void OnDrawGizmos()

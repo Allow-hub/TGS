@@ -125,7 +125,7 @@ namespace TechC
         }
         private void HitConfirmed(Vector3 pos)
         {
-            currentHitEffect = objectPool.GetObject(hitEffectPrefab);
+            currentHitEffect = EffectFactory.I.GetEffectObj(hitEffectPrefab);
             AudioManager.I.PlaySE(SEID.Hit, 0.3f);
             if (currentHitEffect != null)
             {
@@ -183,7 +183,7 @@ namespace TechC
             // エフェクトをプールに戻す
             if (retrunObj != null)
             {
-                objectPool.ReturnObject(retrunObj);
+                EffectFactory.I.ReturnEffect(retrunObj);
                 retrunObj = null;
                 // Debug.Log("ヒットエフェクトをプールに返却しました");
             }

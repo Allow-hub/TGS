@@ -20,7 +20,7 @@ MonoBehaviour:
     attackStrength: 2
   animationTrigger: IsAppealing
   animationSpeed: 1.2
-  attackDuration: 2
+  attackDuration: 4
   damage: 150
   knockback: 0
   canRepeat: 0

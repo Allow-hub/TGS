@@ -498,6 +498,7 @@ namespace TechC.Player
         public void SetCounterAction(Action action) => onCounter = action;
         public void UseCounter()
         {
+            if (onCounter == null) return;
             onCounter.Invoke();
             onCounter = null;
         }
@@ -824,6 +825,7 @@ namespace TechC.Player
             // 地面に着地した時の処理
             if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
+                AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Land);
                 ResetJump();
             }
 

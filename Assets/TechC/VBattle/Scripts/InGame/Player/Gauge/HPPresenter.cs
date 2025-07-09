@@ -35,6 +35,7 @@ namespace TechC
             var obj = BattleJudge.I.GetPlayerObjById(playerId);
             var controller = obj.GetComponent<Player.CharacterController>();
             hpView.SetIcon(controller.CharacterType);
+            hpView.SetBack(playerId);
             view = hpView;
             HandleValueChanged(GetMaxValue());
         }

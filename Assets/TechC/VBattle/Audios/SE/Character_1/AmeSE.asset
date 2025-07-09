@@ -30,9 +30,9 @@ MonoBehaviour:
     pitch: 1
     loop: 0
   - seType: 4
-    clip: {fileID: 0}
-    volume: 1
-    pitch: 1
+    clip: {fileID: 8300000, guid: e6d1504dc8bb1e64f97e41a48a35b469, type: 3}
+    volume: 0.2
+    pitch: 0.67
     loop: 0
   - seType: 5
     clip: {fileID: 8300000, guid: afa4c368aaa560848a899fe3c5799c1d, type: 3}

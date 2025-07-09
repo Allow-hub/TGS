@@ -45,7 +45,7 @@ namespace TechC
             // LoadingSceneを事前読み込み（オプション）
             if (preloadLoadingScene)
                 PreloadLoadingScene().Forget();
-            // AudioManager.I.PlayBGM(BGMID.Title);
+            AudioManager.I.PlayBGM(BGMID.Title);
 
             // ChangeTitleState();
         }

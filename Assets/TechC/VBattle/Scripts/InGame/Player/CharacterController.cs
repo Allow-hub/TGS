@@ -36,7 +36,9 @@ namespace TechC.Player
         [Header("プレイヤー設定")]
         [SerializeField] private int playerID = 1; // 1Pか2Pかを識別するID
         [SerializeField] private CapsuleCollider hitCollider;
-
+        [SerializeField] private SkinnedMeshRenderer[] renderers;
+        [SerializeField] private Material outlineMat;
+        [SerializeField] private Color outlineColor1, outlineColor2;
 
         [Header("HP設定")]
         [SerializeField] private HPPresenter hpPresenter;
@@ -137,7 +139,24 @@ namespace TechC.Player
             currentGuardPower = characterData.GuardPower;
             defaultSize = new Vector3(hitCollider.radius, hitCollider.height, 0f);
             defaultCenter = hitCollider.center;
+            if (outlineMat != null && renderers != null)
+            {
+                outlineMat = Instantiate(outlineMat);
 
+                foreach (var smr in renderers)
+                {
+                    if (smr == null) continue;
+                    var mats = smr.materials;
+                    for (int i = 0; i < mats.Length; i++)
+                    {
+                        if (mats[i] != null && mats[i].name.Contains("Outline"))
+                        {
+                            mats[i] = outlineMat;
+                        }
+                    }
+                    smr.materials = mats;
+                }
+            }
             // バフ辞書の初期化
             foreach (var e in Enum.GetValues(typeof(BuffType)))
             {
@@ -183,9 +202,21 @@ namespace TechC.Player
         {
             playerID = id;
             if (id == 1)
+            {
+                if (outlineMat.HasProperty("_OutlineColor"))
+                {
+                    outlineMat.SetColor("_OutlineColor", outlineColor1);
+                }
                 gameObject.transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+            }
             else if (id == 2)
+            {
+                if (outlineMat.HasProperty("_OutlineColor"))
+                {
+                    outlineMat.SetColor("_OutlineColor", outlineColor2);
+                }
                 gameObject.transform.rotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
+            }
             this.inputDevice = inputDevice;
             // IDが変更された場合は、対応するPresenterを再取得
             FindPresenters();

@@ -150,6 +150,11 @@ namespace TechC
             {
                 return true;
             }
+            
+            if (targetController.CanCounter)
+            {
+                return false;
+            }
 
             if (TryProcessGuard(targetController, hitCollider, attackData))
             {

@@ -22,6 +22,7 @@ namespace TechC
         private Vector3 currentSlashAngle;
         [Header("左弱")]
         [SerializeField] private AttackData leftAttackCounter;
+        private bool isCountering = false;
 
         [Header("右弱")]
         [SerializeField] private float xOffset = 3f;
@@ -83,9 +84,11 @@ namespace TechC
             base.LeftAttack();  
             characterController.SetCanCounter(true);
             characterController.SetCounterAction(CounterAttack);
+            isCountering = false;
             //カウンター待機時に攻撃を受けなかった場合戻す
             DelayUtility.StartDelayedActionWithPause(this, leftAttackData.attackDuration, BattleJudge.I.GetPauseStateFunc, () =>
             {
+                if (isCountering) return;
                 characterController.SetCanCounter(false);
                 characterController.SetCounterAction(null);
             });
@@ -94,6 +97,7 @@ namespace TechC
         private void CounterAttack()
         {
             isAttacking = false;
+            isCountering = true;
             // 前方にレイを飛ばして相手をチェック
             float rayDistance = 30f;
             Ray ray = new Ray(transform.position, transform.forward);
@@ -115,9 +119,13 @@ namespace TechC
             {
                 characterController.GetAnim().SetBool(leftAttackData.animHash, false);
             });
-            // カウンター状態解除
-            characterController.SetCanCounter(false);
-            characterController.SetCounterAction(null);
+
+            DelayUtility.StartDelayedActionWithPause(this, leftAttackCounter.attackDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                isCountering = false;
+                characterController.SetCanCounter(false);
+                characterController.SetCounterAction(null);
+            });
         }
 
 

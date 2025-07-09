@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace TechC
@@ -11,6 +9,8 @@ namespace TechC
         [SerializeField] private Image teramiIconImage;
         [SerializeField] private float lowHpThreshold = 0.3f;
         [SerializeField] private Color lowHpColor = Color.red;
+        [SerializeField] private Image backImage;
+        [SerializeField] private Color color1p, color2p;
 
         protected override void UpdateText(float currentValue, float maxValue)
         {
@@ -53,6 +53,18 @@ namespace TechC
                     break;
                 default:
                     break;
+            }
+        }
+
+        public void SetBack(int id)
+        {
+            if (id == 1)
+            {
+                backImage.color = color1p;
+            }
+            else
+            {
+                backImage.color = color2p;
             }
         }
     }

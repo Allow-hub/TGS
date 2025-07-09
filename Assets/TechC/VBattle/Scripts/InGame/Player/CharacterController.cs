@@ -474,7 +474,6 @@ namespace TechC.Player
         {
             if (IsGrounded())
             {
-                // 格闘ゲーム風: Y速度リセット + 即座にジャンプ力適用
                 rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
                 rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
             }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TechC.Player;
+﻿using TechC.Player;
 using UnityEngine;
 
 namespace TechC

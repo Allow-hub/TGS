@@ -13,7 +13,8 @@ namespace TechC.Player
         // スナップ方向入力用の設定
         [Header("スナップ方向設定")]
         [SerializeField] private float directionDeadzone = 0.3f; // 方向入力のデッドゾーン
-        [SerializeField] private bool restrictCrouchToPureDown = false; // しゃがみを純粋な下方向のみに制限するか
+        [SerializeField] private bool crouchDownOnly = false; // しゃがみを純粋な下方向のみに制限するか
+
         [SerializeField] private float crouchAngleRange = 15f; // しゃがみ判定の角度範囲（度）
 
         // 内部状態管理
@@ -49,7 +50,7 @@ namespace TechC.Player
             {
                 bool shouldStopCrouching = false;
                 
-                if (restrictCrouchToPureDown)
+                if (crouchDownOnly)
                 {
                     // 純粋な下方向のみの場合
                     InputDirection currentDir = DirectionInputHandler.GetSnappedDirection(moveInput, directionDeadzone);
@@ -99,7 +100,7 @@ namespace TechC.Player
             {
                 bool shouldStopCrouching = false;
                 
-                if (restrictCrouchToPureDown)
+                if (crouchDownOnly)
                 {
                     // 純粋な下方向のみの場合：下方向以外になったら解除
                     shouldStopCrouching = (newDirection != InputDirection.Down && newDirection != InputDirection.None);
@@ -197,7 +198,7 @@ namespace TechC.Player
                 else
                 {
                     // スナップ方向による判定
-                    if (restrictCrouchToPureDown)
+                    if (crouchDownOnly)
                     {
                         // 真下方向の場合のみしゃがみを許可
                         shouldCrouch = DirectionInputHandler.IsCrouchDirection(currentDirection);

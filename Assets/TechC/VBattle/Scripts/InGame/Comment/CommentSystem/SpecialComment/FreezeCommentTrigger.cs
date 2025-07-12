@@ -29,7 +29,7 @@ namespace TechC
             {
                 if (CommentDisplay.I != null)
                 {
-                    CommentDisplay.I.OnFreezeTriggered();
+                    // CommentDisplay.I.OnFreezeTriggered();
                 }
 
                 foreach (Transform child in transform)

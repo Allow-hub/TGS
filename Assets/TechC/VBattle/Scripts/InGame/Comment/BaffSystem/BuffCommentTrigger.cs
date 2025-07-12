@@ -32,7 +32,7 @@ namespace TechC
         private void OnTriggerEnter(Collider other)
         {
             if (alreadyApplied) return;
-            if (CommentDisplay.I.IsCommentFrozen) return;
+            // if (CommentDisplay.I.IsCommentFrozen) return;
 
 
             if (other.CompareTag("Player"))

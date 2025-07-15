@@ -291,6 +291,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
+      propertyPath: commentMover.topLeftDespawn
+      value: 
+      objectReference: {fileID: 913436215}
+    - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
       propertyPath: commentSpawner.commentPrefab
       value: 
       objectReference: {fileID: 4406060062429152804, guid: c9670e3b81aa1394da12bf9758a2202a,
@@ -300,6 +305,11 @@ PrefabInstance:
       propertyPath: commentSpawner.topRightSpawn
       value: 
       objectReference: {fileID: 247781340}
+    - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: commentMover.buttonLeftDespawn
+      value: 
+      objectReference: {fileID: 913436214}
     - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: commentSpawner.commentProvider
@@ -338,6 +348,31 @@ PrefabInstance:
       propertyPath: commentSpawner.bottomRightSpawnPos
       value: 
       objectReference: {fileID: 1082517473}
+    - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: commentMaterialApplier.freezeCommentMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 885da04419af5014eb275dda99c41551, type: 2}
+    - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: commentMaterialApplier.normalCommentMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 2cc0f2305e7b13149bd422c35c9dc444, type: 2}
+    - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: commentMaterialApplier.mapChangeCommentMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 6ac8e9e511558754d93394e856b2bc7a, type: 2}
+    - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: commentMaterialApplier.speedBuffCommentMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 5d2c7da9e32f1f24a9d3feb86a298a58, type: 2}
+    - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: commentMaterialApplier.attackBuffCommentMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: e8ba081592a531e43bb56b5076b08be8, type: 2}
     - target: {fileID: 4315862063598789008, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -473,6 +508,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
+--- !u!4 &913436214 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7688773617267763489, guid: c2ba8867f924fc444b667e30e329ad17,
+    type: 3}
+  m_PrefabInstance: {fileID: 913436213}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &913436215 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5146254439957304469, guid: c2ba8867f924fc444b667e30e329ad17,
+    type: 3}
+  m_PrefabInstance: {fileID: 913436213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &971393924 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,

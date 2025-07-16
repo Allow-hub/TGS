@@ -29,17 +29,15 @@ namespace TechC
             {
                 if (CommentDisplay.I != null)
                 {
-                    // CommentDisplay.I.OnFreezeTriggered();
+                    CommentDisplay.I.OnFreezeTriggered();
                 }
 
                 foreach (Transform child in transform)
                 {
                     CommentFactory.I.ReturnChar(child.gameObject);
-                    // child.gameObject.SetActive(false);
                 }
 
-                /* 固定コメントを非表示いして、Poolに返却する */
-                // gameObject.SetActive(false);
+                /* 固定コメントを非表示にして、Poolに返却する */
                 CommentFactory.I.ReturnComment(gameObject);
             }
         }

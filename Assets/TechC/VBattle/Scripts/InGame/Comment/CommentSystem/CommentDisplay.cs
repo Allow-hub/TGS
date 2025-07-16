@@ -57,9 +57,12 @@ namespace TechC
         {
             while (isSpawning)
             {
-                commentSpawner.SpawnComment();
+                /* コメント固定中は生成しない */
+                if (!IsCommentFrozen)
+                {
+                    commentSpawner.SpawnComment();
+                }
 
-                // インターバル待機
                 yield return new WaitForSeconds(commentInterval);
             }
         }

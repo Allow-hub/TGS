@@ -72,18 +72,6 @@ namespace TechC
         }
 
         /// <summary>
-        /// 単一の文字オブジェクトにMaterialを適用
-        /// </summary>
-        public void ApplyMaterialToCharacter(GameObject character, Material material)
-        {
-            var meshRenderer = character.GetComponent<MeshRenderer>();
-            if (meshRenderer != null)
-            {
-                meshRenderer.material = material;
-            }
-        }
-
-        /// <summary>
         /// フリーズ用マテリアルを取得
         /// </summary>
         public Material GetFreezeMaterial()

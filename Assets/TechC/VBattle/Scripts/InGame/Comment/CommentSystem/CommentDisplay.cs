@@ -69,11 +69,48 @@ namespace TechC
                 () =>
                 {
                     // コメントを生成
-                    commentSpawner.SpawnComment();
+                    GameObject spawnedComment = commentSpawner.SpawnComment();
+                    
+                    // 生成されたコメントにマテリアルを適用
+                    ApplyMaterialToSpawnedComment(spawnedComment);
                 }
             );
 
             yield break;
+        }
+
+        /// <summary>
+        /// 生成されたコメントにマテリアルを適用
+        /// </summary>
+        private void ApplyMaterialToSpawnedComment(GameObject comment)
+        {
+            if (comment == null) return;
+
+            // CommentSpawnerから最後に生成されたコメントのデータを取得
+            var commentData = commentSpawner.GetLastCommentData();
+            var characters = commentSpawner.GetLastCharacters();
+
+            // 特殊コメントのチェック
+            var freezeCommentTrigger = comment.GetComponent<FreezeCommentTrigger>();
+            var spType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
+            Material targetMaterial;
+
+            if (spType != SpecialCommentType.None && freezeCommentTrigger != null)
+            {
+                // フリーズコメントのマテリアル
+                targetMaterial = commentMaterialApplier.GetCommentMaterial(null, spType);
+            }
+            else
+            {
+                // 通常コメントのマテリアル
+                targetMaterial = commentMaterialApplier.GetCommentMaterial(commentData.type);
+            }
+
+            // マテリアルを適用
+            commentMaterialApplier.ApplyMaterialToCharacters(characters, targetMaterial);
+            
+            // 移動処理を開始
+            GetMover().StartMoving(comment.transform, characters, freezeCommentTrigger, targetMaterial);
         }
 
         /// <summary>

@@ -25,6 +25,10 @@ namespace TechC
         private const float PLAYER_TOP_OFFSET = -5.3f;
         private bool isInitialized = false;
 
+        // 最後に生成されたコメントのデータを保持
+        private CommentData lastCommentData;
+        private List<GameObject> lastCharacters;
+
         public void Init()
         {
             topRightSpawnPosY = topRightSpawnPos.position.y;
@@ -47,32 +51,34 @@ namespace TechC
             var commentData = commentProvider.GetRandomComment();
             GameObject comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData));
 
-            // 特殊コメントの処理
-            var sp = comment.GetComponent<FreezeCommentTrigger>();
-            var spType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
-            Material commentMaterial;
-
-            var materialApplier = CommentDisplay.I.GetMaterialApplier();
-
-            if (spType != SpecialCommentType.None && sp != null)
-                commentMaterial = materialApplier.GetCommentMaterial(null, sp.SpecialType);
-            else
-                commentMaterial = materialApplier.GetCommentMaterial(commentData.type);
-
+            // 文字オブジェクトを生成
             List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, Color.white);
             
-            // マテリアルを適用
-            materialApplier.ApplyMaterialToCharacters(spawnedChars, commentMaterial);
-
+            // 位置を設定
             float randomY = UnityEngine.Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
             comment.transform.position = new Vector3(spawnPosX, randomY, PLAYER_TOP_OFFSET);
 
-            var freezeCommentTrigger = comment.GetComponent<FreezeCommentTrigger>();
-
-            // 移動処理を開始
-            CommentDisplay.I.GetMover().StartMoving(comment.transform, spawnedChars, freezeCommentTrigger, commentMaterial);
+            // 最後に生成されたデータを保存
+            lastCommentData = commentData;
+            lastCharacters = spawnedChars;
 
             return comment;
+        }
+
+        /// <summary>
+        /// 最後に生成されたコメントのデータを取得
+        /// </summary>
+        public CommentData GetLastCommentData()
+        {
+            return lastCommentData;
+        }
+
+        /// <summary>
+        /// 最後に生成された文字オブジェクトを取得
+        /// </summary>
+        public List<GameObject> GetLastCharacters()
+        {
+            return lastCharacters;
         }
 
         private GameObject GetCommentPrefab(CommentData commentData)

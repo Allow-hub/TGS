@@ -52,21 +52,20 @@ namespace TechC
                 return;
             }
 
-            var materialApplier = CommentDisplay.I.GetMaterialApplier();
-
-            // フリーズ状態に応じてマテリアルを適用
+            // フリーズ中の場合は移動を停止し、マテリアルを適用
             if (CommentDisplay.I.IsCommentFrozen)
             {
-                materialApplier.ApplyMaterialToCharacters(chars, materialApplier.GetFreezeMaterial());
-                // フリーズ中は移動処理を停止
-                return;
+                var freezeMaterial = CommentDisplay.I.GetMaterialApplier().GetCommentMaterial(null, SpecialCommentType.Freeze);
+                CommentDisplay.I.GetMaterialApplier().ApplyMaterialToCharacters(chars, freezeMaterial);
+                return; // フリーズ中は移動しない
             }
             else
             {
-                materialApplier.ApplyMaterialToCharacters(chars, originalMaterial);
+                // 通常時は元のマテリアルを適用
+                CommentDisplay.I.GetMaterialApplier().ApplyMaterialToCharacters(chars, originalMaterial);
             }
 
-            // 通常時のみ移動処理を実行
+            // 移動処理のみを実行
             trans.position += Vector3.left * CommentDisplay.I.GetCurrentSpeed() * Time.deltaTime;
 
             // 画面外に出た場合はプールに返却
@@ -91,7 +90,7 @@ namespace TechC
                 }
             }
 
-            /* コメントそのものをPoolに返却する */
+            /* コメントの文字を返却した後にコメントそのものをPoolに返却する */
             if (comment.activeInHierarchy)
             {
                 comment.SetActive(false);

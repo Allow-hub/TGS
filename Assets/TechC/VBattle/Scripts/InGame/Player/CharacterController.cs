@@ -21,7 +21,6 @@ namespace TechC.Player
         [SerializeField] private CharacterState characterState;
         [SerializeField] private Animator anim;
         [SerializeField] private CommandHistory commandHistory;
-        [SerializeField] private ObjectPool effectPool;
         [SerializeField] private CharacterType characterType;
         [Header("攻撃コンポーネント")]
         [SerializeField] private WeakAttack weakAttack;
@@ -89,7 +88,6 @@ namespace TechC.Player
 
         // 移動・物理関連
         private Rigidbody rb;
-        private Vector3 velocity = Vector3.zero; // 現在の速度
         private Dictionary<BuffType, float> multipliers = new()
         {
             { BuffType.Speed, BUFF_DEFAULT_MULTIPLIER },
@@ -126,7 +124,6 @@ namespace TechC.Player
         #region 初期化メソッド
         private void Awake()
         {
-            effectPool = GameObject.FindGameObjectWithTag("EffectPool").GetComponent<ObjectPool>();
             // アタックマネージャーの初期化
             var attackManager = new AttackManager();
             characterState = new CharacterState(playerInputManager, this, attackManager, anim, commandHistory);

@@ -1,8 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using System.IO;
-using System.Collections.Generic;
 using Windows.Win32.Foundation;
 using Windows.Win32;
 using Windows.Win32.UI.Shell;
@@ -27,6 +25,7 @@ namespace TechC
         
         private WNDPROC wndProcDelegate;
         private string windowClassName = "TechCHelperWindow";
+        
         /// <summary>
         /// シングルトンの初期化
         /// </summary>

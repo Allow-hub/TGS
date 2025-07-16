@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -26,7 +27,8 @@ namespace TechC
 
         void Start()
         {
-            DelayUtility.StartDelayedAction(this, 0.5f, () => {
+            DelayUtility.StartDelayedAction(this, 0f, () =>
+            {
                 StartCommentSpawning();
             });
         }
@@ -55,16 +57,23 @@ namespace TechC
         /// </summary>
         private IEnumerator SpawnCommentWithInterval()
         {
-            while (isSpawning)
-            {
-                /* コメント固定中は生成しない */
-                if (!IsCommentFrozen)
+            // フリーズ・ポーズ状態を考慮した条件関数
+            Func<bool> isPausedFunc = () => IsCommentFrozen || BattleJudge.I.IsPaused;
+
+            // DelayUtilityのポーズ対応版を使用してコメント生成処理を開始
+            DelayUtility.StartRepeatedActionWhileWithPause(
+                this,
+                () => isSpawning,
+                commentInterval,
+                isPausedFunc,
+                () =>
                 {
+                    // コメントを生成
                     commentSpawner.SpawnComment();
                 }
+            );
 
-                yield return new WaitForSeconds(commentInterval);
-            }
+            yield break;
         }
 
         /// <summary>
@@ -101,19 +110,10 @@ namespace TechC
             IsCommentFrozen = false;
         }
 
-        public float GetCurrentSpeed()
-        {
-            return speed;
-        }
+        public float GetCurrentSpeed() => speed;
 
-        public void SetSpeed(float newSpeed)
-        {
-            speed = newSpeed;
-        }
+        public void SetSpeed(float newSpeed) => speed = newSpeed;
 
-        public void AddSpeed(float amount)
-        {
-            speed += amount;
-        }
+        public void AddSpeed(float amount) => speed += amount;
     }
 }

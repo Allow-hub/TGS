@@ -29,48 +29,51 @@ namespace TechC
         /// </summary>
         public void StartMoving(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger, Material originalMaterial)
         {
-            CommentDisplay.I.StartCoroutine(MoveComment(trans, chars, freezeCommentTrigger, originalMaterial));
+            // ポーズ中のみ停止（フリーズ中は継続してマテリアル適用を行う）
+            Func<bool> isPausedFunc = () => BattleJudge.I.IsPaused;
+
+            // DelayUtilityのポーズ対応版を使用してコメント移動処理を開始
+            DelayUtility.StartRepeatedActionWhileWithPause(
+                CommentDisplay.I,
+                () => trans.gameObject.activeInHierarchy && trans.position.x > despawnPosX,
+                Time.fixedDeltaTime,
+                isPausedFunc,
+                () => MoveCommentFrame(trans, chars, freezeCommentTrigger, originalMaterial)
+            );
         }
 
         /// <summary>
-        /// コメントを画面上に流す処理
+        /// 1フレーム分のコメント移動処理
         /// </summary>
-        private IEnumerator MoveComment(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger, Material originalMaterial)
+        private void MoveCommentFrame(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger, Material originalMaterial)
         {
-            bool freezeMaterialApplied = false;
-            var materialApplier = CommentDisplay.I.GetMaterialApplier();
-
-            while (trans.position.x > despawnPosX)
+            if (!trans.gameObject.activeInHierarchy)
             {
-                if (!trans.gameObject.activeInHierarchy)
-                {
-                    yield break;
-                }
-
-                // 全コメントのフリーズ状態をチェック
-                if (CommentDisplay.I.IsCommentFrozen)
-                {
-                    if (!freezeMaterialApplied)
-                    {
-                        materialApplier.ApplyMaterialToCharacters(chars, materialApplier.GetFreezeMaterial());
-                        freezeMaterialApplied = true;
-                    }
-                    yield return null;
-                    continue;
-                }
-                else if (freezeMaterialApplied)
-                {
-                    materialApplier.ApplyMaterialToCharacters(chars, originalMaterial);
-                    freezeMaterialApplied = false;
-                }
-
-                // コメントを左に移動
-                trans.position += Vector3.left * CommentDisplay.I.GetCurrentSpeed() * Time.deltaTime;
-                yield return null;
+                return;
             }
 
-            // コメントをプールに返却
-            ReturnComment(trans.gameObject, chars);
+            var materialApplier = CommentDisplay.I.GetMaterialApplier();
+
+            // フリーズ状態に応じてマテリアルを適用
+            if (CommentDisplay.I.IsCommentFrozen)
+            {
+                materialApplier.ApplyMaterialToCharacters(chars, materialApplier.GetFreezeMaterial());
+                // フリーズ中は移動処理を停止
+                return;
+            }
+            else
+            {
+                materialApplier.ApplyMaterialToCharacters(chars, originalMaterial);
+            }
+
+            // 通常時のみ移動処理を実行
+            trans.position += Vector3.left * CommentDisplay.I.GetCurrentSpeed() * Time.deltaTime;
+
+            // 画面外に出た場合はプールに返却
+            if (trans.position.x <= despawnPosX)
+            {
+                ReturnComment(trans.gameObject, chars);
+            }
         }
 
         /// <summary>

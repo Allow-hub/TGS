@@ -4,7 +4,7 @@ namespace TechC.Player
 {
     /// <summary>
     /// CharacterController_Movement.cs
-    //　キャラクターの移動を分離したクラス
+    /// キャラクターの移動を分離したクラス
     /// </summary>
     public partial class CharacterController
     {
@@ -47,123 +47,6 @@ namespace TechC.Player
         }
 
         /// <summary>
-        /// 地上での移動処理
-        /// </summary>
-        private void GroundMovement(Vector3 moveDirection, float horizontalInput, float controlMultiplier)
-        {
-            float groundSpeed = characterData.MoveSpeed * controlMultiplier * GetMultipiler(BuffType.Speed);
-            groundSpeed = Mathf.Clamp(groundSpeed, 0f, characterData.MaxGroundSpeed);
-
-            if (Mathf.Abs(horizontalInput) > STOP_THRESHOLD)
-            {
-                // キャラクターの向きをY軸回転でスムーズに変更
-                float targetYRotation = horizontalInput > 0 ? RIGHT_FACING_ANGLE : LEFT_FACING_ANGLE;
-                float currentYRotation = transform.eulerAngles.y;
-
-                // 現在の向きと目標の向きが大きく異なる場合のみ回転を実行
-                float angleDifference = Mathf.DeltaAngle(currentYRotation, targetYRotation);
-
-                // 既に正しい方向を向いている場合は回転しない（許容誤差5度）
-                if (Mathf.Abs(angleDifference) > ROTATION_TOLERANCE)
-                {
-                    float rotationStep = characterData.RotationSpeed * RIGHT_FACING_ANGLE * Time.deltaTime;
-
-                    if (Mathf.Abs(angleDifference) > MICRO_ROTATION_THRESHOLD)
-                    {
-                        float newYRotation = currentYRotation + Mathf.Sign(angleDifference) * Mathf.Min(rotationStep, Mathf.Abs(angleDifference));
-                        transform.rotation = Quaternion.Euler(0, newYRotation, 0);
-                    }
-                    else
-                    {
-                        // 微小な差の場合は完全に目標角度に合わせる
-                        transform.rotation = Quaternion.Euler(0, targetYRotation, 0);
-                    }
-                }
-
-
-                float targetVelocityX = horizontalInput * groundSpeed;
-                rb.velocity = new Vector3(targetVelocityX, rb.velocity.y, 0);
-
-
-            }
-            else
-            {
-                // 入力が止まった時：最終的に完全に左右どちらかを向くように調整
-                float currentYRotation = transform.eulerAngles.y;
-
-                // 現在の角度から最も近い目標角度（90度または-90度）を決定
-                float targetYRotation;
-                float diffTo90 = Mathf.Abs(Mathf.DeltaAngle(currentYRotation, RIGHT_FACING_ANGLE));
-                float diffToMinus90 = Mathf.Abs(Mathf.DeltaAngle(currentYRotation, LEFT_FACING_ANGLE));
-
-                targetYRotation = diffTo90 < diffToMinus90 ? RIGHT_FACING_ANGLE : LEFT_FACING_ANGLE;
-
-                // 目標角度への最終調整
-                float angleDifference = Mathf.DeltaAngle(currentYRotation, targetYRotation);
-                if (Mathf.Abs(angleDifference) > FINAL_ROTATION_THRESHOLD) // 1度以上のずれがある場合のみ調整
-                {
-                    float rotationStep = characterData.RotationSpeed * RIGHT_FACING_ANGLE * Time.deltaTime;
-                    float newYRotation = currentYRotation + Mathf.Sign(angleDifference) * Mathf.Min(rotationStep, Mathf.Abs(angleDifference));
-                    transform.rotation = Quaternion.Euler(0, newYRotation, 0);
-                }
-                else if (Mathf.Abs(angleDifference) > MICRO_ROTATION_THRESHOLD)
-                {
-                    // 微小な差の場合は完全に目標角度に合わせる
-                    transform.rotation = Quaternion.Euler(0, targetYRotation, 0);
-                }
-
-
-
-                if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
-                {
-                    float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, characterData.Deceleration * Time.fixedDeltaTime);
-                    rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
-                }
-                else
-                {
-                    rb.velocity = new Vector3(0f, rb.velocity.y, 0);
-                }
-
-
-                // 従来の減速処理
-                if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
-                {
-                    float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, characterData.Deceleration * Time.fixedDeltaTime);
-                    rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
-                }
-
-            }
-        }
-
-        /// <summary>
-        /// 空中での移動処理
-        /// </summary>
-        private void AirMovement(Vector3 moveDirection, float horizontalInput)
-        {
-            // 空中での移動速度（地上より制限される）
-            float airSpeed = characterData.MoveSpeed * GetMultipiler(BuffType.Speed) * characterData.AirControlMultiplier;
-            // 空中での水平移動（制限付き）
-            if (Mathf.Abs(horizontalInput) > 0.1f)
-            {
-                // キャラクターの向きを変更
-                transform.forward = new Vector3(Mathf.Sign(horizontalInput), 0, 0);
-
-                // 空中でも方向転換可能だが、地上より制限される
-                float targetVelocityX = horizontalInput * airSpeed;
-                float newVelocityX = Mathf.Lerp(rb.velocity.x, targetVelocityX, characterData.AirAcceleration * Time.deltaTime);
-
-                rb.velocity = new Vector3(newVelocityX, rb.velocity.y, 0);
-            }
-
-            // 空中でのファストフォール（急降下）- スマブラの特徴的な動き
-            // 垂直入力が十分に下向きの場合のみ発動
-            if (playerInputManager.MoveInput.y < -jumpInputThreshold && rb.velocity.y < 0)
-            {
-                rb.AddForce(Vector3.down * characterData.FastFallSpeed, ForceMode.Acceleration);
-            }
-        }
-
-        /// <summary>
         /// 速度を0にする
         /// </summary>
         public void StopVelocity() => rb.velocity = Vector3.zero;
@@ -184,5 +67,143 @@ namespace TechC.Player
 
             return Physics.Raycast(rayOrigin, Vector3.down, out hit, rayLength, LayerMask.GetMask("Ground"));
         }
+
+        /// <summary>
+        /// 地上での移動処理
+        /// </summary>
+        private void GroundMovement(Vector3 moveDirection, float horizontalInput, float controlMultiplier)
+        {
+            float groundSpeed = characterData.MoveSpeed * controlMultiplier * GetMultipiler(BuffType.Speed);
+            groundSpeed = Mathf.Clamp(groundSpeed, 0f, characterData.MaxGroundSpeed);
+
+            if (Mathf.Abs(horizontalInput) > STOP_THRESHOLD)
+            {
+                float targetYRotation = horizontalInput > 0 ? RIGHT_FACING_ANGLE : LEFT_FACING_ANGLE;
+                float currentYRotation = transform.eulerAngles.y;
+                float angleDifference = Mathf.DeltaAngle(currentYRotation, targetYRotation);
+
+                if (Mathf.Abs(angleDifference) > ROTATION_TOLERANCE)
+                {
+                    float rotationStep = characterData.RotationSpeed * RIGHT_FACING_ANGLE * Time.deltaTime;
+
+                    if (Mathf.Abs(angleDifference) > MICRO_ROTATION_THRESHOLD)
+                    {
+                        float newYRotation = currentYRotation + Mathf.Sign(angleDifference) * Mathf.Min(rotationStep, Mathf.Abs(angleDifference));
+                        transform.rotation = Quaternion.Euler(0, newYRotation, 0);
+                    }
+                    else
+                    {
+                        transform.rotation = Quaternion.Euler(0, targetYRotation, 0);
+                    }
+                }
+
+                float targetVelocityX = horizontalInput * groundSpeed;
+                rb.velocity = new Vector3(targetVelocityX, rb.velocity.y, 0);
+            }
+            else
+            {
+                float currentYRotation = transform.eulerAngles.y;
+                float diffTo90 = Mathf.Abs(Mathf.DeltaAngle(currentYRotation, RIGHT_FACING_ANGLE));
+                float diffToMinus90 = Mathf.Abs(Mathf.DeltaAngle(currentYRotation, LEFT_FACING_ANGLE));
+                float targetYRotation = diffTo90 < diffToMinus90 ? RIGHT_FACING_ANGLE : LEFT_FACING_ANGLE;
+
+                float angleDifference = Mathf.DeltaAngle(currentYRotation, targetYRotation);
+                if (Mathf.Abs(angleDifference) > FINAL_ROTATION_THRESHOLD)
+                {
+                    float rotationStep = characterData.RotationSpeed * RIGHT_FACING_ANGLE * Time.deltaTime;
+                    float newYRotation = currentYRotation + Mathf.Sign(angleDifference) * Mathf.Min(rotationStep, Mathf.Abs(angleDifference));
+                    transform.rotation = Quaternion.Euler(0, newYRotation, 0);
+                }
+                else if (Mathf.Abs(angleDifference) > MICRO_ROTATION_THRESHOLD)
+                {
+                    transform.rotation = Quaternion.Euler(0, targetYRotation, 0);
+                }
+
+                if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
+                {
+                    float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, characterData.Deceleration * Time.fixedDeltaTime);
+                    rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
+                }
+                else
+                {
+                    rb.velocity = new Vector3(0f, rb.velocity.y, 0);
+                }
+
+                if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
+                {
+                    float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, characterData.Deceleration * Time.fixedDeltaTime);
+                    rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 空中での移動処理
+        /// </summary>
+        private void AirMovement(Vector3 moveDirection, float horizontalInput)
+        {
+            float airSpeed = characterData.MoveSpeed * GetMultipiler(BuffType.Speed) * characterData.AirControlMultiplier;
+
+            if (Mathf.Abs(horizontalInput) > 0.1f)
+            {
+                transform.forward = new Vector3(Mathf.Sign(horizontalInput), 0, 0);
+
+                float targetVelocityX = horizontalInput * airSpeed;
+                float newVelocityX = Mathf.Lerp(rb.velocity.x, targetVelocityX, characterData.AirAcceleration * Time.deltaTime);
+
+                rb.velocity = new Vector3(newVelocityX, rb.velocity.y, 0);
+            }
+
+            if (playerInputManager.MoveInput.y < -jumpInputThreshold && rb.velocity.y < 0)
+            {
+                rb.AddForce(Vector3.down * characterData.FastFallSpeed, ForceMode.Acceleration);
+            }
+        }
+
+        /// <summary>
+        /// ジャンプ処理
+        /// </summary>
+        public void Jump()
+        {
+            if (IsGrounded())
+            {
+                AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Jump);
+                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+                rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
+            }
+        }
+
+        /// <summary>
+        /// 二段ジャンプ処理
+        /// </summary>
+        public void DoubleJump()
+        {
+            if (CanDoubleJump() && !IsGrounded())
+            {
+                AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Jump);
+                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+                rb.AddForce(Vector3.up * characterData.DoubleJumpForce, ForceMode.Impulse);
+                UseDoubleJump();
+            }
+        }
+
+        /// <summary>
+        /// ジャンプ状態をリセット（着地時に呼び出す）
+        /// </summary>
+        private void ResetJump()
+        {
+            hasDoubleJumped = false;
+        }
+
+        /// <summary>
+        /// 二段ジャンプが可能かどうか
+        /// </summary>
+        private bool CanDoubleJump() => !hasDoubleJumped;
+
+        /// <summary>
+        /// 二段ジャンプを使用済みにする
+        /// </summary>
+        private void UseDoubleJump() => hasDoubleJumped = true;
+
     }
 }

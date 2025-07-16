@@ -1,10 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace TechC.Player
 {
+    /// <summary>
+    /// CharacterController_Guard.cs
+    /// ガード分離クラス
+    /// </summary>
     public partial class CharacterController
     {
         /// <summary>
@@ -13,9 +15,17 @@ namespace TechC.Player
         public float GetGuardPower() => currentGuardPower;
 
         /// <summary>
-        /// ガード中に耐久値減少
+        /// ガード回復が可能な状態かを判定
         /// </summary>
-        public void DecreaseGuardPower() => currentGuardPower -= characterData.GuardDecreasePower;
+        public bool CanHeal()
+        {
+            var lastGuard = Time.time - lastGuardTime;
+            return lastGuard >= characterData.GuardRecoveryInterval;
+        }
+
+        // ------------------------------
+        // 設定・回復・減少系
+        // ------------------------------
 
         /// <summary>
         /// 最後にガードした時間を設定
@@ -23,29 +33,9 @@ namespace TechC.Player
         public void SetLastGuardTime(float time) => lastGuardTime = time;
 
         /// <summary>
-        /// ガード時のダメージ処理
+        /// ガード中に耐久値減少
         /// </summary>
-        public void GuardDamage(float damage, ICommand guardCommand)
-        {
-            currentGuardPower -= damage;
-            AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Guard);
-            if (inputDevice is Gamepad gamepad)
-                GamepadVibrationUtility.Vibrate(lowFrequency, highFrequency, duration, gamepad);
-            if (currentGuardPower > 0) return;
-            currentGuardPower = 0;
-            GuardBreak(guardCommand);
-        }
-
-        /// <summary>
-        /// ガードブレイク処理
-        /// </summary>
-        public void GuardBreak(ICommand guardCommand)
-        {
-            AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.GuardBreak);
-            guardCommand.ForceFinish();
-            currentGuardPower = 0; // ガードがマイナスで保存されないように
-            Debug.Log("Guardが破壊されました");
-        }
+        public void DecreaseGuardPower() => currentGuardPower -= characterData.GuardDecreasePower;
 
         /// <summary>
         /// ガードパワー回復処理
@@ -60,12 +50,30 @@ namespace TechC.Player
         }
 
         /// <summary>
-        /// ガード回復が可能な状態かを判定
+        /// ガード時のダメージ処理
         /// </summary>
-        public bool CanHeal()
+        public void GuardDamage(float damage, ICommand guardCommand)
         {
-            var lastGuard = Time.time - lastGuardTime;
-            return lastGuard >= characterData.GuardRecoveryInterval;
+            currentGuardPower -= damage;
+            AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Guard);
+
+            if (inputDevice is Gamepad gamepad)
+                GamepadVibrationUtility.Vibrate(lowFrequency, highFrequency, duration, gamepad);
+
+            if (currentGuardPower > 0) return;
+            currentGuardPower = 0;
+            GuardBreak(guardCommand);
+        }
+
+        /// <summary>
+        /// ガードブレイク処理
+        /// </summary>
+        public void GuardBreak(ICommand guardCommand)
+        {
+            AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.GuardBreak);
+            guardCommand.ForceFinish();
+            currentGuardPower = 0; // ガードがマイナスで保存されないように
+            Debug.Log("Guardが破壊されました");
         }
     }
 }

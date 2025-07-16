@@ -231,7 +231,7 @@ namespace TechC.Player
             UpdateStateTransitions();
 
             lastVelocity = rb.velocity;
-            
+
             // ガード値回復処理
             if (CanHeal())
                 HealGuardPower(characterData.GuardRecoverySpeed);
@@ -319,128 +319,6 @@ namespace TechC.Player
             hitCollider.center = targetCenter;
         }
 
-        #region ジャンプ関連メソッド
-        /// <summary>
-        /// ジャンプ処理
-        /// </summary>
-        public void Jump()
-        {
-            if (IsGrounded())
-            {
-                AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Jump);
-                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-                rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
-            }
-        }
-
-        /// <summary>
-        /// 二段ジャンプ処理
-        /// </summary>
-        public void DoubleJump()
-        {
-            if (CanDoubleJump() && !IsGrounded())
-            {
-                AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Jump);
-                // 完全にY速度リセット + 2段ジャンプ力
-                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-                rb.AddForce(Vector3.up * characterData.DoubleJumpForce, ForceMode.Impulse);
-                UseDoubleJump();
-            }
-        }
-
-        /// <summary>
-        /// ジャンプ状態をリセット（着地時に呼び出す）
-        /// </summary>
-        private void ResetJump()
-        {
-            hasDoubleJumped = false;
-        }
-
-        /// <summary>
-        /// 二段ジャンプが可能かどうか
-        /// </summary>
-        private bool CanDoubleJump() => !hasDoubleJumped;
-
-        /// <summary>
-        /// 二段ジャンプを使用済みにする
-        /// </summary>
-        private void UseDoubleJump() => hasDoubleJumped = true;
-        #endregion
-
-        #region ダメージ・HP関連メソッド
-
-        //IDamageable用メソッド
-        public void TakeDamage(float damage)
-        {
-            PresenterTakeDamage(damage);
-        }
-        public void Des()
-        {
-            HandleDeath();
-        }
-
-        /// <summary>
-        /// HP値を取得する
-        /// </summary>
-        public float GetHp()
-        {
-            //複製キャラの場合HP1を返す
-            if (isClonePlayer) return 1;
-            // hpPresenterがnullでないことを確認
-            if (hpPresenter != null)
-            {
-                return hpPresenter.GetCurrentValue();
-            }
-            Debug.LogWarning($"Player {playerID}: HPPresenterが見つかりません。デフォルト値を返します。");
-            return 0f;
-        }
-        public void HealHp(float value) => hpPresenter.Heal(value);
-
-        /// <summary>
-        /// ダメージを受ける処理
-        /// </summary>
-        public void PresenterTakeDamage(float damage)
-        {
-            // hpPresenterがnullでないことを確認
-            if (hpPresenter != null)
-            {
-                hpPresenter.TakeDamage(damage * opponentController.GetMultipiler(BuffType.Attack));
-            }
-            else
-            {
-                Debug.LogError($"Player {playerID}: HPPresenterがnullのため、ダメージ処理ができません");
-            }
-        }
-
-        /// <summary>
-        /// キャラクター死亡時の処理
-        /// </summary>
-        private void HandleDeath()
-        {
-            BattleJudge.I.PlayerDeath(playerID);
-        }
-
-        /// <summary>
-        /// 最後に受けた攻撃データを設定
-        /// </summary>
-        public void SetLastHitData(HitData hitData) => lastHitData = hitData;
-
-        public void SetCanCounter(bool val) => canCounter = val;
-        public void SetCounterAction(Action action) => onCounter = action;
-        public void UseCounter()
-        {
-            if (onCounter == null) return;
-            onCounter.Invoke();
-            onCounter = null;
-        }
-
-        /// <summary>
-        /// 最後に受けた攻撃データを取得
-        /// </summary>
-        public HitData GetLastHitData() => lastHitData;
-        #endregion
-
-       
         #region 必殺技関連メソッド
         /// <summary>
         /// 必殺技ゲージを増加させる

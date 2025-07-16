@@ -3,13 +3,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using UnityEngine.InputSystem;
 
 namespace TechC.Player
 {
     /// <summary>
     ///キャラクターを管理をするクラス
+    /// partialによる分離済み
     ///regionを使うとタブ化して見やすくできる
     /// </summary>
     public partial class CharacterController : MonoBehaviour, IDamageable, IGuardable
@@ -55,7 +55,7 @@ namespace TechC.Player
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
-        
+
         // 移動・回転関連の定数
         private const float STOP_THRESHOLD = 0.1f;
         private const float FINAL_ROTATION_THRESHOLD = 1f; // 回転の最終調整の許容角度（1度）
@@ -64,7 +64,7 @@ namespace TechC.Player
         private const float RIGHT_FACING_ANGLE = 90f; // 右向きの目標角度
         private const float LEFT_FACING_ANGLE = -90f; // 左向きの目標角度
         private const float BUFF_DEFAULT_MULTIPLIER = 1.0f; // バフの初期倍率
-      
+
 
         private bool canCounter = false;
         public bool CanCounter => canCounter;
@@ -121,106 +121,6 @@ namespace TechC.Player
         public Action OnCommentEvent;
         #endregion
 
-        #region 初期化メソッド
-        private void Awake()
-        {
-            // アタックマネージャーの初期化
-            var attackManager = new AttackManager();
-            characterState = new CharacterState(playerInputManager, this, attackManager, anim, commandHistory);
-            attackManager?.Initialize(weakAttack, strongAttack, appealBase, playerInputManager, this);
-
-            // アニメーション設定
-            anim.speed = defaultAnimSpeed;
-
-            // パラメータ初期化
-            currentGuardPower = characterData.GuardPower;
-            defaultSize = new Vector3(hitCollider.radius, hitCollider.height, 0f);
-            defaultCenter = hitCollider.center;
-            if (outlineMat != null && renderers != null)
-            {
-                outlineMat = Instantiate(outlineMat);
-
-                foreach (var smr in renderers)
-                {
-                    if (smr == null) continue;
-                    var mats = smr.materials;
-                    for (int i = 0; i < mats.Length; i++)
-                    {
-                        if (mats[i] != null && mats[i].name.Contains("Outline"))
-                        {
-                            mats[i] = outlineMat;
-                        }
-                    }
-                    smr.materials = mats;
-                }
-            }
-            // バフ辞書の初期化
-            foreach (var e in Enum.GetValues(typeof(BuffType)))
-            {
-                multiplierEntries.Add((BuffType)e, new Dictionary<int, float>());
-            }
-        }
-
-        private void Start()
-        {
-            rb = GetComponent<Rigidbody>();
-            opponentController = BattleJudge.I.GetOtherPlayerObjects(PlayerID)[0].GetComponent<Player.CharacterController>();
-            if (isClonePlayer) return;
-            // HPPresenterがnullでないか確認してから購読
-            if (hpPresenter != null)
-            {
-                hpPresenter.OnDeath += Des;
-            }
-            else
-            {
-                Debug.LogError($"Player {playerID}: HPPresenterが見つかりません。");
-            }
-        }
-
-        /// <summary>
-        /// プレイヤーIDに基づいて適切なHPPresenterとGaugePresenterを検索して取得
-        /// </summary>
-        private void FindPresenters()
-        {
-            string presenterTag = $"Presenter_P{playerID}";
-
-            // タグで検索
-            GameObject preObj = GameObject.FindWithTag(presenterTag);
-            gaugePresenter = preObj.GetComponent<GaugePresenter>();
-
-            hpPresenter = preObj.GetComponent<HPPresenter>();
-        }
-
-        public void SetClonePlayerID(int id) => playerID = id;
-        /// <summary>
-        /// プレイヤーIDを設定する（生成時に呼び出す）
-        /// </summary>
-        public void SetPlayerID(int id, InputDevice inputDevice)
-        {
-            playerID = id;
-            if (id == 1)
-            {
-                if (outlineMat.HasProperty("_OutlineColor"))
-                {
-                    outlineMat.SetColor("_OutlineColor", outlineColor1);
-                }
-                gameObject.transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
-            }
-            else if (id == 2)
-            {
-                if (outlineMat.HasProperty("_OutlineColor"))
-                {
-                    outlineMat.SetColor("_OutlineColor", outlineColor2);
-                }
-                gameObject.transform.rotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
-            }
-            this.inputDevice = inputDevice;
-            // IDが変更された場合は、対応するPresenterを再取得
-            FindPresenters();
-        }
-
-        #endregion
-
         #region 更新メソッド
         private void FixedUpdate()
         {
@@ -269,7 +169,7 @@ namespace TechC.Player
         }
         #endregion
 
-     
+
         public void ChangeColliderTrigger(bool b) => hitCollider.isTrigger = b;
 
         /// <summary>
@@ -318,77 +218,6 @@ namespace TechC.Player
             hitCollider.height = targetHeight;
             hitCollider.center = targetCenter;
         }
-
-       
-        #region バフ関連メソッド
-
-        /// <summary>
-        /// バフの適用（バフの種類,乗算の数値）
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="value"></param>
-        public void AddMultiplier(BuffType type, int buffId, float value)
-        {
-            var dic = multiplierEntries[type];
-
-            if (dic.ContainsKey(buffId))
-                dic[buffId] = value;
-            else
-                dic.Add(buffId, value);
-
-            // multipliersの値を再計算
-            UpdateMultiplier(type);
-        }
-
-        /// <summary>
-        /// バフの解除（バフの種類,除算の数値）
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="value"></param>
-        public void RemoveMultiplier(BuffType type, int buffId, float value)
-        {
-            var dic = multiplierEntries[type];
-
-            if (dic.ContainsKey(buffId))
-                dic.Remove(buffId);
-            else
-            {
-                Debug.LogWarning($"登録されていないバフを失効しようとしました:{type}/{buffId}");
-                return;
-            }
-
-            // multipliersの値を再計算
-            UpdateMultiplier(type);
-        }
-
-        /// <summary>
-        /// 指定されたバフタイプの最終倍率を計算して更新
-        /// </summary>
-        /// <param name="type"></param>
-        private void UpdateMultiplier(BuffType type)
-        {
-            var dic = multiplierEntries[type];
-
-            // すべてのバフを乗算で適用
-            float finalMultiplier = 1.0f;
-            foreach (var buff in dic.ToArray())
-            {
-                finalMultiplier *= buff.Value;
-            }
-
-            multipliers[type] = finalMultiplier;
-        }
-
-        /// <summary>
-        /// multipliers に type が 存在するなら、その値（value）を返す
-        /// 存在しないなら、デフォルト値の 1.0f を返す
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public float GetMultipiler(BuffType type) =>
-            multipliers.TryGetValue(type, out var value) ? value : 1.0f;
-
-        #endregion
 
         #region コメント関連メソッド
 

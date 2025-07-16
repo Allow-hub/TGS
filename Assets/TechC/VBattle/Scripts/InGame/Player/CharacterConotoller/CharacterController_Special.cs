@@ -2,6 +2,10 @@ using UnityEngine;
 
 namespace TechC.Player
 {
+    /// <summary>
+    /// CharacterController_Special.cs
+    /// 必殺技の分離クラス
+    /// </summary>
     public partial class CharacterController
     {
         /// <summary>
@@ -33,7 +37,7 @@ namespace TechC.Player
                 Debug.LogError($"Player {playerID}: GaugePresenterがnullのため、ゲージ追加ができません");
             }
         }
-        
+
         /// <summary>
         /// 必殺技を使用する（使用可能な場合のみ成功）
         /// </summary>

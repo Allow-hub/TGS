@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// Transformの操作のヘルパークラス
+    /// </summary>
     public static class TransformHelper
     {
         public static void ResetLocalTransform(this Transform t)
@@ -50,6 +53,13 @@ namespace TechC
                 transform.rotation = Quaternion.LookRotation(direction);
         }
 
+        /// <summary>
+        /// どれくらい近いかどうか
+        /// </summary>
+        /// <param name="a">1地点</param>
+        /// <param name="b">2地点</param>
+        /// <param name="threshold">近いと判定する距離</param>
+        /// <returns></returns>
         public static bool IsCloseTo(int a, int b, int threshold = 2) => Mathf.Abs(a - b) <= threshold;
 
         // 値を置き換える系

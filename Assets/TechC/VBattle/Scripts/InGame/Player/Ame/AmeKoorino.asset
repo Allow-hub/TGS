@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81597f626b83d140b7b46579eee1476, type: 3}
   m_Name: AmeKoorino
   m_EditorClassIdentifier: 
-  Name: AmeKoorino
+  type: 1
+  prefab: {fileID: 7627828736903395385, guid: 79a465377545c1648bbef77b5a111683, type: 3}
+  clips:
+  - {fileID: -6863707987208230174, guid: cf9850dab8882b0448135bc9fceb7764, type: 3}
+  - {fileID: -4286565773015259570, guid: 11e3e41419f2a1e4ead1d76cb58153d4, type: 3}
+  - {fileID: -6863707987208230174, guid: cf9850dab8882b0448135bc9fceb7764, type: 3}
   Hp: 500
   GuardPower: 100
   GuardDecreasePower: 0.1

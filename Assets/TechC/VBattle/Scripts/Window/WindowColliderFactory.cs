@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// ウィンドウに当たり判定をつけるためのファクトリー
+    /// </summary>
     public class WindowColliderFactory : Singleton<WindowColliderFactory>
     {
         [SerializeField] private ObjectPool objectPool;

@@ -1,9 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// 攻撃判定のデバッグ表示をするクラス
+    /// </summary>
     public class AttackVisualizer : Singleton<AttackVisualizer>
     {
 
@@ -21,9 +23,9 @@ namespace TechC
 
         private List<HitboxInfo> activeHitboxes = new List<HitboxInfo>();
 
-   
 
-        public  void DrawHitbox(Vector3 position, float radius, float duration = 0.5f, Color? color = null)
+
+        public void DrawHitbox(Vector3 position, float radius, float duration = 0.5f, Color? color = null)
         {
             I.activeHitboxes.Add(new HitboxInfo
             {

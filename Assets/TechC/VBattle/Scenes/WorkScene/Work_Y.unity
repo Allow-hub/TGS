@@ -291,6 +291,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
+      propertyPath: speed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: commentInterval
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4039849349775429848, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
       propertyPath: commentMover.topLeftDespawn
       value: 
       objectReference: {fileID: 913436215}
@@ -504,7 +514,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6967472345373115648, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2ba8867f924fc444b667e30e329ad17, type: 3}

@@ -22,8 +22,6 @@ namespace TechC
         public void Init()
         {
             despawnPosX = topLeftDespawn.transform.position.x;
-
-
         }
 
         /// <summary>
@@ -80,12 +78,7 @@ namespace TechC
         /// </summary>
         private void ReturnComment(GameObject comment, List<GameObject> chars)
         {
-            if (comment.activeInHierarchy)
-            {
-                comment.SetActive(false);
-                CommentFactory.I.ReturnComment(comment);
-            }
-
+            /* コメントの文字を先にPoolに返却する */
             foreach (var obj in chars)
             {
                 if (obj != null && obj.activeInHierarchy)
@@ -93,6 +86,13 @@ namespace TechC
                     obj.SetActive(false);
                     CommentFactory.I.ReturnChar(obj);
                 }
+            }
+
+            /* コメントそのものをPoolに返却する */
+            if (comment.activeInHierarchy)
+            {
+                comment.SetActive(false);
+                CommentFactory.I.ReturnComment(comment);
             }
         }
     }

@@ -14,14 +14,14 @@ namespace TechC
             Up,
         }
 
-        // 攻撃履歴を保持する静的変数
-        private static AttackType lastAttackType = AttackType.Neutral;
-        private static AttackStrength lastAttackStrength = AttackStrength.Weak;
-        private static int consecutiveAttackCount = 0;
 
         private class AttackState : ImtStateMachine<CharacterState>.State
         {
-            private AttackType attackType;
+
+            // 攻撃履歴を保持する静的変数
+            private AttackType lastAttackType = AttackType.Neutral;
+            private AttackStrength lastAttackStrength = AttackStrength.Weak;
+            private int consecutiveAttackCount = 0; private AttackType attackType;
             private AttackManager.AttackStrength attackStrength;
             private float duration;
             private float elapsedTime = 0;

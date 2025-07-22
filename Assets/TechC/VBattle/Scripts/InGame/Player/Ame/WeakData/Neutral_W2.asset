@@ -28,7 +28,7 @@ MonoBehaviour:
   attackDuration: 0.3
   nextChain: {fileID: 11400000, guid: 6e1da5fd787648b4fb0c5e187a5b3f1e, type: 2}
   canChain: 1
-  chainThreshold: 1
+  chainThreshold: 0.8
   damage: 10
   knockback: 2
   canRepeat: 0

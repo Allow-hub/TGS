@@ -29,10 +29,10 @@ namespace TechC
                 .Where(ad => ad.characterType.ToString() == set.characterName) // キャラ一致
                 .ToList();
 
-            foreach (var attackData in allAttackData)
-            {
-                switch (attackData.attackName)
-                {
+            // foreach (var attackData in allAttackData)
+            // {
+            //     switch (attackData.attackName)
+            //     {
                     // // 弱攻撃
                     // case "Neutral_W1": set.weakNeutral_1 = attackData; break;
                     // case "Neutral_W2": set.weakNeutral_2 = attackData; break;
@@ -55,8 +55,8 @@ namespace TechC
                     // case "Down_A": set.appealDown = attackData; break;
                     // case "Left_A": set.appealLeft = attackData; break;
                     // case "Right_A": set.appealRight = attackData; break;
-                }
-            }
+            //     }
+            // }
         }
     }
 }

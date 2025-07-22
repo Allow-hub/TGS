@@ -35,6 +35,7 @@ namespace TechC
             private float elapsedTime = 0;
             private bool isEarlyExit = true;
             private AttackData lastAttackData = null;
+            private float lastAttackTime;
 
             // 同じ攻撃を何回繰り返すとゲージ減少が始まるか
             private const int PENALTY_THRESHOLD = 3;
@@ -58,6 +59,7 @@ namespace TechC
                     }
 
                     duration = attackData.attackDuration;
+                    lastAttackTime = Time.time;
                     SetAnimSetting();
                     SetAttackObjSetting();
                 }
@@ -175,10 +177,10 @@ namespace TechC
                 if (lastAttackData == null) return false;
                 if (!lastAttackData.canChain) return false;
                 if (lastAttackData.nextChain == null) return false;
+                if (Time.time - lastAttackTime > lastAttackData.chainThreshold) return false;
                 currentAttackData = lastAttackData.nextChain;
                 return true;
             }
-
         }
     }
 }

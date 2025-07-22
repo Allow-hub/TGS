@@ -6,7 +6,7 @@ using UnityEngine;
 namespace TechC
 {
     /// <summary>
-    /// コメントの移動処理のみを担当
+    /// コメントの移動処理を担当
     /// </summary>
     [Serializable]
     public class CommentMover
@@ -17,7 +17,7 @@ namespace TechC
         private float despawnPosX;
 
         /// <summary>
-        /// コメントを非表示にする座標を初期化
+        /// 初期化
         /// </summary>
         public void Init()
         {
@@ -25,14 +25,12 @@ namespace TechC
         }
 
         /// <summary>
-        /// コメントを画面上に流す処理を開始
+        /// コメント移動処理を開始
         /// </summary>
         public void StartMoving(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger, Material originalMaterial)
         {
-            // ポーズ中のみ停止（フリーズ中は継続してマテリアル適用を行う）
             Func<bool> isPausedFunc = () => BattleJudge.I.IsPaused;
 
-            // DelayUtilityのポーズ対応版を使用してコメント移動処理を開始
             DelayUtility.StartRepeatedActionWhileWithPause(
                 CommentDisplay.I,
                 () => trans.gameObject.activeInHierarchy && trans.position.x > despawnPosX,
@@ -43,31 +41,16 @@ namespace TechC
         }
 
         /// <summary>
-        /// 1フレーム分のコメント移動処理
+        /// 1フレーム分の移動処理
         /// </summary>
         private void MoveCommentFrame(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger, Material originalMaterial)
         {
-            if (!trans.gameObject.activeInHierarchy)
-            {
-                return;
-            }
+            if (!trans.gameObject.activeInHierarchy) return;
 
-            // フリーズ中の場合は移動を停止し、マテリアルを適用
-            if (CommentDisplay.I.IsCommentFrozen)
-            {
-                CommentDisplay.I.GetMaterialApplier().ApplyFreezeEffectToCharacters(chars, originalMaterial);
-                return; // フリーズ中は移動しない
-            }
-            else
-            {
-                // 通常時は元のマテリアルを適用
-                CommentDisplay.I.GetMaterialApplier().ApplyMaterialToCharacters(chars, originalMaterial);
-            }
+            if (CommentDisplay.I.IsCommentFrozen) return;
 
-            // 移動処理のみを実行
             trans.position += Vector3.left * CommentDisplay.I.GetCurrentSpeed() * Time.deltaTime;
 
-            // 画面外に出た場合はプールに返却
             if (trans.position.x <= despawnPosX)
             {
                 ReturnComment(trans.gameObject, chars);
@@ -75,11 +58,12 @@ namespace TechC
         }
 
         /// <summary>
-        /// コメントと文字オブジェクトをプールに返却
+        /// コメントをプールに返却
         /// </summary>
         private void ReturnComment(GameObject comment, List<GameObject> chars)
         {
-            /* コメントの文字を先にPoolに返却する */
+            CommentDisplay.I.OnCommentReturned(comment);
+
             foreach (var obj in chars)
             {
                 if (obj != null && obj.activeInHierarchy)
@@ -89,7 +73,6 @@ namespace TechC
                 }
             }
 
-            /* コメントの文字を返却した後にコメントそのものをPoolに返却する */
             if (comment.activeInHierarchy)
             {
                 comment.SetActive(false);

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace TechC
 {
     /// <summary>
-    /// コメントのマテリアル適用処理のみを担当
+    /// コメントのマテリアル適用処理を担当
     /// </summary>
     [Serializable]
     public class CommentMaterialApplier
@@ -18,9 +18,9 @@ namespace TechC
         [SerializeField] private Material freezeCommentMaterial;
 
         private MaterialPropertyBlock propertyBlock;
-
         private static readonly int ColorPropertyId = Shader.PropertyToID("_Color");
-        private static readonly int EmissionColorPropertyId = Shader.PropertyToID("_EmissionColor");
+
+        private Dictionary<Material, Color> materialColorCache = new Dictionary<Material, Color>();
 
         /// <summary>
         /// 初期化
@@ -31,7 +31,36 @@ namespace TechC
             {
                 propertyBlock = new MaterialPropertyBlock();
             }
+
+            CacheMaterialColors();
         }
+
+        /// <summary>
+        /// マテリアルの色を事前取得してキャッシュ
+        /// </summary>
+        private void CacheMaterialColors()
+        {
+            Material[] materials = {
+                normalCommentMaterial,
+                speedBuffCommentMaterial,
+                attackBuffCommentMaterial,
+                mapChangeCommentMaterial,
+                freezeCommentMaterial
+            };
+
+            foreach (var material in materials)
+            {
+                if (material != null)
+                {
+                    if (material.HasProperty(ColorPropertyId))
+                    {
+                        Color color = material.GetColor(ColorPropertyId);
+                        materialColorCache[material] = color;
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// コメントタイプに応じたMaterialを取得
@@ -53,21 +82,17 @@ namespace TechC
                         return normalCommentMaterial;
                 }
             }
-            else if (specialCommentType != SpecialCommentType.None)
+            else if (specialCommentType == SpecialCommentType.Freeze)
             {
-                switch (specialCommentType)
-                {
-                    case SpecialCommentType.Freeze:
-                        return freezeCommentMaterial;
-                }
+                return freezeCommentMaterial;
             }
             return normalCommentMaterial;
         }
 
         /// <summary>
-        /// 生成された文字オブジェクトリストに Material を適用
+        /// 文字オブジェクトリストに Material を適用
         /// </summary>
-        public void ApplyMaterialToCharacters(List<GameObject> characters, Material material, Color? overrideColor = null)
+        public void ApplyMaterialToCharacters(List<GameObject> characters, Material material)
         {
             if (characters == null || material == null)
             {
@@ -75,25 +100,18 @@ namespace TechC
                 return;
             }
 
+            if (propertyBlock == null)
+            {
+                Init();
+            }
+
             propertyBlock.Clear();
 
-            // カラー設定
-            if (overrideColor.HasValue)
+            if (materialColorCache.TryGetValue(material, out Color cachedColor))
             {
-                propertyBlock.SetColor(ColorPropertyId, overrideColor.Value);
-            }
-            else if (material.HasProperty(ColorPropertyId))
-            {
-                propertyBlock.SetColor(ColorPropertyId, material.GetColor(ColorPropertyId));
+                propertyBlock.SetColor(ColorPropertyId, cachedColor);
             }
 
-            // エミッション設定（グロー効果など）
-            if (material.HasProperty(EmissionColorPropertyId))
-            {
-                propertyBlock.SetColor(EmissionColorPropertyId, material.GetColor(EmissionColorPropertyId));
-            }
-
-            // 各文字オブジェクトに適用
             foreach (var charObj in characters)
             {
                 if (charObj == null) continue;
@@ -101,9 +119,7 @@ namespace TechC
                 var renderer = charObj.GetComponent<MeshRenderer>();
                 if (renderer != null)
                 {
-                    // sharedMaterial をセット（マテリアル複製を防ぐ）
                     renderer.sharedMaterial = material;
-                    // PropertyBlockを適用
                     renderer.SetPropertyBlock(propertyBlock);
                 }
             }
@@ -120,20 +136,16 @@ namespace TechC
                 return;
             }
 
+            if (propertyBlock == null)
+            {
+                Init();
+            }
 
             propertyBlock.Clear();
 
-            // フリーズマテリアルの色を適用
-            if (freezeCommentMaterial.HasProperty(ColorPropertyId))
+            if (materialColorCache.TryGetValue(freezeCommentMaterial, out Color freezeColor))
             {
-                propertyBlock.SetColor(ColorPropertyId, freezeCommentMaterial.GetColor(ColorPropertyId));
-            }
-
-            // フリーズ用のエミッション効果
-            if (freezeCommentMaterial.HasProperty(EmissionColorPropertyId))
-            {
-                Color freezeEmission = freezeCommentMaterial.GetColor(EmissionColorPropertyId);
-                propertyBlock.SetColor(EmissionColorPropertyId, freezeEmission);
+                propertyBlock.SetColor(ColorPropertyId, freezeColor);
             }
 
             foreach (var charObj in characters)
@@ -143,18 +155,10 @@ namespace TechC
                 var renderer = charObj.GetComponent<MeshRenderer>();
                 if (renderer != null)
                 {
-                    // 元のマテリアルをベースとして使用（シェーダー設定を維持）
-                    renderer.sharedMaterial = originalMaterial;
-                    // フリーズエフェクトをPropertyBlockで適用
+                    renderer.sharedMaterial = freezeCommentMaterial;
                     renderer.SetPropertyBlock(propertyBlock);
                 }
             }
         }
-
-        /// <summary>
-        /// フリーズ用マテリアルを取得
-        /// </summary>
-        public Material GetFreezeMaterial() => freezeCommentMaterial;
-
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
@@ -19,9 +20,22 @@ namespace TechC
 
         [Header("特殊コメントの設定")]
         [SerializeField] private float freezeTime = 3f;
+        
         public bool IsCommentFrozen { get; private set; } = false;
 
         private bool isSpawning = false;
+        private List<CommentInfo> activeComments = new List<CommentInfo>();
+
+        /// <summary>
+        /// アクティブなコメントの情報を管理するデータクラス
+        /// </summary>
+        [Serializable]
+        public class CommentInfo
+        {
+            public GameObject commentObject;
+            public List<GameObject> characters;
+            public Material originalMaterial;
+        }
 
         protected override bool UseDontDestroyOnLoad => false;
 
@@ -58,10 +72,10 @@ namespace TechC
         /// </summary>
         private IEnumerator SpawnCommentWithInterval()
         {
-            // フリーズ・ポーズ状態を考慮した条件関数
+            if (IsCommentFrozen) yield break;
+
             Func<bool> isPausedFunc = () => IsCommentFrozen || BattleJudge.I.IsPaused;
 
-            // DelayUtilityのポーズ対応版を使用してコメント生成処理を開始
             DelayUtility.StartRepeatedActionWhileWithPause(
                 this,
                 () => isSpawning,
@@ -69,10 +83,7 @@ namespace TechC
                 isPausedFunc,
                 () =>
                 {
-                    // コメントを生成
                     GameObject spawnedComment = commentSpawner.SpawnComment();
-
-                    // 生成されたコメントにマテリアルを適用
                     ApplyMaterialToSpawnedComment(spawnedComment);
                 }
             );
@@ -87,46 +98,28 @@ namespace TechC
         {
             if (comment == null) return;
 
-            // CommentSpawnerから最後に生成されたコメントのデータを取得
             var commentData = commentSpawner.GetLastCommentData();
             var characters = commentSpawner.GetLastCharacters();
-
-            // 特殊コメントのチェック
             var freezeCommentTrigger = comment.GetComponent<FreezeCommentTrigger>();
             var spType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
-            Material targetMaterial;
+            
+            Material targetMaterial = (spType != SpecialCommentType.None && freezeCommentTrigger != null)
+                ? commentMaterialApplier.GetCommentMaterial(null, spType)
+                : commentMaterialApplier.GetCommentMaterial(commentData.type);
 
-            if (spType != SpecialCommentType.None && freezeCommentTrigger != null)
+            activeComments.Add(new CommentInfo
             {
-                // フリーズコメントのマテリアル
-                targetMaterial = commentMaterialApplier.GetCommentMaterial(null, spType);
-            }
-            else
-            {
-                // 通常コメントのマテリアル
-                targetMaterial = commentMaterialApplier.GetCommentMaterial(commentData.type);
-            }
+                commentObject = comment,
+                characters = characters,
+                originalMaterial = targetMaterial
+            });
 
-            // マテリアルを適用
             commentMaterialApplier.ApplyMaterialToCharacters(characters, targetMaterial);
-
-            // 移動処理を開始
-            GetMover().StartMoving(comment.transform, characters, freezeCommentTrigger, targetMaterial);
+            commentMover.StartMoving(comment.transform, characters, freezeCommentTrigger, targetMaterial);
         }
 
         /// <summary>
-        /// CommentMaterialApplierインスタンスを取得
-        /// </summary>
-        public CommentMaterialApplier GetMaterialApplier() => commentMaterialApplier;
-
-        /// <summary>
-        /// CommentMoverインスタンスを取得
-        /// </summary>
-        public CommentMover GetMover() => commentMover;
-
-
-        /// <summary>
-        /// FreezeCommentTriggerから直接呼ばれるメソッド
+        /// フリーズコメント取得時に呼ばれる
         /// </summary>
         public void OnFreezeTriggered()
         {
@@ -139,14 +132,64 @@ namespace TechC
         private IEnumerator FreezeAllCommentsCoroutine()
         {
             IsCommentFrozen = true;
+            ApplyFreezeEffectToAllComments();
+
             yield return new WaitForSeconds(freezeTime);
+
             IsCommentFrozen = false;
+            RestoreOriginalMaterials();
+        }
+
+        private void ApplyFreezeEffectToAllComments()
+        {
+            CleanupInactiveComments();
+            foreach (var commentInfo in activeComments)
+            {
+                commentMaterialApplier.ApplyFreezeEffectToCharacters(commentInfo.characters, commentInfo.originalMaterial);
+            }
+        }
+
+        private void RestoreOriginalMaterials()
+        {
+            CleanupInactiveComments();
+            foreach (var commentInfo in activeComments)
+            {
+                commentMaterialApplier.ApplyMaterialToCharacters(commentInfo.characters, commentInfo.originalMaterial);
+            }
+        }
+
+        /// <summary>
+        /// 非アクティブなコメントをリストから削除
+        /// </summary>
+        private void CleanupInactiveComments()
+        {
+            for (int i = activeComments.Count - 1; i >= 0; i--)
+            {
+                if (activeComments[i].commentObject == null || 
+                    !activeComments[i].commentObject.activeInHierarchy)
+                {
+                    activeComments.RemoveAt(i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// コメント返却時の通知
+        /// </summary>
+        public void OnCommentReturned(GameObject comment)
+        {
+            for (int i = activeComments.Count - 1; i >= 0; i--)
+            {
+                if (activeComments[i].commentObject == comment)
+                {
+                    activeComments.RemoveAt(i);
+                    break;
+                }
+            }
         }
 
         public float GetCurrentSpeed() => speed;
-
         public void SetSpeed(float newSpeed) => speed = newSpeed;
-
         public void AddSpeed(float amount) => speed += amount;
     }
 }

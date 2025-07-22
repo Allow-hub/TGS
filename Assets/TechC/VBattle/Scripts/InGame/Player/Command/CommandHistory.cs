@@ -24,7 +24,7 @@ namespace TechC
 
             // 攻撃コマンド用の追加情報
             public CharacterState.AttackType attackType;         // 攻撃タイプ
-            public AttackManager.AttackStrength attackStrength;  // 攻撃強度
+            public CharacterState.AttackStrength attackStrength;  // 攻撃強度
             public string commandSignature;                      // 攻撃コマンドの識別子
 
             public CommandRecord(ICommand command, string stateName, bool wasSuccessful, Vector3 position)
@@ -197,7 +197,7 @@ namespace TechC
                     continue;
 
                 if (current.attackType == CharacterState.AttackType.Neutral &&
-                    current.attackStrength == AttackManager.AttackStrength.Strong)
+                    current.attackStrength == CharacterState.AttackStrength.Strong)
                     continue;
 
                 try

@@ -235,7 +235,7 @@ namespace TechC
             }
 
             // Appealコマンドの特別処理
-            if (record.commandName == "AppealCommand" && step.attackStrength == AttackManager.AttackStrength.Appeal)
+            if (record.commandName == "AppealCommand" && step.attackStrength == CharacterState.AttackStrength.Appeal)
             {
                 return true;
             }

@@ -13,20 +13,48 @@ MonoBehaviour:
   m_Name: AttackSet
   m_EditorClassIdentifier: 
   characterName: Ame
-  weakNeutral_1: {fileID: 11400000, guid: b881478d9bb990d45900352a39d5e45e, type: 2}
-  weakNeutral_2: {fileID: 11400000, guid: 2a60a10691bf42449bd9cda3ebc80448, type: 2}
-  weakNeutral_3: {fileID: 11400000, guid: 6e1da5fd787648b4fb0c5e187a5b3f1e, type: 2}
-  weakUp: {fileID: 11400000, guid: b4913a5484cda7344a9dccbf3f637fa0, type: 2}
-  weakDown: {fileID: 11400000, guid: 00346c49c68554f4f83b1cbd4f709ba1, type: 2}
-  weakLeft: {fileID: 11400000, guid: 7227077ffb4121a4fac040e7c65254b0, type: 2}
-  weakRight: {fileID: 11400000, guid: f91b55d3335a4594fac42ab41866e12d, type: 2}
-  strongNeutral: {fileID: 11400000, guid: 16497d6d11368c846b855596280065e5, type: 2}
-  strongUp: {fileID: 11400000, guid: 76c05fcb9a3836341b5ef7637409d006, type: 2}
-  strongDown: {fileID: 11400000, guid: 701b30260febc674b938c054bff32e43, type: 2}
-  strongLeft: {fileID: 11400000, guid: d9e2ee322cf4b7f4d9c40e0fff43b266, type: 2}
-  strongRight: {fileID: 11400000, guid: 4860b3839fc60684ea088f15f0764bea, type: 2}
-  appealNeutral: {fileID: 11400000, guid: 81cf7f7ee93a02446bd66f97ea4c9f20, type: 2}
-  appealUp: {fileID: 11400000, guid: f0c1833b3f73b6843a0da95d4af76ddc, type: 2}
-  appealDown: {fileID: 11400000, guid: 81cfe34a1ef064849937a951a7cf394e, type: 2}
-  appealLeft: {fileID: 11400000, guid: 8a6e109b581571447adf127c74fab283, type: 2}
-  appealRight: {fileID: 11400000, guid: 2ac302e623505fd4d9d4045f07752577, type: 2}
+  attacks:
+  - attackName: "\u30CB\u30E5\u30FC\u30C8\u30E9\u30EB\u5F31"
+    type: 0
+    strength: 0
+    attackData: {fileID: 11400000, guid: b881478d9bb990d45900352a39d5e45e, type: 2}
+  - attackName: "\u53F3\u5F31"
+    type: 1
+    strength: 0
+    attackData: {fileID: 11400000, guid: f91b55d3335a4594fac42ab41866e12d, type: 2}
+  - attackName: "\u5DE6\u5F31"
+    type: 2
+    strength: 0
+    attackData: {fileID: 11400000, guid: 7227077ffb4121a4fac040e7c65254b0, type: 2}
+  - attackName: "\u4E0B\u5F31"
+    type: 3
+    strength: 0
+    attackData: {fileID: 11400000, guid: 00346c49c68554f4f83b1cbd4f709ba1, type: 2}
+  - attackName: "\u4E0A\u5F31"
+    type: 4
+    strength: 0
+    attackData: {fileID: 11400000, guid: b4913a5484cda7344a9dccbf3f637fa0, type: 2}
+  - attackName: "\u30CB\u30E5\u30FC\u30C8\u30E9\u30EB\u5F37"
+    type: 0
+    strength: 1
+    attackData: {fileID: 11400000, guid: 16497d6d11368c846b855596280065e5, type: 2}
+  - attackName: "\u53F3\u5F37"
+    type: 1
+    strength: 1
+    attackData: {fileID: 11400000, guid: 4860b3839fc60684ea088f15f0764bea, type: 2}
+  - attackName: "\u5DE6\u5F37"
+    type: 2
+    strength: 1
+    attackData: {fileID: 11400000, guid: d9e2ee322cf4b7f4d9c40e0fff43b266, type: 2}
+  - attackName: "\u4E0B\u5F37"
+    type: 3
+    strength: 1
+    attackData: {fileID: 11400000, guid: 701b30260febc674b938c054bff32e43, type: 2}
+  - attackName: "\u4E0A\u5F37"
+    type: 4
+    strength: 1
+    attackData: {fileID: 11400000, guid: 76c05fcb9a3836341b5ef7637409d006, type: 2}
+  - attackName: "\u30CB\u30E5\u30FC\u30C8\u30E9\u30EB\u30A2\u30D4\u30FC\u30EB"
+    type: 0
+    strength: 2
+    attackData: {fileID: 11400000, guid: 81cf7f7ee93a02446bd66f97ea4c9f20, type: 2}

@@ -15,10 +15,12 @@ namespace TechC
         public class Data
         {
             public CharacterState.AttackType attackType;
-            public AttackManager.AttackStrength attackStrength;
+            public CharacterState.AttackStrength attackStrength;
         }
 
         public Data data;
+        public GameObject attackPrefab; // エフェクト・当たり判定含む
+        public Vector3 prefabOffset;
 
         [Header("アニメーション")]
         public string animationTrigger;
@@ -27,6 +29,9 @@ namespace TechC
         public int animHash => Animator.StringToHash(animationTrigger);
         public float attackDuration;
         
+        [Header("コンボ派生")]
+        public AttackData nextCombo;
+        public bool canCombo;
         [Header("攻撃特性")]
         public int damage;
 
@@ -83,6 +88,5 @@ namespace TechC
         public bool canDI = true;             // 方向操作(DI)可能か
         public float diInfluence = 0.3f;      // DIの影響度
 
-        public enum StatusEffectType { None, Burn, Freeze, Poison, Stun }
     }
 }

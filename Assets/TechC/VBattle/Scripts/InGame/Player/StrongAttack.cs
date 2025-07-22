@@ -32,11 +32,11 @@ namespace TechC
         {
             if (attackSet == null) return;
 
-            neutralAttackData = attackSet.strongNeutral;
-            leftAttackData = attackSet.strongLeft;
-            rightAttackData = attackSet.strongRight;
-            downAttackData = attackSet.strongDown;
-            upAttackData = attackSet.strongUp;
+            // neutralAttackData = attackSet.strongNeutral;
+            // leftAttackData = attackSet.strongLeft;
+            // rightAttackData = attackSet.strongRight;
+            // downAttackData = attackSet.strongDown;
+            // upAttackData = attackSet.strongUp;
         }
 
         protected override void Start()

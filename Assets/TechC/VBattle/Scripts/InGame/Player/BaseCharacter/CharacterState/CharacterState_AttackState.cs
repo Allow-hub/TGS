@@ -14,6 +14,12 @@ namespace TechC
             Up,
         }
 
+        public enum AttackStrength
+        {
+            Weak,
+            Strong,
+            Appeal
+        }
 
         private class AttackState : ImtStateMachine<CharacterState>.State
         {
@@ -21,8 +27,10 @@ namespace TechC
             // 攻撃履歴を保持する静的変数
             private AttackType lastAttackType = AttackType.Neutral;
             private AttackStrength lastAttackStrength = AttackStrength.Weak;
-            private int consecutiveAttackCount = 0; private AttackType attackType;
-            private AttackManager.AttackStrength attackStrength;
+            private int consecutiveAttackCount = 0;
+            private AttackType attackType;
+            private AttackStrength attackStrength;
+            private AttackData currentAttackData;
             private float duration;
             private float elapsedTime = 0;
             private bool isEarlyExit = true;
@@ -33,21 +41,22 @@ namespace TechC
 
             protected internal override void Enter()
             {
-                // 初期化を確認
-                if (Context.attackManager == null)
-                {
-                    Debug.LogError("AttackManagerが設定されていません");
-                    return;
-                }
-
                 attackType = Context.CheckAttackType();
                 attackStrength = Context.CheckAttackStrength();
-
+                var key = (attackType, attackStrength);
+                if (Context.characterController.AttackSet.attackDataMap.TryGetValue(key, out var attackData))
+                {
+                    currentAttackData = attackData;
+                    duration = attackData.attackDuration;
+                    SetAnimSetting();
+                    SetAttackObjSetting();
+                }
+                else
+                {
+                    Debug.LogWarning($"No attack found for: {key}");
+                }
                 // 同じ攻撃の連続使用をチェック
                 CheckConsecutiveAttacks();
-
-                Context.attackManager.ExecuteAttack(attackType);
-                duration = Context.attackManager.GetDuration(attackType, attackStrength);
             }
 
             protected internal override void Update()
@@ -64,11 +73,11 @@ namespace TechC
             protected internal override void Exit()
             {
                 elapsedTime = 0;
-                AttackData data = Context.attackManager.GetAttackData(attackType, attackStrength);
+                // AttackData data = Context.attackManager.GetAttackData(attackType, attackStrength);
                 // Context.anim.speed = Context.characterController.DefaultAnimSpeed;
-                if (data != null)
+                if (currentAttackData != null)
                 {
-                    Context.anim.SetBool(data.animHash, false);
+                    Context.anim.SetBool(currentAttackData.animHash, false);
                 }
                 else
                 {
@@ -78,10 +87,26 @@ namespace TechC
 
                 if (isEarlyExit)
                 {
-                    Context.attackManager.ForceFinish(attackStrength);
+                    Context.anim.SetBool(currentAttackData.animHash, false);
+                    // Context.attackManager.ForceFinish(attackStrength);
                     Debug.Log("Early");
                 }
                 Context.currentCommand = null;
+            }
+
+            private void SetAnimSetting()
+            {
+                if (currentAttackData == null) return;
+                Context.anim.speed = currentAttackData.animationSpeed;
+                Context.anim.SetBool(currentAttackData.animHash, true);
+            }
+
+            private void SetAttackObjSetting()
+            {
+                if (currentAttackData == null) return;
+                var obj = GameObject.Instantiate(currentAttackData.attackPrefab);
+                var pos = Context.characterController.transform.position + currentAttackData.prefabOffset;
+                obj.transform.position = pos;
             }
 
             /// <summary>

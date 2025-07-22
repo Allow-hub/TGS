@@ -37,13 +37,13 @@ namespace TechC
         {
             if (attackSet == null) return;
 
-            neutralAttackData_1 = attackSet.weakNeutral_1;
-            neutralAttackData_2 = attackSet.weakNeutral_2;
-            neutralAttackData_3 = attackSet.weakNeutral_3;
-            leftAttackData = attackSet.weakLeft;
-            rightAttackData = attackSet.weakRight;
-            downAttackData = attackSet.weakDown;
-            upAttackData = attackSet.weakUp;
+            // neutralAttackData_1 = attackSet.weakNeutral_1;
+            // neutralAttackData_2 = attackSet.weakNeutral_2;
+            // neutralAttackData_3 = attackSet.weakNeutral_3;
+            // leftAttackData = attackSet.weakLeft;
+            // rightAttackData = attackSet.weakRight;
+            // downAttackData = attackSet.weakDown;
+            // upAttackData = attackSet.weakUp;
         }
 
         protected override void Start()

@@ -33,28 +33,28 @@ namespace TechC
             {
                 switch (attackData.attackName)
                 {
-                    // 弱攻撃
-                    case "Neutral_W1": set.weakNeutral_1 = attackData; break;
-                    case "Neutral_W2": set.weakNeutral_2 = attackData; break;
-                    case "Neutral_W3": set.weakNeutral_3 = attackData; break;
-                    case "Up_W": set.weakUp = attackData; break;
-                    case "Down_W": set.weakDown = attackData; break;
-                    case "Left_W": set.weakLeft = attackData; break;
-                    case "Right_W": set.weakRight = attackData; break;
+                    // // 弱攻撃
+                    // case "Neutral_W1": set.weakNeutral_1 = attackData; break;
+                    // case "Neutral_W2": set.weakNeutral_2 = attackData; break;
+                    // case "Neutral_W3": set.weakNeutral_3 = attackData; break;
+                    // case "Up_W": set.weakUp = attackData; break;
+                    // case "Down_W": set.weakDown = attackData; break;
+                    // case "Left_W": set.weakLeft = attackData; break;
+                    // case "Right_W": set.weakRight = attackData; break;
 
-                    // 強攻撃
-                    case "Neutral_S": set.strongNeutral = attackData; break;
-                    case "Up_S": set.strongUp = attackData; break;
-                    case "Down_S": set.strongDown = attackData; break;
-                    case "Left_S": set.strongLeft = attackData; break;
-                    case "Right_S": set.strongRight = attackData; break;
+                    // // 強攻撃
+                    // case "Neutral_S": set.strongNeutral = attackData; break;
+                    // case "Up_S": set.strongUp = attackData; break;
+                    // case "Down_S": set.strongDown = attackData; break;
+                    // case "Left_S": set.strongLeft = attackData; break;
+                    // case "Right_S": set.strongRight = attackData; break;
 
-                    // アピール
-                    case "Neutral_A": set.appealNeutral = attackData; break;
-                    case "Up_A": set.appealUp = attackData; break;
-                    case "Down_A": set.appealDown = attackData; break;
-                    case "Left_A": set.appealLeft = attackData; break;
-                    case "Right_A": set.appealRight = attackData; break;
+                    // // アピール
+                    // case "Neutral_A": set.appealNeutral = attackData; break;
+                    // case "Up_A": set.appealUp = attackData; break;
+                    // case "Down_A": set.appealDown = attackData; break;
+                    // case "Left_A": set.appealLeft = attackData; break;
+                    // case "Right_A": set.appealRight = attackData; break;
                 }
             }
         }

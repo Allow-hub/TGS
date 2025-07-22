@@ -55,8 +55,7 @@ namespace TechC
             // フリーズ中の場合は移動を停止し、マテリアルを適用
             if (CommentDisplay.I.IsCommentFrozen)
             {
-                var freezeMaterial = CommentDisplay.I.GetMaterialApplier().GetCommentMaterial(null, SpecialCommentType.Freeze);
-                CommentDisplay.I.GetMaterialApplier().ApplyMaterialToCharacters(chars, freezeMaterial);
+                CommentDisplay.I.GetMaterialApplier().ApplyFreezeEffectToCharacters(chars, originalMaterial);
                 return; // フリーズ中は移動しない
             }
             else

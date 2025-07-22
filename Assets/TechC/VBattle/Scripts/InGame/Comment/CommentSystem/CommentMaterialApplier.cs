@@ -17,6 +17,22 @@ namespace TechC
         [SerializeField] private Material mapChangeCommentMaterial;
         [SerializeField] private Material freezeCommentMaterial;
 
+        private MaterialPropertyBlock propertyBlock;
+
+        private static readonly int ColorPropertyId = Shader.PropertyToID("_Color");
+        private static readonly int EmissionColorPropertyId = Shader.PropertyToID("_EmissionColor");
+
+        /// <summary>
+        /// 初期化
+        /// </summary>
+        public void Init()
+        {
+            if (propertyBlock == null)
+            {
+                propertyBlock = new MaterialPropertyBlock();
+            }
+        }
+
         /// <summary>
         /// コメントタイプに応じたMaterialを取得
         /// </summary>
@@ -49,9 +65,9 @@ namespace TechC
         }
 
         /// <summary>
-        /// 生成された文字オブジェクトリストにMaterialを適用
+        /// 生成された文字オブジェクトリストに Material を適用
         /// </summary>
-        public void ApplyMaterialToCharacters(List<GameObject> characters, Material material)
+        public void ApplyMaterialToCharacters(List<GameObject> characters, Material material, Color? overrideColor = null)
         {
             if (characters == null || material == null)
             {
@@ -59,14 +75,78 @@ namespace TechC
                 return;
             }
 
+            propertyBlock.Clear();
+
+            // カラー設定
+            if (overrideColor.HasValue)
+            {
+                propertyBlock.SetColor(ColorPropertyId, overrideColor.Value);
+            }
+            else if (material.HasProperty(ColorPropertyId))
+            {
+                propertyBlock.SetColor(ColorPropertyId, material.GetColor(ColorPropertyId));
+            }
+
+            // エミッション設定（グロー効果など）
+            if (material.HasProperty(EmissionColorPropertyId))
+            {
+                propertyBlock.SetColor(EmissionColorPropertyId, material.GetColor(EmissionColorPropertyId));
+            }
+
+            // 各文字オブジェクトに適用
             foreach (var charObj in characters)
             {
                 if (charObj == null) continue;
 
-                var meshRenderer = charObj.GetComponent<MeshRenderer>();
-                if (meshRenderer != null)
+                var renderer = charObj.GetComponent<MeshRenderer>();
+                if (renderer != null)
                 {
-                    meshRenderer.material = material;
+                    // sharedMaterial をセット（マテリアル複製を防ぐ）
+                    renderer.sharedMaterial = material;
+                    // PropertyBlockを適用
+                    renderer.SetPropertyBlock(propertyBlock);
+                }
+            }
+        }
+
+        /// <summary>
+        /// フリーズエフェクト専用の適用メソッド
+        /// </summary>
+        public void ApplyFreezeEffectToCharacters(List<GameObject> characters, Material originalMaterial)
+        {
+            if (characters == null)
+            {
+                Debug.LogWarning("characters が null です");
+                return;
+            }
+
+
+            propertyBlock.Clear();
+
+            // フリーズマテリアルの色を適用
+            if (freezeCommentMaterial.HasProperty(ColorPropertyId))
+            {
+                propertyBlock.SetColor(ColorPropertyId, freezeCommentMaterial.GetColor(ColorPropertyId));
+            }
+
+            // フリーズ用のエミッション効果
+            if (freezeCommentMaterial.HasProperty(EmissionColorPropertyId))
+            {
+                Color freezeEmission = freezeCommentMaterial.GetColor(EmissionColorPropertyId);
+                propertyBlock.SetColor(EmissionColorPropertyId, freezeEmission);
+            }
+
+            foreach (var charObj in characters)
+            {
+                if (charObj == null) continue;
+
+                var renderer = charObj.GetComponent<MeshRenderer>();
+                if (renderer != null)
+                {
+                    // 元のマテリアルをベースとして使用（シェーダー設定を維持）
+                    renderer.sharedMaterial = originalMaterial;
+                    // フリーズエフェクトをPropertyBlockで適用
+                    renderer.SetPropertyBlock(propertyBlock);
                 }
             }
         }
@@ -74,9 +154,7 @@ namespace TechC
         /// <summary>
         /// フリーズ用マテリアルを取得
         /// </summary>
-        public Material GetFreezeMaterial()
-        {
-            return freezeCommentMaterial;
-        }
+        public Material GetFreezeMaterial() => freezeCommentMaterial;
+
     }
 }

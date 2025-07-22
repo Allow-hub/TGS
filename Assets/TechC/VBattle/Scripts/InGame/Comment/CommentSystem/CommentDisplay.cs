@@ -38,6 +38,7 @@ namespace TechC
             base.Init();
             commentSpawner.Init();
             commentMover.Init();
+            commentMaterialApplier.Init();
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace TechC
                 {
                     // コメントを生成
                     GameObject spawnedComment = commentSpawner.SpawnComment();
-                    
+
                     // 生成されたコメントにマテリアルを適用
                     ApplyMaterialToSpawnedComment(spawnedComment);
                 }
@@ -108,7 +109,7 @@ namespace TechC
 
             // マテリアルを適用
             commentMaterialApplier.ApplyMaterialToCharacters(characters, targetMaterial);
-            
+
             // 移動処理を開始
             GetMover().StartMoving(comment.transform, characters, freezeCommentTrigger, targetMaterial);
         }
@@ -116,18 +117,13 @@ namespace TechC
         /// <summary>
         /// CommentMaterialApplierインスタンスを取得
         /// </summary>
-        public CommentMaterialApplier GetMaterialApplier()
-        {
-            return commentMaterialApplier;
-        }
+        public CommentMaterialApplier GetMaterialApplier() => commentMaterialApplier;
 
         /// <summary>
         /// CommentMoverインスタンスを取得
         /// </summary>
-        public CommentMover GetMover()
-        {
-            return commentMover;
-        }
+        public CommentMover GetMover() => commentMover;
+
 
         /// <summary>
         /// FreezeCommentTriggerから直接呼ばれるメソッド

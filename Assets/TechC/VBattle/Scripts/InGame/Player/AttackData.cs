@@ -1,7 +1,4 @@
 ﻿using Cinemachine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace TechC
@@ -25,6 +22,7 @@ namespace TechC
 
         [Header("アニメーション")]
         public string animationTrigger;
+        public AnimationClip clip;
         public float animationSpeed = 1f;
         public int animHash => Animator.StringToHash(animationTrigger);
         public float attackDuration;

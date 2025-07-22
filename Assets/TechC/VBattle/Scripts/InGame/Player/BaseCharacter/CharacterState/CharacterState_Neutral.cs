@@ -13,9 +13,6 @@ namespace TechC
         /// </summary>
         private class NeutralState : ImtStateMachine<CharacterState>.State
         {
-
-
-
             protected internal override void Enter()
             {
                 base.Enter();

@@ -327,6 +327,7 @@ namespace TechC
             charaEffect?.SetOwnerId(characterController.PlayerID);
             charaEffect?.SetAttackProcessor(attackProcessor);
 
+            AudioManager.I.PlayCharacterSE(CharacterType.Ame, CharacterSEType.StrongUpAttack);
             DelayUtility.StartDelayedActionWithPause(this, returnStrongUpEffectTime, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 UnregisterEffect(stormObj);

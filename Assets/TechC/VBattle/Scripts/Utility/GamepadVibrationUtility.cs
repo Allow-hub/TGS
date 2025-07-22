@@ -4,6 +4,9 @@ using UnityEngine.InputSystem;
 
 namespace TechC
 {
+    /// <summary>
+    /// ゲームパッドの振動をするUtilityクラス
+    /// </summary>
     public static class GamepadVibrationUtility
     {
         /// <summary>

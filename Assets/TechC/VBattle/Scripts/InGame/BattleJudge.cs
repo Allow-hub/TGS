@@ -35,7 +35,6 @@ namespace TechC
         [Header("バトル設定")]
         [SerializeField] private float timeLimit = 180f;  // 制限時間（秒）
         [SerializeField] private bool isTimeLimitEnabled = true;  // 制限時間の有無
-        [SerializeField] private float respawnInvincibleTime = 3f;  // リスポーン無敵時間
         [SerializeField] private GameObject ultMap;//必殺技後のステージ
         [SerializeField] private GameObject normalMap;//2dのステージ
 

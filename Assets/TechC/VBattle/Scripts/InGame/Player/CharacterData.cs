@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace TechC.Player
 {
@@ -6,7 +7,11 @@ namespace TechC.Player
     public class CharacterData : ScriptableObject
     {
         [Tooltip("キャラクター名")]
-        public string Name;
+        public CharacterType type;
+        [Tooltip("キャラのプレハブ")]
+        public GameObject prefab;
+        [Tooltip("アニメーション")]
+        public List<AnimationClip> clips;
         [Tooltip("キャラクターのHp")]
         public int Hp;
         [Tooltip("ガードの耐久値")]

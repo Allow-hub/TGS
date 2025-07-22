@@ -21,6 +21,7 @@ namespace TechC
         public Data data;
         public GameObject attackPrefab; // エフェクト・当たり判定含む
         public Vector3 prefabOffset;
+        public Vector3 prefabRotation;
 
         [Header("アニメーション")]
         public string animationTrigger;
@@ -29,9 +30,10 @@ namespace TechC
         public int animHash => Animator.StringToHash(animationTrigger);
         public float attackDuration;
         
-        [Header("コンボ派生")]
-        public AttackData nextCombo;
-        public bool canCombo;
+        [Header("繋ぎ攻撃派生")]
+        public AttackData nextChain;
+        public bool canChain;
+        public float chainThreshold;
         [Header("攻撃特性")]
         public int damage;
 

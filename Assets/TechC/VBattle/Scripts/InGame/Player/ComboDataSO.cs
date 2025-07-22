@@ -17,7 +17,7 @@ namespace TechC
         public string comboName;
         public string description;
 
-        [System.Serializable]
+        [Serializable]
         public class ComboStep
         {
             public CharacterState.AttackType attackType;

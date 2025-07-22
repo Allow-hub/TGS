@@ -18,14 +18,17 @@ MonoBehaviour:
   data:
     attackType: 0
     attackStrength: 0
-  attackPrefab: {fileID: 0}
-  prefabOffset: {x: 0, y: 0, z: 0}
+  attackPrefab: {fileID: 1088245378690188311, guid: 6a3deabea98e2b448a2b20a9ac3edfd6,
+    type: 3}
+  prefabOffset: {x: 0, y: 2, z: 0.5}
+  prefabRotation: {x: 60, y: 0, z: 0}
   animationTrigger: IsNormalWeakAttack_2
-  clip: {fileID: 0}
+  clip: {fileID: 7400000, guid: c7ca30285db7b3645a004dffce814396, type: 2}
   animationSpeed: 1.5
   attackDuration: 0.3
-  nextCombo: {fileID: 11400000, guid: 6e1da5fd787648b4fb0c5e187a5b3f1e, type: 2}
-  canCombo: 1
+  nextChain: {fileID: 11400000, guid: 6e1da5fd787648b4fb0c5e187a5b3f1e, type: 2}
+  canChain: 1
+  chainThreshold: 1
   damage: 10
   knockback: 2
   canRepeat: 0

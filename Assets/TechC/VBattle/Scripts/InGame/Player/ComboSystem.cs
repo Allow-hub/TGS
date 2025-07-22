@@ -137,7 +137,7 @@ namespace TechC
             }
 
             // 履歴の中から連続するコンボとして一致するものを探す
-            List<CommandHistory.CommandRecord> matchedRecords = new List<CommandHistory.CommandRecord>();
+            List<CommandRecord> matchedRecords = new List<CommandRecord>();
 
             // 履歴を新しい順に検索
             int currentHistoryIndex = history.Count - 1;
@@ -202,7 +202,7 @@ namespace TechC
 
 
 
-        private bool IsExcludedCommand(CommandHistory.CommandRecord record, ComboDataSO combo)
+        private bool IsExcludedCommand(CommandRecord record, ComboDataSO combo)
         {
             var command = record.commandInstance;
             if (record.wasUsedForCombo) return true;
@@ -271,8 +271,5 @@ namespace TechC
             }
 
         }
-
-
-
     }
 }

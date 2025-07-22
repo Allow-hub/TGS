@@ -34,6 +34,8 @@ namespace TechC
             private float duration;
             private float elapsedTime = 0;
             private bool isEarlyExit = true;
+            private AttackData lastAttackData = null;
+
             // 同じ攻撃を何回繰り返すとゲージ減少が始まるか
             private const int PENALTY_THRESHOLD = 3;
             // ゲージ減少量
@@ -46,7 +48,15 @@ namespace TechC
                 var key = (attackType, attackStrength);
                 if (Context.characterController.AttackSet.attackDataMap.TryGetValue(key, out var attackData))
                 {
-                    currentAttackData = attackData;
+                    if (CanChain())
+                    {
+                        Debug.Log("攻撃がつながった");
+                    }
+                    else
+                    {
+                        currentAttackData = attackData;
+                    }
+
                     duration = attackData.attackDuration;
                     SetAnimSetting();
                     SetAttackObjSetting();
@@ -74,10 +84,11 @@ namespace TechC
             {
                 elapsedTime = 0;
                 // AttackData data = Context.attackManager.GetAttackData(attackType, attackStrength);
-                // Context.anim.speed = Context.characterController.DefaultAnimSpeed;
+                Context.anim.speed = Context.characterController.DefaultAnimSpeed;
                 if (currentAttackData != null)
                 {
                     Context.anim.SetBool(currentAttackData.animHash, false);
+                    lastAttackData = currentAttackData;
                 }
                 else
                 {
@@ -104,10 +115,29 @@ namespace TechC
             private void SetAttackObjSetting()
             {
                 if (currentAttackData == null) return;
-                var obj = GameObject.Instantiate(currentAttackData.attackPrefab);
-                var pos = Context.characterController.transform.position + currentAttackData.prefabOffset;
+
+                var obj = CharaEffectFactory.I.GetEffectObj(currentAttackData.attackPrefab);
+                var t = Context.characterController.transform;
+
+                // ローカル空間の offset をワールド空間へ変換
+                var offset =
+                    t.right * currentAttackData.prefabOffset.x +
+                    t.up * currentAttackData.prefabOffset.y +
+                    t.forward * currentAttackData.prefabOffset.z;
+
+                var pos = t.position + offset;
                 obj.transform.position = pos;
+
+                var rot = currentAttackData.prefabRotation;
+
+                // 向きによる Y軸反転（左向きのとき）
+                if (t.forward.x < 0)
+                {
+                    rot.y = 180 - rot.y;
+                }
+                obj.transform.rotation = Quaternion.Euler(rot);
             }
+
 
             /// <summary>
             /// 同じ攻撃の連続使用をチェックし、必要に応じてゲージを減らす
@@ -140,6 +170,15 @@ namespace TechC
                     lastAttackStrength = attackStrength;
                 }
             }
+            private bool CanChain()
+            {
+                if (lastAttackData == null) return false;
+                if (!lastAttackData.canChain) return false;
+                if (lastAttackData.nextChain == null) return false;
+                currentAttackData = lastAttackData.nextChain;
+                return true;
+            }
+
         }
     }
 }

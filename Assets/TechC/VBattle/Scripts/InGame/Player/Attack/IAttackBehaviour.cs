@@ -17,5 +17,13 @@ namespace TechC.Player.Attack
 
         /// <summary>解放</summary>
         void OnRelease();
+        /// <summary>トリガー開始時の処理</summary>
+        void OnTriggerEnter(Collider other) { }
+
+        /// <summary>トリガー継続時の処理</summary>
+        void OnTriggerStay(Collider other) { }
+
+        /// <summary>トリガー終了時の処理</summary>
+        void OnTriggerExit(Collider other) { }
     }
 }

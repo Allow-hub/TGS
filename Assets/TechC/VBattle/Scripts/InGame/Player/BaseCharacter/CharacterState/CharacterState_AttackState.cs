@@ -1,6 +1,5 @@
 using IceMilkTea.StateMachine;
 using UnityEngine;
-using static TechC.AttackManager;
 namespace TechC
 {
     public partial class CharacterState
@@ -51,7 +50,6 @@ namespace TechC
                 {
                     if (CanChain())
                     {
-                        Debug.Log("攻撃がつながった");
                     }
                     else
                     {
@@ -62,6 +60,7 @@ namespace TechC
                     lastAttackTime = Time.time;
                     SetAnimSetting();
                     SetAttackObjSetting();
+                    DelayUtility.StartDelayedActionWithPause(Context.characterController, currentAttackData.hitTiming, BattleJudge.I.GetPauseStateFunc, SpawnHitbox);
                 }
                 else
                 {
@@ -85,7 +84,6 @@ namespace TechC
             protected internal override void Exit()
             {
                 elapsedTime = 0;
-                // AttackData data = Context.attackManager.GetAttackData(attackType, attackStrength);
                 Context.anim.speed = Context.characterController.DefaultAnimSpeed;
                 if (currentAttackData != null)
                 {
@@ -101,7 +99,6 @@ namespace TechC
                 if (isEarlyExit)
                 {
                     Context.anim.SetBool(currentAttackData.animHash, false);
-                    // Context.attackManager.ForceFinish(attackStrength);
                     Debug.Log("Early");
                 }
                 Context.currentCommand = null;
@@ -117,7 +114,7 @@ namespace TechC
             private void SetAttackObjSetting()
             {
                 if (currentAttackData == null) return;
-
+                if (currentAttackData.attackPrefab == null) return;
                 var obj = CharaEffectFactory.I.GetEffectObj(currentAttackData.attackPrefab);
                 var t = Context.characterController.transform;
 
@@ -172,6 +169,33 @@ namespace TechC
                     lastAttackStrength = attackStrength;
                 }
             }
+
+            private void SpawnHitbox()
+            {
+                if (currentAttackData == null) return;
+
+                var t = Context.characterController.transform;
+
+                Vector3 offset =
+                    t.right * currentAttackData.hitboxOffset.x +
+                    t.up * currentAttackData.hitboxOffset.y +
+                    t.forward * currentAttackData.hitboxOffset.z;
+
+                Vector3 center = t.position + offset;
+
+                // 当たり判定
+                Collider[] hits = Physics.OverlapSphere(center, currentAttackData.radius, currentAttackData.targetLayers);
+                foreach (var hit in hits)
+                {
+                    var damageable = hit.GetComponent<IDamageable>();
+                    if (damageable != null)
+                    {
+                        damageable.TakeDamage(currentAttackData.damage);
+                    }
+                }
+                AttackVisualizer.I.DrawHitbox(center, currentAttackData.radius, 1f);
+            }
+
             private bool CanChain()
             {
                 if (lastAttackData == null) return false;

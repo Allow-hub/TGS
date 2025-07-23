@@ -10,6 +10,7 @@ namespace TechC.Player.Attack
     public class AttackObjectController : MonoBehaviour
     {
         [SerializeReference] private List<IAttackBehaviour> behaviours;
+        private string playerTag = "Player";
 
         private void Start()
         {
@@ -42,6 +43,19 @@ namespace TechC.Player.Attack
             {
                 if (behaviour == null) continue;
                 behaviour?.OnUpdate(delta);
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.CompareTag(playerTag))
+            {
+                if (behaviours == null) return;
+                foreach (var behaviour in behaviours)
+                {
+                    if (behaviour == null) continue;
+                    behaviour?.OnTriggerEnter(other);
+                }
             }
         }
     }

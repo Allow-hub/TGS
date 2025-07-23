@@ -78,64 +78,19 @@ namespace TechC.Player
 
             if (Mathf.Abs(horizontalInput) > STOP_THRESHOLD)
             {
+                // ★ フリップによる即時回転
                 float targetYRotation = horizontalInput > 0 ? RIGHT_FACING_ANGLE : LEFT_FACING_ANGLE;
-                float currentYRotation = transform.eulerAngles.y;
-                float angleDifference = Mathf.DeltaAngle(currentYRotation, targetYRotation);
-
-                if (Mathf.Abs(angleDifference) > ROTATION_TOLERANCE)
-                {
-                    float rotationStep = characterData.RotationSpeed * RIGHT_FACING_ANGLE * Time.deltaTime;
-
-                    if (Mathf.Abs(angleDifference) > MICRO_ROTATION_THRESHOLD)
-                    {
-                        float newYRotation = currentYRotation + Mathf.Sign(angleDifference) * Mathf.Min(rotationStep, Mathf.Abs(angleDifference));
-                        transform.rotation = Quaternion.Euler(0, newYRotation, 0);
-                    }
-                    else
-                    {
-                        transform.rotation = Quaternion.Euler(0, targetYRotation, 0);
-                    }
-                }
+                transform.rotation = Quaternion.Euler(0, targetYRotation, 0);
 
                 float targetVelocityX = horizontalInput * groundSpeed;
                 rb.velocity = new Vector3(targetVelocityX, rb.velocity.y, 0);
             }
             else
             {
-                float currentYRotation = transform.eulerAngles.y;
-                float diffTo90 = Mathf.Abs(Mathf.DeltaAngle(currentYRotation, RIGHT_FACING_ANGLE));
-                float diffToMinus90 = Mathf.Abs(Mathf.DeltaAngle(currentYRotation, LEFT_FACING_ANGLE));
-                float targetYRotation = diffTo90 < diffToMinus90 ? RIGHT_FACING_ANGLE : LEFT_FACING_ANGLE;
-
-                float angleDifference = Mathf.DeltaAngle(currentYRotation, targetYRotation);
-                if (Mathf.Abs(angleDifference) > FINAL_ROTATION_THRESHOLD)
-                {
-                    float rotationStep = characterData.RotationSpeed * RIGHT_FACING_ANGLE * Time.deltaTime;
-                    float newYRotation = currentYRotation + Mathf.Sign(angleDifference) * Mathf.Min(rotationStep, Mathf.Abs(angleDifference));
-                    transform.rotation = Quaternion.Euler(0, newYRotation, 0);
-                }
-                else if (Mathf.Abs(angleDifference) > MICRO_ROTATION_THRESHOLD)
-                {
-                    transform.rotation = Quaternion.Euler(0, targetYRotation, 0);
-                }
-
-                if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
-                {
-                    float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, characterData.Deceleration * Time.fixedDeltaTime);
-                    rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
-                }
-                else
-                {
-                    rb.velocity = new Vector3(0f, rb.velocity.y, 0);
-                }
-
-                if (Mathf.Abs(rb.velocity.x) > STOP_THRESHOLD)
-                {
-                    float deceleratedX = Mathf.MoveTowards(rb.velocity.x, 0f, characterData.Deceleration * Time.fixedDeltaTime);
-                    rb.velocity = new Vector3(deceleratedX, rb.velocity.y, 0);
-                }
+                rb.velocity = new Vector3(0f, rb.velocity.y, 0);
             }
         }
+
 
         /// <summary>
         /// 空中での移動処理

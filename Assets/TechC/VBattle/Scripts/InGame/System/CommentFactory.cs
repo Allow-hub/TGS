@@ -20,7 +20,7 @@ namespace TechC
         /// <param name="commentPrefab"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public GameObject GetComment(CommentData commentData, GameObject commentPrefab, Transform parent)
+        public GameObject GetComment(CommentData commentData, GameObject commentPrefab)
         {
             GameObject obj = commentPool.GetObject(commentPrefab);
             obj.transform.localScale = COMMENT_OBJ_SCALE;

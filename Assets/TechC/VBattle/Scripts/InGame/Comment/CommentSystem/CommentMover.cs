@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,12 +14,14 @@ namespace TechC
         [SerializeField] private Transform topLeftDespawn;
         [SerializeField] private Transform buttonLeftDespawn;
         private float despawnPosX;
+        private Func<bool> isPausedFunc;
 
         /// <summary>
         /// 初期化
         /// </summary>
         public void Init()
         {
+            isPausedFunc = () => BattleJudge.I.IsPaused;
             despawnPosX = topLeftDespawn.transform.position.x;
         }
 
@@ -29,8 +30,6 @@ namespace TechC
         /// </summary>
         public void StartMoving(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger, Material originalMaterial)
         {
-            Func<bool> isPausedFunc = () => BattleJudge.I.IsPaused;
-
             DelayUtility.StartRepeatedActionWhileWithPause(
                 CommentDisplay.I,
                 () => trans.gameObject.activeInHierarchy && trans.position.x > despawnPosX,

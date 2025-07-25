@@ -7,10 +7,6 @@ namespace TechC
     /// </summary>
     public class FreezeCommentTrigger : MonoBehaviour
     {
-
-        /* ===============================
-         * TODO: NormalCommentにスクリプトをアタッチしないように修正する
-         * =============================== */
         public SpecialCommentType SpecialType { get; private set; }
         public string CommentText { get; private set; }
 

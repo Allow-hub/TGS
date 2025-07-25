@@ -8,17 +8,23 @@ namespace TechC
     /// </summary>
     public class CommentProvider : MonoBehaviour
     {
+
         [Header("コメントデータ")]
         public NormalCommentData normalComments;
         public List<BuffCommentData> buffComments;
+        public List<SpecialCommentData> specialComments; // 新規追加：特殊コメントデータ
+
 
         [Header("コメントの出現確率")]
         [SerializeField, Range(0f, 1f)] private float normalChance = 0.7f;
         [SerializeField, Range(0f, 1f)] private float speedBuffChance = 0.2f;
         [SerializeField, Range(0f, 1f)] private float attackBuffChance = 0.2f;
         [SerializeField, Range(0f, 1f)] private float mapChangeChance = 0.1f;
+        [SerializeField, Range(0f, 1f)] private float specialCommentChance = 0.1f; // 新規追加：特殊コメントの確率
+
 
         private float totalChance; /* 合計確率 */
+
 
         /* バフコメント（Speed） */
         private List<BuffCommentData> speedBuffs;
@@ -29,9 +35,14 @@ namespace TechC
         /* マップ変更用バフコメント */
         private List<BuffCommentData> mapChangeBuffs;
 
+        /* 特殊コメント */
+        private List<SpecialCommentData> specialCommentList;
+
         private void Awake()
         {
-            totalChance = normalChance + speedBuffChance + attackBuffChance + mapChangeChance;
+
+            totalChance = normalChance + speedBuffChance + attackBuffChance + mapChangeChance + specialCommentChance;
+
 
             /* 確率が0またはマイナスならデフォルト値に設定 */
             if (totalChance <= 0f)
@@ -39,14 +50,17 @@ namespace TechC
                 normalChance = 0.7f;
                 speedBuffChance = 0.1f;
                 attackBuffChance = 0.1f;
-                mapChangeChance = 0.1f;
+                mapChangeChance = 0.05f;
+                specialCommentChance = 0.05f;
                 totalChance = 1.0f;
             }
+
 
             /* buffCommentsを事前にフィルタリングして分類 */
             speedBuffs = new List<BuffCommentData>();
             attackBuffs = new List<BuffCommentData>();
             mapChangeBuffs = new List<BuffCommentData>();
+            specialCommentList = new List<SpecialCommentData>();
 
             foreach (var buff in buffComments)
             {
@@ -63,6 +77,15 @@ namespace TechC
                     attackBuffs.Add(buff);
                 }
             }
+
+            /* SpecialCommentDataをリスト化 */
+            if (specialComments != null)
+            {
+                foreach (var special in specialComments)
+                {
+                    specialCommentList.Add(special);
+                }
+            }
         }
 
         /// <summary>
@@ -71,19 +94,24 @@ namespace TechC
         /// <returns></returns>
         public CommentData GetRandomComment()
         {
+
             /* ランダムな値を計算 */
             float randomValue = Random.value * totalChance;
 
-            /* 通常コメントの確率 */
-            if (randomValue < normalChance)
+            float threshold = 0f;
+
+            // 通常コメント
+            threshold += normalChance;
+            if (randomValue < threshold)
             {
                 string text = normalComments.comment[Random.Range(0, normalComments.comment.Length)];
                 return new CommentData(CommentType.Normal, text, null);
             }
-            /* Speedバフコメントの確率 */
-            else if (randomValue < normalChance + speedBuffChance)
+
+            // Speedバフコメント
+            threshold += speedBuffChance;
+            if (randomValue < threshold)
             {
-                /* Speedバフコメントをランダムに選択 */
                 if (speedBuffs.Count > 0)
                 {
                     var buff = speedBuffs[Random.Range(0, speedBuffs.Count)];
@@ -91,10 +119,11 @@ namespace TechC
                     return new CommentData(CommentType.SpeedBuff, text, buff.buffType);
                 }
             }
-            /* Attackバフコメントの確率 */
-            else if (randomValue < normalChance + speedBuffChance + attackBuffChance)
+
+            // Attackバフコメント
+            threshold += attackBuffChance;
+            if (randomValue < threshold)
             {
-                /* Attackバフコメントをランダムに選択 */
                 if (attackBuffs.Count > 0)
                 {
                     var buff = attackBuffs[Random.Range(0, attackBuffs.Count)];
@@ -102,10 +131,11 @@ namespace TechC
                     return new CommentData(CommentType.AttackBuff, text, buff.buffType);
                 }
             }
-            /* マップ変更コメントの確率 */
-            else
+
+            // マップ変更コメント
+            threshold += mapChangeChance;
+            if (randomValue < threshold)
             {
-                /* マップ変更用バフコメントをランダムに選択 */
                 if (mapChangeBuffs.Count > 0)
                 {
                     var buff = mapChangeBuffs[Random.Range(0, mapChangeBuffs.Count)];
@@ -114,7 +144,19 @@ namespace TechC
                 }
             }
 
-            /* デフォルト fallback（通常コメント） */
+            // 特殊コメント
+            threshold += specialCommentChance;
+            if (randomValue < threshold)
+            {
+                if (specialCommentList.Count > 0)
+                {
+                    var special = specialCommentList[Random.Range(0, specialCommentList.Count)];
+                    string text = special.comment[Random.Range(0, special.comment.Length)];
+                    return new CommentData(CommentType.Normal, text, null);
+                }
+            }
+
+            // fallback（通常コメント）
             string fallback = normalComments.comment[Random.Range(0, normalComments.comment.Length)];
             return new CommentData(CommentType.Normal, fallback, null);
         }

@@ -14,6 +14,7 @@ namespace TechC
         [SerializeField] private GameObject speedBuffPrefab;
         [SerializeField] private GameObject attackBuffPrefab;
         [SerializeField] private GameObject mapChangePrefab;
+        [SerializeField] private GameObject specialPrefab;
 
         [Header("コメントが出現する場所")]
         [SerializeField] private Transform topRightSpawnPos;
@@ -85,16 +86,18 @@ namespace TechC
         {
             switch (commentData.type)
             {
-                case CommentType.Normal:
-                    return commentPrefab;
-                case CommentType.AttackBuff:
-                    return attackBuffPrefab;
-                case CommentType.MapChange:
-                    return mapChangePrefab;
-                case CommentType.SpeedBuff:
-                    return speedBuffPrefab;
-                default:
-                    return commentPrefab;
+            case CommentType.Normal:
+                return commentPrefab;
+            case CommentType.AttackBuff:
+                return attackBuffPrefab;
+            case CommentType.MapChange:
+                return mapChangePrefab;
+            case CommentType.SpeedBuff:
+                return speedBuffPrefab;
+            case CommentType.Special:
+                return specialPrefab;
+            default:
+                return commentPrefab;
             }
         }
     }

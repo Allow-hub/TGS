@@ -32,10 +32,11 @@ namespace TechC
                 {
                     freezeCommentTrigger = obj.AddComponent<FreezeCommentTrigger>();
                 }
-
-                // 明示的にメソッドで設定
-                var specialType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
-                freezeCommentTrigger.SetSpecialType(specialType); // ここでコメントタイプを設定する
+                // specialTypeを直接設定
+                if (commentData.specialType.HasValue)
+                {
+                    freezeCommentTrigger.SetSpecialType(commentData.specialType.Value);
+                }
             }
             else
             {
@@ -43,7 +44,10 @@ namespace TechC
                 commentTrigger?.Init(commentPool);
                 if (commentTrigger != null)
                 {
-                    commentTrigger.specialCommentType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
+                    if (commentData.specialType.HasValue)
+                    {
+                        commentTrigger.specialCommentType = commentData.specialType.Value;
+                    }
                     commentTrigger.commentText = commentData.text;
                 }
                 if (commentData.buffType.HasValue)

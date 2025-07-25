@@ -101,8 +101,8 @@ namespace TechC
             var commentData = commentSpawner.GetLastCommentData();
             var characters = commentSpawner.GetLastCharacters();
             var freezeCommentTrigger = comment.GetComponent<FreezeCommentTrigger>();
-            var spType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
-            
+            SpecialCommentType spType = commentData.specialType.HasValue ? commentData.specialType.Value : SpecialCommentType.None;
+
             Material targetMaterial = (spType != SpecialCommentType.None && freezeCommentTrigger != null)
                 ? commentMaterialApplier.GetCommentMaterial(null, spType)
                 : commentMaterialApplier.GetCommentMaterial(commentData.type);

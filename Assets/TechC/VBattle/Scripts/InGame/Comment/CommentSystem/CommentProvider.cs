@@ -148,11 +148,22 @@ namespace TechC
             threshold += specialCommentChance;
             if (randomValue < threshold)
             {
-                if (specialCommentList.Count > 0)
+                if (specialComments != null && specialComments.Count > 0)
                 {
-                    var special = specialCommentList[Random.Range(0, specialCommentList.Count)];
-                    string text = special.comment[Random.Range(0, special.comment.Length)];
-                    return new CommentData(CommentType.Normal, text, null);
+                    // SpecialCommentEntry[]の全要素をリスト化
+                    var allEntries = new List<SpecialCommentData.SpecialCommentEntry>();
+                    foreach (var data in specialComments)
+                    {
+                        if (data != null && data.comments != null)
+                        {
+                            allEntries.AddRange(data.comments);
+                        }
+                    }
+                    if (allEntries.Count > 0)
+                    {
+                        var entry = allEntries[Random.Range(0, allEntries.Count)];
+                        return new CommentData(CommentType.Special, entry.comment, null, entry.specialType);
+                    }
                 }
             }
 

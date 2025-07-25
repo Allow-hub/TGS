@@ -5,7 +5,7 @@ namespace TechC
     /// <summary>
     /// 通常コメントを管理する ScriptableObject
     /// </summary>
-    [CreateAssetMenu(fileName = "NormalComment", menuName = "TechC/Comment/Normal")]
+    [CreateAssetMenu(fileName = "NormalCommentData", menuName = "TechC/Comment/Normal")]
     
     public class NormalCommentData : ScriptableObject
     {

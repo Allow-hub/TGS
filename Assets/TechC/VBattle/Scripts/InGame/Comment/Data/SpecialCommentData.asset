@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8ba5907e1e78e4d8bd6cb2d104489d, type: 3}
   m_Name: SpecialCommentData
   m_EditorClassIdentifier: 
-  comment:
-  - "\u56FA\u5B9A\u3057\u307E\u3057\u305F"
+  comments:
+  - comment: "\u56FA\u5B9A\u3057\u307E\u3057\u305F"
+    specialType: 2

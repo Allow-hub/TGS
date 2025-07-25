@@ -43,6 +43,11 @@ namespace TechC
 
             protected internal override void Enter()
             {
+                if (!BattleJudge.I.CanPlayerAttack(Context.characterController.PlayerID))
+                {
+                    Debug.Log("攻撃不能状態");
+                    return;
+                }
                 attackType = Context.CheckAttackType();
                 attackStrength = Context.CheckAttackStrength();
                 var key = (attackType, attackStrength);
@@ -145,6 +150,7 @@ namespace TechC
             {
                 if (attackType == lastAttackType && attackStrength == lastAttackStrength)
                 {
+                    if (lastAttackData != currentAttackData) return;
                     // 同じ攻撃が連続で使われている
                     consecutiveAttackCount++;
 
@@ -152,7 +158,7 @@ namespace TechC
                     if (consecutiveAttackCount >= PENALTY_THRESHOLD)
                     {
                         // ゲージを減少させる
-                        var characterController = Context.characterController as Player.CharacterController;
+                        var characterController = Context.characterController;
                         if (characterController != null)
                         {
                             // ここでゲージを減少（設定により調整可能）
@@ -188,8 +194,19 @@ namespace TechC
                 foreach (var hit in hits)
                 {
                     var damageable = hit.GetComponent<IDamageable>();
+                    var opponent = hit.GetComponent<Player.CharacterController>();
+                    //自分への接触チェック
+                    if (opponent?.PlayerID == Context.characterController.PlayerID) continue;
+
                     if (damageable != null)
                     {
+                        var targetController = Context.characterController.OpponentController;
+                        if (targetController != null &&
+                            !BattleJudge.I.IsValidAttackTarget(targetController.PlayerID))
+                        {
+                            Debug.Log($"相手は現在無敵");
+                            continue; // 無敵状態などの場合はスキップ
+                        }
                         damageable.TakeDamage(currentAttackData.damage);
                     }
                 }

@@ -29,7 +29,7 @@ namespace TechC
         protected override void Awake()
         {
             base.Awake();
-            attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool, hitEffectPrefab, battleJudge);
+            // attackProcessor = new AttackProcessor(characterController, comboSystem, objectPool, hitEffectPrefab, battleJudge);
             neutralComboChecker = new NeutralComboChecker(commandHistory);
         }
 
@@ -103,13 +103,13 @@ namespace TechC
                 DelayUtility.StartRepeatedActionWithPause(this, attackData.repeatDuration, attackData.repeatInterval, BattleJudge.I.GetPauseStateFunc, () =>
                 {
                     // 攻撃処理をAttackProcessorに委譲
-                    attackProcessor.ProcessAttack(attackData);
+                    // attackProcessor.ProcessAttack(attackData);
                 });
             }
             else
             {
                 // 攻撃処理をAttackProcessorに委譲
-                attackProcessor.ProcessAttack(attackData);
+                // attackProcessor.ProcessAttack(attackData);
             }
         }
 

@@ -22,6 +22,7 @@ namespace TechC
             protected internal override void Enter()
             {
                 base.Enter();
+                BattleJudge.I.SetPlayerAttackState(Context.characterController.PlayerID,false);
                 Context.isHitting = true;
                 // 最後に受けたヒットデータを取得
                 currentHitData = Context.characterController.GetLastHitData();
@@ -71,6 +72,7 @@ namespace TechC
             protected internal override void Exit()
             {
                 base.Exit();
+                BattleJudge.I.SetPlayerAttackState(Context.characterController.PlayerID, true);
                 Context.isHitting = false;
                 elapsedTime = 0f;
                 Context.anim.SetBool(hitAnim, false);

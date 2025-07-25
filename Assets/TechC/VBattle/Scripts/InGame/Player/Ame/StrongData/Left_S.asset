@@ -18,9 +18,17 @@ MonoBehaviour:
   data:
     attackType: 2
     attackStrength: 1
+  attackPrefab: {fileID: 978021217508277832, guid: 8f736e9f4d432bd44a1dddd014cee959,
+    type: 3}
+  prefabOffset: {x: 0, y: 0, z: 0}
+  prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsLeftStrongAttack
+  clip: {fileID: 0}
   animationSpeed: 2
   attackDuration: 0.9
+  nextChain: {fileID: 11400000, guid: 4adf88afa8babbd49ba3b2ee06d2b996, type: 2}
+  canChain: 1
+  chainThreshold: 1
   damage: 0
   knockback: 0
   canRepeat: 0

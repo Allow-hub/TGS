@@ -31,6 +31,23 @@ namespace TechC
                     {
                         CommentDisplay.I.OnFreezeTriggered();
                     }
+                    // ここで即座に非表示・返却
+                    if (chars != null)
+                    {
+                        foreach (var obj in chars)
+                        {
+                            if (obj != null && obj.activeInHierarchy)
+                            {
+                                obj.SetActive(false);
+                                CommentFactory.I.ReturnChar(obj);
+                            }
+                        }
+                    }
+                    if (gameObject.activeInHierarchy)
+                    {
+                        gameObject.SetActive(false);
+                        CommentFactory.I.ReturnComment(gameObject);
+                    }
                     break;
             }
         }

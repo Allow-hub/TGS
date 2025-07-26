@@ -1,132 +1,161 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
 {
     public static class AttackProcessor_Refacta
     {
-      /// <summary>
-        /// 攻撃判定を実行する共通メソッド
+        /// <summary>
+        /// 攻撃の実行を行う公開メソッド
         /// </summary>
-        /// <param name="attackData">攻撃データ</param>
-        /// <param name="attackerTransform">攻撃者のTransform</param>
-        /// <param name="attackerPlayerID">攻撃者のプレイヤーID</param>
-        /// <param name="visualizeHitbox">ヒットボックスを可視化するか</param>
-        public static void ProcessAttack(AttackData attackData, Transform attackerTransform, int attackerPlayerID, bool visualizeHitbox = false)
+        /// <param name="attackData"></param>
+        public static void ProcessAttack(AttackData attackData, GameObject ownerObj = null)
         {
-            if (attackData == null || attackerTransform == null) return;
+            if (!CheckHit(attackData, ownerObj)) return;
+            PlaySound(attackData);
+        }
 
-            // ヒットボックスの位置計算
-            Vector3 hitboxCenter = CalculateHitboxCenter(attackData, attackerTransform);
+        /// <summary>
+        /// 攻撃のヒット判定をチェックする
+        /// </summary>
+        /// <param name="attackData"></param>
+        /// <returns></returns>
+        private static bool CheckHit(AttackData attackData, GameObject ownerObj = null)
+        {
+            if (attackData == null || attackData.hitDetectionMode == HitDetectionMode.None) return false;
+            if (ownerObj == null) return false;
 
-            // 攻撃判定実行
-            ExecuteAttackCheck(attackData, hitboxCenter, attackerPlayerID);
+            Collider selfCollider = ownerObj.GetComponent<Collider>();
+            if (selfCollider == null) return false;
 
-            // 可視化
-            if (visualizeHitbox)
+            bool hitOccurred = false;
+
+            switch (attackData.hitDetectionMode)
             {
-                AttackVisualizer.I.DrawHitbox(hitboxCenter, attackData.radius, 1f);
+                case HitDetectionMode.UseSelf:
+                    {
+                        // 自身の位置を中心に候補を取得(近くの当たりの候補)
+                        Collider[] candidates = Physics.OverlapSphere(
+                            ownerObj.transform.position,
+                            attackData.radius,
+                            attackData.targetLayers);
+
+                        // 近くの当たりの候補から、実際に当たったものをチェック
+                        foreach (var other in candidates)
+                        {
+                            if (other.gameObject == ownerObj) continue;
+
+                            float dist = Vector3.Distance(selfCollider.bounds.center, other.bounds.center);
+                            float r1 = GetApproxRadius(selfCollider);
+                            float r2 = GetApproxRadius(other);
+
+                            if (dist < (r1 + r2))
+                            {
+                                // 当たった場合の処理
+                                var damageable = other.GetComponent<IDamageable>();
+                                if (damageable != null)
+                                {
+                                    ApplyDamage(attackData, damageable);
+                                    ApplyKnockback(attackData, other);
+                                    hitOccurred = true;
+                                }
+                            }
+                        }
+
+                        return hitOccurred;
+                    }
+
+                case HitDetectionMode.OverlapSphere:
+                    {
+                        // オフセット考慮して中心位置計算
+                        Transform t = ownerObj.transform;
+                        Vector3 center =
+                            t.position +
+                            t.right * attackData.hitboxOffset.x +
+                            t.up * attackData.hitboxOffset.y +
+                            t.forward * attackData.hitboxOffset.z;
+
+                        Collider[] hitColliders = Physics.OverlapSphere(
+                            center,
+                            attackData.radius,
+                            attackData.targetLayers);
+                        AttackVisualizer.I.DrawHitbox(center, attackData.radius, 0.5f);
+
+                        foreach (var collider in hitColliders)
+                        {
+                            if (collider.gameObject == ownerObj) continue;
+
+                            var damageable = collider.GetComponent<IDamageable>();
+                            if (damageable != null)
+                            {
+                                ApplyDamage(attackData, damageable);
+                                ApplyKnockback(attackData, collider);
+                                hitOccurred = true;
+                            }
+                        }
+
+                        return hitOccurred;
+                    }
+
+                case HitDetectionMode.None:
+                default:
+                    return false;
             }
         }
 
         /// <summary>
-        /// ヒットボックスの中心位置を計算
+        /// 攻撃のサウンドやエフェクトを再生する
         /// </summary>
-        private static Vector3 CalculateHitboxCenter(AttackData attackData, Transform attackerTransform)
+        private static void PlaySound(AttackData attackData)
         {
-            Vector3 offset = attackerTransform.right * attackData.hitboxOffset.x +
-                           attackerTransform.up * attackData.hitboxOffset.y +
-                           attackerTransform.forward * attackData.hitboxOffset.z;
-
-            return attackerTransform.position + offset;
-        }
-
-        /// <summary>
-        /// 実際の攻撃判定処理
-        /// </summary>
-        private static void ExecuteAttackCheck(AttackData attackData, Vector3 center, int attackerPlayerID)
-        {
-            Collider[] hits = Physics.OverlapSphere(center, attackData.radius, attackData.targetLayers);
-            
-            foreach (var hit in hits)
-            {
-                // 自分自身への攻撃チェック
-                var opponent = hit.GetComponent<Player.CharacterController>();
-                if (opponent?.PlayerID == attackerPlayerID) continue;
-
-                // 攻撃可能対象かチェック
-                if (opponent != null && !BattleJudge.I.IsValidAttackTarget(opponent.PlayerID))
-                {
-                    Debug.Log($"相手は現在無敵");
-                    continue;
-                }
-
-                // ダメージ処理
-                var damageable = hit.GetComponent<IDamageable>();
-                if (damageable != null)
-                {
-                    ProcessDamage(damageable, attackData, hit.transform, attackerPlayerID);
-                }
-            }
-        }
-
-        /// <summary>
-        /// ダメージ処理
-        /// </summary>
-        private static void ProcessDamage(IDamageable target, AttackData attackData, Transform targetTransform, int attackerPlayerID)
-        {
-            // 基本ダメージ
-            target.TakeDamage(attackData.damage);
-
-            // ヒットストップ
-            if (attackData.hitStopDuration > 0)
-            {
-                // HitStopManager.I?.ApplyHitStop(attackData.hitStopDuration, attackData.hitStopTimeScale);
-            }
-
-            // ノックバック
-            ApplyKnockback(targetTransform, attackData);
-
-            // エフェクト・サウンド
-            PlayHitEffects(attackData, targetTransform.position);
-
-            Debug.Log($"攻撃ヒット: {attackData.attackName} -> {target}");
-        }
-
-        /// <summary>
-        /// ノックバック適用
-        /// </summary>
-        private static void ApplyKnockback(Transform target, AttackData attackData)
-        {
-            if (attackData.knockback <= 0) return;
-
-            var rigidbody = target.GetComponent<Rigidbody>();
-            if (rigidbody == null) return;
-
-            Vector3 knockbackDirection = attackData.useCustomKnockbackDirection 
-                ? attackData.knockbackDirection.normalized 
-                : Vector3.forward;
-
-            rigidbody.AddForce(knockbackDirection * attackData.knockback, ForceMode.Impulse);
-        }
-
-        /// <summary>
-        /// ヒット時のエフェクト・サウンド再生
-        /// </summary>
-        private static void PlayHitEffects(AttackData attackData, Vector3 hitPosition)
-        {
-            // サウンド再生
+            if (attackData == null) return;
+            // サウンドの再生処理
             if (attackData.characterSEType != CharacterSEType.None)
             {
-                // AudioManager.PlaySE(attackData.characterSEType);
+                // サウンドエフェクトの再生
+                AudioManager.I.PlayCharacterSE(attackData.characterType, attackData.characterSEType);
             }
-
-            // 画面揺れ
-            if (attackData.shakeIntensity > 0)
+            if (attackData.characterVoiceType != CharacterVoiceType.None)
             {
-                // CameraShakeManager.Shake(attackData.shakeIntensity, attackData.shakeDuration);
+                // キャラクターボイスの再生
+                AudioManager.I.PlayCharacterVoice(attackData.characterType, attackData.characterVoiceType);
             }
         }
+
+        /// <summary>ノックバックを適用する</summary>
+        private static void ApplyDamage(AttackData attackData, IDamageable target)
+        {
+            if (attackData == null || target == null) return;
+            target.TakeDamage(attackData.damage);
+            Debug.Log("Damage applied: " + attackData.damage);
+        }
+
+        /// <summary>
+        /// ノックバックを適用する
+        /// </summary>
+        /// <param name="attackData"></param>
+        /// <param name="target"></param>
+        private static void ApplyKnockback(AttackData attackData, Collider target)
+        {
+            // 実装は必要に応じて拡張
+            Debug.Log("Applying knockback to: " + target.name);
+        }
+
+        private static float GetApproxRadius(Collider collider)
+        {
+            if (collider is SphereCollider sphere)
+                return sphere.radius * MaxAxis(collider.transform.lossyScale);
+
+            if (collider is CapsuleCollider capsule)
+                return capsule.radius * MaxAxis(collider.transform.lossyScale);
+
+            if (collider is BoxCollider box)
+                return box.size.magnitude * 0.5f * MaxAxis(collider.transform.lossyScale);
+
+            // その他の複雑な形状には安全なデフォルト
+            return 0.5f;
+        }
+
+        private static float MaxAxis(Vector3 v) => Mathf.Max(v.x, v.y, v.z);
+
     }
 }

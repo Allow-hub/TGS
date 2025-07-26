@@ -4,21 +4,13 @@ using UnityEngine;
 namespace TechC
 {
     // 攻撃データを保持するScriptableObject
-   [CreateAssetMenu(fileName = "AttackData", menuName = "TechC/Combat/Attack Data")]
+    [CreateAssetMenu(fileName = "AttackData", menuName = "TechC/Combat/Attack Data")]
     public class AttackData : ScriptableObject
     {
         [Header("基本情報")]
         public CharacterType characterType;
         public string attackName;
         public string description;
-        [System.Serializable]
-        public class Data
-        {
-            public CharacterState.AttackType attackType;
-            public CharacterState.AttackStrength attackStrength;
-        }
-
-        public Data data;
         public GameObject attackPrefab; // エフェクト・当たり判定含む
         public Vector3 prefabOffset;
         public Vector3 prefabRotation;
@@ -29,7 +21,7 @@ namespace TechC
         public float animationSpeed = 1f;
         public int animHash => Animator.StringToHash(animationTrigger);
         public float attackDuration;
-        
+
         [Header("繋ぎ攻撃派生")]
         public AttackData nextChain;
         public bool canChain;
@@ -47,10 +39,12 @@ namespace TechC
 
         [Tooltip("攻撃の半径")]
         public float radius;
-        
+
         [Tooltip("攻撃が可能なレイヤー")]
         public LayerMask targetLayers;
 
+        [Tooltip("攻撃方式")]
+        public HitDetectionMode hitDetectionMode = HitDetectionMode.OverlapSphere;
         [Tooltip("キャラクターからの相対位置")]
         public Vector3 hitboxOffset;
 
@@ -61,17 +55,12 @@ namespace TechC
         public float hitStopDuration;
 
         [Tooltip("ヒットストップ中の時間スケール")]
-        public float hitStopTimeScale; 
+        public float hitStopTimeScale;
 
         [Header("ノックバック設定")]
 
         [Tooltip("吹っ飛ぶ方向を定義（デフォルトは前方）")]
         public Vector3 knockbackDirection = Vector3.forward;
-
-        [Tooltip("カスタム方向を使用するかのフラグ")]
-        public bool useCustomKnockbackDirection = false;
-        public bool useSelfColliderForHitCheck = false;
-
         public float shakeIntensity = 0.1f;
         public float shakeDuraion = 0.1f;
         public NoiseSettings noiseSettings;
@@ -80,15 +69,11 @@ namespace TechC
         [Header("エフェクト")]
         public CharacterSEType characterSEType;
         public CharacterVoiceType characterVoiceType;
-        [Header("ヒットスタン設定")]
-
-        [Tooltip("ヒットスタンの持続時間")]
-        public float hitStunDuration = 0.5f;   
-        public int hitStunLevel = 0;          // 0=軽い、1=中、2=強い
-        public bool isLaunchAttack = false;   // 打ち上げ攻撃か
-        public bool canTech = true;           // 受け身可能か
-        public bool canDI = true;             // 方向操作(DI)可能か
-        public float diInfluence = 0.3f;      // DIの影響度
-
+    }
+    public enum HitDetectionMode
+    {
+        UseSelf,
+        OverlapSphere,
+        None
     }
 }

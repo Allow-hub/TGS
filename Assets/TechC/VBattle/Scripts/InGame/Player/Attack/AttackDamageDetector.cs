@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC.Player.Attack
@@ -10,9 +8,11 @@ namespace TechC.Player.Attack
         [SerializeField] private float colliderSize = 3f;
         private Collider col;
         private float currnetTime;
+        private GameObject ownerObj;
         public void Initialize(GameObject owner)
         {
             col = owner.GetComponent<Collider>();
+            ownerObj = owner;
         }
 
         public void OnRelease()
@@ -26,13 +26,13 @@ namespace TechC.Player.Attack
             if (currnetTime >= attackData.hitTiming)
             {
                 if (col == null) return;
-                col.enabled = true;   
+                col.enabled = true;
             }
             currnetTime += deltaTime;
         }
         public void OnTriggerEnter(Collider other)
         {
-            Debug.Log($"Hitting");
+            AttackProcessor_Refacta.ProcessAttack(attackData, ownerObj);
         }
 
 

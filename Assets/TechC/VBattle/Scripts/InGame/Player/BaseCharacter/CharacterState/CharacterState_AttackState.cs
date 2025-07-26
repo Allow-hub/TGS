@@ -1,4 +1,5 @@
 using IceMilkTea.StateMachine;
+using TechC.Player.Attack;
 using UnityEngine;
 namespace TechC
 {
@@ -65,7 +66,7 @@ namespace TechC
                     lastAttackTime = Time.time;
                     SetAnimSetting();
                     SetAttackObjSetting();
-                    DelayUtility.StartDelayedActionWithPause(Context.characterController, currentAttackData.hitTiming, BattleJudge.I.GetPauseStateFunc, SpawnHitbox);
+                    DelayUtility.StartDelayedActionWithPause(Context.characterController, currentAttackData.hitTiming, BattleJudge.I.GetPauseStateFunc, AttackProcess);
                 }
                 else
                 {
@@ -140,6 +141,8 @@ namespace TechC
                     rot.y = 180 - rot.y;
                 }
                 obj.transform.rotation = Quaternion.Euler(rot);
+                var attackObjController = obj.GetComponent<AttackObjectController>();
+                attackObjController?.SetPlayerID(Context.characterController.PlayerID);
             }
 
 
@@ -176,41 +179,10 @@ namespace TechC
                 }
             }
 
-            private void SpawnHitbox()
+            private void AttackProcess()
             {
                 if (currentAttackData == null) return;
-
-                var t = Context.characterController.transform;
-
-                Vector3 offset =
-                    t.right * currentAttackData.hitboxOffset.x +
-                    t.up * currentAttackData.hitboxOffset.y +
-                    t.forward * currentAttackData.hitboxOffset.z;
-
-                Vector3 center = t.position + offset;
-
-                // 当たり判定
-                Collider[] hits = Physics.OverlapSphere(center, currentAttackData.radius, currentAttackData.targetLayers);
-                foreach (var hit in hits)
-                {
-                    var damageable = hit.GetComponent<IDamageable>();
-                    var opponent = hit.GetComponent<Player.CharacterController>();
-                    //自分への接触チェック
-                    if (opponent?.PlayerID == Context.characterController.PlayerID) continue;
-
-                    if (damageable != null)
-                    {
-                        var targetController = Context.characterController.OpponentController;
-                        if (targetController != null &&
-                            !BattleJudge.I.IsValidAttackTarget(targetController.PlayerID))
-                        {
-                            Debug.Log($"相手は現在無敵");
-                            continue; // 無敵状態などの場合はスキップ
-                        }
-                        damageable.TakeDamage(currentAttackData.damage);
-                    }
-                }
-                AttackVisualizer.I.DrawHitbox(center, currentAttackData.radius, 1f);
+                AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController.gameObject);
             }
 
             private bool CanChain()

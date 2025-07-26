@@ -4,158 +4,171 @@ namespace TechC
 {
     public static class AttackProcessor_Refacta
     {
-        /// <summary>
-        /// 攻撃の実行を行う公開メソッド
-        /// </summary>
-        /// <param name="attackData"></param>
         public static void ProcessAttack(AttackData attackData, GameObject ownerObj = null)
         {
-            if (!CheckHit(attackData, ownerObj)) return;
-            PlaySound(attackData);
-        }
-
-        /// <summary>
-        /// 攻撃のヒット判定をチェックする
-        /// </summary>
-        /// <param name="attackData"></param>
-        /// <returns></returns>
-        private static bool CheckHit(AttackData attackData, GameObject ownerObj = null)
-        {
-            if (attackData == null || attackData.hitDetectionMode == HitDetectionMode.None) return false;
-            if (ownerObj == null) return false;
-
-            Collider selfCollider = ownerObj.GetComponent<Collider>();
-            if (selfCollider == null) return false;
+            if (attackData == null || ownerObj == null) return;
 
             bool hitOccurred = false;
 
             switch (attackData.hitDetectionMode)
             {
                 case HitDetectionMode.UseSelf:
-                    {
-                        // 自身の位置を中心に候補を取得(近くの当たりの候補)
-                        Collider[] candidates = Physics.OverlapSphere(
-                            ownerObj.transform.position,
-                            attackData.radius,
-                            attackData.targetLayers);
-
-                        // 近くの当たりの候補から、実際に当たったものをチェック
-                        foreach (var other in candidates)
-                        {
-                            if (other.gameObject == ownerObj) continue;
-
-                            float dist = Vector3.Distance(selfCollider.bounds.center, other.bounds.center);
-                            float r1 = GetApproxRadius(selfCollider);
-                            float r2 = GetApproxRadius(other);
-
-                            if (dist < (r1 + r2))
-                            {
-                                // 当たった場合の処理
-                                var damageable = other.GetComponent<IDamageable>();
-                                if (damageable != null)
-                                {
-                                    ApplyDamage(attackData, damageable);
-                                    ApplyKnockback(attackData, other);
-                                    hitOccurred = true;
-                                }
-                            }
-                        }
-
-                        return hitOccurred;
-                    }
-
+                    hitOccurred = ProcessUseSelfMode(attackData, ownerObj);
+                    break;
                 case HitDetectionMode.OverlapSphere:
-                    {
-                        // オフセット考慮して中心位置計算
-                        Transform t = ownerObj.transform;
-                        Vector3 center =
-                            t.position +
-                            t.right * attackData.hitboxOffset.x +
-                            t.up * attackData.hitboxOffset.y +
-                            t.forward * attackData.hitboxOffset.z;
-
-                        Collider[] hitColliders = Physics.OverlapSphere(
-                            center,
-                            attackData.radius,
-                            attackData.targetLayers);
-                        AttackVisualizer.I.DrawHitbox(center, attackData.radius, 0.5f);
-
-                        foreach (var collider in hitColliders)
-                        {
-                            if (collider.gameObject == ownerObj) continue;
-
-                            var damageable = collider.GetComponent<IDamageable>();
-                            if (damageable != null)
-                            {
-                                ApplyDamage(attackData, damageable);
-                                ApplyKnockback(attackData, collider);
-                                hitOccurred = true;
-                            }
-                        }
-
-                        return hitOccurred;
-                    }
-
+                    hitOccurred = ProcessOverlapSphereMode(attackData, ownerObj);
+                    break;
                 case HitDetectionMode.None:
                 default:
-                    return false;
+                    return;
             }
-        }
 
-        /// <summary>
-        /// 攻撃のサウンドやエフェクトを再生する
-        /// </summary>
-        private static void PlaySound(AttackData attackData)
-        {
-            if (attackData == null) return;
-            // サウンドの再生処理
-            if (attackData.characterSEType != CharacterSEType.None)
+            if (hitOccurred)
             {
-                // サウンドエフェクトの再生
-                AudioManager.I.PlayCharacterSE(attackData.characterType, attackData.characterSEType);
+                PlaySound(attackData);
             }
-            if (attackData.characterVoiceType != CharacterVoiceType.None)
+        }
+
+        // ==============================
+        // 判定モード別の処理
+        // ==============================
+
+        private static bool ProcessUseSelfMode(AttackData data, GameObject owner)
+        {
+            Collider selfCollider = owner.GetComponent<Collider>();
+            if (selfCollider == null) return false;
+
+            Collider[] candidates = Physics.OverlapSphere(owner.transform.position, data.radius, data.targetLayers);
+            bool hit = false;
+
+            foreach (var targetCol in candidates)
             {
-                // キャラクターボイスの再生
-                AudioManager.I.PlayCharacterVoice(attackData.characterType, attackData.characterVoiceType);
+                if (targetCol.gameObject == owner) continue;
+
+                float dist = Vector3.Distance(selfCollider.bounds.center, targetCol.bounds.center);
+                if (dist < GetApproxRadius(selfCollider) + GetApproxRadius(targetCol))
+                {
+                    hit |= HandleHit(data, targetCol);
+                }
             }
+            return hit;
         }
 
-        /// <summary>ノックバックを適用する</summary>
-        private static void ApplyDamage(AttackData attackData, IDamageable target)
+        private static bool ProcessOverlapSphereMode(AttackData data, GameObject owner)
         {
-            if (attackData == null || target == null) return;
-            target.TakeDamage(attackData.damage);
-            Debug.Log("Damage applied: " + attackData.damage);
+            Transform t = owner.transform;
+            Vector3 center =
+                t.position +
+                t.right * data.hitboxOffset.x +
+                t.up * data.hitboxOffset.y +
+                t.forward * data.hitboxOffset.z;
+
+            Collider[] hitColliders = Physics.OverlapSphere(center, data.radius, data.targetLayers);
+            AttackVisualizer.I.DrawHitbox(center, data.radius, 0.5f);
+
+            bool hit = false;
+            foreach (var targetCol in hitColliders)
+            {
+                if (targetCol.gameObject == owner) continue;
+                hit |= HandleHit(data, targetCol);
+            }
+
+            return hit;
         }
 
-        /// <summary>
-        /// ノックバックを適用する
-        /// </summary>
-        /// <param name="attackData"></param>
-        /// <param name="target"></param>
-        private static void ApplyKnockback(AttackData attackData, Collider target)
+        // ==============================
+        // ヒット時の処理
+        // ==============================
+
+        private static bool HandleHit(AttackData data, Collider targetCol)
         {
-            // 実装は必要に応じて拡張
-            Debug.Log("Applying knockback to: " + target.name);
+            var controller = targetCol.GetComponentInParent<Player.CharacterController>();
+            if (controller == null) return false;
+
+            // カウンター処理
+            if (TryProcessCounter(controller))
+            {
+                Debug.Log("Counter triggered");
+                return true;
+            }
+
+            // ガード処理
+            if (TryProcessGuard(controller, targetCol, data))
+            {
+                Debug.Log("Guard successful");
+                return true;
+            }
+
+            // ダメージ処理
+            if (TryProcessDamage(targetCol, data))
+            {
+                ApplyKnockback(data, targetCol);
+                return true;
+            }
+
+            return false;
         }
 
-        private static float GetApproxRadius(Collider collider)
+        // ==============================
+        // 個別処理ユーティリティ
+        // ==============================
+
+        private static bool TryProcessGuard(Player.CharacterController controller, Collider targetCol, AttackData data)
         {
-            if (collider is SphereCollider sphere)
-                return sphere.radius * MaxAxis(collider.transform.lossyScale);
+            if (!controller.GetCharacterState().IsGuardState()) return false;
 
-            if (collider is CapsuleCollider capsule)
-                return capsule.radius * MaxAxis(collider.transform.lossyScale);
+            IGuardable guardable = targetCol.GetComponentInParent<IGuardable>();
+            if (guardable != null)
+            {
+                var state = controller.GetCharacterState();
+                guardable.GuardDamage(data.damage, state.GetCurrentCommand());
+                return true;
+            }
+            return false;
+        }
 
-            if (collider is BoxCollider box)
-                return box.size.magnitude * 0.5f * MaxAxis(collider.transform.lossyScale);
+        private static bool TryProcessDamage(Collider targetCol, AttackData data)
+        {
+            IDamageable damageable = targetCol.GetComponentInParent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.TakeDamage(data.damage);
+                Debug.Log($"Damage applied: {data.damage} to {targetCol.name}");
+                return true;
+            }
+            return false;
+        }
 
-            // その他の複雑な形状には安全なデフォルト
+        private static bool TryProcessCounter(Player.CharacterController controller)
+        {
+            if (!controller.CanCounter) return false;
+            controller.UseCounter();
+            return true;
+        }
+
+        private static void ApplyKnockback(AttackData data, Collider target)
+        {
+            // 実装は用途に応じて
+            Debug.Log("Applying knockback to " + target.name);
+        }
+
+        private static void PlaySound(AttackData data)
+        {
+            if (data.characterSEType != CharacterSEType.None)
+                AudioManager.I.PlayCharacterSE(data.characterType, data.characterSEType);
+
+            if (data.characterVoiceType != CharacterVoiceType.None)
+                AudioManager.I.PlayCharacterVoice(data.characterType, data.characterVoiceType);
+        }
+
+        private static float GetApproxRadius(Collider col)
+        {
+            if (col is SphereCollider s) return s.radius * MaxAxis(col.transform.lossyScale);
+            if (col is CapsuleCollider c) return c.radius * MaxAxis(col.transform.lossyScale);
+            if (col is BoxCollider b) return b.size.magnitude * 0.5f * MaxAxis(col.transform.lossyScale);
             return 0.5f;
         }
 
         private static float MaxAxis(Vector3 v) => Mathf.Max(v.x, v.y, v.z);
-
     }
 }

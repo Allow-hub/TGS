@@ -11,7 +11,6 @@ namespace TechC
         private List<GameObject> chars;
 
         public void SetType(SpecialCommentType type) => specialType = type;
-        public void SetChars(List<GameObject> chars) => this.chars = chars;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -21,33 +20,12 @@ namespace TechC
             {
                 case SpecialCommentType.Grass:
                     var characterController = other.transform.parent.GetComponent<Player.CharacterController>();
-                    if (characterController != null)
-                    {
-                        characterController.SpawnGrassEffect();
-                    }
+                    characterController.SpawnGrassEffect();
                     break;
+
                 case SpecialCommentType.Freeze:
-                    if (CommentDisplay.I != null)
-                    {
-                        CommentDisplay.I.OnFreezeTriggered();
-                    }
-                    // ここで即座に非表示・返却
-                    if (chars != null)
-                    {
-                        foreach (var obj in chars)
-                        {
-                            if (obj != null && obj.activeInHierarchy)
-                            {
-                                obj.SetActive(false);
-                                CommentFactory.I.ReturnChar(obj);
-                            }
-                        }
-                    }
-                    if (gameObject.activeInHierarchy)
-                    {
-                        gameObject.SetActive(false);
-                        CommentFactory.I.ReturnComment(gameObject);
-                    }
+                    SpecialCommentManager.I.HandleFreeze(gameObject, chars);
+                    CommentDisplay.I.OnFreezeTriggered();
                     break;
             }
         }

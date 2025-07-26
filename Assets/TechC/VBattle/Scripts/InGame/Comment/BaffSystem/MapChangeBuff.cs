@@ -8,8 +8,6 @@ namespace TechC
     /// </summary>
     public class MapChangeBuff : BuffBase
     {
-        private int currentMapIndex = -1;
-
         public MapChangeBuff()
         {
             buffName = "MapChangeBuff";

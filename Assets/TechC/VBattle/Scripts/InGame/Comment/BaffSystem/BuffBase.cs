@@ -15,10 +15,9 @@ namespace TechC
         public float remainingTime { get; protected set; }
         public int id { get; private set; }
 
-        // これまでのバフの生成数、識別IDを作成するために使う
+        // バフの識別ID生成用
         private static int totalBuffCount = VoidID + 1;
-        // 予約された無効ID
-        public static readonly int VoidID = 0; 
+        public static readonly int VoidID = 0;
 
         public BuffBase()
         {

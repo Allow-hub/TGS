@@ -1,12 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// 特殊コメントの当たり判定を取り、種類によって通知を送るクラス
+    /// </summary>
     public class SpecialCommentTrigger : MonoBehaviour
     {
-        public SpecialCommentType specialType;
+        [HideInInspector] public SpecialCommentType specialType;
 
         private List<GameObject> chars;
 

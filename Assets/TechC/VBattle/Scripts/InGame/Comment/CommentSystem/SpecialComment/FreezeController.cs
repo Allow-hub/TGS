@@ -4,9 +4,15 @@ using System;
 
 namespace TechC
 {
+    /// <summary>
+    /// 固定コメントのクラス
+    /// </summary>
     [Serializable]
     public class FreezeController
     {
+        /// <summary>
+        /// コメント本体と文字オブジェクトをプールに返却する
+        /// </summary>
         public void ReturnCommentAndChars(GameObject comment, List<GameObject> chars)
         {
             if (chars != null)

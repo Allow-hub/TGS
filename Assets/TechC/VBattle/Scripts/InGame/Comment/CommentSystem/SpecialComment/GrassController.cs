@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// 草コメントのエフェクトと返却処理を管理するクラス。
+    /// </summary>
     public class GrassController : MonoBehaviour
     {
         [Header("文字のPrefab")]
@@ -110,7 +113,7 @@ namespace TechC
                 var dirZ = Random.Range(throwUpwardPower.x, throwUpwardPower.y);
 
                 // X方向（左右）＋斜め上に投げる
-                Vector3 throwDirection = (character.transform.forward  + Vector3.up * dirZ).normalized;
+                Vector3 throwDirection = (character.transform.forward + Vector3.up * dirZ).normalized;
 
                 rb.velocity = Vector3.zero;
                 rb.AddForce(throwDirection * throwPower, ForceMode.Impulse);

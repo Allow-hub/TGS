@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace TechC
 {
@@ -9,7 +10,7 @@ namespace TechC
 
     public class SpecialCommentData : ScriptableObject
     {
-        [System.Serializable]
+        [Serializable]
         public class SpecialCommentEntry
         {
             public string comment;

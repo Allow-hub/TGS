@@ -9,7 +9,6 @@ namespace TechC
     {
         [SerializeField] private float attackMultiplier = 1.5f; /*攻撃力上昇の倍率 */
 
-        [SerializeField] private GameObject effectInstance; /* 実際にInstantiateで生成されたエフェクトのインスタンス */
         public AttackBuff()
         {
             buffName = "AttackBuff";

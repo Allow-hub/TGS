@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace TechC
 {
+    /// <summary>
+    /// 特殊コメントを管理するクラス
+    /// </summary>
     public class SpecialCommentManager : Singleton<SpecialCommentManager>
     {
         [SerializeField] private FreezeController freezeController;

@@ -25,17 +25,16 @@ namespace TechC
             GameObject obj = commentPool.GetObject(commentPrefab);
             obj.transform.localScale = COMMENT_OBJ_SCALE;
 
-            if (commentData.type == CommentType.Normal)
+            if (commentData.type == CommentType.Special)
             {
-                var freezeCommentTrigger = obj.GetComponent<FreezeCommentTrigger>();
-                if (freezeCommentTrigger == null)
+                var specialCommentTrigger = obj.GetComponent<SpecialCommentTrigger>();
+                if (specialCommentTrigger == null)
                 {
-                    freezeCommentTrigger = obj.AddComponent<FreezeCommentTrigger>();
+                    specialCommentTrigger = obj.AddComponent<SpecialCommentTrigger>();
                 }
-                // specialTypeを直接設定
                 if (commentData.specialType.HasValue)
                 {
-                    freezeCommentTrigger.SetSpecialType(commentData.specialType.Value);
+                    specialCommentTrigger.SetType(commentData.specialType.Value);
                 }
             }
             else

@@ -36,17 +36,6 @@ namespace TechC
 
             if (other.CompareTag("Player"))
             {
-                // 特殊コメントの処理
-                if (specialCommentType == SpecialCommentType.Grass)
-                {
-                    var characterController = other.transform.parent.GetComponent<Player.CharacterController>();
-                    if (characterController != null)
-                    {
-                        characterController.SpawnGrassEffect();
-                        return;
-                    }
-                }
-
                 BuffBase buff = BuffFactory.CreateBuff(buffType);
 
                 if (buff != null)

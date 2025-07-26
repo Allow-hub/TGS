@@ -8,43 +8,29 @@ namespace TechC
     /// </summary>
     public class CommentProvider : MonoBehaviour
     {
-
         [Header("コメントデータ")]
         public NormalCommentData normalComments;
         public List<BuffCommentData> buffComments;
-        public List<SpecialCommentData> specialComments; // 新規追加：特殊コメントデータ
-
+        public List<SpecialCommentData> specialComments;
 
         [Header("コメントの出現確率")]
         [SerializeField, Range(0f, 1f)] private float normalChance = 0.7f;
         [SerializeField, Range(0f, 1f)] private float speedBuffChance = 0.2f;
         [SerializeField, Range(0f, 1f)] private float attackBuffChance = 0.2f;
         [SerializeField, Range(0f, 1f)] private float mapChangeChance = 0.1f;
-        [SerializeField, Range(0f, 1f)] private float specialCommentChance = 0.1f; // 新規追加：特殊コメントの確率
+        [SerializeField, Range(0f, 1f)] private float specialCommentChance = 0.1f;
 
-
-        private float totalChance; /* 合計確率 */
-
-
-        /* バフコメント（Speed） */
         private List<BuffCommentData> speedBuffs;
-
-        /* バフコメント（Attack） */
         private List<BuffCommentData> attackBuffs;
-
-        /* マップ変更用バフコメント */
         private List<BuffCommentData> mapChangeBuffs;
-
-        /* 特殊コメント */
         private List<SpecialCommentData> specialCommentList;
+        private float totalChance;
 
         private void Awake()
         {
-
             totalChance = normalChance + speedBuffChance + attackBuffChance + mapChangeChance + specialCommentChance;
 
-
-            /* 確率が0またはマイナスならデフォルト値に設定 */
+            // 確率が0またはマイナスならデフォルト値に設定
             if (totalChance <= 0f)
             {
                 normalChance = 0.7f;
@@ -55,8 +41,7 @@ namespace TechC
                 totalChance = 1.0f;
             }
 
-
-            /* buffCommentsを事前にフィルタリングして分類 */
+            // buffCommentsを事前にフィルタリングして分類
             speedBuffs = new List<BuffCommentData>();
             attackBuffs = new List<BuffCommentData>();
             mapChangeBuffs = new List<BuffCommentData>();
@@ -78,7 +63,7 @@ namespace TechC
                 }
             }
 
-            /* SpecialCommentDataをリスト化 */
+            // SpecialCommentDataをリスト化
             if (specialComments != null)
             {
                 foreach (var special in specialComments)
@@ -94,8 +79,7 @@ namespace TechC
         /// <returns></returns>
         public CommentData GetRandomComment()
         {
-
-            /* ランダムな値を計算 */
+            // ランダムな値を計算
             float randomValue = Random.value * totalChance;
 
             float threshold = 0f;
@@ -171,5 +155,18 @@ namespace TechC
             string fallback = normalComments.comment[Random.Range(0, normalComments.comment.Length)];
             return new CommentData(CommentType.Normal, fallback, null);
         }
+
+#if UNITY_EDITOR
+        [ContextMenu("全ての出現確率を0にする")]
+        private void SetAllChancesToZero()
+        {
+            normalChance = 0f;
+            speedBuffChance = 0f;
+            attackBuffChance = 0f;
+            mapChangeChance = 0f;
+            specialCommentChance = 0f;
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+#endif
     }
 }

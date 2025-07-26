@@ -100,10 +100,10 @@ namespace TechC
 
             var commentData = commentSpawner.GetLastCommentData();
             var characters = commentSpawner.GetLastCharacters();
-            var freezeCommentTrigger = comment.GetComponent<FreezeCommentTrigger>();
+            var specialCommentTrigger = comment.GetComponent<SpecialCommentTrigger>();
             SpecialCommentType spType = commentData.specialType.HasValue ? commentData.specialType.Value : SpecialCommentType.None;
 
-            Material targetMaterial = (spType != SpecialCommentType.None && freezeCommentTrigger != null)
+            Material targetMaterial = (spType != SpecialCommentType.None && specialCommentTrigger != null)
                 ? commentMaterialApplier.GetCommentMaterial(null, spType)
                 : commentMaterialApplier.GetCommentMaterial(commentData.type);
 
@@ -115,7 +115,7 @@ namespace TechC
             });
 
             commentMaterialApplier.ApplyMaterialToCharacters(characters, targetMaterial);
-            commentMover.StartMoving(comment.transform, characters, freezeCommentTrigger, targetMaterial);
+            commentMover.StartMoving(comment.transform, characters, specialCommentTrigger, targetMaterial);
         }
 
         /// <summary>

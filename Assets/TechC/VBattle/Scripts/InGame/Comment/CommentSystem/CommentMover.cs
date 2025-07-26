@@ -28,21 +28,21 @@ namespace TechC
         /// <summary>
         /// コメント移動処理を開始
         /// </summary>
-        public void StartMoving(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger, Material originalMaterial)
+        public void StartMoving(Transform trans, List<GameObject> chars, SpecialCommentTrigger specialCommentTrigger, Material originalMaterial)
         {
             DelayUtility.StartRepeatedActionWhileWithPause(
                 CommentDisplay.I,
                 () => trans.gameObject.activeInHierarchy && trans.position.x > despawnPosX,
                 Time.fixedDeltaTime,
                 isPausedFunc,
-                () => MoveCommentFrame(trans, chars, freezeCommentTrigger, originalMaterial)
+                () => MoveCommentFrame(trans, chars, specialCommentTrigger, originalMaterial)
             );
         }
 
         /// <summary>
         /// 1フレーム分の移動処理
         /// </summary>
-        private void MoveCommentFrame(Transform trans, List<GameObject> chars, FreezeCommentTrigger freezeCommentTrigger, Material originalMaterial)
+        private void MoveCommentFrame(Transform trans, List<GameObject> chars, SpecialCommentTrigger specialCommentTrigger, Material originalMaterial)
         {
             if (!trans.gameObject.activeInHierarchy) return;
 

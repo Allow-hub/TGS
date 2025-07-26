@@ -15,3 +15,5 @@ MonoBehaviour:
   comments:
   - comment: "\u56FA\u5B9A\u3057\u307E\u3057\u305F"
     specialType: 2
+  - comment: "\u8349"
+    specialType: 1

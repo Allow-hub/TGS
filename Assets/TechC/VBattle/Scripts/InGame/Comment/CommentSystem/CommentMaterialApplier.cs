@@ -65,7 +65,7 @@ namespace TechC.CommentSystem
         /// <summary>
         /// コメントタイプに応じたMaterialを取得
         /// </summary>
-        public Material GetCommentMaterial(CommentType? commentType, SpecialCommentType? specialCommentType = SpecialCommentType.None)
+        public Material GetCommentMaterial(CommentType? commentType)
         {
             if (commentType != null)
             {
@@ -81,10 +81,6 @@ namespace TechC.CommentSystem
                     default:
                         return normalCommentMaterial;
                 }
-            }
-            else if (specialCommentType == SpecialCommentType.Freeze)
-            {
-                return freezeCommentMaterial;
             }
             return normalCommentMaterial;
         }

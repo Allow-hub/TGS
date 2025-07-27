@@ -8,7 +8,6 @@ namespace TechC.CommentSystem
     public class BuffCommentTrigger : MonoBehaviour
     {
         public BuffType buffType;
-        [HideInInspector] public SpecialCommentType specialCommentType;
         [HideInInspector] public string commentText;
         private bool alreadyApplied = false;
 

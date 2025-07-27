@@ -19,7 +19,7 @@ namespace TechC.CommentSystem
             this.trigger = trigger;
         }
 
-        public void Release() { /* ... */ }
+        public void Release() { /* 必要に応じて実装 */ }
 
         public void OnTriggerEnter(Collider collider)
         {

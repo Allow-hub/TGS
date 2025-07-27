@@ -32,10 +32,6 @@ namespace TechC.CommentSystem
                 {
                     specialCommentTrigger = obj.AddComponent<SpecialCommentTrigger>();
                 }
-                if (commentData.specialType.HasValue)
-                {
-                    specialCommentTrigger.SetType(commentData.specialType.Value);
-                }
             }
             else
             {
@@ -43,10 +39,6 @@ namespace TechC.CommentSystem
                 commentTrigger?.Init(commentPool);
                 if (commentTrigger != null)
                 {
-                    if (commentData.specialType.HasValue)
-                    {
-                        commentTrigger.specialCommentType = commentData.specialType.Value;
-                    }
                     commentTrigger.commentText = commentData.text;
                 }
                 if (commentData.buffType.HasValue)

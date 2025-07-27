@@ -4,31 +4,38 @@ using UnityEngine;
 namespace TechC.CommentSystem
 {
     /// <summary>
-    /// 特殊コメントの当たり判定を取り、種類によって通知を送るクラス
+    /// 特殊コメントの当たり判定を取り、Inspectorで設定した能力リストを実行するクラス
     /// </summary>
     public class SpecialCommentTrigger : MonoBehaviour
     {
-        [HideInInspector] public SpecialCommentType specialType;
+        [SerializeReference]
+        public List<ICommentAbility> abilities = new();
 
-        private List<GameObject> chars;
+        private void Awake()
+        {
+            // abilitiesの各要素にInitを呼ぶ
+            foreach (var ability in abilities)
+            {
+                ability?.Init(this);
+            }
+        }
 
-        public void SetType(SpecialCommentType type) => specialType = type;
+        private void OnDestroy()
+        {
+            // abilitiesの各要素にReleaseを呼ぶ
+            foreach (var ability in abilities)
+            {
+                ability?.Release();
+            }
+        }
 
         private void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag("Player")) return;
 
-            switch (specialType)
+            foreach (var ability in abilities)
             {
-                case SpecialCommentType.Grass:
-                    var characterController = other.transform.parent.GetComponent<Player.CharacterController>();
-                    characterController.SpawnGrassEffect();
-                    break;
-
-                case SpecialCommentType.Freeze:
-                    SpecialCommentManager.I.HandleFreeze(gameObject, chars);
-                    CommentDisplay.I.OnFreezeTriggered();
-                    break;
+                ability?.OnTriggerEnter(other);
             }
         }
     }

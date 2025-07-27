@@ -102,11 +102,8 @@ namespace TechC.CommentSystem
             var commentData = commentSpawner.GetLastCommentData();
             var characters = commentSpawner.GetLastCharacters();
             var specialCommentTrigger = comment.GetComponent<SpecialCommentTrigger>();
-            SpecialCommentType spType = commentData.specialType.HasValue ? commentData.specialType.Value : SpecialCommentType.None;
 
-            Material targetMaterial = (spType != SpecialCommentType.None && specialCommentTrigger != null)
-                ? commentMaterialApplier.GetCommentMaterial(null, spType)
-                : commentMaterialApplier.GetCommentMaterial(commentData.type);
+            Material targetMaterial = commentMaterialApplier.GetCommentMaterial(commentData.type);
 
             activeComments.Add(new CommentInfo
             {

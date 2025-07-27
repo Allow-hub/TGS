@@ -146,7 +146,7 @@ namespace TechC.CommentSystem
                     if (allEntries.Count > 0)
                     {
                         var entry = allEntries[Random.Range(0, allEntries.Count)];
-                        return new CommentData(CommentType.Special, entry.comment, null, entry.specialType);
+                        return new CommentData(CommentType.Special, entry.comment, null);
                     }
                 }
             }

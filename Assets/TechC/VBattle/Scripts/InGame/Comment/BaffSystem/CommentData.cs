@@ -10,15 +10,13 @@ namespace TechC.CommentSystem
         public CommentType type;
         public string text;
         public BuffType? buffType;
-        public SpecialCommentType? specialType;
 
         /* コンストラクタでコメントタイプ、テキスト、バフタイプを設定 */
-        public CommentData(CommentType type, string text, BuffType? buffType, SpecialCommentType? specialType = null)
+        public CommentData(CommentType type, string text, BuffType? buffType)
         {
             this.type = type;
             this.text = text;
             this.buffType = buffType;
-            this.specialType = specialType;
         }
     }
 }

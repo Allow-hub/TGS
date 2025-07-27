@@ -14,7 +14,6 @@ namespace TechC.CommentSystem
         public class SpecialCommentEntry
         {
             public string comment;
-            public SpecialCommentType specialType;
         }
 
         public SpecialCommentEntry[] comments;

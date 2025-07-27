@@ -15,36 +15,34 @@ MonoBehaviour:
   characterType: 1
   attackName: Right_W
   description: 
-  data:
-    attackType: 1
-    attackStrength: 0
+  attackPrefab: {fileID: 3682691298139770513, guid: 275400ab36e1ddc41aa64a7293900ddb,
+    type: 3}
+  prefabOffset: {x: 0, y: 0, z: 0}
+  prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsRightWeakAttack
+  clip: {fileID: 7400000, guid: 642ce44fd8d255240ad5ca3b6d84d5ac, type: 2}
   animationSpeed: 1.8
   attackDuration: 0.6
-  damage: 10
-  knockback: 3
+  nextChain: {fileID: 0}
+  canChain: 0
+  chainThreshold: 0
+  damage: 0
+  knockback: 0
   canRepeat: 1
-  repeatInterval: 0.1
-  repeatDuration: 0.5
-  radius: 1
+  repeatInterval: 0
+  repeatDuration: 0
+  radius: 0
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
+  hitDetectionMode: 1
   hitboxOffset: {x: 0, y: 1, z: 1}
   hitTiming: 0
   hitStopDuration: 0.9
   hitStopTimeScale: 0.8
   knockbackDirection: {x: 0, y: 1, z: 1}
-  useCustomKnockbackDirection: 1
-  useSelfColliderForHitCheck: 1
   shakeIntensity: 0.1
   shakeDuraion: 0.1
   noiseSettings: {fileID: 0}
   characterSEType: 0
   characterVoiceType: 0
-  hitStunDuration: 0.5
-  hitStunLevel: 0
-  isLaunchAttack: 0
-  canTech: 1
-  canDI: 1
-  diInfluence: 0.3

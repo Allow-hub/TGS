@@ -44,11 +44,11 @@ namespace TechC
 
         public void OnValidate()
         {
-            neutralAttackData = attackSet.appealNeutral;
-            leftAttackData = attackSet.appealLeft;
-            rightAttackData = attackSet.appealRight;
-            downAttackData = attackSet.appealDown;
-            upAttackData = attackSet.appealUp;
+            // neutralAttackData = attackSet.appealNeutral;
+            // leftAttackData = attackSet.appealLeft;
+            // rightAttackData = attackSet.appealRight;
+            // downAttackData = attackSet.appealDown;
+            // upAttackData = attackSet.appealUp;
 
         }
         private void InitializeAttackDataMap()

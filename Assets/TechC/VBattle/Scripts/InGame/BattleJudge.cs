@@ -167,7 +167,7 @@ namespace TechC
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].isAlive = true;
-                    players[i].isInvincible = true;
+                    players[i].isInvincible = false;
                     players[i].canAttack = true;
 
                     // プレイヤーの生成
@@ -211,6 +211,7 @@ namespace TechC
                         var input = player.playerObject.GetComponent<BaseInputManager>();
                         input.enabled = true;
                         isBattleOngoing = true;
+                        player.isInvincible = false;
                     }
                 }
                 
@@ -355,9 +356,9 @@ namespace TechC
         /// <returns>攻撃対象として有効ならtrue、無効ならfalse</returns>
         public bool IsValidAttackTarget(int targetPlayerID)
         {
+            targetPlayerID--;
             // プレイヤーIDが不正なら無効
             if (targetPlayerID < 0 || targetPlayerID >= players.Count) return false;
-
             PlayerData targetPlayer = players[targetPlayerID];
 
             // 生存状態でなければ無効
@@ -556,15 +557,6 @@ namespace TechC
                 }
             }
         }
-        /// <summary>
-        /// 現在のバトル状態を取得
-        /// </summary>
-        /// <returns>バトルが進行中かどうか</returns>
-        public bool IsBattleOngoing()
-        {
-            return isBattleOngoing;
-        }
-
         /// <summary>
         /// 残り時間を取得
         /// </summary>

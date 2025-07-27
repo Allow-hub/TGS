@@ -16,7 +16,7 @@ namespace TechC
 
         // 攻撃の種類と強さを明示的に保持
         public CharacterState.AttackType Type { get; protected set; } = CharacterState.AttackType.Neutral;
-        public AttackManager.AttackStrength Strength { get; protected set; } = AttackManager.AttackStrength.Weak;
+        public CharacterState.AttackStrength Strength { get; protected set; } = CharacterState.AttackStrength.Weak;
 
         public AttackCommand(CharacterState characterState, CharacterController characterController)
         {
@@ -37,7 +37,7 @@ namespace TechC
         /// 攻撃強度を設定するメソッド
         /// </summary>
         /// <param name="strength"></param>
-        public void SetAttackStrength(AttackManager.AttackStrength strength)
+        public void SetAttackStrength(CharacterState.AttackStrength strength)
         {
             Strength = strength;
         }
@@ -58,7 +58,7 @@ namespace TechC
             // 基本的に攻撃のキャンセルはないが、必要に応じて実装
         }
 
-        public void ExecuteAttack(CharacterState.AttackType attackType, AttackManager.AttackStrength attackStrength, AttackManager attackManager)
+        public void ExecuteAttack(CharacterState.AttackType attackType, CharacterState.AttackStrength attackStrength, AttackManager attackManager)
         {
             attackManager.ReplayExecuteAttack(attackType, attackStrength);
         }

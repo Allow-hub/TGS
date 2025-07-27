@@ -1,6 +1,6 @@
 using IceMilkTea.StateMachine;
+using TechC.Player.Attack;
 using UnityEngine;
-using static TechC.AttackManager;
 namespace TechC
 {
     public partial class CharacterState
@@ -14,18 +14,29 @@ namespace TechC
             Up,
         }
 
-        // 攻撃履歴を保持する静的変数
-        private static AttackType lastAttackType = AttackType.Neutral;
-        private static AttackStrength lastAttackStrength = AttackStrength.Weak;
-        private static int consecutiveAttackCount = 0;
+        public enum AttackStrength
+        {
+            Weak,
+            Strong,
+            Appeal
+        }
 
         private class AttackState : ImtStateMachine<CharacterState>.State
         {
+
+            // 攻撃履歴を保持する静的変数
+            private AttackType lastAttackType = AttackType.Neutral;
+            private AttackStrength lastAttackStrength = AttackStrength.Weak;
+            private int consecutiveAttackCount = 0;
             private AttackType attackType;
-            private AttackManager.AttackStrength attackStrength;
+            private AttackStrength attackStrength;
+            private AttackData currentAttackData;
             private float duration;
             private float elapsedTime = 0;
             private bool isEarlyExit = true;
+            private AttackData lastAttackData = null;
+            private float lastAttackTime;
+
             // 同じ攻撃を何回繰り返すとゲージ減少が始まるか
             private const int PENALTY_THRESHOLD = 3;
             // ゲージ減少量
@@ -33,21 +44,36 @@ namespace TechC
 
             protected internal override void Enter()
             {
-                // 初期化を確認
-                if (Context.attackManager == null)
+                if (!BattleJudge.I.CanPlayerAttack(Context.characterController.PlayerID))
                 {
-                    Debug.LogError("AttackManagerが設定されていません");
+                    Debug.Log("攻撃不能状態");
                     return;
                 }
-
                 attackType = Context.CheckAttackType();
                 attackStrength = Context.CheckAttackStrength();
+                var key = (attackType, attackStrength);
+                if (Context.characterController.AttackSet.attackDataMap.TryGetValue(key, out var attackData))
+                {
+                    if (CanChain())
+                    {
+                    }
+                    else
+                    {
+                        currentAttackData = attackData;
+                    }
 
+                    duration = attackData.attackDuration;
+                    lastAttackTime = Time.time;
+                    SetAnimSetting();
+                    SetAttackObjSetting();
+                    DelayUtility.StartDelayedActionWithPause(Context.characterController, currentAttackData.hitTiming, BattleJudge.I.GetPauseStateFunc, AttackProcess);
+                }
+                else
+                {
+                    Debug.LogWarning($"No attack found for: {key}");
+                }
                 // 同じ攻撃の連続使用をチェック
                 CheckConsecutiveAttacks();
-
-                Context.attackManager.ExecuteAttack(attackType);
-                duration = Context.attackManager.GetDuration(attackType, attackStrength);
             }
 
             protected internal override void Update()
@@ -64,11 +90,11 @@ namespace TechC
             protected internal override void Exit()
             {
                 elapsedTime = 0;
-                AttackData data = Context.attackManager.GetAttackData(attackType, attackStrength);
-                // Context.anim.speed = Context.characterController.DefaultAnimSpeed;
-                if (data != null)
+                Context.anim.speed = Context.characterController.DefaultAnimSpeed;
+                if (currentAttackData != null)
                 {
-                    Context.anim.SetBool(data.animHash, false);
+                    Context.anim.SetBool(currentAttackData.animHash, false);
+                    lastAttackData = currentAttackData;
                 }
                 else
                 {
@@ -78,11 +104,47 @@ namespace TechC
 
                 if (isEarlyExit)
                 {
-                    Context.attackManager.ForceFinish(attackStrength);
+                    Context.anim.SetBool(currentAttackData.animHash, false);
                     Debug.Log("Early");
                 }
                 Context.currentCommand = null;
             }
+
+            private void SetAnimSetting()
+            {
+                if (currentAttackData == null) return;
+                Context.anim.speed = currentAttackData.animationSpeed;
+                Context.anim.SetBool(currentAttackData.animHash, true);
+            }
+
+            private void SetAttackObjSetting()
+            {
+                if (currentAttackData == null) return;
+                if (currentAttackData.attackPrefab == null) return;
+                var obj = CharaEffectFactory.I.GetEffectObj(currentAttackData.attackPrefab);
+                var t = Context.characterController.transform;
+
+                // ローカル空間の offset をワールド空間へ変換
+                var offset =
+                    t.right * currentAttackData.prefabOffset.x +
+                    t.up * currentAttackData.prefabOffset.y +
+                    t.forward * currentAttackData.prefabOffset.z;
+
+                var pos = t.position + offset;
+                obj.transform.position = pos;
+
+                var rot = currentAttackData.prefabRotation;
+
+                // 向きによる Y軸反転（左向きのとき）
+                if (t.forward.x < 0)
+                {
+                    rot.y = 180 - rot.y;
+                }
+                obj.transform.rotation = Quaternion.Euler(rot);
+                var attackObjController = obj.GetComponent<AttackObjectController>();
+                attackObjController?.SetPlayerID(Context.characterController.PlayerID);
+            }
+
 
             /// <summary>
             /// 同じ攻撃の連続使用をチェックし、必要に応じてゲージを減らす
@@ -91,6 +153,7 @@ namespace TechC
             {
                 if (attackType == lastAttackType && attackStrength == lastAttackStrength)
                 {
+                    if (lastAttackData != currentAttackData) return;
                     // 同じ攻撃が連続で使われている
                     consecutiveAttackCount++;
 
@@ -98,7 +161,7 @@ namespace TechC
                     if (consecutiveAttackCount >= PENALTY_THRESHOLD)
                     {
                         // ゲージを減少させる
-                        var characterController = Context.characterController as Player.CharacterController;
+                        var characterController = Context.characterController;
                         if (characterController != null)
                         {
                             // ここでゲージを減少（設定により調整可能）
@@ -114,6 +177,22 @@ namespace TechC
                     lastAttackType = attackType;
                     lastAttackStrength = attackStrength;
                 }
+            }
+
+            private void AttackProcess()
+            {
+                if (currentAttackData == null) return;
+                AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController.gameObject);
+            }
+
+            private bool CanChain()
+            {
+                if (lastAttackData == null) return false;
+                if (!lastAttackData.canChain) return false;
+                if (lastAttackData.nextChain == null) return false;
+                if (Time.time - lastAttackTime > lastAttackData.chainThreshold) return false;
+                currentAttackData = lastAttackData.nextChain;
+                return true;
             }
         }
     }

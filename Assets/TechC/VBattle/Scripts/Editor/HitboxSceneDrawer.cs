@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace TechC
 {
-    [InitializeOnLoad]
     public static class HitboxSceneDrawer
     {
         private struct HitboxInfo

@@ -18,9 +18,17 @@ MonoBehaviour:
   data:
     attackType: 1
     attackStrength: 1
+  attackPrefab: {fileID: 7050212149494774861, guid: de5f91acb2e93ef4bb9d6b10077131e1,
+    type: 3}
+  prefabOffset: {x: 0, y: 0, z: 3}
+  prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsRightStrongAttack
+  clip: {fileID: -4791504522942941401, guid: 915d9f4276401d44aa6094bb8c2c9e5f, type: 3}
   animationSpeed: 1.5
   attackDuration: 1
+  nextChain: {fileID: 0}
+  canChain: 0
+  chainThreshold: 0
   damage: 10
   knockback: 10
   canRepeat: 0

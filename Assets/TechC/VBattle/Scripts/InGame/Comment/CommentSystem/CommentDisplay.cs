@@ -20,10 +20,12 @@ namespace TechC.CommentSystem
 
         [Header("特殊コメントの設定")]
         [SerializeField] private float freezeTime = 3f;
-        
+
         public bool IsCommentFrozen { get; private set; } = false;
 
         private bool isSpawning = false;
+        private Func<bool> isPausedFunc;
+
         private List<CommentInfo> activeComments = new List<CommentInfo>();
 
         /// <summary>
@@ -50,6 +52,7 @@ namespace TechC.CommentSystem
         protected override void Init()
         {
             base.Init();
+            isPausedFunc = () => BattleJudge.I.IsPaused;
             commentSpawner.Init();
             commentMover.Init();
             commentMaterialApplier.Init();
@@ -73,8 +76,6 @@ namespace TechC.CommentSystem
         private IEnumerator SpawnCommentWithInterval()
         {
             if (IsCommentFrozen) yield break;
-
-            Func<bool> isPausedFunc = () => IsCommentFrozen || BattleJudge.I.IsPaused;
 
             DelayUtility.StartRepeatedActionWhileWithPause(
                 this,
@@ -125,19 +126,18 @@ namespace TechC.CommentSystem
         {
             if (!IsCommentFrozen)
             {
-                StartCoroutine(FreezeAllCommentsCoroutine());
+                IsCommentFrozen = true;
+                ApplyFreezeEffectToAllComments();
+                DelayUtility.StartDelayedActionWithPause(
+                    this,
+                    freezeTime,
+                    () => BattleJudge.I.IsPaused,
+                    () =>
+                    {
+                        IsCommentFrozen = false;
+                        RestoreOriginalMaterials();
+                    });
             }
-        }
-
-        private IEnumerator FreezeAllCommentsCoroutine()
-        {
-            IsCommentFrozen = true;
-            ApplyFreezeEffectToAllComments();
-
-            yield return new WaitForSeconds(freezeTime);
-
-            IsCommentFrozen = false;
-            RestoreOriginalMaterials();
         }
 
         private void ApplyFreezeEffectToAllComments()
@@ -165,7 +165,7 @@ namespace TechC.CommentSystem
         {
             for (int i = activeComments.Count - 1; i >= 0; i--)
             {
-                if (activeComments[i].commentObject == null || 
+                if (activeComments[i].commentObject == null ||
                     !activeComments[i].commentObject.activeInHierarchy)
                 {
                     activeComments.RemoveAt(i);

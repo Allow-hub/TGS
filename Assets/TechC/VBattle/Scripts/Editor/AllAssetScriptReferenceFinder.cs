@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 namespace TechC
 {
+    /// <summary>
+    /// Hierarchy だけでなく、プロジェクト全体から指定した MonoBehaviour スクリプトを参照している
+    /// プレハブやシーン内オブジェクトを検索・表示するエディタ拡張ウィンドウ。
+    /// スクリプトを選択して「Find」ボタンを押すと、関連する全ての GameObject をリストアップし、
+    /// クリックでそのアセットをプロジェクト内から選択・ハイライトできる。
+    /// </summary>
     public class AllAssetScriptReferenceFinder : EditorWindow
     {
         private MonoScript targetScript; // 検索対象のスクリプト

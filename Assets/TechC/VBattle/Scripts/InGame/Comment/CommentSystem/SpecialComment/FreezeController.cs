@@ -8,8 +8,25 @@ namespace TechC.CommentSystem
     /// 固定コメントのクラス
     /// </summary>
     [Serializable]
-    public class FreezeController
+    public class FreezeController : ICommentAbility
     {
+        private SpecialCommentTrigger trigger;
+        private List<GameObject> chars;
+
+
+        public void Init(SpecialCommentTrigger trigger)
+        {
+            this.trigger = trigger;
+        }
+
+        public void Release() { /* ... */ }
+
+        public void OnTriggerEnter(Collider collider)
+        {
+            SpecialCommentManager.I.HandleFreeze(trigger.gameObject, chars);
+            CommentDisplay.I.OnFreezeTriggered();
+        }
+        
         /// <summary>
         /// コメント本体と文字オブジェクトをプールに返却する
         /// </summary>

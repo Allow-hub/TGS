@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// Playerの攻撃力を上昇させるバフ

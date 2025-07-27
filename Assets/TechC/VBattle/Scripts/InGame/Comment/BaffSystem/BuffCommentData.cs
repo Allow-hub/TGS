@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// バフコメントデータを格納するScriptableObject

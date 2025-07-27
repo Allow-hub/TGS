@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// バフコメントがプレイヤーと衝突した際にバフを適用するトリガークラス

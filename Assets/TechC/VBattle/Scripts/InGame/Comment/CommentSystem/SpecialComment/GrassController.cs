@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// 草コメントのエフェクトと返却処理を管理するクラス。

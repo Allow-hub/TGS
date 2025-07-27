@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// 特殊コメントを管理する ScriptableObject

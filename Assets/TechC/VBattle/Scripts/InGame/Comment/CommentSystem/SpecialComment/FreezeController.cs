@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// 固定コメントのクラス

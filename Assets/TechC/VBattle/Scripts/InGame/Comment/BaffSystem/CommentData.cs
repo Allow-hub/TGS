@@ -1,4 +1,4 @@
-namespace TechC
+namespace TechC.CommentSystem
 {
    /// <summary>
     /// コメントタイプを定義

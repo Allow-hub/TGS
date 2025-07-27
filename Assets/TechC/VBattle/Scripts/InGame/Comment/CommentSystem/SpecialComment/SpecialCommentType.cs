@@ -1,4 +1,4 @@
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// 特殊コメントを列挙型で定義

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     public class CommentFactory : Singleton<CommentFactory>
     {

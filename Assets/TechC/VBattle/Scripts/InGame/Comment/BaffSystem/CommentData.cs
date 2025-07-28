@@ -3,7 +3,15 @@ namespace TechC.CommentSystem
    /// <summary>
     /// コメントタイプを定義
     /// </summary>
-    public enum CommentType { Normal, SpeedBuff, AttackBuff, MapChange, Special }
+    public enum CommentType
+    {
+        Normal,
+        SpeedBuff,
+        AttackBuff,
+        MapChange,
+        Grass,
+        Freeze
+    }
 
     public class CommentData
     {

@@ -152,7 +152,7 @@ namespace TechC.CommentSystem
                 if (grassEntries.Count > 0)
                 {
                     var entry = grassEntries[Random.Range(0, grassEntries.Count)];
-                    return new CommentData(CommentType.Special, entry.comment, null);
+                    return new CommentData(CommentType.Grass, entry.comment, null);
                 }
             }
 
@@ -163,7 +163,7 @@ namespace TechC.CommentSystem
                 if (freezeEntries.Count > 0)
                 {
                     var entry = freezeEntries[Random.Range(0, freezeEntries.Count)];
-                    return new CommentData(CommentType.Special, entry.comment, null);
+                    return new CommentData(CommentType.Freeze, entry.comment, null);
                 }
             }
 

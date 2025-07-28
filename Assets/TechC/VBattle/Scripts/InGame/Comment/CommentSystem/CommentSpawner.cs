@@ -14,7 +14,8 @@ namespace TechC.CommentSystem
         [SerializeField] private GameObject speedBuffPrefab;
         [SerializeField] private GameObject attackBuffPrefab;
         [SerializeField] private GameObject mapChangePrefab;
-        [SerializeField] private GameObject specialPrefab;
+        [SerializeField] private GameObject grassPrefab;
+        [SerializeField] private GameObject freezePrefab;
 
         [Header("コメントが出現する場所")]
         [SerializeField] private Transform topRightSpawnPos;
@@ -48,13 +49,15 @@ namespace TechC.CommentSystem
             {
                 Init();
             }
+            
+            if (CommentDisplay.I != null && CommentDisplay.I.IsCommentFrozen) return null;
 
             var commentData = commentProvider.GetRandomComment();
             GameObject comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData));
 
             // 文字オブジェクトを生成
             List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, Color.white);
-            
+
             // 位置を設定
             float randomY = UnityEngine.Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
             comment.transform.position = new Vector3(spawnPosX, randomY, PLAYER_TOP_OFFSET);
@@ -86,18 +89,20 @@ namespace TechC.CommentSystem
         {
             switch (commentData.type)
             {
-            case CommentType.Normal:
-                return commentPrefab;
-            case CommentType.AttackBuff:
-                return attackBuffPrefab;
-            case CommentType.MapChange:
-                return mapChangePrefab;
-            case CommentType.SpeedBuff:
-                return speedBuffPrefab;
-            case CommentType.Special:
-                return specialPrefab;
-            default:
-                return commentPrefab;
+                case CommentType.Normal:
+                    return commentPrefab;
+                case CommentType.AttackBuff:
+                    return attackBuffPrefab;
+                case CommentType.MapChange:
+                    return mapChangePrefab;
+                case CommentType.SpeedBuff:
+                    return speedBuffPrefab;
+                case CommentType.Grass:
+                    return grassPrefab;
+                case CommentType.Freeze:
+                    return freezePrefab;
+                default:
+                    return commentPrefab;
             }
         }
     }

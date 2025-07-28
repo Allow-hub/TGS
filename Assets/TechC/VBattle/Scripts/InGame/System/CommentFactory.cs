@@ -25,7 +25,7 @@ namespace TechC.CommentSystem
             GameObject obj = commentPool.GetObject(commentPrefab);
             obj.transform.localScale = COMMENT_OBJ_SCALE;
 
-            if (commentData.type == CommentType.Special)
+            if (commentData.type == CommentType.Grass || commentData.type == CommentType.Freeze)
             {
                 var specialCommentTrigger = obj.GetComponent<SpecialCommentTrigger>();
                 if (specialCommentTrigger == null)

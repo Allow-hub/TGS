@@ -77,6 +77,8 @@ namespace TechC.CommentSystem
                         return speedBuffCommentMaterial;
                     case CommentType.MapChange:
                         return mapChangeCommentMaterial;
+                    case CommentType.Freeze:
+                        return freezeCommentMaterial;
                     case CommentType.Normal:
                     default:
                         return normalCommentMaterial;

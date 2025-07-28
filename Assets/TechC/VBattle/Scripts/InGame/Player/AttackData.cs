@@ -26,6 +26,7 @@ namespace TechC
         public AttackData nextChain;
         public bool canChain;
         public float chainThreshold;
+        public bool isCounter;
         [Header("攻撃特性")]
         public int damage;
 

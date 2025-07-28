@@ -46,7 +46,7 @@ namespace TechC
             {
                 if (!BattleJudge.I.CanPlayerAttack(Context.characterController.PlayerID))
                 {
-                    Debug.Log("攻撃不能状態");
+                    Debug.Log($"攻撃不能状態{Context.characterController.PlayerID}");
                     return;
                 }
                 attackType = Context.CheckAttackType();
@@ -66,6 +66,7 @@ namespace TechC
                     lastAttackTime = Time.time;
                     SetAnimSetting();
                     SetAttackObjSetting();
+                    SetCounterData();
                     DelayUtility.StartDelayedActionWithPause(Context.characterController, currentAttackData.hitTiming, BattleJudge.I.GetPauseStateFunc, AttackProcess);
                 }
                 else
@@ -91,6 +92,8 @@ namespace TechC
             {
                 elapsedTime = 0;
                 Context.anim.speed = Context.characterController.DefaultAnimSpeed;
+                Context.characterController.SetCanCounter(false);
+
                 if (currentAttackData != null)
                 {
                     Context.anim.SetBool(currentAttackData.animHash, false);
@@ -117,6 +120,18 @@ namespace TechC
                 Context.anim.SetBool(currentAttackData.animHash, true);
             }
 
+            private void SetCounterData()
+            {
+                if (!currentAttackData.isCounter) return;
+                Context.characterController.SetCanCounter(true);
+                Context.characterController.SetCounterAction(() =>
+                {
+                    currentAttackData = currentAttackData.nextChain;
+                    SetAnimSetting();
+                    SetAttackObjSetting();
+                    AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController.gameObject);
+                });
+            }
             private void SetAttackObjSetting()
             {
                 if (currentAttackData == null) return;

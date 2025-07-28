@@ -42,6 +42,7 @@ namespace TechC
         [Header("攻撃設定")]
         private AttackManager attackManager;
         public AttackManager AttackManager => attackManager;
+        private AttackData nextCounterAttackData;
 
 
         [Header("アニメーション")]

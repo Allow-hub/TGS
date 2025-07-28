@@ -333,7 +333,7 @@ namespace TechC
         {
             // バトルが進行中でなければ攻撃不可
             if (!isBattleOngoing) return false;
-
+            playerID--;
             // プレイヤーIDが不正なら攻撃不可
             if (playerID < 0 || playerID >= players.Count) return false;
 

@@ -8,7 +8,7 @@ namespace TechC
         {
             if (attackData == null || ownerObj == null) return;
 
-            bool hitOccurred = false;
+            bool hitOccurred;
 
             switch (attackData.hitDetectionMode)
             {
@@ -40,15 +40,17 @@ namespace TechC
 
             Collider[] candidates = Physics.OverlapSphere(owner.transform.position, data.radius, data.targetLayers);
             bool hit = false;
+            var ownerController = owner.GetComponent<Player.CharacterController>();
 
             foreach (var targetCol in candidates)
             {
-                if (targetCol.gameObject == owner) continue;
+                var controller = targetCol.GetComponentInParent<Player.CharacterController>();
 
+                if (controller == ownerController) continue;
                 float dist = Vector3.Distance(selfCollider.bounds.center, targetCol.bounds.center);
                 if (dist < GetApproxRadius(selfCollider) + GetApproxRadius(targetCol))
                 {
-                    hit |= HandleHit(data, targetCol);
+                    hit |= HandleHit(data, targetCol,controller);
                 }
             }
             return hit;
@@ -67,10 +69,14 @@ namespace TechC
             AttackVisualizer.I.DrawHitbox(center, data.radius, 0.5f);
 
             bool hit = false;
+            var ownerController = owner.GetComponent<Player.CharacterController>();
             foreach (var targetCol in hitColliders)
             {
-                if (targetCol.gameObject == owner) continue;
-                hit |= HandleHit(data, targetCol);
+                var controller = targetCol.GetComponentInParent<Player.CharacterController>();
+
+                if (controller == ownerController) continue;
+                //論理和どれか一つでもtrueならtrue
+                hit |= HandleHit(data, targetCol,controller);
             }
 
             return hit;
@@ -80,24 +86,16 @@ namespace TechC
         // ヒット時の処理
         // ==============================
 
-        private static bool HandleHit(AttackData data, Collider targetCol)
+        private static bool HandleHit(AttackData data, Collider targetCol,Player.CharacterController controller = null)
         {
-            var controller = targetCol.GetComponentInParent<Player.CharacterController>();
             if (controller == null) return false;
 
             // カウンター処理
-            if (TryProcessCounter(controller))
-            {
-                Debug.Log("Counter triggered");
-                return true;
-            }
+            if (TryProcessCounter(controller)) return true;
 
             // ガード処理
-            if (TryProcessGuard(controller, targetCol, data))
-            {
-                Debug.Log("Guard successful");
-                return true;
-            }
+            if (TryProcessGuard(controller, targetCol, data)) return true;
+
 
             // ダメージ処理
             if (TryProcessDamage(targetCol, data))
@@ -133,7 +131,6 @@ namespace TechC
             if (damageable != null)
             {
                 damageable.TakeDamage(data.damage);
-                Debug.Log($"Damage applied: {data.damage} to {targetCol.name}");
                 return true;
             }
             return false;
@@ -148,8 +145,6 @@ namespace TechC
 
         private static void ApplyKnockback(AttackData data, Collider target)
         {
-            // 実装は用途に応じて
-            Debug.Log("Applying knockback to " + target.name);
         }
 
         private static void PlaySound(AttackData data)

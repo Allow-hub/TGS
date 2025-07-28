@@ -30,7 +30,7 @@ namespace TechC.CommentSystem
                 var specialCommentTrigger = obj.GetComponent<SpecialCommentTrigger>();
                 if (specialCommentTrigger == null)
                 {
-                    specialCommentTrigger = obj.AddComponent<SpecialCommentTrigger>();
+                    Debug.LogError("SpecialCommentTriggerがPrefabにアタッチされていません。PrefabのInspectorで必ず追加してください。");
                 }
             }
             else

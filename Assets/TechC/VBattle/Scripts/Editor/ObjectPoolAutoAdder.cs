@@ -6,7 +6,7 @@ public class ObjectPoolAutoAdder : EditorWindow
 {
     public ObjectPool targetPool;
     public GameObject parentObject;  // 追加: 親オブジェクトを指定するフィールド
-    private string prefabFolderPath = "Assets/TechC/VBattle/Models/3DText/hiragana";
+    private string prefabFolderPath = "Assets/TechC/VBattle/Prefabs/Comments/Unicode";
 
     [MenuItem("Tools/ObjectPool Auto Adder")]
     public static void ShowWindow()

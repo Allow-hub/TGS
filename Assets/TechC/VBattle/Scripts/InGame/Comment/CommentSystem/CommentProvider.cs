@@ -18,17 +18,20 @@ namespace TechC.CommentSystem
         [SerializeField, Range(0f, 1f)] private float speedBuffChance = 0.2f;
         [SerializeField, Range(0f, 1f)] private float attackBuffChance = 0.2f;
         [SerializeField, Range(0f, 1f)] private float mapChangeChance = 0.1f;
-        [SerializeField, Range(0f, 1f)] private float specialCommentChance = 0.1f;
+        [SerializeField, Range(0f, 1f)] private float grassCommentChance = 0.1f;
+        [SerializeField, Range(0f, 1f)] private float freezeCommentChance = 0.1f;
 
         private List<BuffCommentData> speedBuffs;
         private List<BuffCommentData> attackBuffs;
         private List<BuffCommentData> mapChangeBuffs;
         private List<SpecialCommentData> specialCommentList;
         private float totalChance;
+        private List<SpecialCommentData.SpecialCommentEntry> grassEntries = new List<SpecialCommentData.SpecialCommentEntry>();
+        private List<SpecialCommentData.SpecialCommentEntry> freezeEntries = new List<SpecialCommentData.SpecialCommentEntry>();
 
         private void Awake()
         {
-            totalChance = normalChance + speedBuffChance + attackBuffChance + mapChangeChance + specialCommentChance;
+            totalChance = normalChance + speedBuffChance + attackBuffChance + mapChangeChance + grassCommentChance + freezeCommentChance;
 
             // 確率が0またはマイナスならデフォルト値に設定
             if (totalChance <= 0f)
@@ -37,7 +40,8 @@ namespace TechC.CommentSystem
                 speedBuffChance = 0.1f;
                 attackBuffChance = 0.1f;
                 mapChangeChance = 0.05f;
-                specialCommentChance = 0.05f;
+                grassCommentChance = 0.05f;
+                freezeCommentChance = 0.05f;
                 totalChance = 1.0f;
             }
 
@@ -63,12 +67,24 @@ namespace TechC.CommentSystem
                 }
             }
 
-            // SpecialCommentDataをリスト化
+            // SpecialCommentDataからGrass/Freezeコメントを分類
+            grassEntries.Clear();
+            freezeEntries.Clear();
             if (specialComments != null)
             {
-                foreach (var special in specialComments)
+                foreach (var so in specialComments)
                 {
-                    specialCommentList.Add(special);
+                    if (so.comments != null)
+                    {
+                        foreach (var entry in so.comments)
+                        {
+                            // コメント内容で判定（例: "草"を含むならGrass, "固定"や"フリーズ"を含むならFreeze）
+                            if (entry.comment.Contains("草"))
+                                grassEntries.Add(entry);
+                            else if (entry.comment.Contains("固定") || entry.comment.Contains("フリーズ"))
+                                freezeEntries.Add(entry);
+                        }
+                    }
                 }
             }
         }
@@ -83,6 +99,7 @@ namespace TechC.CommentSystem
             float randomValue = Random.value * totalChance;
 
             float threshold = 0f;
+            // grass/freezeは個別に抽選するため合算しない
 
             // 通常コメント
             threshold += normalChance;
@@ -128,26 +145,25 @@ namespace TechC.CommentSystem
                 }
             }
 
-            // 特殊コメント
-            threshold += specialCommentChance;
+            // Grassコメント
+            threshold += grassCommentChance;
             if (randomValue < threshold)
             {
-                if (specialComments != null && specialComments.Count > 0)
+                if (grassEntries.Count > 0)
                 {
-                    // SpecialCommentEntry[]の全要素をリスト化
-                    var allEntries = new List<SpecialCommentData.SpecialCommentEntry>();
-                    foreach (var data in specialComments)
-                    {
-                        if (data != null && data.comments != null)
-                        {
-                            allEntries.AddRange(data.comments);
-                        }
-                    }
-                    if (allEntries.Count > 0)
-                    {
-                        var entry = allEntries[Random.Range(0, allEntries.Count)];
-                        return new CommentData(CommentType.Special, entry.comment, null);
-                    }
+                    var entry = grassEntries[Random.Range(0, grassEntries.Count)];
+                    return new CommentData(CommentType.Special, entry.comment, null);
+                }
+            }
+
+            // Freezeコメント
+            threshold += freezeCommentChance;
+            if (randomValue < threshold)
+            {
+                if (freezeEntries.Count > 0)
+                {
+                    var entry = freezeEntries[Random.Range(0, freezeEntries.Count)];
+                    return new CommentData(CommentType.Special, entry.comment, null);
                 }
             }
 
@@ -164,7 +180,8 @@ namespace TechC.CommentSystem
             speedBuffChance = 0f;
             attackBuffChance = 0f;
             mapChangeChance = 0f;
-            specialCommentChance = 0f;
+            grassCommentChance = 0f;
+            freezeCommentChance = 0f;
             UnityEditor.EditorUtility.SetDirty(this);
         }
 #endif

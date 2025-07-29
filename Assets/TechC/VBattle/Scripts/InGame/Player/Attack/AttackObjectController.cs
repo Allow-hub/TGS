@@ -11,8 +11,8 @@ namespace TechC.Player.Attack
     {
         [SerializeReference] private List<IAttackBehaviour> behaviours;
         private string playerTag = "Player";
-        private float playerID;
-
+        private int playerID;
+        private GameObject character;
         private void Start()
         {
             if (behaviours == null) return;
@@ -55,6 +55,7 @@ namespace TechC.Player.Attack
 
                 var characterController = other.GetComponentInParent<CharacterController>();
                 if (characterController == null) return;
+
                 if (characterController.PlayerID == playerID) return;// 自分自身への接触は無視
                 foreach (var behaviour in behaviours)
                 {
@@ -64,6 +65,17 @@ namespace TechC.Player.Attack
             }
         }
 
-        public void SetPlayerID(float id) => playerID = id;
+        public void SetPlayer(int id, GameObject characterObj)
+        {
+            if (id < 0) return; // 無効なIDは無視
+            playerID = id;
+            character = characterObj;
+            if (behaviours == null) return;
+            foreach (var behaviour in behaviours)
+            {
+                if (behaviour == null) continue;
+                behaviour?.Activate(character);
+            }
+        }
     }
 }

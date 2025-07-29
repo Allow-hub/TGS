@@ -10,7 +10,7 @@ namespace TechC.Player.Attack
         /// <summary>初期化</summary>
         /// <param name="owner">主体のオブジェクト</param>
         void Initialize(GameObject owner);
-
+        void Activate(GameObject character) { }
         /// <summary>更新処理</summary>
         /// <param name="deltaTime">一回の更新の秒数</param>
         void OnUpdate(float deltaTime);

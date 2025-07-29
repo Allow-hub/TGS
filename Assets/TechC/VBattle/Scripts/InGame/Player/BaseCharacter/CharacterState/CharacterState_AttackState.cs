@@ -197,7 +197,7 @@ namespace TechC
                 }
                 obj.transform.rotation = Quaternion.Euler(rot);
                 var attackObjController = obj.GetComponent<AttackObjectController>();
-                attackObjController?.SetPlayerID(Context.characterController.PlayerID);
+                attackObjController?.SetPlayer(Context.characterController.PlayerID,Context.characterController.gameObject);
             }
 
 
@@ -221,7 +221,7 @@ namespace TechC
                         {
                             // ここでゲージを減少（設定により調整可能）
                             characterController.NotBoolAddSpecialGauge(GAUGE_PENALTY);
-                            Debug.Log($"同じ攻撃を{consecutiveAttackCount}回連続で使用: ゲージを{GAUGE_PENALTY}減少");
+                            // Debug.Log($"同じ攻撃を{consecutiveAttackCount}回連続で使用: ゲージを{GAUGE_PENALTY}減少");
                         }
                     }
                 }
@@ -237,7 +237,7 @@ namespace TechC
             private void AttackProcess()
             {
                 if (currentAttackData == null) return;
-                AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController.gameObject);
+                AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController, Context.characterController.gameObject);
             }
 
             private bool CanChain()

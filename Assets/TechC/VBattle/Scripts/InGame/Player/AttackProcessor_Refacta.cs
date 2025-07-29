@@ -1,9 +1,11 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace TechC
 {
     public static class AttackProcessor_Refacta
     {
+        private static float hitEffectDuration = 1f;
         public static void ProcessAttack(AttackData attackData, GameObject ownerObj = null)
         {
             if (attackData == null || ownerObj == null) return;
@@ -40,17 +42,18 @@ namespace TechC
 
             Collider[] candidates = Physics.OverlapSphere(owner.transform.position, data.radius, data.targetLayers);
             bool hit = false;
-            var ownerController = owner.GetComponent<Player.CharacterController>();
+            var ownerController = owner.GetComponentInParent<Player.CharacterController>();
+            int ownerPlayerID = ownerController?.PlayerID ?? -1;
 
             foreach (var targetCol in candidates)
             {
                 var controller = targetCol.GetComponentInParent<Player.CharacterController>();
 
-                if (controller == ownerController) continue;
+                if (controller.PlayerID == ownerPlayerID) continue;
                 float dist = Vector3.Distance(selfCollider.bounds.center, targetCol.bounds.center);
                 if (dist < GetApproxRadius(selfCollider) + GetApproxRadius(targetCol))
                 {
-                    hit |= HandleHit(data, targetCol,controller);
+                    hit |= HandleHit(data, targetCol, controller);
                 }
             }
             return hit;
@@ -69,14 +72,14 @@ namespace TechC
             AttackVisualizer.I.DrawHitbox(center, data.radius, 0.5f);
 
             bool hit = false;
-            var ownerController = owner.GetComponent<Player.CharacterController>();
+            var ownerController = owner.GetComponentInParent<Player.CharacterController>();
             foreach (var targetCol in hitColliders)
             {
                 var controller = targetCol.GetComponentInParent<Player.CharacterController>();
 
                 if (controller == ownerController) continue;
                 //論理和どれか一つでもtrueならtrue
-                hit |= HandleHit(data, targetCol,controller);
+                hit |= HandleHit(data, targetCol, controller);
             }
 
             return hit;
@@ -86,20 +89,19 @@ namespace TechC
         // ヒット時の処理
         // ==============================
 
-        private static bool HandleHit(AttackData data, Collider targetCol,Player.CharacterController controller = null)
+        private static bool HandleHit(AttackData data, Collider targetCol, Player.CharacterController controller = null)
         {
             if (controller == null) return false;
-
             // カウンター処理
             if (TryProcessCounter(controller)) return true;
 
             // ガード処理
             if (TryProcessGuard(controller, targetCol, data)) return true;
 
-
             // ダメージ処理
             if (TryProcessDamage(targetCol, data))
             {
+                PlayHitEffect(controller, targetCol.transform.position, data);
                 ApplyKnockback(data, targetCol);
                 return true;
             }
@@ -130,6 +132,8 @@ namespace TechC
             IDamageable damageable = targetCol.GetComponentInParent<IDamageable>();
             if (damageable != null)
             {
+                HitStopManager.I.DoHitStop(data.hitStopDuration, data.hitStopTimeScale);
+                CameraManager.I.StartShake(data.shakeIntensity, data.shakeDuraion, data.noiseSettings);
                 damageable.TakeDamage(data.damage);
                 return true;
             }
@@ -145,10 +149,35 @@ namespace TechC
 
         private static void ApplyKnockback(AttackData data, Collider target)
         {
+            Rigidbody rb = target.GetComponentInParent<Rigidbody>();
+            if (rb == null) return;
+
+            Vector3 knockbackDir = data.knockbackDirection.normalized;
+            Vector3 force = knockbackDir * data.knockback;
+
+            rb.AddForce(force, ForceMode.Impulse);
         }
+
+        private static void PlayHitEffect(MonoBehaviour mono,Vector3 position, AttackData data)
+        {
+            if (data.hitEffectPrefab == null) return;
+
+            GameObject effect = EffectFactory.I.GetEffectObj(data.hitEffectPrefab);
+            if (effect == null) return;
+
+            effect.transform.position = position;
+
+            DelayUtility.StartDelayedActionWithPause(mono, hitEffectDuration, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                if (effect == null) return;
+                EffectFactory.I.ReturnEffect(effect);
+            });
+        }
+
 
         private static void PlaySound(AttackData data)
         {
+            AudioManager.I.PlaySE(SEID.Hit, 0.3f);
             if (data.characterSEType != CharacterSEType.None)
                 AudioManager.I.PlayCharacterSE(data.characterType, data.characterSEType);
 

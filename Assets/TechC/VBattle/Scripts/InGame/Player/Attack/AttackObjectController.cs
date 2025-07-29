@@ -51,10 +51,11 @@ namespace TechC.Player.Attack
         {
             if (other.gameObject.CompareTag(playerTag))
             {
+                if (behaviours == null) return;
+
                 var characterController = other.GetComponentInParent<CharacterController>();
                 if (characterController == null) return;
-                if (characterController?.PlayerID == playerID) return;// 自分自身への接触は無視
-                if (behaviours == null) return;
+                if (characterController.PlayerID == playerID) return;// 自分自身への接触は無視
                 foreach (var behaviour in behaviours)
                 {
                     if (behaviour == null) continue;

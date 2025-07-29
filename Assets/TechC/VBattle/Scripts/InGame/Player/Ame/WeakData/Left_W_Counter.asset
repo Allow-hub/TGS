@@ -20,29 +20,31 @@ MonoBehaviour:
   prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsLeftWeakAttack_2
   clip: {fileID: 7400000, guid: dee7adec5e960634596041f22a430de7, type: 2}
-  animationSpeed: 1
-  attackDuration: 1
-  nextChain: {fileID: 0}
-  canChain: 0
-  chainThreshold: 0
-  isCounter: 0
-  damage: 45
-  knockback: 10
-  canRepeat: 0
-  repeatInterval: 0
-  repeatDuration: 0
-  radius: 2
+  animationSpeed: 1.7
+  attackDuration: 0.6
+  hitDetectionMode: 1
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
-  hitDetectionMode: 1
+  radius: 2
   hitboxOffset: {x: 0, y: 1, z: 1}
   hitTiming: 0.2
+  hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+    type: 3}
+  damage: 20
+  knockback: 10
+  isCounter: 0
+  nextChain: {fileID: 0}
+  canChain: 0
+  chainThreshold: 0
   hitStopDuration: 0.3
   hitStopTimeScale: 0.1
   knockbackDirection: {x: 0, y: 1, z: 1}
   shakeIntensity: 0.1
   shakeDuraion: 0.1
   noiseSettings: {fileID: 0}
+  canRepeat: 0
+  repeatInterval: 0
+  repeatDuration: 0
   characterSEType: 0
   characterVoiceType: 0

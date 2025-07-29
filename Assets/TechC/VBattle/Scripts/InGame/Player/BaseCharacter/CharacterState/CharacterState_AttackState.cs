@@ -34,6 +34,7 @@ namespace TechC
             private float duration;
             private float elapsedTime = 0;
             private bool isEarlyExit = true;
+            private bool isCounter;
             private AttackData lastAttackData = null;
             private float lastAttackTime;
 
@@ -49,31 +50,62 @@ namespace TechC
                     Debug.Log($"攻撃不能状態{Context.characterController.PlayerID}");
                     return;
                 }
+
+                // --- カウンター処理の乗っ取り時（再入場） ---
+                if (isCounter && currentAttackData != null)
+                {
+                    isCounter = false;
+
+                    duration = currentAttackData.attackDuration;
+                    lastAttackTime = Time.time;
+
+                    SetAnimSetting();
+                    SetAttackObjSetting();
+
+                    DelayUtility.StartDelayedActionWithPause(
+                        Context.characterController,
+                        currentAttackData.hitTiming,
+                        BattleJudge.I.GetPauseStateFunc,
+                        AttackProcess
+                    );
+                    return;
+                }
+
+                // --- 通常の攻撃処理 ---
                 attackType = Context.CheckAttackType();
                 attackStrength = Context.CheckAttackStrength();
                 var key = (attackType, attackStrength);
+
                 if (Context.characterController.AttackSet.attackDataMap.TryGetValue(key, out var attackData))
                 {
                     if (CanChain())
                     {
+                        // 連携攻撃へ
                     }
                     else
                     {
                         currentAttackData = attackData;
                     }
 
-                    duration = attackData.attackDuration;
+                    duration = currentAttackData.attackDuration;
                     lastAttackTime = Time.time;
+
                     SetAnimSetting();
                     SetAttackObjSetting();
                     SetCounterData();
-                    DelayUtility.StartDelayedActionWithPause(Context.characterController, currentAttackData.hitTiming, BattleJudge.I.GetPauseStateFunc, AttackProcess);
+
+                    DelayUtility.StartDelayedActionWithPause(
+                        Context.characterController,
+                        currentAttackData.hitTiming,
+                        BattleJudge.I.GetPauseStateFunc,
+                        AttackProcess
+                    );
                 }
                 else
                 {
                     Debug.LogWarning($"No attack found for: {key}");
                 }
-                // 同じ攻撃の連続使用をチェック
+
                 CheckConsecutiveAttacks();
             }
 
@@ -108,7 +140,6 @@ namespace TechC
                 if (isEarlyExit)
                 {
                     Context.anim.SetBool(currentAttackData.animHash, false);
-                    Debug.Log("Early");
                 }
                 Context.currentCommand = null;
             }
@@ -123,15 +154,24 @@ namespace TechC
             private void SetCounterData()
             {
                 if (!currentAttackData.isCounter) return;
+
                 Context.characterController.SetCanCounter(true);
                 Context.characterController.SetCounterAction(() =>
                 {
+                    // ★ 前回の攻撃アニメーションをOFFにする（カウンター発動時）
+                    if (currentAttackData != null)
+                    {
+                        Context.anim.SetBool(currentAttackData.animHash, false);
+                    }
+
+                    isCounter = true;
                     currentAttackData = currentAttackData.nextChain;
-                    SetAnimSetting();
-                    SetAttackObjSetting();
-                    AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController.gameObject);
+
+                    Context.ChangeAttackState();
                 });
             }
+
+
             private void SetAttackObjSetting()
             {
                 if (currentAttackData == null) return;

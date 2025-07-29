@@ -23,6 +23,7 @@ namespace TechC.CommentSystem
 
         public void OnTriggerEnter(Collider collider)
         {
+            Debug.Log("FreezeControllerのTrigger");
             SpecialCommentManager.I.HandleFreeze(trigger.gameObject, chars);
             CommentDisplay.I.OnFreezeTriggered();
         }

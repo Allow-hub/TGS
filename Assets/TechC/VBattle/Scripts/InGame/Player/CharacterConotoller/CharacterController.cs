@@ -227,7 +227,7 @@ namespace TechC.Player
         /// <summary>
         /// 草のモデルをプレイヤーに持たせる
         /// </summary>
-        public void SpawnGrassEffect()
+        public void SpawnGrassEffect(GrassAbility grassAbility)
         {
             if (hasComment) return;
             hasComment = true;
@@ -245,16 +245,9 @@ namespace TechC.Player
                 return;
             }
 
-            var grassController = grassInstance.GetComponent<GrassController>();
-            if (grassController == null)
-            {
-                Debug.LogError("grassInstanceにGrassControllerがアタッチされていません");
-                return;
-            }
-
-            grassController.Init();
+          
             OnCommentEvent = null;
-            OnCommentEvent += grassController.Throw;
+            OnCommentEvent += () => grassAbility.Throw(grassInstance.GetComponent<Rigidbody>(),grassInstance);
             grassInstance.transform.SetParent(handPos);
             grassInstance.transform.localPosition = Vector3.zero;
             grassInstance.transform.localRotation = Quaternion.identity;
@@ -266,6 +259,8 @@ namespace TechC.Player
         public void InvokeCommentEvent()
         {
             OnCommentEvent?.Invoke();
+            OnCommentEvent = null;
+
             hasComment = false;
         }
 

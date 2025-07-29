@@ -339,6 +339,16 @@ PrefabInstance:
       propertyPath: attackBuffChance
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: grassCommentChance
+      value: 0.112
+      objectReference: {fileID: 0}
+    - target: {fileID: 2355759554391007691, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: freezeCommentChance
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2357770565247420618, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.y

@@ -1,4 +1,3 @@
-using TechC.CommentSystem;
 using UnityEngine;
 
 namespace TechC.CommentSystem
@@ -16,22 +15,24 @@ namespace TechC.CommentSystem
             commentTransform = trigger.transform;
         }
 
-        public void Release()
-        {
-
-        }
+        public void Release() { }
 
         public void OnTriggerEnter(Collider collider)
+        {
+           
+        }
+
+        public void Throw(Rigidbody rb, GameObject commentObj)
         {
             rb.constraints = RigidbodyConstraints.None;
             rb.isKinematic = false;
             rb.useGravity = true;
-            var character = commentTransform.root;
+            var character = commentObj.transform.root;
             var dirZ = UnityEngine.Random.Range(throwUpwardPower.x, throwUpwardPower.y);
             Vector3 throwDirection = (character.forward + Vector3.up * dirZ).normalized;
             rb.velocity = Vector3.zero;
             rb.AddForce(throwDirection * throwPower, ForceMode.Impulse);
-            commentTransform.SetParent(null);
+            commentObj.transform.SetParent(null);
             rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
         }
     }

@@ -1,14 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 namespace TechC.CommentSystem
 {
-    /// <summary>
-    /// 固定コメントのクラス
-    /// </summary>
-    [Serializable]
-    public class FreezeController : ICommentAbility
+    public class FreezeAbility : ICommentAbility
     {
         private SpecialCommentTrigger trigger;
         private List<GameObject> chars;
@@ -19,15 +15,14 @@ namespace TechC.CommentSystem
             this.trigger = trigger;
         }
 
-        public void Release() { /* 必要に応じて実装 */ }
+        public void Release() { }
 
         public void OnTriggerEnter(Collider collider)
         {
-            Debug.Log("FreezeControllerのTrigger");
-            SpecialCommentManager.I.HandleFreeze(trigger.gameObject, chars);
+            ReturnCommentAndChars(trigger.gameObject, chars);
             CommentDisplay.I.OnFreezeTriggered();
         }
-        
+
         /// <summary>
         /// コメント本体と文字オブジェクトをプールに返却する
         /// </summary>

@@ -8,7 +8,6 @@ namespace TechC.CommentSystem
         private Transform commentTransform;
         private Transform handTransform;
 
-        // handTransformはInitで外部から渡す or Inspectorでセット
         public void Init(SpecialCommentTrigger trigger)
         {
             commentTransform = trigger.transform;

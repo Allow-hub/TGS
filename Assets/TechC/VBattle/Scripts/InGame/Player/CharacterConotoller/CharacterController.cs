@@ -227,7 +227,7 @@ namespace TechC.Player
         /// <summary>
         /// 草のモデルをプレイヤーに持たせる
         /// </summary>
-        public void SpawnGrassEffect(GrassAbility grassAbility)
+        public void SpawnGrassEffect(ThrowAbility throwAbility)
         {
             if (hasComment) return;
             hasComment = true;
@@ -245,9 +245,8 @@ namespace TechC.Player
                 return;
             }
 
-          
             OnCommentEvent = null;
-            OnCommentEvent += () => grassAbility.Throw(grassInstance.GetComponent<Rigidbody>(),grassInstance);
+            OnCommentEvent += () => throwAbility.Throw(grassInstance.GetComponent<Rigidbody>(), grassInstance);
             grassInstance.transform.SetParent(handPos);
             grassInstance.transform.localPosition = Vector3.zero;
             grassInstance.transform.localRotation = Quaternion.identity;

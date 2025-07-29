@@ -13,16 +13,12 @@ namespace TechC.CommentSystem
         [SerializeField] private Vector2 throwUpwardPower = new Vector2(0.5f, 1.0f);
         [SerializeField] private float throwPower = 10f;
 
-        private bool isReturning = false;
-        // private Rigidbody rb;
         private Transform commentTransform;
         private SpecialCommentTrigger specialCommentTrigger;
 
-        // GameObjectベースで初期化
         public void Init(GameObject commentObj)
         {
             commentTransform = commentObj.transform;
-            // rb = commentObj.GetComponent<Rigidbody>();
             specialCommentTrigger = commentObj.GetComponent<SpecialCommentTrigger>();
         }
 

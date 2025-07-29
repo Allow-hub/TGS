@@ -2,6 +2,12 @@
 
 ## 各クラスの役割（簡易まとめ）
 
+## TODO
+・GrassAbility内に書かれている、投げる処理と、コメントを持つ処理に分離してそれぞれ書く
+→そうすることでアビリティを組み合わせるだけで特殊コメントができるようになる
+
+ICommentAbilityを継承して書くこと
+
 - **CommentDisplay**
   - コメント全体の表示・管理の中枢。SpawnerやMoverなどを統括。
 - **CommentSpawner**

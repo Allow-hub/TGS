@@ -33,5 +33,9 @@ namespace TechC.Player.Attack
             }
             currentLifeTime -= deltaTime;
         }
+        /// <summary>
+        /// Chain攻撃時にLifeTimeを最大値にリセット
+        /// </summary>
+        public void ResetLifeTime() => currentLifeTime = 0;
     }
 }

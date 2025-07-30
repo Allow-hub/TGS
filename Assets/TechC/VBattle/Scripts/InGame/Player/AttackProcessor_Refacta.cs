@@ -9,14 +9,14 @@ namespace TechC
     {
         private static float hitEffectDuration = 1f;
 
-        public static void ProcessAttack(AttackData attackData,Player.CharacterController characterController, GameObject ownerObj)
+        public static void ProcessAttack(AttackData attackData, Player.CharacterController characterController, GameObject ownerObj)
         {
             if (attackData == null || ownerObj == null) return;
 
             bool hitOccurred = attackData.hitDetectionMode switch
             {
-                HitDetectionMode.UseSelf => ProcessUseSelfMode(attackData,characterController, ownerObj),
-                HitDetectionMode.OverlapSphere => ProcessOverlapSphereMode(attackData,characterController, ownerObj),
+                HitDetectionMode.UseSelf => ProcessUseSelfMode(attackData, characterController, ownerObj),
+                HitDetectionMode.OverlapSphere => ProcessOverlapSphereMode(attackData, characterController, ownerObj),
                 _ => false,
             };
 
@@ -30,16 +30,21 @@ namespace TechC
         // 判定モード別の処理
         // ==============================
 
-        private static bool ProcessUseSelfMode(AttackData data,Player.CharacterController characterController ,GameObject owner)
+        private static bool ProcessUseSelfMode(AttackData data, Player.CharacterController characterController, GameObject owner)
         {
             Collider selfCollider = owner.GetComponent<Collider>();
             if (selfCollider == null) return false;
-
+            Transform t = owner.transform;
+            Vector3 center = t.position
+                + t.right * data.hitboxOffset.x
+                + t.up * data.hitboxOffset.y
+                + t.forward * data.hitboxOffset.z;
             var ownerController = characterController;
             var filtered = FilterTargets(
-                Physics.OverlapSphere(owner.transform.position, data.radius, data.targetLayers),
+                Physics.OverlapSphere(center, data.radius, data.targetLayers),
                 ownerController
             );
+            AttackVisualizer.I.DrawHitbox(center, data.radius, 0.5f);
 
             bool hit = false;
             foreach (var (col, ctrl) in filtered)
@@ -54,7 +59,7 @@ namespace TechC
             return hit;
         }
 
-        private static bool ProcessOverlapSphereMode(AttackData data,Player.CharacterController characterController ,GameObject owner)
+        private static bool ProcessOverlapSphereMode(AttackData data, Player.CharacterController characterController, GameObject owner)
         {
             Transform t = owner.transform;
             Vector3 center = t.position
@@ -165,7 +170,7 @@ namespace TechC
         {
             Rigidbody rb = target.GetComponentInParent<Rigidbody>();
             if (rb == null) return;
-
+            rb.velocity = Vector3.zero; // 既存の速度をリセット
             Vector3 force = data.knockbackDirection.normalized * data.knockback;
             rb.AddForce(force, ForceMode.Impulse);
         }

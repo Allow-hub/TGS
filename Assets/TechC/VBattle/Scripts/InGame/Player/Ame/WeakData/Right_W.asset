@@ -23,7 +23,7 @@ MonoBehaviour:
   clip: {fileID: 7400000, guid: 642ce44fd8d255240ad5ca3b6d84d5ac, type: 2}
   animationSpeed: 1.8
   attackDuration: 0.6
-  hitDetectionMode: 1
+  hitDetectionMode: 2
   targetLayers:
     serializedVersion: 2
     m_Bits: 1

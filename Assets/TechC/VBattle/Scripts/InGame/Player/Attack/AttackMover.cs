@@ -12,30 +12,43 @@ namespace TechC.Player.Attack
         [SerializeField] private Rigidbody rb;
         [SerializeField] private float moveSpeed = 5f;
         [SerializeField] private Vector3 moveDir = Vector3.forward;
-
+        private Vector3 currentMoveDir;
+        // 追従関連
+        [SerializeField]private bool followCharacter = false;
+        private Transform characterTransform;
         public void Initialize(GameObject owner)
         {
         }
 
         public void OnRelease()
         {
+            rb.velocity = Vector3.zero; // リリース時に速度をリセット
+            currentMoveDir = Vector3.zero; // 移動方向もリセット
+            characterTransform = null;
         }
 
         public void OnUpdate(float deltaTime)
         {
             if (rb == null) return;
-            Vector3 delta = moveDir.normalized * moveSpeed * deltaTime;
-            rb.MovePosition(rb.position + delta);
+
+            if (followCharacter && characterTransform != null)
+            {
+                // キャラの位置に追従
+                rb.MovePosition(characterTransform.position);
+            }
+            else
+            {
+                Vector3 delta = currentMoveDir.normalized * moveSpeed * deltaTime;
+                rb.MovePosition(rb.position + delta);
+            }
         }
 
-        /// <summary>
-        /// 移動方向を変更する
-        /// </summary>
-        public void SetDirection(Vector3 direction) => moveDir = direction.normalized;
-
-        /// <summary>
-        /// 移動速度を変更する
-        /// </summary>
-        public void SetSpeed(float speed) => moveSpeed = speed;
+        public void Activate(GameObject character)
+        {
+            if (rb == null) return;
+            if(followCharacter)
+                characterTransform = character.transform;
+            currentMoveDir = moveDir * character.transform.forward.x; // キャラクターの前方向に移動
+        }
     }
 }

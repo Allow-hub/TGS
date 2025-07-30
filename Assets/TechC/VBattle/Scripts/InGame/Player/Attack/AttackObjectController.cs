@@ -10,6 +10,7 @@ namespace TechC.Player.Attack
     public class AttackObjectController : MonoBehaviour
     {
         [SerializeReference] private List<IAttackBehaviour> behaviours;
+        public List<IAttackBehaviour> Behaviours => behaviours;
         private string playerTag = "Player";
         private int playerID;
         private GameObject character;

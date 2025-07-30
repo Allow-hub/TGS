@@ -15,36 +15,37 @@ MonoBehaviour:
   characterType: 1
   attackName: Down_S
   description: 
-  data:
-    attackType: 3
-    attackStrength: 1
+  attackPrefab: {fileID: 0}
+  prefabOffset: {x: 0, y: 0, z: 0}
+  prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsDownStrongAttack
+  clip: {fileID: 7400000, guid: 3aea0f3d276073f4ababe7f13c253de1, type: 2}
   animationSpeed: 1
   attackDuration: 3
-  damage: 1
-  knockback: 2
-  canRepeat: 1
-  repeatInterval: 0.01
-  repeatDuration: 1
-  radius: 1.5
+  hitDetectionMode: 1
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
+  radius: 1.5
   hitboxOffset: {x: 0, y: 1, z: 0}
   hitTiming: 1.5
+  hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+    type: 3}
+  damage: 1
+  knockback: 2
+  isCounter: 0
+  nextChain: {fileID: 0}
+  canChain: 0
+  isChainPos: 0
+  chainThreshold: 0
   hitStopDuration: 0.1
   hitStopTimeScale: 0.7
   knockbackDirection: {x: 0, y: 1, z: 1}
-  useCustomKnockbackDirection: 1
-  useSelfColliderForHitCheck: 0
   shakeIntensity: 0.1
   shakeDuraion: 0.1
   noiseSettings: {fileID: 0}
+  canRepeat: 1
+  repeatInterval: 0.01
+  repeatDuration: 1
   characterSEType: 12
   characterVoiceType: 0
-  hitStunDuration: 0.5
-  hitStunLevel: 0
-  isLaunchAttack: 0
-  canTech: 1
-  canDI: 1
-  diInfluence: 0.3

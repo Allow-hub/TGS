@@ -1,13 +1,15 @@
 using IceMilkTea.StateMachine;
+using System.Linq;
 using TechC.Player.Attack;
 using UnityEngine;
+
 namespace TechC
 {
     public partial class CharacterState
     {
         public enum AttackType
         {
-            Neutral,//他に入力がないとき
+            Neutral, // 他に入力がないとき
             Right,
             Left,
             Down,
@@ -23,11 +25,18 @@ namespace TechC
 
         private class AttackState : ImtStateMachine<CharacterState>.State
         {
+            // --- 定数と履歴 ---
+            private const int PENALTY_THRESHOLD = 3; // 同じ攻撃繰り返し数
+            private const float GAUGE_PENALTY = -5f; // ゲージ減少量
 
-            // 攻撃履歴を保持する静的変数
             private AttackType lastAttackType = AttackType.Neutral;
             private AttackStrength lastAttackStrength = AttackStrength.Weak;
             private int consecutiveAttackCount = 0;
+            private AttackData lastAttackData = null;
+            private float lastAttackTime;
+            private GameObject lastAttackObject; // 前回の攻撃オブジェクトを保持
+
+            // --- 現在の攻撃情報 ---
             private AttackType attackType;
             private AttackStrength attackStrength;
             private AttackData currentAttackData;
@@ -35,13 +44,6 @@ namespace TechC
             private float elapsedTime = 0;
             private bool isEarlyExit = true;
             private bool isCounter;
-            private AttackData lastAttackData = null;
-            private float lastAttackTime;
-
-            // 同じ攻撃を何回繰り返すとゲージ減少が始まるか
-            private const int PENALTY_THRESHOLD = 3;
-            // ゲージ減少量
-            private const float GAUGE_PENALTY = -5f;
 
             protected internal override void Enter()
             {
@@ -51,55 +53,34 @@ namespace TechC
                     return;
                 }
 
-                // --- カウンター処理の乗っ取り時（再入場） ---
+                // カウンター再入場処理
                 if (isCounter && currentAttackData != null)
                 {
                     isCounter = false;
-
                     duration = currentAttackData.attackDuration;
                     lastAttackTime = Time.time;
 
                     SetAnimSetting();
                     SetAttackObjSetting();
-
-                    DelayUtility.StartDelayedActionWithPause(
-                        Context.characterController,
-                        currentAttackData.hitTiming,
-                        BattleJudge.I.GetPauseStateFunc,
-                        AttackProcess
-                    );
+                    SetupDelayedAttack();
                     return;
                 }
 
-                // --- 通常の攻撃処理 ---
+                // 通常攻撃処理
                 attackType = Context.CheckAttackType();
                 attackStrength = Context.CheckAttackStrength();
                 var key = (attackType, attackStrength);
 
                 if (Context.characterController.AttackSet.attackDataMap.TryGetValue(key, out var attackData))
                 {
-                    if (CanChain())
-                    {
-                        // 連携攻撃へ
-                    }
-                    else
-                    {
-                        currentAttackData = attackData;
-                    }
-
+                    currentAttackData = CanChain() ? lastAttackData.nextChain : attackData;
                     duration = currentAttackData.attackDuration;
                     lastAttackTime = Time.time;
 
                     SetAnimSetting();
                     SetAttackObjSetting();
                     SetCounterData();
-
-                    DelayUtility.StartDelayedActionWithPause(
-                        Context.characterController,
-                        currentAttackData.hitTiming,
-                        BattleJudge.I.GetPauseStateFunc,
-                        AttackProcess
-                    );
+                    SetupDelayedAttack();
                 }
                 else
                 {
@@ -135,15 +116,33 @@ namespace TechC
                 {
                     CustomLogger.Warning($"AttackData is null for type {attackType} and strength {attackStrength}");
                 }
-                //もし攻撃時間がたたずに他ステートから割り込まれたときに強制終了のメソッドを呼ぶ
 
-                if (isEarlyExit)
+                if (isEarlyExit && currentAttackData != null)
                 {
                     Context.anim.SetBool(currentAttackData.animHash, false);
                 }
+
                 Context.currentCommand = null;
+                
+                // Chain攻撃でない場合、前回のオブジェクト参照をクリア
+                if (!CanChain())
+                {
+                    lastAttackObject = null;
+                }
             }
 
+            /// <summary>
+            ///  攻撃処理実行
+            /// </summary>
+            private void AttackProcess()
+            {
+                if (currentAttackData == null) return;
+                AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController, Context.characterController.gameObject);
+            }
+
+            /// <summary>
+            /// アニメーション設定
+            /// </summary>
             private void SetAnimSetting()
             {
                 if (currentAttackData == null) return;
@@ -151,6 +150,60 @@ namespace TechC
                 Context.anim.SetBool(currentAttackData.animHash, true);
             }
 
+            /// <summary>
+            /// 攻撃オブジェクト生成設定
+            /// </summary>
+            private void SetAttackObjSetting()
+            {
+                if (currentAttackData == null || currentAttackData.attackPrefab == null) return;
+
+                var obj = CharaEffectFactory.I.GetEffectObj(currentAttackData.attackPrefab);
+                var t = Context.characterController.transform;
+                
+                Vector3 spawnPosition;
+
+                // Chain攻撃の場合、前回のオブジェクトの現在位置を使用
+                if (CanChain() && lastAttackObject != null && currentAttackData.isChainPos)
+                {
+                    spawnPosition = lastAttackObject.transform.position;
+
+                    // Chain攻撃時のオフセットを適用
+                    var offset = lastAttackObject.transform.right * currentAttackData.prefabOffset.x +
+                                 lastAttackObject.transform.up * currentAttackData.prefabOffset.y +
+                                 lastAttackObject.transform.forward * currentAttackData.prefabOffset.z;
+                    spawnPosition += offset;
+                     if (lastAttackObject == null) return;
+
+                    var controller = lastAttackObject.GetComponent<AttackObjectController>();
+                    //FirstOrDefaultは最初に用件を満たすものを返す
+                    var lifeTime = controller?.Behaviours.FirstOrDefault(b => b is AttackLifeTime) as AttackLifeTime;
+                    lifeTime?.ResetLifeTime();
+                }
+                else
+                {
+                    // 通常攻撃の場合、キャラクター基準の位置
+                    var offset = t.right * currentAttackData.prefabOffset.x +
+                                 t.up * currentAttackData.prefabOffset.y +
+                                 t.forward * currentAttackData.prefabOffset.z;
+                    spawnPosition = t.position + offset;
+                }
+
+                obj.transform.position = spawnPosition;
+
+                var rot = currentAttackData.prefabRotation;
+                if (t.forward.x < 0) rot.y = 180 - rot.y;
+                obj.transform.rotation = Quaternion.Euler(rot);
+
+                var attackObjController = obj.GetComponent<AttackObjectController>();
+                attackObjController?.SetPlayer(Context.characterController.PlayerID, Context.characterController.gameObject);
+                
+                // 現在のオブジェクトを記録
+                lastAttackObject = obj;
+            }
+
+            /// <summary>
+            /// カウンター攻撃用設定
+            /// </summary>
             private void SetCounterData()
             {
                 if (!currentAttackData.isCounter) return;
@@ -158,96 +211,60 @@ namespace TechC
                 Context.characterController.SetCanCounter(true);
                 Context.characterController.SetCounterAction(() =>
                 {
-                    // ★ 前回の攻撃アニメーションをOFFにする（カウンター発動時）
                     if (currentAttackData != null)
                     {
                         Context.anim.SetBool(currentAttackData.animHash, false);
                     }
-
                     isCounter = true;
                     currentAttackData = currentAttackData.nextChain;
-
                     Context.ChangeAttackState();
                 });
             }
 
-
-            private void SetAttackObjSetting()
-            {
-                if (currentAttackData == null) return;
-                if (currentAttackData.attackPrefab == null) return;
-                var obj = CharaEffectFactory.I.GetEffectObj(currentAttackData.attackPrefab);
-                var t = Context.characterController.transform;
-
-                // ローカル空間の offset をワールド空間へ変換
-                var offset =
-                    t.right * currentAttackData.prefabOffset.x +
-                    t.up * currentAttackData.prefabOffset.y +
-                    t.forward * currentAttackData.prefabOffset.z;
-
-                var pos = t.position + offset;
-                obj.transform.position = pos;
-
-                var rot = currentAttackData.prefabRotation;
-
-                // 向きによる Y軸反転（左向きのとき）
-                if (t.forward.x < 0)
-                {
-                    rot.y = 180 - rot.y;
-                }
-                obj.transform.rotation = Quaternion.Euler(rot);
-                var attackObjController = obj.GetComponent<AttackObjectController>();
-                attackObjController?.SetPlayer(Context.characterController.PlayerID,Context.characterController.gameObject);
-            }
-
-
             /// <summary>
-            /// 同じ攻撃の連続使用をチェックし、必要に応じてゲージを減らす
+            /// 攻撃の連続使用チェックとペナルティ
             /// </summary>
             private void CheckConsecutiveAttacks()
             {
                 if (attackType == lastAttackType && attackStrength == lastAttackStrength)
                 {
                     if (lastAttackData != currentAttackData) return;
-                    // 同じ攻撃が連続で使われている
                     consecutiveAttackCount++;
-
-                    // しきい値を超えたらペナルティを適用
                     if (consecutiveAttackCount >= PENALTY_THRESHOLD)
                     {
-                        // ゲージを減少させる
-                        var characterController = Context.characterController;
-                        if (characterController != null)
-                        {
-                            // ここでゲージを減少（設定により調整可能）
-                            characterController.NotBoolAddSpecialGauge(GAUGE_PENALTY);
-                            // Debug.Log($"同じ攻撃を{consecutiveAttackCount}回連続で使用: ゲージを{GAUGE_PENALTY}減少");
-                        }
+                        Context.characterController?.NotBoolAddSpecialGauge(GAUGE_PENALTY);
                     }
                 }
                 else
                 {
-                    // 異なる攻撃に変わったらリセット
                     consecutiveAttackCount = 1;
                     lastAttackType = attackType;
                     lastAttackStrength = attackStrength;
                 }
             }
 
-            private void AttackProcess()
-            {
-                if (currentAttackData == null) return;
-                AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController, Context.characterController.gameObject);
-            }
-
+            /// <summary>
+            /// チェイン攻撃可能かを判定
+            /// </summary>
+            /// <returns></returns>
             private bool CanChain()
             {
-                if (lastAttackData == null) return false;
-                if (!lastAttackData.canChain) return false;
-                if (lastAttackData.nextChain == null) return false;
+                if (lastAttackData == null || !lastAttackData.canChain || lastAttackData.nextChain == null) return false;
                 if (Time.time - lastAttackTime > lastAttackData.chainThreshold) return false;
-                currentAttackData = lastAttackData.nextChain;
                 return true;
+            }
+
+            /// <summary>
+            /// ヒットタイミング処理の遅延実行
+            /// </summary>
+            private void SetupDelayedAttack()
+            {
+                DelayUtility.StartDelayedActionWithPause(
+                    Context.characterController,
+                    currentAttackData.hitTiming,
+                    BattleJudge.I.GetPauseStateFunc,
+                    AttackProcess
+                );
             }
         }
     }

@@ -231,19 +231,7 @@ namespace TechC.Player
         {
             if (hasComment) return;
             hasComment = true;
-
-            if (grass == null)
-            {
-                Debug.LogError("grassプレハブがCharacterControllerにセットされていません");
-                return;
-            }
-
             GameObject grassInstance = EffectFactory.I.GetEffectObj(grass, handPos.position, Quaternion.identity);
-            if (grassInstance == null)
-            {
-                Debug.LogError("grassInstanceが取得できませんでした。ObjectPool/EffectFactoryの設定を確認してください");
-                return;
-            }
 
             OnCommentEvent = null;
             OnCommentEvent += () => throwAbility.Throw(grassInstance.GetComponent<Rigidbody>(), grassInstance);

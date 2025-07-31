@@ -21,8 +21,13 @@ namespace TechC.CommentSystem
 
         public void OnTriggerEnter(Collider collider)
         {
-            Debug.Log("Throw");
+            if (CommentDisplay.I.IsCommentFrozen) return;
 
+            var characterController = collider.GetComponentInParent<Player.CharacterController>();
+            if (characterController != null)
+            {
+                characterController.SpawnGrassEffect(this);
+            }
         }
 
         public void Throw(Rigidbody rb, GameObject commentObj)

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC.CommentSystem
@@ -9,18 +7,15 @@ namespace TechC.CommentSystem
         [SerializeField] private GameObject grassChar;
         [SerializeField] private GameObject grassEffect;
         [SerializeField] Rigidbody rb;
-         private bool isReturning = false;
+        private bool isReturning = false;
         [SerializeField] private float returnDelay = 3f;
 
         private void OnEnable()
         {
-            // transform.position = Vector3.zero;
-            // transform.rotation = Quaternion.identity;
             if (grassChar != null) grassChar.SetActive(true);
             if (grassEffect != null) grassEffect.SetActive(false);
             isReturning = false;
             rb.constraints = RigidbodyConstraints.FreezeAll;
-
         }
 
         public void OnTriggerEnter(Collider other)
@@ -47,7 +42,7 @@ namespace TechC.CommentSystem
                 }
                 transform.position = contactPoint;
                 transform.rotation = targetRotation;
-                // if (rb != null) rb.constraints = RigidbodyConstraints.FreezeAll;
+                if (rb != null) rb.constraints = RigidbodyConstraints.FreezeAll;
                 if (grassChar != null) grassChar.SetActive(false);
                 if (grassEffect != null) grassEffect.SetActive(true);
                 AudioManager.I.PlaySE(SEID.Grass);

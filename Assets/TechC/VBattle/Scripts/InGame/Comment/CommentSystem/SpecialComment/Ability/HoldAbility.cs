@@ -1,4 +1,3 @@
-using TechC.CommentSystem;
 using UnityEngine;
 
 namespace TechC.CommentSystem
@@ -17,6 +16,7 @@ namespace TechC.CommentSystem
 
         public void OnTriggerEnter(Collider collider)
         {
+            Debug.Log("Hold");
             if (handTransform != null && commentTransform != null)
             {
                 commentTransform.SetParent(handTransform);

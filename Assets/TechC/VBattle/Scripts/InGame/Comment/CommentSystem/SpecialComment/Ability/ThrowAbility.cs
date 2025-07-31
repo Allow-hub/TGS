@@ -1,7 +1,9 @@
 using UnityEngine;
+using System;
 
 namespace TechC.CommentSystem
 {
+    [Serializable]
     public class ThrowAbility : ICommentAbility
     {
         [SerializeField] private float throwPower = 10f;
@@ -19,7 +21,8 @@ namespace TechC.CommentSystem
 
         public void OnTriggerEnter(Collider collider)
         {
-           
+            Debug.Log("Throw");
+
         }
 
         public void Throw(Rigidbody rb, GameObject commentObj)

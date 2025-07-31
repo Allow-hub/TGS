@@ -1,5 +1,6 @@
 using IceMilkTea.StateMachine;
 using System.Linq;
+using System.Threading;
 using TechC.Player.Attack;
 using UnityEngine;
 
@@ -40,6 +41,7 @@ namespace TechC
             private AttackType attackType;
             private AttackStrength attackStrength;
             private AttackData currentAttackData;
+            private CancellationTokenSource attackCTS;
             private float duration;
             private float elapsedTime = 0;
             private bool isEarlyExit = true;
@@ -52,7 +54,7 @@ namespace TechC
                     Debug.Log($"攻撃不能状態{Context.characterController.PlayerID}");
                     return;
                 }
-
+                attackCTS = new CancellationTokenSource();
                 // カウンター再入場処理
                 if (isCounter && currentAttackData != null)
                 {
@@ -106,6 +108,9 @@ namespace TechC
                 elapsedTime = 0;
                 Context.anim.speed = Context.characterController.DefaultAnimSpeed;
                 Context.characterController.SetCanCounter(false);
+                attackCTS.Cancel();
+                attackCTS.Dispose();
+                attackCTS = null;
 
                 if (currentAttackData != null)
                 {
@@ -123,7 +128,7 @@ namespace TechC
                 }
 
                 Context.currentCommand = null;
-                
+
                 // Chain攻撃でない場合、前回のオブジェクト参照をクリア
                 if (!CanChain())
                 {
@@ -137,7 +142,8 @@ namespace TechC
             private void AttackProcess()
             {
                 if (currentAttackData == null) return;
-                AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController, Context.characterController.gameObject);
+                if (attackCTS == null) return;
+                AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController, Context.characterController.gameObject,attackCTS.Token);
             }
 
             /// <summary>
@@ -159,7 +165,7 @@ namespace TechC
 
                 var obj = CharaEffectFactory.I.GetEffectObj(currentAttackData.attackPrefab);
                 var t = Context.characterController.transform;
-                
+
                 Vector3 spawnPosition;
 
                 // Chain攻撃の場合、前回のオブジェクトの現在位置を使用
@@ -172,7 +178,7 @@ namespace TechC
                                  lastAttackObject.transform.up * currentAttackData.prefabOffset.y +
                                  lastAttackObject.transform.forward * currentAttackData.prefabOffset.z;
                     spawnPosition += offset;
-                     if (lastAttackObject == null) return;
+                    if (lastAttackObject == null) return;
 
                     var controller = lastAttackObject.GetComponent<AttackObjectController>();
                     //FirstOrDefaultは最初に用件を満たすものを返す
@@ -196,7 +202,7 @@ namespace TechC
 
                 var attackObjController = obj.GetComponent<AttackObjectController>();
                 attackObjController?.SetPlayer(Context.characterController.PlayerID, Context.characterController.gameObject);
-                
+
                 // 現在のオブジェクトを記録
                 lastAttackObject = obj;
             }

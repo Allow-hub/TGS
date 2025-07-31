@@ -15,14 +15,15 @@ MonoBehaviour:
   characterType: 1
   attackName: Neutral_S
   description: 
-  attackPrefab: {fileID: 0}
+  attackPrefab: {fileID: 729781284166045837, guid: 66b3ec71ca990a946ad741e21cceb8e3,
+    type: 3}
   prefabOffset: {x: 0, y: 0, z: 0}
   prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsNormalStrongAttack
-  clip: {fileID: 0}
+  clip: {fileID: 7400000, guid: 0492c2519e4041d47a1cd3e3f41b3635, type: 2}
   animationSpeed: 1.5
   attackDuration: 1.2
-  hitDetectionMode: 1
+  hitDetectionMode: 2
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
@@ -36,6 +37,7 @@ MonoBehaviour:
   isCounter: 0
   nextChain: {fileID: 0}
   canChain: 0
+  isChainPos: 0
   chainThreshold: 0
   hitStopDuration: 0.3
   hitStopTimeScale: 0.8

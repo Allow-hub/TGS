@@ -46,6 +46,6 @@ MonoBehaviour:
   noiseSettings: {fileID: 11400000, guid: 15e64907e4c741b42b6f52d20022bd17, type: 2}
   canRepeat: 1
   repeatInterval: 0.01
-  repeatDuration: 0.4
+  repeatDuration: 0.3
   characterSEType: 0
   characterVoiceType: 0

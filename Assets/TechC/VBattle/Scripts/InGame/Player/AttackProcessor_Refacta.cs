@@ -2,6 +2,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections.Generic;
 using TechC.Player;
+using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace TechC
 {
@@ -9,14 +11,14 @@ namespace TechC
     {
         private static float hitEffectDuration = 1f;
 
-        public static void ProcessAttack(AttackData attackData, Player.CharacterController characterController, GameObject ownerObj)
+        public static void ProcessAttack(AttackData attackData, Player.CharacterController characterController, GameObject ownerObj, CancellationToken token = default)
         {
             if (attackData == null || ownerObj == null) return;
 
             bool hitOccurred = attackData.hitDetectionMode switch
             {
-                HitDetectionMode.UseSelf => ProcessUseSelfMode(attackData, characterController, ownerObj),
-                HitDetectionMode.OverlapSphere => ProcessOverlapSphereMode(attackData, characterController, ownerObj),
+                HitDetectionMode.UseSelf => ProcessUseSelfMode(attackData, characterController, ownerObj, token),
+                HitDetectionMode.OverlapSphere => ProcessOverlapSphereMode(attackData, characterController, ownerObj, token),
                 _ => false,
             };
 
@@ -30,7 +32,7 @@ namespace TechC
         // 判定モード別の処理
         // ==============================
 
-        private static bool ProcessUseSelfMode(AttackData data, Player.CharacterController characterController, GameObject owner)
+        private static bool ProcessUseSelfMode(AttackData data, Player.CharacterController characterController, GameObject owner, CancellationToken token = default)
         {
             Collider selfCollider = owner.GetComponent<Collider>();
             if (selfCollider == null) return false;
@@ -52,14 +54,14 @@ namespace TechC
                 float dist = Vector3.Distance(selfCollider.bounds.center, col.bounds.center);
                 if (dist < GetApproxRadius(selfCollider) + GetApproxRadius(col))
                 {
-                    hit |= HandleHit(data, col, ctrl);
+                    hit |= HandleHit(data, col, ctrl, token);
                 }
             }
 
             return hit;
         }
 
-        private static bool ProcessOverlapSphereMode(AttackData data, Player.CharacterController characterController, GameObject owner)
+        private static bool ProcessOverlapSphereMode(AttackData data, Player.CharacterController characterController, GameObject owner, CancellationToken token = default)
         {
             Transform t = owner.transform;
             Vector3 center = t.position
@@ -76,7 +78,7 @@ namespace TechC
             bool hit = false;
             foreach (var (col, ctrl) in filtered)
             {
-                hit |= HandleHit(data, col, ctrl);
+                hit |= HandleHit(data, col, ctrl, token);
             }
 
             return hit;
@@ -110,14 +112,14 @@ namespace TechC
         // ヒット時の処理
         // ==============================
 
-        private static bool HandleHit(AttackData data, Collider targetCol, Player.CharacterController controller)
+        private static bool HandleHit(AttackData data, Collider targetCol, Player.CharacterController controller, CancellationToken token = default)
         {
             if (controller == null) return false;
 
             if (TryProcessCounter(controller)) return true;
             if (TryProcessGuard(controller, targetCol, data)) return true;
 
-            if (TryProcessDamage(targetCol, data))
+            if (TryProcessDamage(targetCol, data, token))
             {
                 PlayHitEffect(controller, targetCol.transform.position, data);
                 ApplyKnockback(data, targetCol);
@@ -145,14 +147,32 @@ namespace TechC
             return false;
         }
 
-        private static bool TryProcessDamage(Collider targetCol, AttackData data)
+        private static bool TryProcessDamage(Collider targetCol, AttackData data, CancellationToken token = default)
         {
             IDamageable damageable = targetCol.GetComponentInParent<IDamageable>();
             if (damageable != null)
             {
-                HitStopManager.I.DoHitStop(data.hitStopDuration, data.hitStopTimeScale);
-                CameraManager.I.StartShake(data.shakeIntensity, data.shakeDuraion, data.noiseSettings);
-                damageable.TakeDamage(data.damage);
+                if (data.canRepeat)
+                {
+                    DelayUtility.RunRepeatedlyAsync(
+                        data.repeatDuration,
+                        data.repeatInterval,
+                        BattleJudge.I.GetPauseStateFunc,
+                        async () =>
+                        {
+                            HitStopManager.I.DoHitStop(data.hitStopDuration, data.hitStopTimeScale);
+                            CameraManager.I.StartShake(data.shakeIntensity, data.shakeDuraion, data.noiseSettings);
+                            damageable.TakeDamage(data.damage);
+                            await UniTask.Yield();
+                        }, token).Forget();
+                }
+
+                else
+                {
+                    HitStopManager.I.DoHitStop(data.hitStopDuration, data.hitStopTimeScale);
+                    CameraManager.I.StartShake(data.shakeIntensity, data.shakeDuraion, data.noiseSettings);
+                    damageable.TakeDamage(data.damage);
+                }
                 return true;
             }
 

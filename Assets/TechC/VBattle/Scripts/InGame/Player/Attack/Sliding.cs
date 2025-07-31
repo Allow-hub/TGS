@@ -16,9 +16,10 @@ namespace TechC.Player.Attack
 
         public void OnRelease()
         {
-            if(characterController == null) return;
+            if (characterController == null) return;
             characterController.ResetHitCollider(chageColliderSpeed);
             characterController.ChangeColliderTrigger(false);
+            characterController = null;
         }
 
         public void OnUpdate(float deltaTime)

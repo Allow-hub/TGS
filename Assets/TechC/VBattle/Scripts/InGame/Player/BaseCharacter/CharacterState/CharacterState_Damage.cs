@@ -15,47 +15,13 @@ namespace TechC
         {
             private int hitAnim = Animator.StringToHash("IsHitting");
             private float elapsedTime = 0f;
-            private float duration = 5;
-
-            private HitData currentHitData;
-
+            private float duration = 0.5f;
             protected internal override void Enter()
             {
                 base.Enter();
                 BattleJudge.I.SetPlayerAttackState(Context.characterController.PlayerID,false);
                 Context.isHitting = true;
-                // 最後に受けたヒットデータを取得
-                currentHitData = Context.characterController.GetLastHitData();
-
-                if (currentHitData != null)
-                {
-                    // ヒットデータに基づいて値を設定
-                    duration = currentHitData.hitStunDuration;
-
-                    // アニメーションを設定
-                    Context.anim.SetBool(hitAnim, true);
-                    // ノックバックを適用
-                    Context.characterController.AddForcePlayer(
-                        currentHitData.knockbackDirection,
-                        currentHitData.knockbackForce,
-                        ForceMode.Impulse
-                    );
-
-                    // DIの設定
-                    //canRecoverWithDI = currentHitData.canDI && currentHitData.hitStunLevel < 2;
-
-                }
-                else
-                {
-                    // デフォルト値（ヒットデータがない場合）
-                    duration = 0.5f;
-                    Context.anim.SetBool(hitAnim, true);
-
-                    // デフォルトのノックバック
-                    Vector3 defaultKnockback = new Vector3(Context.characterController.transform.forward.x * -1, 0.5f, 0);
-                    Context.characterController.AddForcePlayer(defaultKnockback, 5f, ForceMode.Impulse);
-                }
-
+                Context.anim.SetBool(hitAnim, true);
             }
 
             protected internal override void Update()

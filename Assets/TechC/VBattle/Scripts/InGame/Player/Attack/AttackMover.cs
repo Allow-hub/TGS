@@ -14,7 +14,7 @@ namespace TechC.Player.Attack
         [SerializeField] private Vector3 moveDir = Vector3.forward;
         private Vector3 currentMoveDir;
         // 追従関連
-        [SerializeField]private bool followCharacter = false;
+        [SerializeField] private bool followCharacter = false;
         private Transform characterTransform;
         public void Initialize(GameObject owner)
         {
@@ -46,9 +46,9 @@ namespace TechC.Player.Attack
         public void Activate(GameObject character)
         {
             if (rb == null) return;
-            if(followCharacter)
+            if (followCharacter)
                 characterTransform = character.transform;
-            currentMoveDir = moveDir * character.transform.forward.x; // キャラクターの前方向に移動
+            currentMoveDir = new Vector3(moveDir.x * character.transform.forward.x, moveDir.y, moveDir.z); // キャラクターの前方向に移動
         }
     }
 }

@@ -232,5 +232,43 @@ namespace TechC
         }
 
         private static float MaxAxis(Vector3 v) => Mathf.Max(v.x, v.y, v.z);
+
+          /// <summary>
+        /// 攻撃種方向の確認
+        /// </summary>
+        /// <returns></returns>
+        public static CharacterState.AttackType CheckAttackType(BaseInputManager baseInputManager)
+        {
+            Vector2 input = baseInputManager.MoveInput;
+            float x = Mathf.Ceil(input.x * 10f) / 10f;
+            float y = Mathf.Ceil(input.y * 10f) / 10f;
+            if (x < 0)
+                return CharacterState.AttackType.Left;
+            if (x > 0)
+                return CharacterState.AttackType.Right;
+            if (y < 0)
+                return CharacterState.AttackType.Down;
+            if (y > 0)
+                return CharacterState.AttackType.Up;
+            return CharacterState.AttackType.Neutral;
+        }
+        /// <summary>
+        /// 攻撃の強さの確認
+        /// </summary>
+        /// <returns></returns>
+        public static CharacterState.AttackStrength CheckAttackStrength(BaseInputManager baseInputManager)
+        {
+
+            // 攻撃強度の判定
+            if (baseInputManager.IsWeakAttacking)
+                return CharacterState.AttackStrength.Weak;
+            else if (baseInputManager.IsStrongAttacking)
+                return CharacterState.AttackStrength.Strong;
+            else if (baseInputManager.IsAppealing)
+                return CharacterState.AttackStrength.Appeal;
+
+            return CharacterState.AttackStrength.Weak;
+        }
+      
     }
 }

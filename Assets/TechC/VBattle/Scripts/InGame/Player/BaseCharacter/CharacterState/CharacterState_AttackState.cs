@@ -69,8 +69,8 @@ namespace TechC
                 }
 
                 // 通常攻撃処理
-                attackType = Context.CheckAttackType();
-                attackStrength = Context.CheckAttackStrength();
+                attackType = AttackProcessor_Refacta.CheckAttackType(Context.playerInputManager);
+                attackStrength = AttackProcessor_Refacta.CheckAttackStrength(Context.playerInputManager);
                 var key = (attackType, attackStrength);
 
                 if (Context.characterController.AttackSet.attackDataMap.TryGetValue(key, out var attackData))

@@ -198,8 +198,8 @@ namespace TechC
                 //CommandがAttackCommandならTypeとStrengthの保存
                 if (currentCommand is AttackCommand attackCommand)
                 {
-                    attackCommand.SetAttackType(CheckAttackType());
-                    attackCommand.SetAttackStrength(CheckAttackStrength());
+                    attackCommand.SetAttackType(AttackProcessor_Refacta.CheckAttackType(playerInputManager));
+                    attackCommand.SetAttackStrength(AttackProcessor_Refacta.CheckAttackStrength(playerInputManager));
 
                 }
                 commandHistory.RecordCommand(
@@ -211,42 +211,7 @@ namespace TechC
             }
             //CustomLogger.Info("コマンドを保存"+Time.time);
         }
-        /// <summary>
-        /// 攻撃種方向の確認
-        /// </summary>
-        /// <returns></returns>
-        private AttackType CheckAttackType()
-        {
-            Vector2 input = playerInputManager.MoveInput;
-            float x = Mathf.Ceil(input.x * 10f) / 10f;
-            float y = Mathf.Ceil(input.y * 10f) / 10f;
-            if (x < 0)
-                return AttackType.Left;
-            if (x > 0)
-                return AttackType.Right;
-            if (y < 0)
-                return AttackType.Down;
-            if (y > 0)
-                return AttackType.Up;
-            return AttackType.Neutral;
-        }
-        /// <summary>
-        /// 攻撃の強さの確認
-        /// </summary>
-        /// <returns></returns>
-        private AttackStrength CheckAttackStrength()
-        {
-
-            // 攻撃強度の判定
-            if (playerInputManager.IsWeakAttacking)
-                return AttackStrength.Weak;
-            else if (playerInputManager.IsStrongAttacking)
-                return AttackStrength.Strong;
-            else if (playerInputManager.IsAppealing)
-                return AttackStrength.Appeal;
-
-            return AttackStrength.Weak;
-        }
+      
         /// <summary>
         /// 次のコマンドを取得する
         /// </summary>

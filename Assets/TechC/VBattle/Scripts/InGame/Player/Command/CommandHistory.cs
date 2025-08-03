@@ -159,12 +159,12 @@ namespace TechC
         /// </summary>
         /// <param name="secondsAgo">何秒前から再実行するか</param>
         /// <param name="attackManager">AttackManager</param>
-        public void ReplayAttackCommandsFromSecondsAgo(float secondsAgo, AttackManager attackManager)
+        public void ReplayAttackCommandsFromSecondsAgo(float secondsAgo, Player.CharacterController characterController)
         {
             StopAllCoroutines();
-            StartCoroutine(ReplayAttackCoroutine(secondsAgo, attackManager));
+            StartCoroutine(ReplayAttackCoroutine(secondsAgo, characterController));
         }
-        private IEnumerator ReplayAttackCoroutine(float secondsAgo, AttackManager attackManager)
+        private IEnumerator ReplayAttackCoroutine(float secondsAgo, Player.CharacterController characterController)
         {
             float replayFrom = Time.time - secondsAgo;
 
@@ -202,7 +202,7 @@ namespace TechC
 
                 try
                 {
-                    attackCmd.ExecuteAttack(current.attackType, current.attackStrength, attackManager);
+                    attackCmd.RePlayAttack(current.attackType, current.attackStrength, characterController);
                 }
                 catch (Exception ex)
                 {

@@ -49,7 +49,7 @@ namespace TechC.Player.Attack
                 var cloneController = iceCloneObj.GetComponent<CharacterController>();
                 cloneController.SetClonePlayerID(characterController.PlayerID);
                 if (characterController.GetCharacterState().AttackManager == null) return;
-                commandHistory.ReplayAttackCommandsFromSecondsAgo(attackData.attackDuration, cloneController.GetCharacterState().AttackManager);
+                commandHistory.ReplayAttackCommandsFromSecondsAgo(attackData.attackDuration, cloneController);
 
             });
         }

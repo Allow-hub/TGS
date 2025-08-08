@@ -12,6 +12,10 @@ namespace TechC.Player.Attack
         private GameObject iceCloneObj;
         [SerializeField] private GameObject ownerObj;
         [SerializeField] private AttackObjectController attackObjectController;
+        [SerializeField] private GameObject magicCircle;
+        [SerializeField] private float magicDuration = 0.5f;
+        private float elapsedTime = 0;
+        private GameObject characterObj;
         public void Initialize(GameObject owner)
         {
         }
@@ -23,6 +27,17 @@ namespace TechC.Player.Attack
 
         public void OnUpdate(float deltaTime)
         {
+            elapsedTime += deltaTime;
+            if (magicCircle == null && elapsedTime >= magicDuration)
+            {
+                magicCircle.SetActive(false);
+                return;
+            }
+            if (characterObj == null || magicCircle == null) return;
+            var pos = characterObj.transform.position.AddY(-0.5f);
+            magicCircle.transform.position = pos;
+            Debug.Log($"Magic Circle Position: {magicCircle.transform.position}");
+
         }
 
         public void Activate(GameObject character)
@@ -30,11 +45,10 @@ namespace TechC.Player.Attack
             var characterController = character.GetComponent<CharacterController>();
             var transformRecorder = character.GetComponent<TransformRecorder>();
             var commandHistory = character.GetComponent<CommandHistory>();
-            // magicCircle.SetActive(true);
-            // DelayUtility.StartDelayedActionWithPause(this, magicDuration, BattleJudge.I.GetPauseStateFunc, () =>
-            // {
-            //     magicCircle.SetActive(false);
-            // });
+            magicCircle.SetActive(true);
+            characterObj = character;
+            magicCircle.transform.position = character.transform.position;
+
             DelayUtility.StartDelayedActionWithPause(attackObjectController, attackData.hitTiming, BattleJudge.I.GetPauseStateFunc, () =>
             {
                 iceCloneObj = GameObject.Instantiate(iceClonePrefab);
@@ -50,7 +64,6 @@ namespace TechC.Player.Attack
                 cloneController.SetClonePlayerID(characterController.PlayerID);
                 if (characterController.GetCharacterState().AttackManager == null) return;
                 commandHistory.ReplayAttackCommandsFromSecondsAgo(attackData.attackDuration, cloneController);
-
             });
         }
     }

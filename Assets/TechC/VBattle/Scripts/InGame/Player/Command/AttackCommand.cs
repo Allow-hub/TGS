@@ -68,12 +68,6 @@ namespace TechC
             // 基本的に攻撃のキャンセルはないが、必要に応じて実装
         }
 
-        //TODO:必要なくなるので後で消すこと
-        public void ExecuteAttack(CharacterState.AttackType attackType, CharacterState.AttackStrength attackStrength, AttackManager attackManager)
-        {
-            attackManager.ReplayExecuteAttack(attackType, attackStrength);
-        }
-
         public void RePlayAttack(CharacterState.AttackType attackType, CharacterState.AttackStrength attackStrength, Player.CharacterController controller)
         {
             cloneController = controller;

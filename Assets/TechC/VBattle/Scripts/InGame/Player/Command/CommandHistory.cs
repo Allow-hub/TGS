@@ -158,7 +158,7 @@ namespace TechC
         /// 指定秒数前から現在までのAttackCommandを古い順に順次再実行する（Coroutine版）
         /// </summary>
         /// <param name="secondsAgo">何秒前から再実行するか</param>
-        /// <param name="attackManager">AttackManager</param>
+        /// <param name="characterController">再現するキャラクターのコントローラー</param>
         public void ReplayAttackCommandsFromSecondsAgo(float secondsAgo, Player.CharacterController characterController)
         {
             StopAllCoroutines();

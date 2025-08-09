@@ -79,7 +79,9 @@ namespace TechC.Player
         [SerializeField] private GameObject grass;
 
         [Header("コメント")]
-        [SerializeField] private Transform handPos;
+        [SerializeField] public Transform handPos;
+        public Transform HandPos => handPos;
+        public GameObject GrassPrefab => grass;
         public bool hasComment;
         #endregion
 
@@ -222,32 +224,27 @@ namespace TechC.Player
             hitCollider.center = targetCenter;
         }
 
-        #region コメント関連メソッド
+        #region コメント関連メソッド        
 
         /// <summary>
-        /// 草のモデルをプレイヤーに持たせる
+        /// 特殊コメントのイベントを登録する
         /// </summary>
-        public void SpawnGrassEffect(ThrowAbility throwAbility)
+        public void RegisterCommentEvent(Action action)
         {
             if (hasComment) return;
             hasComment = true;
-            GameObject grassInstance = EffectFactory.I.GetEffectObj(grass, handPos.position, Quaternion.identity);
 
             OnCommentEvent = null;
-            OnCommentEvent += () => throwAbility.Throw(grassInstance.GetComponent<Rigidbody>(), grassInstance);
-            grassInstance.transform.SetParent(handPos);
-            grassInstance.transform.localPosition = Vector3.zero;
-            grassInstance.transform.localRotation = Quaternion.identity;
+            OnCommentEvent += action;
         }
 
         /// <summary>
-        /// TODO:要修正、草コメント以外の対応ができない
+        /// コメントイベントを実行し、イベントと状態をリセットする
         /// </summary>
         public void InvokeCommentEvent()
         {
             OnCommentEvent?.Invoke();
             OnCommentEvent = null;
-
             hasComment = false;
         }
 

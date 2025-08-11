@@ -217,6 +217,7 @@ namespace TechC.Player
 
                 if (shouldCrouch)
                 {
+                    characterState.EnqueueCommand(commands[moveCommand]);
                     isCrouching = true;
                     lastCrouchTime = currentTime;
                     OnCrouch(true, false);

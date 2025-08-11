@@ -57,6 +57,12 @@ namespace TechC.Player
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
+        [Header("ジャンプ調整")]
+        public float gravityScale = 1f;          // 通常上昇重力
+        public float fallGravityScale = 2.5f;    // 通常落下重力
+        public float shortHopGravityScale = 3.5f; // 可変ジャンプ用
+        public float fastFallGravityScale = 5f;   // 急降下用
+        public float fastFallInputThreshold = -0.5f;
 
         // 移動・回転関連の定数
         private const float STOP_THRESHOLD = 0.1f;

@@ -108,6 +108,21 @@ namespace TechC
         [Tooltip("繰り返し攻撃の継続時間")]
         public float repeatDuration;
 
+        // ===== 壁バウンド設定 =====
+        [Header("壁バウンド設定")]
+        [Tooltip("この攻撃が壁バウンドを発生させるかどうか")]
+        public bool causesWallBounce;
+
+        [Tooltip("バウンドの強さ（跳ね返る速度）")]
+        public float wallBounceForce = 8f;
+
+        [Tooltip("バウンド時の上方向補正")]
+        public float wallBounceVerticalBoost = 2f;
+
+        [Tooltip("バウンド可能な時間")]
+        public float wallBounceTime = 0.5f;
+
+
         // ===== サウンド・エフェクト =====
         [Header("サウンド・ボイス・SE")]
         public CharacterSEType characterSEType;

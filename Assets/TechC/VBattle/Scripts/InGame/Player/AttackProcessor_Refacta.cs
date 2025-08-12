@@ -119,7 +119,7 @@ namespace TechC
             if (TryProcessCounter(controller)) return true;
             if (TryProcessGuard(controller, targetCol, data)) return true;
 
-            if (TryProcessDamage(targetCol, data, token))
+            if (TryProcessDamage(targetCol, data, controller, token))
             {
                 PlayHitEffect(controller, targetCol.transform.position, data);
                 ApplyKnockback(data, targetCol);
@@ -147,7 +147,7 @@ namespace TechC
             return false;
         }
 
-        private static bool TryProcessDamage(Collider targetCol, AttackData data, CancellationToken token = default)
+        private static bool TryProcessDamage(Collider targetCol, AttackData data,Player.CharacterController controller ,CancellationToken token = default)
         {
             IDamageable damageable = targetCol.GetComponentInParent<IDamageable>();
             if (damageable != null)
@@ -166,12 +166,22 @@ namespace TechC
                             await UniTask.Yield();
                         }, token).Forget();
                 }
-
                 else
                 {
                     HitStopManager.I.DoHitStop(data.hitStopDuration, data.hitStopTimeScale);
                     CameraManager.I.StartShake(data.shakeIntensity, data.shakeDuraion, data.noiseSettings);
                     damageable.TakeDamage(data.damage);
+                }
+                
+                if (data.causesWallBounce)
+                {
+                    controller.SetWallBounceData(data.wallBounceForce, data.wallBounceVerticalBoost);
+                    DelayUtility.StartDelayedActionWithPause(
+                        controller,
+                        data.wallBounceTime,
+                        BattleJudge.I.GetPauseStateFunc,
+                        () => controller.ResetWallBounceData()
+                    );
                 }
                 return true;
             }

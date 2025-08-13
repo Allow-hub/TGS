@@ -114,6 +114,7 @@ namespace TechC
             //攻撃ステートからの移行
             stateMachine.AddTransition<AttackState, DamageState>((int)StateEventId.Damage);
             stateMachine.AddTransition<AttackState, AttackState>((int)StateEventId.Attack);
+            stateMachine.AddTransition<DamageState, DamageState>((int)StateEventId.Damage);
 
             //どのステートからでも移行できる
             stateMachine.AddAnyTransition<DeadState>((int)StateEventId.Dead);

@@ -37,15 +37,20 @@ MonoBehaviour:
   isCounter: 0
   nextChain: {fileID: 11400000, guid: 2a60a10691bf42449bd9cda3ebc80448, type: 2}
   canChain: 1
+  isChainPos: 0
   chainThreshold: 0.7
   hitStopDuration: 0.01
   hitStopTimeScale: 0.1
-  knockbackDirection: {x: 0, y: 1, z: -0.1}
+  knockbackDirection: {x: 1, y: 0.5, z: -1}
   shakeIntensity: 0.1
   shakeDuraion: 0.1
   noiseSettings: {fileID: 11400000, guid: 1444e37823adaa347b9ead5f263d4159, type: 2}
   canRepeat: 1
   repeatInterval: 0.1
   repeatDuration: 0.2
+  causesWallBounce: 0
+  wallBounceForce: 8
+  wallBounceVerticalBoost: 2
+  wallBounceTime: 3
   characterSEType: 0
   characterVoiceType: 0

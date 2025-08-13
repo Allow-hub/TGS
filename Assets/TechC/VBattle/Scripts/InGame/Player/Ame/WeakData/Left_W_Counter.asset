@@ -36,6 +36,7 @@ MonoBehaviour:
   isCounter: 0
   nextChain: {fileID: 0}
   canChain: 0
+  isChainPos: 0
   chainThreshold: 0
   hitStopDuration: 0.3
   hitStopTimeScale: 0.1
@@ -46,5 +47,9 @@ MonoBehaviour:
   canRepeat: 0
   repeatInterval: 0
   repeatDuration: 0
+  causesWallBounce: 0
+  wallBounceForce: 8
+  wallBounceVerticalBoost: 2
+  wallBounceTime: 0.5
   characterSEType: 0
   characterVoiceType: 0

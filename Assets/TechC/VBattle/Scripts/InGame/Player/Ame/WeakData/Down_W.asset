@@ -48,5 +48,9 @@ MonoBehaviour:
   canRepeat: 1
   repeatInterval: 0.1
   repeatDuration: 0.1
+  causesWallBounce: 0
+  wallBounceForce: 8
+  wallBounceVerticalBoost: 2
+  wallBounceTime: 0.5
   characterSEType: 0
   characterVoiceType: 0

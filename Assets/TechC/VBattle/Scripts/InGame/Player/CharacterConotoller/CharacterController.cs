@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TechC.UIs;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -90,6 +91,7 @@ namespace TechC.Player
         private float currentGuardPower;
         private float lastGuardTime;
         private Vector3 lastVelocity;
+        private bool isWallHitting = false;
 
         // 移動・物理関連
         private Rigidbody rb;
@@ -111,8 +113,6 @@ namespace TechC.Player
         private bool lastHitCanWallBounce;
         private float lastHitBounceForce;
         private float lastHitBounceUpForce;
-
-        public event Action OnWallBounce;
         private Player.CharacterController opponentController;
 
         private Action onCounter;
@@ -128,6 +128,7 @@ namespace TechC.Player
         public Player.CharacterController OpponentController => opponentController;
         public int PlayerID => playerID; // PlayerIDのゲッター
         public Action OnCommentEvent;
+        public bool IsWallHitting=> isWallHitting;
         #endregion
 
         #region 更新メソッド
@@ -359,8 +360,12 @@ namespace TechC.Player
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             rb.AddForce(-wallNormal * 5f, ForceMode.Impulse); // 壁方向に押し付ける
+            
             CameraManager.I.StartShake(intensity: 0.2f, duration: 0.5f);
             HitStopManager.I.DoHitStop(duration: 0.2f, timeScale: 0.05f);
+            AudioManager.I.PlaySE(SEID.WallHit);
+            isWallHitting = true;
+            characterState.ChangeDamageState();
             // 2. 反射を少し遅らせて実行（0.08秒後など）
             DelayUtility.StartDelayedActionWithPause(this, 0.1f, BattleJudge.I.GetPauseStateFunc, () =>
             {
@@ -377,6 +382,7 @@ namespace TechC.Player
                 boostedReflectDir.Normalize();
 
                 rb.AddForce((boostedReflectDir * bounceForce) + upBoost, ForceMode.Impulse);
+                isWallHitting = false;
             });
 
 

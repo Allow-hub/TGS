@@ -32,11 +32,12 @@ MonoBehaviour:
   hitTiming: 0.1
   hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
     type: 3}
-  damage: 10
+  damage: 5
   knockback: 3
   isCounter: 0
   nextChain: {fileID: 0}
   canChain: 0
+  isChainPos: 0
   chainThreshold: 0
   hitStopDuration: 0.9
   hitStopTimeScale: 0.8
@@ -47,5 +48,9 @@ MonoBehaviour:
   canRepeat: 1
   repeatInterval: 0.1
   repeatDuration: 0.5
+  causesWallBounce: 0
+  wallBounceForce: 8
+  wallBounceVerticalBoost: 2
+  wallBounceTime: 0.5
   characterSEType: 0
   characterVoiceType: 0

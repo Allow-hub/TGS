@@ -72,17 +72,17 @@ namespace TechC
             else
             {
                 // ドレイン系の攻撃が増える場合、拡張が必要
-                if (attackProcessor == null)
-                    Debug.LogError("attaclProcesserを追加してください");
-                if (attackData.canRepeat)
-                {
-                    DelayUtility.StartRepeatedActionWhileWithPause(this, () => isHitting, attackData.repeatInterval, BattleJudge.I.GetPauseStateFunc, () =>
-                    {
-                        //この時点で当たっているので当たっているかの判定をスキップ
-                        attackProcessor?.HandleAttack(attackData, other);
-                    });
-                } else
-                    attackProcessor?.HandleAttack(attackData, other);
+                // if (attackProcessor == null)
+                //     Debug.LogError("attaclProcesserを追加してください");
+                // if (attackData.canRepeat)
+                // {
+                //     DelayUtility.StartRepeatedActionWhileWithPause(this, () => isHitting, attackData.repeatInterval, BattleJudge.I.GetPauseStateFunc, () =>
+                //     {
+                //         //この時点で当たっているので当たっているかの判定をスキップ
+                //         // attackProcessor?.HandleAttack(attackData, other);
+                //     });
+                // } else
+                    // attackProcessor?.HandleAttack(attackData, other);
             }
 
             if (canSelfReturn)

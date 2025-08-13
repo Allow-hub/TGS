@@ -14,66 +14,49 @@ namespace TechC
         private class DamageState : ImtStateMachine<CharacterState>.State
         {
             private int hitAnim = Animator.StringToHash("IsHitting");
+            private int wallHitAnim = Animator.StringToHash("IsWallHitting");
             private float elapsedTime = 0f;
-            private float duration = 5;
-
-            private HitData currentHitData;
-
+            private float duration = 0.5f;
+            private float wallHitDuration = 1.0f;
+            private float currentDuration = 0f;
+            private bool isWallHit = false;
             protected internal override void Enter()
             {
                 base.Enter();
+                BattleJudge.I.SetPlayerAttackState(Context.characterController.PlayerID, false);
                 Context.isHitting = true;
-                // 最後に受けたヒットデータを取得
-                currentHitData = Context.characterController.GetLastHitData();
-
-                if (currentHitData != null)
+                isWallHit = Context.characterController.IsWallHitting;
+                if (isWallHit)
                 {
-                    // ヒットデータに基づいて値を設定
-                    duration = currentHitData.hitStunDuration;
-
-                    // アニメーションを設定
-                    Context.anim.SetBool(hitAnim, true);
-                    // ノックバックを適用
-                    Context.characterController.AddForcePlayer(
-                        currentHitData.knockbackDirection,
-                        currentHitData.knockbackForce,
-                        ForceMode.Impulse
-                    );
-
-                    // DIの設定
-                    //canRecoverWithDI = currentHitData.canDI && currentHitData.hitStunLevel < 2;
-
+                    Context.anim.SetBool(wallHitAnim, true);
+                    currentDuration = wallHitDuration;
                 }
                 else
                 {
-                    // デフォルト値（ヒットデータがない場合）
-                    duration = 0.5f;
                     Context.anim.SetBool(hitAnim, true);
-
-                    // デフォルトのノックバック
-                    Vector3 defaultKnockback = new Vector3(Context.characterController.transform.forward.x * -1, 0.5f, 0);
-                    Context.characterController.AddForcePlayer(defaultKnockback, 5f, ForceMode.Impulse);
+                    currentDuration = duration;
                 }
-
             }
 
             protected internal override void Update()
             {
                 base.Update();
                 elapsedTime += Time.deltaTime;
-                if (elapsedTime > duration)
+                if (elapsedTime > currentDuration)
                 {
                     Context.stateMachine.SendEvent((int)StateEventId.Neutral);
                 }
-               
             }
 
             protected internal override void Exit()
             {
                 base.Exit();
+                BattleJudge.I.SetPlayerAttackState(Context.characterController.PlayerID, true);
                 Context.isHitting = false;
                 elapsedTime = 0f;
                 Context.anim.SetBool(hitAnim, false);
+                Context.anim.SetBool(wallHitAnim, false);
+                isWallHit = false;
             }
         }
     }

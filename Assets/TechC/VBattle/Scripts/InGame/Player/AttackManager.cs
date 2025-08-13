@@ -128,12 +128,6 @@ namespace TechC
             }
         }
 
-        public enum AttackStrength
-        {
-            Weak,
-            Strong,
-            Appeal
-        }
 
         public float GetDuration(AttackType attackType, AttackStrength strength)
         {

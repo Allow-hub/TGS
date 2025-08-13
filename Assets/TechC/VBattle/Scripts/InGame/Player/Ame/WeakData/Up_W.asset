@@ -15,36 +15,42 @@ MonoBehaviour:
   characterType: 1
   attackName: Up_W
   description: 
-  data:
-    attackType: 4
-    attackStrength: 0
+  attackPrefab: {fileID: 6589785947635019702, guid: 8b329f17034515143a39d10097664787,
+    type: 3}
+  prefabOffset: {x: 0, y: 1.5, z: 1}
+  prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsUpWeakAttack
+  clip: {fileID: -6846040849299452207, guid: 3f1f60cb6819de340a9a679c23957204, type: 3}
   animationSpeed: 1.7
   attackDuration: 0.7
-  damage: 5
-  knockback: 7
-  canRepeat: 1
-  repeatInterval: 0.1
-  repeatDuration: 0.2
-  radius: 1.3
+  hitDetectionMode: 1
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
-  hitboxOffset: {x: 0, y: 1.8, z: 0.7}
+  radius: 1.3
+  hitboxOffset: {x: 0, y: 1.5, z: 1.5}
   hitTiming: 0.15
+  hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+    type: 3}
+  damage: 5
+  knockback: 7
+  isCounter: 0
+  nextChain: {fileID: 0}
+  canChain: 0
+  isChainPos: 0
+  chainThreshold: 0
   hitStopDuration: 0.1
   hitStopTimeScale: 0.9
   knockbackDirection: {x: 0, y: 1, z: 0}
-  useCustomKnockbackDirection: 1
-  useSelfColliderForHitCheck: 0
   shakeIntensity: 0.1
   shakeDuraion: 0.3
   noiseSettings: {fileID: 11400000, guid: 9a2d0babd3aac64449f78be89dadea22, type: 2}
+  canRepeat: 1
+  repeatInterval: 0.1
+  repeatDuration: 0.2
+  causesWallBounce: 0
+  wallBounceForce: 8
+  wallBounceVerticalBoost: 2
+  wallBounceTime: 0.5
   characterSEType: 0
   characterVoiceType: 0
-  hitStunDuration: 0.5
-  hitStunLevel: 0
-  isLaunchAttack: 0
-  canTech: 1
-  canDI: 1
-  diInfluence: 0.3

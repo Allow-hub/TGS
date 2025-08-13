@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace TechC
 {
@@ -155,6 +156,48 @@ namespace TechC
                 elapsed += interval;
             }
         }
+        public static async UniTask RunRepeatedlyAsync(float duration, float interval, Func<bool> pauseFunc, Func<UniTask> callback, CancellationToken token = default)
+        {
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    Debug.Log("🔴 Cancel requested: elapsed loop");
+                    token.ThrowIfCancellationRequested(); // 例外を投げて止める
+                }
+                // token.ThrowIfCancellationRequested();
+
+                //PauseFunc が true の間は止まる
+                while (pauseFunc?.Invoke() == true)
+                {
+                    token.ThrowIfCancellationRequested();
+                    await UniTask.Yield(); // 毎フレーム様子見
+                }
+
+                if (callback != null)
+                    await callback();
+
+                float t = 0f;
+                while (t < interval)
+                {
+                    token.ThrowIfCancellationRequested();
+
+                    //インターバル中もPauseFuncを見る
+                    while (pauseFunc?.Invoke() == true)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await UniTask.Yield();
+                    }
+
+                    await UniTask.Yield();
+                    t += Time.deltaTime;
+                    elapsed += Time.deltaTime;
+                }
+            }
+        }
+
 
         public static Coroutine StartRepeatedActionWithPause(MonoBehaviour monoBehaviour, float duration, float interval, Func<bool> isPausedFunc, Action callback)
         {

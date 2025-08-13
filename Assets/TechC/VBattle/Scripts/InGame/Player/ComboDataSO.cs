@@ -17,11 +17,11 @@ namespace TechC
         public string comboName;
         public string description;
 
-        [System.Serializable]
+        [Serializable]
         public class ComboStep
         {
             public CharacterState.AttackType attackType;
-            public AttackManager.AttackStrength attackStrength;
+            public CharacterState.AttackStrength attackStrength;
         }
         //public List<string> excludedCommandNames = new List<string> {
         //"MoveCommand", "CrouchCommand"

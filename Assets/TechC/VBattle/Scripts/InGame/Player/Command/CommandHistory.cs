@@ -24,7 +24,7 @@ namespace TechC
 
             // 攻撃コマンド用の追加情報
             public CharacterState.AttackType attackType;         // 攻撃タイプ
-            public AttackManager.AttackStrength attackStrength;  // 攻撃強度
+            public CharacterState.AttackStrength attackStrength;  // 攻撃強度
             public string commandSignature;                      // 攻撃コマンドの識別子
 
             public CommandRecord(ICommand command, string stateName, bool wasSuccessful, Vector3 position)
@@ -158,13 +158,13 @@ namespace TechC
         /// 指定秒数前から現在までのAttackCommandを古い順に順次再実行する（Coroutine版）
         /// </summary>
         /// <param name="secondsAgo">何秒前から再実行するか</param>
-        /// <param name="attackManager">AttackManager</param>
-        public void ReplayAttackCommandsFromSecondsAgo(float secondsAgo, AttackManager attackManager)
+        /// <param name="characterController">再現するキャラクターのコントローラー</param>
+        public void ReplayAttackCommandsFromSecondsAgo(float secondsAgo, Player.CharacterController characterController)
         {
             StopAllCoroutines();
-            StartCoroutine(ReplayAttackCoroutine(secondsAgo, attackManager));
+            StartCoroutine(ReplayAttackCoroutine(secondsAgo, characterController));
         }
-        private IEnumerator ReplayAttackCoroutine(float secondsAgo, AttackManager attackManager)
+        private IEnumerator ReplayAttackCoroutine(float secondsAgo, Player.CharacterController characterController)
         {
             float replayFrom = Time.time - secondsAgo;
 
@@ -197,12 +197,12 @@ namespace TechC
                     continue;
 
                 if (current.attackType == CharacterState.AttackType.Neutral &&
-                    current.attackStrength == AttackManager.AttackStrength.Strong)
+                    current.attackStrength == CharacterState.AttackStrength.Strong)
                     continue;
 
                 try
                 {
-                    attackCmd.ExecuteAttack(current.attackType, current.attackStrength, attackManager);
+                    attackCmd.RePlayAttack(current.attackType, current.attackStrength, characterController);
                 }
                 catch (Exception ex)
                 {

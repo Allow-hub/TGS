@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
@@ -24,7 +22,6 @@ namespace TechC
                     charaEffect?.Init(objectPool);
                 });
             });
-
         }
 
         /// <summary>

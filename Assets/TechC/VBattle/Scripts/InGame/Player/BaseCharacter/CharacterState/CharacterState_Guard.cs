@@ -1,6 +1,4 @@
 ﻿using IceMilkTea.StateMachine;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TechC
@@ -9,7 +7,6 @@ namespace TechC
     {
         private class GuardState : ImtStateMachine<CharacterState>.State
         {
-            private int guardAnim = Animator.StringToHash("IsGuarding");
             protected internal override void Enter()
             {
                 base.Enter();

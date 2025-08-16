@@ -10,8 +10,6 @@ namespace TechC.Player
         public CharacterType type;
         [Tooltip("キャラのプレハブ")]
         public GameObject prefab;
-        [Tooltip("アニメーション")]
-        public List<AnimationClip> clips;
         [Tooltip("キャラクターのHp")]
         public int Hp;
         [Tooltip("ガードの耐久値")]
@@ -42,7 +40,5 @@ namespace TechC.Player
         public float AirAcceleration = 5f;
         [Tooltip("急降下速度")]
         public float FastFallSpeed = 15f;
-        [Tooltip("回転速度")]
-        public float RotationSpeed = 10f;
     }
 }

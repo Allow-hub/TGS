@@ -1,7 +1,5 @@
 ﻿using IceMilkTea.StateMachine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+
 namespace TechC
 {
     public partial class CharacterState
@@ -27,7 +25,6 @@ namespace TechC
                 Context.HandleCommand<INeutralUsableCommand>(ref Context.currentCommand);
 
             }
-
 
             protected internal override void Exit()
             {

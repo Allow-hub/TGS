@@ -106,35 +106,43 @@ namespace TechC
             protected internal override void Exit()
             {
                 elapsedTime = 0;
-                Context.anim.speed = Context.characterController.DefaultAnimSpeed;
-                Context.characterController.SetCanCounter(false);
-                attackCTS.Cancel();
-                attackCTS.Dispose();
-                attackCTS = null;
 
-                if (currentAttackData != null)
+                if (Context != null && Context.anim != null)
                 {
-                    Context.anim.SetBool(currentAttackData.animHash, false);
-                    lastAttackData = currentAttackData;
+                    Context.anim.speed = Context.characterController?.DefaultAnimSpeed ?? 1f;
+                    if (currentAttackData != null)
+                    {
+                        Context.anim.SetBool(currentAttackData.animHash, false);
+                        lastAttackData = currentAttackData;
+                    }
+
+                    if (isEarlyExit && currentAttackData != null)
+                    {
+                        Context.anim.SetBool(currentAttackData.animHash, false);
+                    }
                 }
                 else
                 {
-                    CustomLogger.Warning($"AttackData is null for type {attackType} and strength {attackStrength}");
+                    CustomLogger.Warning("Context or Context.anim is null in AttackState.Exit()");
                 }
 
-                if (isEarlyExit && currentAttackData != null)
+                Context.characterController?.SetCanCounter(false);
+
+                if (attackCTS != null)
                 {
-                    Context.anim.SetBool(currentAttackData.animHash, false);
+                    attackCTS.Cancel();
+                    attackCTS.Dispose();
+                    attackCTS = null;
                 }
 
                 Context.currentCommand = null;
 
-                // Chain攻撃でない場合、前回のオブジェクト参照をクリア
                 if (!CanChain())
                 {
                     lastAttackObject = null;
                 }
             }
+
 
             /// <summary>
             ///  攻撃処理実行
@@ -143,7 +151,7 @@ namespace TechC
             {
                 if (currentAttackData == null) return;
                 if (attackCTS == null) return;
-                AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController, Context.characterController.gameObject,attackCTS.Token);
+                AttackProcessor_Refacta.ProcessAttack(currentAttackData, Context.characterController, Context.characterController.gameObject, attackCTS.Token);
             }
 
             /// <summary>

@@ -36,7 +36,6 @@ namespace TechC.Player.Attack
             if (characterObj == null || magicCircle == null) return;
             var pos = characterObj.transform.position.AddY(-0.5f);
             magicCircle.transform.position = pos;
-            Debug.Log($"Magic Circle Position: {magicCircle.transform.position}");
 
         }
 

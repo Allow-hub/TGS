@@ -166,14 +166,15 @@ namespace TechC.Player
             {
                 AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Jump);
 
-                rb.velocity = new Vector3(rb.velocity.x, characterData.DoubleJumpForce, rb.velocity.z);
+                // 今の上昇速度を残しつつ補強
+                float newY = Mathf.Max(rb.velocity.y * 0.5f, 0f) + characterData.DoubleJumpForce;
+                rb.velocity = new Vector3(rb.velocity.x, newY, rb.velocity.z);
 
                 UseDoubleJump();
-
-                // 二段ジャンプ時も予測更新（あれば）
                 CalculatePredictedLandingPoint();
             }
         }
+
 
 
         /// <summary>

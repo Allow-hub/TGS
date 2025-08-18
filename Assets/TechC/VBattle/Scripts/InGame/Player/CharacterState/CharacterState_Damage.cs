@@ -21,6 +21,7 @@ namespace TechC
             protected internal override void Enter()
             {
                 base.Enter();
+                Debug.Log($"{Context.characterController.PlayerID} : DamageState Enter");
                 BattleJudge.I.SetPlayerAttackState(Context.characterController.PlayerID, false);
                 Context.isHitting = true;
                 isWallHit = Context.characterController.IsWallHitting;

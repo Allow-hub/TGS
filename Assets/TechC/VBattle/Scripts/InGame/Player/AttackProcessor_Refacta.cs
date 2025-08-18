@@ -1,7 +1,5 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections.Generic;
-using TechC.Player;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
@@ -54,7 +52,7 @@ namespace TechC
                 float dist = Vector3.Distance(selfCollider.bounds.center, col.bounds.center);
                 if (dist < GetApproxRadius(selfCollider) + GetApproxRadius(col))
                 {
-                    hit |= HandleHit(data, col, ctrl, token);
+                    hit |= HandleHit(data, col, ctrl, characterController, token);
                 }
             }
 
@@ -78,7 +76,7 @@ namespace TechC
             bool hit = false;
             foreach (var (col, ctrl) in filtered)
             {
-                hit |= HandleHit(data, col, ctrl, token);
+                hit |= HandleHit(data, col, ctrl, characterController, token);
             }
 
             return hit;
@@ -112,17 +110,17 @@ namespace TechC
         // ヒット時の処理
         // ==============================
 
-        private static bool HandleHit(AttackData data, Collider targetCol, Player.CharacterController controller, CancellationToken token = default)
+        private static bool HandleHit(AttackData data, Collider targetCol, Player.CharacterController opponenCcontroller, Player.CharacterController selfController, CancellationToken token = default)
         {
-            if (controller == null) return false;
+            if (opponenCcontroller == null) return false;
 
-            if (TryProcessCounter(controller)) return true;
-            if (TryProcessGuard(controller, targetCol, data)) return true;
+            if (TryProcessCounter(opponenCcontroller)) return true;
+            if (TryProcessGuard(opponenCcontroller, targetCol, data)) return true;
 
-            if (TryProcessDamage(targetCol, data, controller, token))
+            if (TryProcessDamage(targetCol, data, opponenCcontroller, token))
             {
-                PlayHitEffect(controller, targetCol.transform.position, data);
-                ApplyKnockback(data, targetCol);
+                PlayHitEffect(opponenCcontroller, targetCol.transform.position, data);
+                ApplyKnockback(data, targetCol,selfController);
                 return true;
             }
 
@@ -147,7 +145,7 @@ namespace TechC
             return false;
         }
 
-        private static bool TryProcessDamage(Collider targetCol, AttackData data,Player.CharacterController controller ,CancellationToken token = default)
+        private static bool TryProcessDamage(Collider targetCol, AttackData data, Player.CharacterController controller, CancellationToken token = default)
         {
             IDamageable damageable = targetCol.GetComponentInParent<IDamageable>();
             if (damageable != null)
@@ -196,12 +194,12 @@ namespace TechC
             return true;
         }
 
-        private static void ApplyKnockback(AttackData data, Collider target)
+        private static void ApplyKnockback(AttackData data, Collider target, Player.CharacterController selfController)
         {
             Rigidbody rb = target.GetComponentInParent<Rigidbody>();
             if (rb == null) return;
             rb.velocity = Vector3.zero; // 既存の速度をリセット
-            Vector3 force = data.knockbackDirection.normalized * data.knockback;
+            Vector3 force = new Vector3(data.knockbackDirection.normalized.x * selfController.transform.forward.x * data.knockback, data.knockbackDirection.normalized.y * data.knockback, 0);
             rb.AddForce(force, ForceMode.Impulse);
         }
 

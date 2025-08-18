@@ -57,7 +57,7 @@ namespace TechC
             { typeof(CrouchCommand), 2 },    // しゃがみは移動より優先
             { typeof(JumpCommand), 3 } ,      // ジャンプ
             { typeof(GuardCommand), 4 },       // ガードは最優先
-            {typeof(AttackCommand), 5 }
+            {typeof(AttackCommand), 4 }
         };
         public ImtStateMachine<CharacterState> StateMachine => stateMachine;
 

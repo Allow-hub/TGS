@@ -17,19 +17,19 @@ MonoBehaviour:
   description: 
   attackPrefab: {fileID: 1088245378690188311, guid: 6a3deabea98e2b448a2b20a9ac3edfd6,
     type: 3}
-  prefabOffset: {x: 0, y: 2, z: 0.5}
-  prefabRotation: {x: 0, y: 0, z: 0}
+  prefabOffset: {x: 0, y: 2, z: 3.5}
+  prefabRotation: {x: -50, y: 0, z: 0}
   animationTrigger: IsNormalWeakAttack_3
-  clip: {fileID: 7400000, guid: 42fa40e8df3be5c428aafd632e064a8d, type: 2}
-  animationSpeed: 1.5
-  attackDuration: 0.3
+  clip: {fileID: 7400000, guid: c1ce24d6f5ffadd408fa0669230d7956, type: 2}
+  animationSpeed: 1.6
+  attackDuration: 0.8
   hitDetectionMode: 1
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
   radius: 1
-  hitboxOffset: {x: 0, y: 1, z: 1.3}
-  hitTiming: 0.2
+  hitboxOffset: {x: 0, y: 1, z: 4}
+  hitTiming: 0.488
   hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
     type: 3}
   damage: 10

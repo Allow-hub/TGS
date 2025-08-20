@@ -472,6 +472,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trail_FlameBlue
       objectReference: {fileID: 0}
+    - target: {fileID: 460194617731782586, guid: d2b88306faaa5b64ab2a02201b04613e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2018609027682448264, guid: d2b88306faaa5b64ab2a02201b04613e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -580,6 +585,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2357770565247420618, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2490087638690234640, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -599,6 +609,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: InGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 4315862063598789008, guid: c2ba8867f924fc444b667e30e329ad17,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5547016823962536969, guid: c2ba8867f924fc444b667e30e329ad17,
         type: 3}
@@ -717,6 +732,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Trail_Flame
+      objectReference: {fileID: 0}
+    - target: {fileID: 460194617731782586, guid: d2b88306faaa5b64ab2a02201b04613e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2018609027682448264, guid: d2b88306faaa5b64ab2a02201b04613e,
         type: 3}

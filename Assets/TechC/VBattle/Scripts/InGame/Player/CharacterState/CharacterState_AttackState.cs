@@ -170,49 +170,57 @@ namespace TechC
             private void SetAttackObjSetting()
             {
                 if (currentAttackData == null || currentAttackData.attackPrefab == null) return;
+                DelayUtility.StartDelayedActionWithPause(
+                    Context.characterController,
+                    currentAttackData.hitTiming,
+                    BattleJudge.I.GetPauseStateFunc,
+                    () =>
+                    {
+                        var obj = CharaEffectFactory.I.GetEffectObj(currentAttackData.attackPrefab);
+                        var t = Context.characterController.transform;
 
-                var obj = CharaEffectFactory.I.GetEffectObj(currentAttackData.attackPrefab);
-                var t = Context.characterController.transform;
+                        Vector3 spawnPosition;
 
-                Vector3 spawnPosition;
+                        // Chain攻撃の場合、前回のオブジェクトの現在位置を使用
+                        if (CanChain() && lastAttackObject != null && currentAttackData.isChainPos)
+                        {
+                            spawnPosition = lastAttackObject.transform.position;
 
-                // Chain攻撃の場合、前回のオブジェクトの現在位置を使用
-                if (CanChain() && lastAttackObject != null && currentAttackData.isChainPos)
-                {
-                    spawnPosition = lastAttackObject.transform.position;
+                            // Chain攻撃時のオフセットを適用
+                            var offset = lastAttackObject.transform.right * currentAttackData.prefabOffset.x +
+                                         lastAttackObject.transform.up * currentAttackData.prefabOffset.y +
+                                         lastAttackObject.transform.forward * currentAttackData.prefabOffset.z;
+                            spawnPosition += offset;
+                            if (lastAttackObject == null) return;
 
-                    // Chain攻撃時のオフセットを適用
-                    var offset = lastAttackObject.transform.right * currentAttackData.prefabOffset.x +
-                                 lastAttackObject.transform.up * currentAttackData.prefabOffset.y +
-                                 lastAttackObject.transform.forward * currentAttackData.prefabOffset.z;
-                    spawnPosition += offset;
-                    if (lastAttackObject == null) return;
+                            var controller = lastAttackObject.GetComponent<AttackObjectController>();
+                            //FirstOrDefaultは最初に用件を満たすものを返す
+                            var lifeTime = controller?.Behaviours.FirstOrDefault(b => b is AttackLifeTime) as AttackLifeTime;
+                            lifeTime?.ResetLifeTime();
+                        }
+                        else
+                        {
+                            // 通常攻撃の場合、キャラクター基準の位置
+                            var offset = t.right * currentAttackData.prefabOffset.x +
+                                         t.up * currentAttackData.prefabOffset.y +
+                                         t.forward * currentAttackData.prefabOffset.z;
+                            spawnPosition = t.position + offset;
+                        }
 
-                    var controller = lastAttackObject.GetComponent<AttackObjectController>();
-                    //FirstOrDefaultは最初に用件を満たすものを返す
-                    var lifeTime = controller?.Behaviours.FirstOrDefault(b => b is AttackLifeTime) as AttackLifeTime;
-                    lifeTime?.ResetLifeTime();
-                }
-                else
-                {
-                    // 通常攻撃の場合、キャラクター基準の位置
-                    var offset = t.right * currentAttackData.prefabOffset.x +
-                                 t.up * currentAttackData.prefabOffset.y +
-                                 t.forward * currentAttackData.prefabOffset.z;
-                    spawnPosition = t.position + offset;
-                }
+                        obj.transform.position = spawnPosition;
 
-                obj.transform.position = spawnPosition;
+                        var rot = currentAttackData.prefabRotation;
+                        if (t.forward.x < 0) rot.y = 180 - rot.y;
+                        obj.transform.rotation = Quaternion.Euler(rot);
 
-                var rot = currentAttackData.prefabRotation;
-                if (t.forward.x < 0) rot.y = 180 - rot.y;
-                obj.transform.rotation = Quaternion.Euler(rot);
+                        var attackObjController = obj.GetComponent<AttackObjectController>();
+                        attackObjController?.SetPlayer(Context.characterController.PlayerID, Context.characterController.gameObject);
 
-                var attackObjController = obj.GetComponent<AttackObjectController>();
-                attackObjController?.SetPlayer(Context.characterController.PlayerID, Context.characterController.gameObject);
+                        // 現在のオブジェクトを記録
+                        lastAttackObject = obj;
+                    }
+                );
 
-                // 現在のオブジェクトを記録
-                lastAttackObject = obj;
             }
 
             /// <summary>

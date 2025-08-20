@@ -25,9 +25,6 @@ namespace TechC.Player
         [SerializeField] private CommandHistory commandHistory;
         [SerializeField] private CharacterType characterType;
         [Header("攻撃コンポーネント")]
-        [SerializeField] private WeakAttack weakAttack;
-        [SerializeField] private StrongAttack strongAttack;
-        [SerializeField] private AppealBase appealBase;
         [SerializeField] private AttackSet attackSet;
         public AttackSet AttackSet => attackSet;
         [Header("反発設定")]

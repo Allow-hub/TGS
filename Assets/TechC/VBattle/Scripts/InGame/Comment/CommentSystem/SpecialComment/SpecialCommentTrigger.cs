@@ -17,6 +17,12 @@ namespace TechC.CommentSystem
             foreach (var ability in abilities)
             {
                 ability?.Init(this);
+                if (ability is HoldAbility hold)
+                {
+                    hold.Init(this);
+                }
+                var hold2 = ability as HoldAbility;
+                hold2.Init(this);
             }
         }
 

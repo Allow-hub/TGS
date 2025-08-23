@@ -111,118 +111,120 @@ namespace TechC
         {
             return $"{Strength}_{Type}";
         }
-        
-         /// <summary>
-            ///  攻撃処理実行
-            /// </summary>
-            private void AttackProcess()
+
+        /// <summary>
+        ///  攻撃処理実行
+        /// </summary>
+        private void AttackProcess()
+        {
+            if (currentAttackData == null) return;
+            AttackProcessor_Refacta.ProcessAttack(currentAttackData, characterController, cloneController.gameObject);
+            lastAttackData = currentAttackData;
+        }
+
+        /// <summary>
+        /// アニメーション設定
+        /// </summary>
+        private void SetAnimSetting()
+        {
+            if (currentAttackData == null) return;
+            cloneController.GetAnim().speed = currentAttackData.animationSpeed;
+            Debug.Log($"AttackCommand: SetAnimSetting: {currentAttackData.animationTrigger}, Speed: {currentAttackData.animationSpeed}");
+            cloneController.GetAnim().SetBool(currentAttackData.animHash, true);
+        }
+
+        /// <summary>
+        /// 攻撃オブジェクト生成設定
+        /// </summary>
+        private void SetAttackObjSetting()
+        {
+            if (currentAttackData == null || currentAttackData.attackPrefab == null) return;
+
+            var obj = CharaEffectFactory.I.GetEffectObj(currentAttackData.attackPrefab);
+            var t = cloneController.transform;
+
+            Vector3 spawnPosition;
+
+            // Chain攻撃の場合、前回のオブジェクトの現在位置を使用
+            if (CanChain() && lastAttackObject != null && currentAttackData.isChainPos)
             {
-                if (currentAttackData == null) return;
-                AttackProcessor_Refacta.ProcessAttack(currentAttackData, characterController, cloneController.gameObject);
+                spawnPosition = lastAttackObject.transform.position;
+
+                // Chain攻撃時のオフセットを適用
+                var offset = lastAttackObject.transform.right * currentAttackData.prefabOffset.x +
+                             lastAttackObject.transform.up * currentAttackData.prefabOffset.y +
+                             lastAttackObject.transform.forward * currentAttackData.prefabOffset.z;
+                spawnPosition += offset;
+                if (lastAttackObject == null) return;
+
+                var controller = lastAttackObject.GetComponent<AttackObjectController>();
+                //FirstOrDefaultは最初に用件を満たすものを返す
+                var lifeTime = controller?.Behaviours.FirstOrDefault(b => b is AttackLifeTime) as AttackLifeTime;
+                lifeTime?.ResetLifeTime();
+            }
+            else
+            {
+                // 通常攻撃の場合、キャラクター基準の位置
+                var offset = t.right * currentAttackData.prefabOffset.x +
+                             t.up * currentAttackData.prefabOffset.y +
+                             t.forward * currentAttackData.prefabOffset.z;
+                spawnPosition = t.position + offset;
             }
 
-            /// <summary>
-            /// アニメーション設定
-            /// </summary>
-            private void SetAnimSetting()
+            obj.transform.position = spawnPosition;
+
+            var rot = currentAttackData.prefabRotation;
+            if (t.forward.x < 0) rot.y = 180 - rot.y;
+            obj.transform.rotation = Quaternion.Euler(rot);
+
+            var attackObjController = obj.GetComponent<AttackObjectController>();
+            attackObjController?.SetPlayer(characterController.PlayerID, cloneController.gameObject);
+
+            // 現在のオブジェクトを記録
+            lastAttackObject = obj;
+        }
+
+        /// <summary>
+        /// カウンター攻撃用設定
+        /// </summary>
+        private void SetCounterData()
+        {
+            if (!currentAttackData.isCounter) return;
+
+            cloneController.SetCanCounter(true);
+            cloneController.SetCounterAction(() =>
             {
-                if (currentAttackData == null) return;
-                cloneController.GetAnim().speed = currentAttackData.animationSpeed;
-                cloneController.GetAnim().SetBool(currentAttackData.animHash, true);
-            }
-
-            /// <summary>
-            /// 攻撃オブジェクト生成設定
-            /// </summary>
-            private void SetAttackObjSetting()
-            {
-                if (currentAttackData == null || currentAttackData.attackPrefab == null) return;
-
-                var obj = CharaEffectFactory.I.GetEffectObj(currentAttackData.attackPrefab);
-                var t = characterController.transform;
-
-                Vector3 spawnPosition;
-
-                // Chain攻撃の場合、前回のオブジェクトの現在位置を使用
-                if (CanChain() && lastAttackObject != null && currentAttackData.isChainPos)
+                if (currentAttackData != null)
                 {
-                    spawnPosition = lastAttackObject.transform.position;
-
-                    // Chain攻撃時のオフセットを適用
-                    var offset = lastAttackObject.transform.right * currentAttackData.prefabOffset.x +
-                                 lastAttackObject.transform.up * currentAttackData.prefabOffset.y +
-                                 lastAttackObject.transform.forward * currentAttackData.prefabOffset.z;
-                    spawnPosition += offset;
-                    if (lastAttackObject == null) return;
-
-                    var controller = lastAttackObject.GetComponent<AttackObjectController>();
-                    //FirstOrDefaultは最初に用件を満たすものを返す
-                    var lifeTime = controller?.Behaviours.FirstOrDefault(b => b is AttackLifeTime) as AttackLifeTime;
-                    lifeTime?.ResetLifeTime();
+                    cloneController.GetAnim().SetBool(currentAttackData.animHash, false);
                 }
-                else
-                {
-                    // 通常攻撃の場合、キャラクター基準の位置
-                    var offset = t.right * currentAttackData.prefabOffset.x +
-                                 t.up * currentAttackData.prefabOffset.y +
-                                 t.forward * currentAttackData.prefabOffset.z;
-                    spawnPosition = t.position + offset;
-                }
+                isCounter = true;
+                currentAttackData = currentAttackData.nextChain;
+                cloneController.GetCharacterState().ChangeAttackState();
+            });
+        }
+        /// <summary>
+        /// チェイン攻撃可能かを判定
+        /// </summary>
+        /// <returns></returns>
+        private bool CanChain()
+        {
+            if (lastAttackData == null || !lastAttackData.canChain || lastAttackData.nextChain == null) return false;
+            if (Time.time - lastAttackTime > lastAttackData.chainThreshold) return false;
+            return true;
+        }
 
-                obj.transform.position = spawnPosition;
-
-                var rot = currentAttackData.prefabRotation;
-                if (t.forward.x < 0) rot.y = 180 - rot.y;
-                obj.transform.rotation = Quaternion.Euler(rot);
-
-                var attackObjController = obj.GetComponent<AttackObjectController>();
-                attackObjController?.SetPlayer(characterController.PlayerID, cloneController.gameObject);
-
-                // 現在のオブジェクトを記録
-                lastAttackObject = obj;
-            }
-
-            /// <summary>
-            /// カウンター攻撃用設定
-            /// </summary>
-            private void SetCounterData()
-            {
-                if (!currentAttackData.isCounter) return;
-
-                cloneController.SetCanCounter(true);
-                cloneController.SetCounterAction(() =>
-                {
-                    if (currentAttackData != null)
-                    {
-                        cloneController.GetAnim().SetBool(currentAttackData.animHash, false);
-                    }
-                    isCounter = true;
-                    currentAttackData = currentAttackData.nextChain;
-                    cloneController.GetCharacterState().ChangeAttackState();
-                });
-            }
-            /// <summary>
-            /// チェイン攻撃可能かを判定
-            /// </summary>
-            /// <returns></returns>
-            private bool CanChain()
-            {
-                if (lastAttackData == null || !lastAttackData.canChain || lastAttackData.nextChain == null) return false;
-                if (Time.time - lastAttackTime > lastAttackData.chainThreshold) return false;
-                return true;
-            }
-
-            /// <summary>
-            /// ヒットタイミング処理の遅延実行
-            /// </summary>
-            private void SetupDelayedAttack()
-            {
-                DelayUtility.StartDelayedActionWithPause(
-                    cloneController,
-                    currentAttackData.hitTiming,
-                    BattleJudge.I.GetPauseStateFunc,
-                    AttackProcess
-                );
-            }
+        /// <summary>
+        /// ヒットタイミング処理の遅延実行
+        /// </summary>
+        private void SetupDelayedAttack()
+        {
+            DelayUtility.StartDelayedActionWithPause(
+                cloneController,
+                currentAttackData.hitTiming,
+                BattleJudge.I.GetPauseStateFunc,
+                AttackProcess
+            );
+        }
     }
 }

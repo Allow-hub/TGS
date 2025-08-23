@@ -20,7 +20,7 @@ MonoBehaviour:
   prefabOffset: {x: 0, y: 1.2, z: 0}
   prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsUpStrongAttack
-  clip: {fileID: -4791504522942941401, guid: 915d9f4276401d44aa6094bb8c2c9e5f, type: 3}
+  clip: {fileID: -526004194957028138, guid: 8db9ecac48c82e04bb29ae533e60454c, type: 3}
   animationSpeed: 1.3
   attackDuration: 1
   hitDetectionMode: 2
@@ -29,7 +29,7 @@ MonoBehaviour:
     m_Bits: 1
   radius: 0
   hitboxOffset: {x: 0, y: 1, z: 0}
-  hitTiming: 0
+  hitTiming: 0.3
   hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
     type: 3}
   damage: 0
@@ -37,6 +37,7 @@ MonoBehaviour:
   isCounter: 0
   nextChain: {fileID: 0}
   canChain: 0
+  isChainPos: 0
   chainThreshold: 0
   hitStopDuration: 0.3
   hitStopTimeScale: 0.02
@@ -47,5 +48,9 @@ MonoBehaviour:
   canRepeat: 0
   repeatInterval: 0
   repeatDuration: 0
+  causesWallBounce: 0
+  wallBounceForce: 8
+  wallBounceVerticalBoost: 2
+  wallBounceTime: 0.5
   characterSEType: 12
   characterVoiceType: 0

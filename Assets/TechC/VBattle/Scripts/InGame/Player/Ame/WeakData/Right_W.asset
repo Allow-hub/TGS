@@ -20,7 +20,7 @@ MonoBehaviour:
   prefabOffset: {x: 0, y: 0, z: 0}
   prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsRightWeakAttack
-  clip: {fileID: 7400000, guid: 642ce44fd8d255240ad5ca3b6d84d5ac, type: 2}
+  clip: {fileID: -6846040849299452207, guid: 2dd0fa897f5e6454db08095d828e5021, type: 3}
   animationSpeed: 1.8
   attackDuration: 0.6
   hitDetectionMode: 2

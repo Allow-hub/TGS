@@ -394,19 +394,6 @@ namespace TechC
             OnPlayerRemoved?.Invoke(player);
             CustomLogger.Info($"CameraManager: プレイヤー {player?.name} を削除しました", LOGTAG);
         }
-        public void SetCameraDistance(float value)
-        {
-            var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
-            if (transposer == null)
-            {
-                CustomLogger.Warning("CameraManager: FramingTransposer が見つかりません", LOGTAG);
-                return;
-            }
-
-            transposer.m_CameraDistance = value;
-            CustomLogger.Info($"CameraManager: カメラ距離を {value} に設定しました", LOGTAG);
-        }
-
         /// <summary>
         /// 全プレイヤーとターゲットグループを初期化
         /// </summary>
@@ -465,61 +452,6 @@ namespace TechC
             if (noiseComponent != null)
             {
                 noiseComponent.m_AmplitudeGain = 0f;
-            }
-        }
-
-        /// <summary>
-        /// ズーム設定を動的に変更
-        /// </summary>
-        public void SetZoomSettings(float minFOV, float maxFOV, float minDist, float maxDist)
-        {
-            if (currentCameraSettings == null)
-            {
-                CustomLogger.Warning("CameraManager: currentCameraSettingsが設定されていません", LOGTAG);
-                return;
-            }
-
-            currentCameraSettings.minFOV = Mathf.Max(1f, minFOV);
-            currentCameraSettings.maxFOV = Mathf.Max(currentCameraSettings.minFOV, maxFOV);
-            currentCameraSettings.minDistance = Mathf.Max(0.1f, minDist);
-            currentCameraSettings.maxDistance = Mathf.Max(currentCameraSettings.minDistance, maxDist);
-
-            ApplyZoomSettings();
-        }
-        /// <summary>
-        /// カメラのオフセットを設定
-        /// </summary>
-        public void SetCameraOffset(Vector3 offset)
-        {
-            if (vcam == null)
-            {
-                CustomLogger.Warning("CameraManager: vcam が設定されていません", LOGTAG);
-                return;
-            }
-
-            var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
-            if (transposer == null)
-            {
-                CustomLogger.Warning("CameraManager: FramingTransposer が見つかりません", LOGTAG);
-                return;
-            }
-
-            transposer.m_ScreenX = Mathf.Clamp01(offset.x);
-            transposer.m_ScreenY = Mathf.Clamp01(offset.y);
-
-            CustomLogger.Info($"CameraManager: Screen位置を X={offset.x}, Y={offset.y} に設定しました", LOGTAG);
-        }
-
-        /// <summary>
-        /// デッドゾーンを設定
-        /// </summary>
-        public void SetDeadZone(float zone)
-        {
-            if (currentCameraSettings != null)
-            {
-                currentCameraSettings.deadZone = Mathf.Max(0f, zone);
-                ApplyZoomSettings(); 
-                CustomLogger.Info($"CameraManager: デッドゾーンを {zone} に設定しました", LOGTAG);
             }
         }
         /// <summary>

@@ -87,6 +87,8 @@ namespace TechC
 
             if (cloneController.AttackSet.attackDataMap.TryGetValue(key, out var attackData))
             {
+                if(currentAttackData != null)
+                    cloneController.GetAnim().SetBool(currentAttackData.animHash, false);
                 currentAttackData = CanChain() ? lastAttackData.nextChain : attackData;
                 duration = currentAttackData.attackDuration;
                 lastAttackTime = Time.time;

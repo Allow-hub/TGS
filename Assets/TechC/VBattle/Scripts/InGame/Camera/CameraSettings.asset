@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camRot: {x: 0, y: 0, z: 0}
   camColliderPos: {x: 0, y: 0, z: -10}
-  minDistance: 5
-  maxDistance: 50
-  minFOV: 3
-  maxFOV: 73
+  minDistance: 3
+  maxDistance: 14.6
+  minFOV: 46.4
+  maxFOV: 69.9
   zoomSpeed: 10
   zoomMargin: 0
   enableYAxisFollow: 0

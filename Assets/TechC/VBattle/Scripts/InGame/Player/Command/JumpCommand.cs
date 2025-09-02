@@ -36,7 +36,8 @@ namespace TechC
         public async void Execute()
         {
             if (!IsFinished) return; // クールタイム中なら無視
-
+            character.SetAnim(AnimatorParams.IsWalking,false);
+            character.SetAnim(AnimatorParams.IsRunning,false);
             if (Time.time - lastJumpTime <= jumpCooldown) return;
             if (character.IsGrounded())
             {

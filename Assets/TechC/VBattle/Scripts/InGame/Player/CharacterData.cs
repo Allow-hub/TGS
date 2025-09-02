@@ -24,10 +24,10 @@ namespace TechC.Player
         public float GuardBreakDuration;
         [Tooltip("移動速度")]
         public float MoveSpeed;
+        [Tooltip("ダッシュ速度倍率")]
+        public float DashMultipiler=3f;
         [Tooltip("最大地上移動速度")]
         public float MaxGroundSpeed = 10f;
-        [Tooltip("加速度")]
-        public float Acceleration = 10f;
         [Tooltip("減速度")]
         public float Deceleration = 8f;
         [Tooltip("ジャンプ力")]

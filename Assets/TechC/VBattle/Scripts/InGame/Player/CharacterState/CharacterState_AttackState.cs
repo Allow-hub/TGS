@@ -49,6 +49,8 @@ namespace TechC
 
             protected internal override void Enter()
             {
+                Context.characterController.SetAnim(AnimatorParams.IsWalking,false);
+                Context.characterController.SetAnim(AnimatorParams.IsRunning,false); 
                 if (!BattleJudge.I.CanPlayerAttack(Context.characterController.PlayerID))
                 {
                     Debug.Log($"攻撃不能状態{Context.characterController.PlayerID}");

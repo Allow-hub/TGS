@@ -20,9 +20,9 @@ MonoBehaviour:
   GuardRecoverySpeed: 0.3
   GuardRecoveryInterval: 2
   GuardBreakDuration: 2
-  MoveSpeed: 2.75
+  MoveSpeed: 1.3
+  DashMultipiler: 4
   MaxGroundSpeed: 8
-  Acceleration: 10
   Deceleration: 80
   JumpForce: 5
   DoubleJumpForce: 7

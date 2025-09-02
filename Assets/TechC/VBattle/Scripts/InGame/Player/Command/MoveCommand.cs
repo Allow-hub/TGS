@@ -1,9 +1,10 @@
-﻿namespace TechC
+﻿using UnityEngine;
+
+namespace TechC
 {
     public class MoveCommand : INeutralUsableCommand, IAirUsableCommand
     {
         private float normalSpeedMagnification = 1.0f;  //通常時の速度倍率
-        private float dashSpeedMagnification = 2.0f;    //ダッシュ時の速度倍率
         private Player.CharacterController characterController;
         private BaseInputManager playerInputManager;
         public bool IsFinished => !playerInputManager.IsMoving;
@@ -16,12 +17,19 @@
 
         public void Execute()
         {
+            characterController.SetAnim(AnimatorParams.IsWalking,false);
+            characterController.SetAnim(AnimatorParams.IsRunning,false);
+
             if (playerInputManager.IsDashing)
             {
-                characterController.MoveCharacter(dashSpeedMagnification);
+                characterController.MoveCharacter(characterController.GetCharacterData().DashMultipiler);
+                characterController.SetAnim(AnimatorParams.IsRunning,true);
             }
             else
+            {
                 characterController.MoveCharacter(normalSpeedMagnification);
+                characterController.SetAnim(AnimatorParams.IsWalking,true);
+            }
         }
 
         public void Undo()

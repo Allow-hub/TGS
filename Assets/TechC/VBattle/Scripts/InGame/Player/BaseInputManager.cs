@@ -93,6 +93,12 @@ namespace TechC
         protected virtual void Update()
         {
             CheckDash();
+            
+            if(moveInput == Vector2.zero)
+            {
+               characterController.SetAnim(AnimatorParams.IsWalking,false);
+               characterController.SetAnim(AnimatorParams.IsRunning,false); 
+            }
         }
 
         /// <summary>

@@ -12,9 +12,6 @@ namespace TechC
         private CharacterData characterData;
         private CharacterState characterState;
 
-        //animation
-        private int guardAnim = Animator.StringToHash("IsGuarding");
-
 
         //終了
         private bool isForceFinished;//強制終了
@@ -45,12 +42,12 @@ namespace TechC
             }
             isForceFinished = false;
             characterState.ChangeGuardrState();
-            characterController.SetAnim(guardAnim,true);
+            characterController.SetAnim(AnimatorParams.IsGuarding,true);
             guardObj.SetActive(true);
             characterController.SetLastGuardTime(Time.time);//ガードをした時間を記録
             if (IsFinished)
             {
-                characterController.SetAnim(guardAnim, false);
+                characterController.SetAnim(AnimatorParams.IsGuarding, false);
                 guardObj.SetActive(false);
                 characterState.ChangeNeutralState();
             }
@@ -65,7 +62,7 @@ namespace TechC
             Debug.Log("ガードが強制終了しました");
             isForceFinished = true;
             playerInputManager.ResetInput();
-            characterController.SetAnim(guardAnim, false);
+            characterController.SetAnim(AnimatorParams.IsGuarding, false);
             guardObj.SetActive(false);
         }
     }

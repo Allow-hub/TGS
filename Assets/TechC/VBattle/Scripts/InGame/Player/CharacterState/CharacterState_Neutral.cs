@@ -14,6 +14,8 @@ namespace TechC
             protected internal override void Enter()
             {
                 base.Enter();
+                Context.characterController.SetAnim(AnimatorParams.IsWalking,false);
+                Context.characterController.SetAnim(AnimatorParams.IsRunning,false);
                 Context.characterController.SetAnim(Context.jumpAnim, false);
                 Context.characterController.SetAnim(Context.doubleJumpAnim, false);
             }

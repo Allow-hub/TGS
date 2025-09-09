@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using TechC.Player.Attack;
 using UnityEngine;
+using System.Collections;
 
 namespace TechC
 {
@@ -46,11 +47,28 @@ namespace TechC
             private float elapsedTime = 0;
             private bool isEarlyExit = true;
             private bool isCounter;
+            private Coroutine appealCoroutine = null;
+            private AttackData specialData;
+
+            /// <summary>
+            /// アピール中にダメージを受けた時に中断したいのでイベントをもらう
+            /// </summary>
+            protected internal override void Init()
+            {
+                Context.characterController.DamageEvent += () =>
+                {
+                    if (appealCoroutine != null)
+                    {
+                        Context.characterController.StopCoroutine(appealCoroutine);
+                        appealCoroutine = null;
+                    }
+                };
+            }
 
             protected internal override void Enter()
             {
-                Context.characterController.SetAnim(AnimatorParams.IsWalking,false);
-                Context.characterController.SetAnim(AnimatorParams.IsRunning,false); 
+                Context.characterController.SetAnim(AnimatorParams.IsWalking, false);
+                Context.characterController.SetAnim(AnimatorParams.IsRunning, false);
                 if (!BattleJudge.I.CanPlayerAttack(Context.characterController.PlayerID))
                 {
                     Debug.Log($"攻撃不能状態{Context.characterController.PlayerID}");
@@ -80,7 +98,7 @@ namespace TechC
                     currentAttackData = CanChain() ? lastAttackData.nextChain : attackData;
                     duration = currentAttackData.attackDuration;
                     lastAttackTime = Time.time;
-
+                    SetAppeal();
                     SetAnimSetting();
                     SetAttackObjSetting();
                     SetCounterData();
@@ -243,6 +261,40 @@ namespace TechC
                     currentAttackData = currentAttackData.nextChain;
                     Context.ChangeAttackState();
                 });
+            }
+
+            /// <summary>
+            /// アピールかどうかの識別
+            /// アピールの場合エネルギーチャージ状態へ移行
+            /// </summary>
+            private void SetAppeal()
+            {
+                if (!currentAttackData.isAppeal) return;
+                if (Context.characterController.CanSpecialAttack())
+                {
+                    currentAttackData = specialData;
+                    return;
+                }
+                appealCoroutine = null;
+                appealCoroutine = Context.characterController.StartCoroutine(SuccessAppeal(currentAttackData.attackDuration, currentAttackData.chargeDuration));
+                //アピール実行時一回だけ必殺技のデータを入れる
+                //アピールを一回でも実行しないと必殺技がnullになるがそもそもアピールをしないと必殺技がたまり切らないと思うのでこの実装で
+                //必殺技のデータをCharacterControllerやResourcesから受け取るのが責任の分離的に嫌なので
+                if (specialData == null)
+                    specialData = currentAttackData.nextChain;
+            }
+
+            private IEnumerator SuccessAppeal(float dur, float chargeDur)
+            {
+                yield return new WaitForSeconds(dur);
+                Context.characterController.ChangeCanCharge(true);
+                Context.characterController.StartCoroutine(ResetAppeal(chargeDur));
+            }
+
+            private IEnumerator ResetAppeal(float dur)
+            {
+                yield return new WaitForSeconds(dur);
+                Context.characterController.ChangeCanCharge(false);
             }
 
             /// <summary>

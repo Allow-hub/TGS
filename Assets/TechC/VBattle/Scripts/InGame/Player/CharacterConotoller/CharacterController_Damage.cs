@@ -51,6 +51,7 @@ namespace TechC.Player
             // hpPresenterがnullでないことを確認
             if (hpPresenter != null)
             {
+                DamageEvent?.Invoke();
                 hpPresenter.TakeDamage(damage * opponentController.GetMultipiler(BuffType.Attack));
                 characterState.ChangeDamageState();
             }

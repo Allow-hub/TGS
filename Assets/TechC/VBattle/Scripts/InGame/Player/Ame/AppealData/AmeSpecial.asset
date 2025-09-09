@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d62277a4cf745c43bcaa0408b92a2f2, type: 3}
-  m_Name: Neutral_A
+  m_Name: AmeSpecial
   m_EditorClassIdentifier: 
-  characterType: 1
-  attackName: Neutral_A
+  characterType: 0
+  attackName: 
   description: 
   attackPrefab: {fileID: 0}
   prefabOffset: {x: 0, y: 0, z: 0}
   prefabRotation: {x: 0, y: 0, z: 0}
-  animationTrigger: IsAppealing
+  animationTrigger: 
   clip: {fileID: 0}
-  animationSpeed: 1.4
-  attackDuration: 2
-  hitDetectionMode: 2
+  animationSpeed: 1
+  attackDuration: 0
+  hitDetectionMode: 1
   targetLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -46,8 +46,8 @@ MonoBehaviour:
   canRepeat: 0
   repeatInterval: 0
   repeatDuration: 0
-  isAppeal: 1
-  chargeDuration: 10
+  isAppeal: 0
+  chargeDuration: 5
   causesWallBounce: 0
   wallBounceForce: 8
   wallBounceVerticalBoost: 2

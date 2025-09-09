@@ -146,6 +146,16 @@ namespace IceMilkTea.StateMachine
                 // 通常はガードしない
                 return false;
             }
+
+
+            /// <summary>
+            /// 初期化処理を行います
+            /// 元のIceMilkTea.StateMachineには存在しないが初期化順を管理したいのでこちらで実装
+            /// </summary>
+            protected internal virtual void Init()
+            {
+
+            }
         }
 
 
@@ -189,7 +199,7 @@ namespace IceMilkTea.StateMachine
         }
         #endregion
 
-
+        public List<State> StateList => stateList;
 
         // メンバ変数定義
         private UpdateState updateState;

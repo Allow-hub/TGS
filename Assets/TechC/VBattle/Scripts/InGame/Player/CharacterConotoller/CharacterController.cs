@@ -24,6 +24,8 @@ namespace TechC.Player
         [SerializeField] private Animator anim;
         [SerializeField] private CommandHistory commandHistory;
         [SerializeField] private CharacterType characterType;
+        [SerializeField] private ComboSystem comboSystem;
+        public ComboSystem ComboSystem => comboSystem;
         [Header("攻撃コンポーネント")]
         [SerializeField] private AttackSet attackSet;
         public AttackSet AttackSet => attackSet;
@@ -49,6 +51,7 @@ namespace TechC.Player
         [SerializeField] private float duration;
 
         [Header("必殺技設定")]
+        public Action DamageEvent;
         [SerializeField] private GaugePresenter gaugePresenter;
 
         [Header("移動・ジャンプ設定")]

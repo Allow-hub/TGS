@@ -108,6 +108,14 @@ namespace TechC
         [Tooltip("繰り返し攻撃の継続時間")]
         public float repeatDuration;
 
+        // ===== アピール・必殺技 ====
+        [Header("アピール・必殺技")] 
+        [Tooltip("アピールかどうか")]
+        public bool isAppeal  =false;
+        [Tooltip("アピール後エネルギーを貯められる時間")]
+        public float chargeDuration =5f;
+        //必殺技のSOをフィールドとして持つ可能性あり
+        
         // ===== 壁バウンド設定 =====
         [Header("壁バウンド設定")]
         [Tooltip("この攻撃が壁バウンドを発生させるかどうか")]

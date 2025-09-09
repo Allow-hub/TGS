@@ -93,7 +93,7 @@ MonoBehaviour:
   - window
   - camera
   - npc
-  - comboClear
-  - comboCheck
   - audio
   - state
+  - comboClear
+  - comboCheck

@@ -121,6 +121,7 @@ namespace TechC
             {
                 PlayHitEffect(opponenCcontroller, targetCol.transform.position, data);
                 ApplyKnockback(data, targetCol,selfController);
+                selfController.ComboSystem.CheckCombos();
                 return true;
             }
 

@@ -117,6 +117,7 @@ namespace TechC
 
             //どのステートからでも移行できる
             stateMachine.AddAnyTransition<DeadState>((int)StateEventId.Dead);
+            stateMachine.StateList.ForEach(state => state?.Init());
 
             //開始時のステート設定
             stateMachine.SetStartState<StartState>();
@@ -211,7 +212,7 @@ namespace TechC
             }
             //CustomLogger.Info("コマンドを保存"+Time.time);
         }
-      
+
         /// <summary>
         /// 次のコマンドを取得する
         /// </summary>
@@ -295,4 +296,3 @@ namespace TechC
         public bool IsDamageState() => stateMachine.CurrentStateName == "DamageState";
     }
 }
-

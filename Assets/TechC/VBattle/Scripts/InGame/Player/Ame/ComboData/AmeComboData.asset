@@ -19,13 +19,13 @@ MonoBehaviour:
   - {fileID: 11500000, guid: e8b92da9d80611f43a42dd0bd75c639e, type: 3}
   - {fileID: 11500000, guid: 35d27b7a7a5e165428f7d0596d3821dc, type: 3}
   sequence:
-  - attackType: 4
-    attackStrength: 0
   - attackType: 1
     attackStrength: 0
-  - attackType: 0
+  - attackType: 4
     attackStrength: 0
-  timeWindow: 3
+  - attackType: 4
+    attackStrength: 1
+  timeWindow: 4
   gaugeBonus: 10
   requiresCharge: 1
   effectPrefab: {fileID: 5673904798865036489, guid: 5fd168fb5c569014d8ee5ca4151dacaa,

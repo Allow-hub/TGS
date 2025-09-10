@@ -11,11 +11,13 @@ namespace TechC.Player.Attack
         private GameObject ownerObj;
         private GameObject character;
         private CancellationTokenSource attackCTS;
+        private AttackObjectController attackObjectController;
 
         public void Initialize(GameObject owner)
         {
             ownerObj = owner;
             col.enabled = false;
+            attackObjectController = owner.GetComponent<AttackObjectController>();
         }
         public void Activate(GameObject character)
         {
@@ -31,7 +33,7 @@ namespace TechC.Player.Attack
         {
             if (col == null) return;
             col.enabled = false;
-            if(attackCTS == null) return;
+            if (attackCTS == null) return;
             attackCTS.Cancel();
             attackCTS.Dispose();
             attackCTS = null;
@@ -48,6 +50,10 @@ namespace TechC.Player.Attack
         }
         public void OnTriggerEnter(Collider other)
         {
+            if (!other.gameObject.CompareTag(attackObjectController.PlayerTag)) return;
+            var characterController = other.transform.root.GetComponent<CharacterController>();
+            if (characterController == null) return;
+            if (characterController.PlayerID == attackObjectController.PlayerID) return;// 自分自身への接触は無視
             AttackProcessor_Refacta.ProcessAttack(attackData, character.GetComponent<CharacterController>(), ownerObj, attackCTS.Token);
         }
     }

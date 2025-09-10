@@ -11,8 +11,10 @@ namespace TechC.Player.Attack
     {
         [SerializeReference] private List<IAttackBehaviour> behaviours;
         public List<IAttackBehaviour> Behaviours => behaviours;
-        private string playerTag = "Player";
+        public int PlayerID => playerID;
         private int playerID;
+        public string PlayerTag => playerTag;
+        private string playerTag = "Player";
         private GameObject character;
         private void Start()
         {
@@ -50,19 +52,11 @@ namespace TechC.Player.Attack
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.CompareTag(playerTag))
+            if (behaviours == null) return;
+            foreach (var behaviour in behaviours)
             {
-                if (behaviours == null) return;
-
-                var characterController = other.GetComponentInParent<CharacterController>();
-                if (characterController == null) return;
-
-                if (characterController.PlayerID == playerID) return;// 自分自身への接触は無視
-                foreach (var behaviour in behaviours)
-                {
-                    if (behaviour == null) continue;
-                    behaviour?.OnTriggerEnter(other);
-                }
+                if (behaviour == null) continue;
+                behaviour?.OnTriggerEnter(other);
             }
         }
 

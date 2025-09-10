@@ -33,7 +33,7 @@ MonoBehaviour:
   damage: 0
   knockback: 0
   isCounter: 0
-  nextChain: {fileID: 0}
+  nextChain: {fileID: 11400000, guid: ac3a9a7f91830e842a0ed3dd5705000a, type: 2}
   canChain: 0
   isChainPos: 0
   chainThreshold: 0

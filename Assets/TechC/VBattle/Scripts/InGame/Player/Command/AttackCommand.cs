@@ -8,7 +8,7 @@ namespace TechC
     /// <summary>
     /// 攻撃コマンド基底クラス
     /// </summary>
-    public class AttackCommand : INeutralUsableCommand
+    public class AttackCommand : INeutralUsableCommand,IAirUsableCommand
     {
         private CharacterState characterState;
         private Player.CharacterController characterController;

@@ -22,6 +22,7 @@ namespace TechC
         {
             Weak,
             Strong,
+            Air,
             Appeal
         }
 
@@ -90,7 +91,7 @@ namespace TechC
 
                 // 通常攻撃処理
                 attackType = AttackProcessor_Refacta.CheckAttackType(Context.playerInputManager);
-                attackStrength = AttackProcessor_Refacta.CheckAttackStrength(Context.playerInputManager);
+                attackStrength = AttackProcessor_Refacta.CheckAttackStrength(Context.playerInputManager, !Context.characterController.IsGrounded());
                 var key = (attackType, attackStrength);
 
                 if (Context.characterController.AttackSet.attackDataMap.TryGetValue(key, out var attackData))

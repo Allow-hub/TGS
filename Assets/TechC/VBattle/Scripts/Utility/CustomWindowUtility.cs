@@ -206,46 +206,46 @@ namespace TechC
 
         private static LRESULT ImageWndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
         {
-            switch (msg)
-            {
-                case PInvoke.WM_PAINT:
-                    Windows.Win32.Graphics.Gdi.PAINTSTRUCT ps;
-                    Windows.Win32.Graphics.Gdi.HDC hdc = PInvoke.BeginPaint(hwnd, out ps);
+            // switch (msg)
+            // {
+            //     case PInvoke.WM_PAINT:
+            //         Windows.Win32.Graphics.Gdi.PAINTSTRUCT ps;
+            //         Windows.Win32.Graphics.Gdi.HDC hdc = PInvoke.BeginPaint(hwnd, out ps);
 
-                    RECT rcClient;
-                    PInvoke.GetClientRect(hwnd, out rcClient);
+            //         RECT rcClient;
+            //         PInvoke.GetClientRect(hwnd, out rcClient);
 
-                    // 背景をクラシック風グレーに塗りつぶし
-                    Windows.Win32.Graphics.Gdi.HBRUSH hBrush = PInvoke.CreateSolidBrush(new COLORREF(0x00C0C0C0)); // RGB(192,192,192)
-                    unsafe
-                    {
-                        PInvoke.FillRect(hdc, &rcClient, hBrush);
-                    }
-                    PInvoke.DeleteObject(hBrush); // 解放忘れ注意
+            //         // 背景をクラシック風グレーに塗りつぶし
+            //         Windows.Win32.Graphics.Gdi.HBRUSH hBrush = PInvoke.CreateSolidBrush(new COLORREF(0x00C0C0C0)); // RGB(192,192,192)
+            //         unsafe
+            //         {
+            //             PInvoke.FillRect(hdc, &rcClient, hBrush);
+            //         }
+            //         PInvoke.DeleteObject(hBrush); // 解放忘れ注意
 
-                    // 黒枠を描画
-                    Windows.Win32.Graphics.Gdi.HBRUSH hFrameBrush = PInvoke.CreateSolidBrush(new COLORREF(0x000000));
-                    unsafe
-                    {
-                        PInvoke.FrameRect(hdc, &rcClient, hFrameBrush);
-                    }
-                    PInvoke.DeleteObject(hFrameBrush);
+            //         // 黒枠を描画
+            //         Windows.Win32.Graphics.Gdi.HBRUSH hFrameBrush = PInvoke.CreateSolidBrush(new COLORREF(0x000000));
+            //         unsafe
+            //         {
+            //             PInvoke.FrameRect(hdc, &rcClient, hFrameBrush);
+            //         }
+            //         PInvoke.DeleteObject(hFrameBrush);
 
-                    // テキスト描画
-                    // PInvoke.SetBkMode(hdc, Windows.Win32.Graphics.Gdi.BACKGROUND_MODE.TRANSPARENT);     // TRANSPARENT
-                    // PInvoke.SetTextColor(hdc, new COLORREF(0x000000)); // Black
-                    // var text = "クラシック風ウィンドウ";
-                    // PInvoke.TextOut(hdc, 10, 10, text, text.Length);
+            //         // テキスト描画
+            //         // PInvoke.SetBkMode(hdc, Windows.Win32.Graphics.Gdi.BACKGROUND_MODE.TRANSPARENT);     // TRANSPARENT
+            //         // PInvoke.SetTextColor(hdc, new COLORREF(0x000000)); // Black
+            //         // var text = "クラシック風ウィンドウ";
+            //         // PInvoke.TextOut(hdc, 10, 10, text, text.Length);
 
-                    PInvoke.EndPaint(hwnd, ps);
-                    return new LRESULT(0);
-                case PInvoke.WM_SIZE:
-                    unsafe
-                    {
-                        PInvoke.InvalidateRect(hwnd, (RECT*)null, true); // 全領域を再描画                    
-                    }
-                    return new LRESULT(0);
-            }
+            //         PInvoke.EndPaint(hwnd, ps);
+            //         return new LRESULT(0);
+            //     case PInvoke.WM_SIZE:
+            //         unsafe
+            //         {
+            //             PInvoke.InvalidateRect(hwnd, (RECT*)null, true); // 全領域を再描画                    
+            //         }
+            //         return new LRESULT(0);
+            // }
             return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
         }
         private static LRESULT WebWndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)

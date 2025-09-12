@@ -1008,6 +1008,7 @@ GameObject:
   - component: {fileID: 1732081978}
   - component: {fileID: 1732081977}
   - component: {fileID: 1732081976}
+  - component: {fileID: 1732081979}
   m_Layer: 0
   m_Name: CharaSelect
   m_TagString: Untagged
@@ -1088,6 +1089,35 @@ Transform:
   - {fileID: 1836342022}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1732081979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732081975}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faaa1e894e937ad49b9f71ff7b5d72d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  appearChars: Start?
+  windowTop:
+  - {x: 200, y: 10}
+  - {x: 400, y: 150}
+  - {x: 600, y: 300}
+  - {x: 900, y: 450}
+  - {x: 1200, y: 600}
+  - {x: 1500, y: 750}
+  windowHeight: 900100009001000090010000900100009001000090010000
+  windowWidth: 900100009001000090010000900100009001000090010000
+  windowImage:
+  - {fileID: 21300000, guid: a98f108edc2015d47bab8b94efef5f9f, type: 3}
+  - {fileID: 21300000, guid: a98f108edc2015d47bab8b94efef5f9f, type: 3}
+  - {fileID: 21300000, guid: a98f108edc2015d47bab8b94efef5f9f, type: 3}
+  - {fileID: 21300000, guid: a98f108edc2015d47bab8b94efef5f9f, type: 3}
+  - {fileID: 21300000, guid: a98f108edc2015d47bab8b94efef5f9f, type: 3}
+  - {fileID: 21300000, guid: a98f108edc2015d47bab8b94efef5f9f, type: 3}
 --- !u!1 &1737265983 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3029854915168337251, guid: a4f147fac83c95c44ad571b507596bdb,

@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d62277a4cf745c43bcaa0408b92a2f2, type: 3}
+  m_Name: Right_Air
+  m_EditorClassIdentifier: 
+  characterType: 1
+  attackName: Right_Air
+  description: 
+  attackPrefab: {fileID: 8245651696664732784, guid: a467853930efc7f4681df91d5fee2c08,
+    type: 3}
+  prefabOffset: {x: 0, y: 0, z: 3}
+  prefabRotation: {x: 0, y: 0, z: 0}
+  animationTrigger: IsNormalAir
+  clip: {fileID: -6846040849299452207, guid: 2dd0fa897f5e6454db08095d828e5021, type: 3}
+  animationSpeed: 1.2
+  attackDuration: 1
+  hitDetectionMode: 2
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 1
+  radius: 0
+  hitboxOffset: {x: 0, y: 1, z: 1}
+  hitTiming: 0.1
+  hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+    type: 3}
+  damage: 10
+  knockback: 10
+  isCounter: 0
+  nextChain: {fileID: 0}
+  canChain: 0
+  isChainPos: 0
+  chainThreshold: 0
+  hitStopDuration: 0.3
+  hitStopTimeScale: 0.02
+  knockbackDirection: {x: 0, y: 0, z: 1}
+  shakeIntensity: 0.1
+  shakeDuraion: 0.1
+  noiseSettings: {fileID: 0}
+  canRepeat: 0
+  repeatInterval: 0
+  repeatDuration: 0
+  isAppeal: 0
+  chargeDuration: 5
+  causesWallBounce: 0
+  wallBounceForce: 8
+  wallBounceVerticalBoost: 2
+  wallBounceTime: 0.5
+  characterSEType: 12
+  characterVoiceType: 0

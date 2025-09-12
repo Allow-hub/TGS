@@ -265,11 +265,12 @@ namespace TechC
         /// 攻撃の強さの確認
         /// </summary>
         /// <returns></returns>
-        public static CharacterState.AttackStrength CheckAttackStrength(BaseInputManager baseInputManager)
+        public static CharacterState.AttackStrength CheckAttackStrength(BaseInputManager baseInputManager,bool isAir)
         {
-
             // 攻撃強度の判定
-            if (baseInputManager.IsWeakAttacking)
+            if (baseInputManager.IsWeakAttacking && isAir)
+                return CharacterState.AttackStrength.Air;
+            else if (baseInputManager.IsWeakAttacking)
                 return CharacterState.AttackStrength.Weak;
             else if (baseInputManager.IsStrongAttacking)
                 return CharacterState.AttackStrength.Strong;

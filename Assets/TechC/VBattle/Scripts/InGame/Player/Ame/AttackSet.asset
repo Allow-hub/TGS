@@ -56,21 +56,41 @@ MonoBehaviour:
     attackData: {fileID: 11400000, guid: 76c05fcb9a3836341b5ef7637409d006, type: 2}
   - attackName: "\u30CB\u30E5\u30FC\u30C8\u30E9\u30EB\u30A2\u30D4\u30FC\u30EB"
     type: 0
-    strength: 2
+    strength: 3
     attackData: {fileID: 11400000, guid: 81cf7f7ee93a02446bd66f97ea4c9f20, type: 2}
   - attackName: "\u53F3\u30A2\u30D4\u30FC\u30EB"
     type: 1
-    strength: 2
+    strength: 3
     attackData: {fileID: 11400000, guid: 81cf7f7ee93a02446bd66f97ea4c9f20, type: 2}
   - attackName: "\u5DE6\u30A2\u30D4\u30FC\u30EB"
     type: 2
-    strength: 2
+    strength: 3
     attackData: {fileID: 11400000, guid: 81cf7f7ee93a02446bd66f97ea4c9f20, type: 2}
   - attackName: "\u4E0B\u30A2\u30D4\u30FC\u30EB"
     type: 3
-    strength: 2
+    strength: 3
     attackData: {fileID: 11400000, guid: 81cf7f7ee93a02446bd66f97ea4c9f20, type: 2}
   - attackName: "\u4E0A\u30A2\u30D4\u30FC\u30EB"
     type: 4
-    strength: 2
+    strength: 3
     attackData: {fileID: 11400000, guid: 81cf7f7ee93a02446bd66f97ea4c9f20, type: 2}
+  - attackName: "\u30CB\u30E5\u30FC\u30C8\u30E9\u30EB\u7A7A\u4E2D"
+    type: 0
+    strength: 2
+    attackData: {fileID: 11400000, guid: 5a309b54384316a4b9deadb73aa1fa2e, type: 2}
+  - attackName: "\u53F3\u7A7A\u4E2D"
+    type: 1
+    strength: 2
+    attackData: {fileID: 11400000, guid: 5a309b54384316a4b9deadb73aa1fa2e, type: 2}
+  - attackName: "\u5DE6\u7A7A\u4E2D"
+    type: 2
+    strength: 2
+    attackData: {fileID: 11400000, guid: 5a309b54384316a4b9deadb73aa1fa2e, type: 2}
+  - attackName: "\u4E0B\u7A7A\u4E2D"
+    type: 3
+    strength: 2
+    attackData: {fileID: 11400000, guid: 5a309b54384316a4b9deadb73aa1fa2e, type: 2}
+  - attackName: "\u4E0A\u7A7A\u4E2D"
+    type: 4
+    strength: 2
+    attackData: {fileID: 11400000, guid: 5a309b54384316a4b9deadb73aa1fa2e, type: 2}

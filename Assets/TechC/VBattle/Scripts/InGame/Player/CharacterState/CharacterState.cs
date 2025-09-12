@@ -200,8 +200,7 @@ namespace TechC
                 if (currentCommand is AttackCommand attackCommand)
                 {
                     attackCommand.SetAttackType(AttackProcessor_Refacta.CheckAttackType(playerInputManager));
-                    attackCommand.SetAttackStrength(AttackProcessor_Refacta.CheckAttackStrength(playerInputManager));
-
+                    attackCommand.SetAttackStrength(AttackProcessor_Refacta.CheckAttackStrength(playerInputManager,!characterController.IsGrounded()));
                 }
                 commandHistory.RecordCommand(
                     currentCommand,

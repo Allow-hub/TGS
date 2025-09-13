@@ -167,6 +167,7 @@ namespace TechC
                 if (highPriorityCommand != null)
                 {
                     CustomLogger.Info($"[{stateMachine.CurrentStateName}] コマンド {currentCommand.GetType().Name} を中断し、{highPriorityCommand.GetType().Name} を実行", stateLogId);
+                    Debug.Log($"[{stateMachine.CurrentStateName}] コマンド {currentCommand.GetType().Name} を中断し、{highPriorityCommand.GetType().Name} を実行");
                     currentCommand.ForceFinish();
                     currentCommand = highPriorityCommand;
                     currentCommand.Execute();

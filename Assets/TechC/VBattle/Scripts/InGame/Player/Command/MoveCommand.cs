@@ -38,7 +38,8 @@ namespace TechC
 
         public void ForceFinish()
         {
-
+            characterController.SetAnim(AnimatorParams.IsWalking,false);
+            characterController.SetAnim(AnimatorParams.IsRunning,false);
         }
     }
 }

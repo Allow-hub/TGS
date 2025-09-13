@@ -7,9 +7,6 @@ namespace TechC
     public class JumpCommand : INeutralUsableCommand, IAirUsableCommand
     {
         private Player.CharacterController character;
-        private int jumpAnim = Animator.StringToHash("IsJumping");
-        private int doubleJumpAnim = Animator.StringToHash("IsDoubleJumping");
-
         private BaseInputManager inputManager;
         private bool isForceFinish = false;
         private float doubleJumpAnimResetTime = 1f;
@@ -35,21 +32,25 @@ namespace TechC
 
         public async void Execute()
         {
+            /// <summary>
+            /// なぜか一回でもJumpを入れないとMoveCommandに割り込めない不具合あり
+            /// </summary>
             if (!IsFinished) return; // クールタイム中なら無視
-            character.SetAnim(AnimatorParams.IsWalking,false);
-            character.SetAnim(AnimatorParams.IsRunning,false);
+            Debug.Log("AA");
+            character.SetAnim(AnimatorParams.IsWalking, false);
+            character.SetAnim(AnimatorParams.IsRunning, false);
             if (Time.time - lastJumpTime <= jumpCooldown) return;
             if (character.IsGrounded())
             {
                 character.Jump();
                 //AudioManager.I.PlayCharacterSE(CharacterType.)
-                character.SetAnim(jumpAnim, true);
+                character.SetAnim(AnimatorParams.IsJumping, true);
             }
             else
             {
-                character.SetAnim(jumpAnim, false);
+                character.SetAnim(AnimatorParams.IsJumping, false);
                 character.DoubleJump();
-                character.SetAnim(doubleJumpAnim, true);
+                character.SetAnim(AnimatorParams.IsDoubleJumping, true);
                 await ResetDoubleJumpAnim();
             }
 
@@ -58,20 +59,19 @@ namespace TechC
 
         public void Undo()
         {
-            // 必要に応じてジャンプをキャンセル
         }
 
         public void ForceFinish()
         {
-            character.SetAnim(jumpAnim, false);
-            character.SetAnim(doubleJumpAnim, false);
+            character.SetAnim(AnimatorParams.IsJumping, false);
+            character.SetAnim(AnimatorParams.IsDoubleJumping, false);
             isForceFinish = true;
         }
 
         private async UniTask ResetDoubleJumpAnim()
         {
             await UniTask.Delay(TimeSpan.FromSeconds(doubleJumpAnimResetTime));
-            character.SetAnim(doubleJumpAnim, false);
+            character.SetAnim(AnimatorParams.IsDoubleJumping, false);
         }
     }
 }

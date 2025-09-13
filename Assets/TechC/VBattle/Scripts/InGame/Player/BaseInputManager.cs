@@ -94,7 +94,7 @@ namespace TechC
         {
             CheckDash();
             
-            if(moveInput == Vector2.zero)
+            if(moveInput.x == 0)
             {
                characterController.SetAnim(AnimatorParams.IsWalking,false);
                characterController.SetAnim(AnimatorParams.IsRunning,false); 

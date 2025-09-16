@@ -22,7 +22,7 @@ namespace TechC
         ///除算の結果などで無限が必要な時 例： 1 / 0f は Mathf.Infinity
         /// </summary>
 
-        public bool IsFinished => inputManager.IsJumping|| isForceFinish;
+        public bool IsFinished => !inputManager.IsJumping|| isForceFinish;
 
         public JumpCommand(Player.CharacterController character,BaseInputManager baseInputManager)
         {
@@ -35,8 +35,9 @@ namespace TechC
             /// <summary>
             /// なぜか一回でもJumpを入れないとMoveCommandに割り込めない不具合あり
             /// </summary>
-            if (!IsFinished) return; // クールタイム中なら無視
-            Debug.Log("AA");
+            // if (!IsFinished) return; // クールタイム中なら無視
+            if (Time.time - lastJumpTime <= jumpCooldown) return;
+            // Debug.Log("AA");
             character.SetAnim(AnimatorParams.IsWalking, false);
             character.SetAnim(AnimatorParams.IsRunning, false);
             if (Time.time - lastJumpTime <= jumpCooldown) return;

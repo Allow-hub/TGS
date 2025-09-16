@@ -21,7 +21,7 @@ MonoBehaviour:
   prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsNormalAir
   clip: {fileID: 7400000, guid: 0492c2519e4041d47a1cd3e3f41b3635, type: 2}
-  animationSpeed: 1.5
+  animationSpeed: 1
   attackDuration: 1.2
   hitDetectionMode: 2
   targetLayers:

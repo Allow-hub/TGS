@@ -10,10 +10,14 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace TechC.Select
 {
+    /// <summary>
+    /// ゲームパッドがクリックできるようにWindowにカーソルの画像を入れて操作する
+    /// </summary>
     public class GamepadPointer : MonoBehaviour
     {
-        [SerializeField] private Sprite pointerSprite;
+        [SerializeField] private List<Sprite> pointerSprite = new List<Sprite>();
         [SerializeField] private float cursorSpeed = 800f; // 1秒あたりの移動速度（ピクセル）
+        [SerializeField] private Vector2 cursorSize = new Vector2(64, 64);
 
         private Dictionary<InputDevice, NativeWindow> nativeWindows = new Dictionary<InputDevice, NativeWindow>();
         private Dictionary<InputDevice, Vector2> cursorPositions = new Dictionary<InputDevice, Vector2>();
@@ -104,9 +108,12 @@ namespace TechC.Select
                 int exStyle = PInvoke.GetWindowLong((HWND)w.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
                 exStyle |= (int)WINDOW_EX_STYLE.WS_EX_LAYERED;
                 PInvoke.SetWindowLong((HWND)w.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, exStyle);
-                WindowUtility.ResizeWindow((HWND)w.Hwnd, 64, 64); // 小さめのカーソルサイズ
+                WindowUtility.ResizeWindow((HWND)w.Hwnd, (int)cursorSize.x, (int)cursorSize.y); // 小さめのカーソルサイズ
+                int deviceIndex = nativeWindows.Count % pointerSprite.Count;
+                var spriteToUse = pointerSprite[deviceIndex];
+
                 if (w is ImageWindow imageWindow)
-                    imageWindow?.SetTextureToBitmap(pointerSprite.texture);
+                    imageWindow?.SetTextureToBitmap(spriteToUse.texture);
                 // 初期位置 = 画面中央
                 Vector2 startPos = new Vector2(Screen.width / 2, Screen.height / 2);
                 cursorPositions[device] = startPos;

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Windows.Win32.Foundation;
 
 namespace TechC
 {
@@ -43,7 +44,16 @@ namespace TechC
             h -= heightMargin; // ウィンドウの枠を考慮
             DrawWindowUtility.DrawTextureToWindow(Hwnd, image, w, h, ImageOrientation.FlipVertical);
         }
-
+        /// <summary>
+        /// テクスチャをリドローしない
+        /// </summary>
+        /// <param name="texture"></param>
+        public void SetTextureToBitmap(Texture2D texture)
+        {
+            image = texture;
+            SetRect();
+            DrawWindowUtility.SetLayeredTexture((HWND)Hwnd, image);
+        }
         public override void Destroy()
         {
             base.Destroy();

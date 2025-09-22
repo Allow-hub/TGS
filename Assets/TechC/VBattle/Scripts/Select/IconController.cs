@@ -234,7 +234,7 @@ namespace TechC.Select
         /// <summary>
         /// 現在選択中のデバイスを返す
         /// </summary>
-        public InputDevice GetCurrentIconData() => currentIconData.device;
+        public InputDevice GetCurrentDevice() => currentIconData.device;
 
     }
 }

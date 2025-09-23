@@ -24,6 +24,7 @@ GetWindowRect
 GetStockObject
 GetWindowDC
 IDC_ARROW
+INPUT
 InsertMenu
 InvalidateRect
 IsWindow
@@ -41,6 +42,7 @@ SetForegroundWindow
 SetTextColor
 SetWindowTheme
 SetWindowPos
+SendInput
 StretchBlt
 Shell_NotifyIcon
 ShowWindow
@@ -52,6 +54,7 @@ UpdateWindow
 WM_APP
 WM_COMMAND
 WM_LBUTTONDOWN
+WM_LBUTTONUP
 WM_NULL
 WM_RBUTTONDOWN
 WM_SETREDRAW
@@ -63,9 +66,12 @@ WM_DESTROY
 WM_PAINT
 WM_NCPAINT
 GetClassInfoEx
+GetSystemMetrics
 GetDC
 SetDIBitsToDevice
 ReleaseDC
+SetCursorPos
+ScreenToClient
 StretchDIBits
 SetParent
 HWND_TOPMOST

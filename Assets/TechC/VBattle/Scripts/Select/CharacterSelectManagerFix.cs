@@ -7,8 +7,8 @@ namespace TechC.Select
 {
     public class CharacterSelectManagerFix : Singleton<CharacterSelectManagerFix>
     {
-        [SerializeField] private IconController iconController_1p;//使うので残す
-        [SerializeField] private IconController iconController_2p;//使うので残す
+        
+
         private const float initializeDelay = 0.1f;
         protected override bool UseDontDestroyOnLoad => false;
 

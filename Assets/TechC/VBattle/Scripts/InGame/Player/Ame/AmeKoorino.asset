@@ -14,23 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   prefab: {fileID: 7627828736903395385, guid: 79a465377545c1648bbef77b5a111683, type: 3}
-  clips:
-  - {fileID: -6863707987208230174, guid: cf9850dab8882b0448135bc9fceb7764, type: 3}
-  - {fileID: -4286565773015259570, guid: 11e3e41419f2a1e4ead1d76cb58153d4, type: 3}
-  - {fileID: -6863707987208230174, guid: cf9850dab8882b0448135bc9fceb7764, type: 3}
   Hp: 500
   GuardPower: 100
   GuardDecreasePower: 0.1
   GuardRecoverySpeed: 0.3
   GuardRecoveryInterval: 2
   GuardBreakDuration: 2
-  MoveSpeed: 2.75
+  MoveSpeed: 1.3
+  DashMultipiler: 7
   MaxGroundSpeed: 8
-  Acceleration: 10
   Deceleration: 80
-  JumpForce: 5
-  DoubleJumpForce: 5.5
-  AirControlMultiplier: 0.7
-  AirAcceleration: 5
+  JumpForce: 6
+  DoubleJumpForce: 8
+  AirControlMultiplier: 2.2
+  AirAcceleration: 10
   FastFallSpeed: 15
-  RotationSpeed: 20

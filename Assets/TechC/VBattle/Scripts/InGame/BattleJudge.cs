@@ -333,7 +333,7 @@ namespace TechC
         {
             // バトルが進行中でなければ攻撃不可
             if (!isBattleOngoing) return false;
-
+            playerID--;
             // プレイヤーIDが不正なら攻撃不可
             if (playerID < 0 || playerID >= players.Count) return false;
 
@@ -389,6 +389,7 @@ namespace TechC
         /// <param name="canAttack">攻撃可能状態</param>
         public void SetPlayerAttackState(int playerID, bool canAttack)
         {
+            playerID--; // プレイヤーIDは1から始まるため、0ベースに変換
             if (playerID < 0 || playerID >= players.Count) return;
             players[playerID].canAttack = canAttack;
         }

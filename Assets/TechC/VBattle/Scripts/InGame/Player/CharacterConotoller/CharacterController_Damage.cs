@@ -52,7 +52,9 @@ namespace TechC.Player
             // hpPresenterがnullでないことを確認
             if (hpPresenter != null)
             {
+                DamageEvent?.Invoke();
                 hpPresenter.TakeDamage(damage * opponentController.GetMultipiler(BuffType.Attack));
+                characterState.ChangeDamageState();
             }
             else
             {
@@ -75,12 +77,14 @@ namespace TechC.Player
         public void SetCanCounter(bool val) => canCounter = val;
 
         public void SetCounterAction(Action action) => onCounter = action;
-
+        public void ResetCounterAction() => onCounter = null;
         public void UseCounter()
         {
             if (onCounter == null) return;
-            onCounter.Invoke();
+            SetCanCounter(false);
+            var action = onCounter;
             onCounter = null;
+            action.Invoke();
         }
 
         // ------------------------------

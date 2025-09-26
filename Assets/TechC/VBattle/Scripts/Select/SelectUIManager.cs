@@ -85,7 +85,7 @@ namespace TechC
         /// <param name="characterIndex">キャラインデックス（0 = あめ,1 = てらみ</param>
         private void ChangeCharacter(int playerIndex, int characterIndex)
         {
-            AudioManager.I.PlaySE(SEID.ButtonClick);
+            AudioManager.I?.PlaySE(SEID.ButtonClick);
             var ui = playerUIs[playerIndex];
 
             // UIの切り替え（片方だけアクティブにする）

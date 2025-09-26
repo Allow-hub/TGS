@@ -2,6 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TechC.Gimmicks;
+using TechC.UIs;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TechC.CommentSystem;
@@ -23,10 +25,9 @@ namespace TechC.Player
         [SerializeField] private Animator anim;
         [SerializeField] private CommandHistory commandHistory;
         [SerializeField] private CharacterType characterType;
+        [SerializeField] private ComboSystem comboSystem;
+        public ComboSystem ComboSystem => comboSystem;
         [Header("攻撃コンポーネント")]
-        [SerializeField] private WeakAttack weakAttack;
-        [SerializeField] private StrongAttack strongAttack;
-        [SerializeField] private AppealBase appealBase;
         [SerializeField] private AttackSet attackSet;
         public AttackSet AttackSet => attackSet;
         [Header("反発設定")]
@@ -51,6 +52,7 @@ namespace TechC.Player
         [SerializeField] private float duration;
 
         [Header("必殺技設定")]
+        public Action DamageEvent;
         [SerializeField] private GaugePresenter gaugePresenter;
 
         [Header("移動・ジャンプ設定")]
@@ -58,12 +60,15 @@ namespace TechC.Player
         [SerializeField] private float jumpInputThreshold = 0.7f; // ジャンプ入力のしきい値
         [SerializeField] private float rayLength = 0.1f;
         [SerializeField] private bool isDrawingRay;
+        [Header("ジャンプ調整")]
+        public float gravityScale = 1f;          // 通常上昇重力
+        public float fallGravityScale = 2.5f;    // 通常落下重力
+        public float shortHopGravityScale = 3.5f; // 可変ジャンプ用
+        public float fastFallGravityScale = 5f;   // 急降下用
+        public float fastFallInputThreshold = -0.5f;
 
         // 移動・回転関連の定数
         private const float STOP_THRESHOLD = 0.1f;
-        private const float FINAL_ROTATION_THRESHOLD = 1f; // 回転の最終調整の許容角度（1度）
-        private const float MICRO_ROTATION_THRESHOLD = 0.1f; // 微小誤差の許容範囲（0.1度）
-        private const float ROTATION_TOLERANCE = 5f; // 回転処理を行う最小角度差（5度）
         private const float RIGHT_FACING_ANGLE = 90f; // 右向きの目標角度
         private const float LEFT_FACING_ANGLE = -90f; // 左向きの目標角度
         private const float BUFF_DEFAULT_MULTIPLIER = 1.0f; // バフの初期倍率
@@ -90,6 +95,7 @@ namespace TechC.Player
         private float currentGuardPower;
         private float lastGuardTime;
         private Vector3 lastVelocity;
+        private bool isWallHitting = false;
 
         // 移動・物理関連
         private Rigidbody rb;
@@ -108,7 +114,9 @@ namespace TechC.Player
         private Coroutine sizeChangeRoutine;
         private Vector3 defaultSize;     // x=radius, y=height
         private Vector3 defaultCenter;   // centerを戻すために保存
-
+        private bool lastHitCanWallBounce;
+        private float lastHitBounceForce;
+        private float lastHitBounceUpForce;
         private Player.CharacterController opponentController;
 
         private Action onCounter;
@@ -124,6 +132,7 @@ namespace TechC.Player
         public Player.CharacterController OpponentController => opponentController;
         public int PlayerID => playerID; // PlayerIDのゲッター
         public Action OnCommentEvent;
+        public bool IsWallHitting=> isWallHitting;
         #endregion
 
         #region 更新メソッド
@@ -286,56 +295,89 @@ namespace TechC.Player
                 AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Land);
                 ResetJump();
             }
-
             // 壁に衝突しかつダメージステート中なら反発する
-            if (collision.gameObject.CompareTag("Wall") && enableWallBounce)
+            if (lastHitCanWallBounce && collision.gameObject.CompareTag("Wall"))
             {
-                if (collision.contacts.Length > 0)
-                {
-                    Vector3 contactPoint = collision.contacts[0].point;
-                    ApplyWallBounce(collision, contactPoint).Forget();
-
-                }
+                HandleWallBounce(collision);
+                ResetWallBounceData();
             }
         }
 
-
         /// <summary>
-        /// 壁に衝突した時の反発処理
+        /// 壁バウンド可能攻撃を受けた時に呼ぶ
         /// </summary>
-        /// <param name="collision">衝突情報</param>
-        private async UniTask ApplyWallBounce(Collision collision, Vector3 hitPos)
+        public void SetWallBounceData(float force, float upForce)
         {
+            lastHitCanWallBounce = true;
+            lastHitBounceForce = force;
+            lastHitBounceUpForce = upForce;
+        }
 
-            // 入射ベクトルを取得（ぶつかった直前の速度）
-            Vector3 inDirection = lastVelocity;
+        public void ResetWallBounceData()
+        {
+            if (!lastHitCanWallBounce) return;
+            lastHitCanWallBounce = false;
+            lastHitBounceForce = 0f;
+            lastHitBounceUpForce = 0f;
+        }
+        private void HandleWallBounce(Collision collision)
+        {
+            if (rb == null || collision.contacts.Length == 0) return;
 
-            // 衝突面の法線ベクトル（接触点から取得）
             Vector3 wallNormal = collision.contacts[0].normal;
+            Vector3 incoming = lastVelocity;
 
-            // 反射ベクトルを物理法則に基づいて計算
-            Vector3 reflected = Vector3.Reflect(inDirection.normalized, wallNormal);
+            Vector3 reflectDir;
+            if (incoming.sqrMagnitude > 0.0001f)
+                reflectDir = Vector3.Reflect(incoming.normalized, wallNormal).normalized;
+            else
+                reflectDir = -wallNormal.normalized;
 
-            // 跳ね返り力（速度ベースで自然な力に）
-            float bounceForce = inDirection.magnitude * wallBounceMultiplier;
-            bounceForce = Mathf.Clamp(bounceForce, 0f, maxBounceForce); // ← クランプ
+            float forceFromAttack = Mathf.Clamp(lastHitBounceForce, 0f, maxBounceForce);
+            float speedContribution = lastVelocity.magnitude * wallBounceMultiplier;
+            float totalForce = Mathf.Clamp(forceFromAttack + speedContribution, 0f, maxBounceForce);
 
-            // 破片
-            var debris = EffectFactory.I.GetEffectObj(debrisPrefab, hitPos, Quaternion.identity);
-            debris.GetComponent<ExplosionDebris>()?.Explode();
-
-            await UniTask.Delay(TimeSpan.FromSeconds(bounceStopTime));
-
-            // 速度をゼロにしてから反発力を加える
+            // 1. 衝突直後に一瞬だけ壁に押し付ける
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
-            rb.AddForce(reflected * bounceForce, ForceMode.Impulse);
+            rb.AddForce(-wallNormal * 5f, ForceMode.Impulse); // 壁方向に押し付ける
+            
+            CameraManager.I.StartShake(intensity: 0.2f, duration: 0.5f);
+            HitStopManager.I.DoHitStop(duration: 0.2f, timeScale: 0.05f);
+            AudioManager.I.PlaySE(SEID.WallHit);
+            isWallHitting = true;
+            characterState.ChangeDamageState();
+            // 2. 反射を少し遅らせて実行（0.08秒後など）
+            DelayUtility.StartDelayedActionWithPause(this, 0.1f, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                float bounceForce = totalForce * 0.4f;
 
-            // 破片のリターン
-            await UniTask.Delay(TimeSpan.FromSeconds(3f));
-            debris.GetComponent<ExplosionDebris>()?.ResetExplosion();
-            EffectFactory.I.ReturnEffect(debris);
+                // 上方向の力を強める（例えば2倍）
+                Vector3 upBoost = Vector3.up * lastHitBounceUpForce * 2f;
+
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+
+                // 反射ベクトルのY成分も少し強めてみる（0.5f分だけ足す）
+                Vector3 boostedReflectDir = reflectDir + Vector3.up * 1.5f;
+                boostedReflectDir.Normalize();
+
+                rb.AddForce((boostedReflectDir * bounceForce) + upBoost, ForceMode.Impulse);
+                isWallHitting = false;
+            });
+
+
+            // 3. 壁衝突エフェクト
+            var debris = EffectFactory.I.GetEffectObj(debrisPrefab, collision.contacts[0].point, Quaternion.identity);
+            debris.GetComponent<ExplosionDebris>()?.Explode();
+            DelayUtility.StartDelayedActionWithPause(this, 2f, BattleJudge.I.GetPauseStateFunc, () =>
+            {
+                debris.GetComponent<ExplosionDebris>()?.ResetExplosion();
+                EffectFactory.I.ReturnEffect(debris);
+            });
         }
+
+
 
         private void OnDrawGizmos()
         {

@@ -13,7 +13,8 @@ namespace TechC
         public enum WindowType { Basic, Image, Web }
 
         private Dictionary<WindowType, Queue<NativeWindow>> poolByType = new();
-        private const int InitialPoolSize = 1;
+        private int InitialPoolSize = 1;
+        private Vector2 defaultWindowSize = new Vector2(300, 300); 
         Dictionary<WindowType, int> initialPoolSizes = new Dictionary<WindowType, int>
         {
             { WindowType.Basic, 2 },
@@ -28,14 +29,13 @@ namespace TechC
             CustomWindowUtility.RegisterWindowClasses();
 
             // ウィンドウタイプごとの初期プールサイズを定義
-
             foreach (WindowType type in Enum.GetValues(typeof(WindowType)))
             {
                 poolByType[type] = new Queue<NativeWindow>();
                 int poolSize = initialPoolSizes.TryGetValue(type, out var size) ? size : InitialPoolSize;
                 for (int i = 0; i < poolSize; i++)
                 {
-                    var window = CreateNewWindow(type, $"{type} Window {i}", 300, 300);
+                    var window = CreateNewWindow(type, $"{type} Window {i}", (int)defaultWindowSize.x, (int)defaultWindowSize.y);
                     if (window != null)
                         poolByType[type].Enqueue(window);
                 }
@@ -48,6 +48,7 @@ namespace TechC
             DisposeAll();
             CustomWindowUtility.UnregisterWindowClasses();
         }
+        
         public NativeWindow GetWindow(WindowType type)
         {
             NativeWindow window = null;

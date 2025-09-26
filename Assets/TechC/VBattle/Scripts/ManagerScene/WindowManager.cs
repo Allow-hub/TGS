@@ -21,6 +21,11 @@ namespace TechC
         protected override void Init()
         {
             base.Init();
+            // DelayUtility.StartDelayedAction(this, 0.1f, () =>
+            // {
+            //     var w = WindowFactory.I.GetWindow(WindowFactory.WindowType.Basic);
+            //     WindowUtility.MoveWindow((HWND)w.Hwnd, 500, 500);
+            // });
         }
 
         void Update()

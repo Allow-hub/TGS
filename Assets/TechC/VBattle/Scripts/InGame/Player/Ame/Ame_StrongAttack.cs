@@ -86,7 +86,7 @@ namespace TechC
                 var cloneController = cloneObj.GetComponent<Player.CharacterController>();
                 cloneController.SetClonePlayerID(characterController.PlayerID);
                 if (characterController.GetCharacterState().AttackManager == null) return;
-                commandHistory.ReplayAttackCommandsFromSecondsAgo(echoTimeInterval, cloneController.GetCharacterState().AttackManager);
+                commandHistory.ReplayAttackCommandsFromSecondsAgo(echoTimeInterval, cloneController);
                 isCloneAttacking = true;
 
             });

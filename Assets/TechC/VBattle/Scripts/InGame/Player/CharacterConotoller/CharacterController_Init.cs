@@ -16,7 +16,7 @@ namespace TechC.Player
         {
             var attackManager = new AttackManager();
             characterState = new CharacterState(playerInputManager, this, attackManager, anim, commandHistory);
-            attackManager?.Initialize(weakAttack, strongAttack, appealBase, playerInputManager, this);
+            // attackManager?.Initialize(weakAttack, strongAttack, appealBase, playerInputManager, this);
 
             anim.speed = defaultAnimSpeed;
 

@@ -12,20 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81597f626b83d140b7b46579eee1476, type: 3}
   m_Name: Terami
   m_EditorClassIdentifier: 
-  Name: TeramiSUi
+  type: 2
+  prefab: {fileID: 7627828736903395385, guid: 10f0ab4c65588784091056c4bbc13ba4, type: 3}
   Hp: 500
   GuardPower: 100
   GuardDecreasePower: 0.1
   GuardRecoverySpeed: 0.3
   GuardRecoveryInterval: 2
   GuardBreakDuration: 2
-  MoveSpeed: 2.75
+  MoveSpeed: 1.5
+  DashMultipiler: 9
   MaxGroundSpeed: 8
-  Acceleration: 10
   Deceleration: 80
-  JumpForce: 5
-  DoubleJumpForce: 5.5
-  AirControlMultiplier: 0.7
-  AirAcceleration: 5
-  FastFallSpeed: 15
-  RotationSpeed: 20
+  JumpForce: 8
+  DoubleJumpForce: 10
+  AirControlMultiplier: 4
+  AirAcceleration: 10
+  FastFallSpeed: 25

@@ -15,36 +15,42 @@ MonoBehaviour:
   characterType: 2
   attackName: Neutral_W1
   description: 
-  data:
-    attackType: 0
-    attackStrength: 0
+  attackPrefab: {fileID: 0}
+  prefabOffset: {x: 0, y: 0, z: 0}
+  prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsNormalWeakAttack_1
+  clip: {fileID: 0}
   animationSpeed: 1.5
   attackDuration: 0.6
-  damage: 50
-  knockback: 7
-  canRepeat: 0
-  repeatInterval: 0
-  repeatDuration: 0
-  radius: 4
+  hitDetectionMode: 1
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
+  radius: 4
   hitboxOffset: {x: 0, y: 1, z: 1.2}
   hitTiming: 0.3
+  hitEffectPrefab: {fileID: 0}
+  damage: 50
+  knockback: 7
+  isCounter: 0
+  nextChain: {fileID: 11400000, guid: c0be7a95cfbbf8d4ea5c1fea1419cf06, type: 2}
+  canChain: 1
+  isChainPos: 0
+  chainThreshold: 0
   hitStopDuration: 0.01
   hitStopTimeScale: 0.2
   knockbackDirection: {x: 0, y: 1, z: 1}
-  useCustomKnockbackDirection: 1
-  useSelfColliderForHitCheck: 1
   shakeIntensity: 0.1
   shakeDuraion: 0.1
   noiseSettings: {fileID: 0}
+  canRepeat: 0
+  repeatInterval: 0
+  repeatDuration: 0
+  isAppeal: 0
+  chargeDuration: 5
+  causesWallBounce: 0
+  wallBounceForce: 8
+  wallBounceVerticalBoost: 2
+  wallBounceTime: 0.5
   characterSEType: 0
   characterVoiceType: 0
-  hitStunDuration: 0
-  hitStunLevel: 0
-  isLaunchAttack: 0
-  canTech: 1
-  canDI: 1
-  diInfluence: 0.3

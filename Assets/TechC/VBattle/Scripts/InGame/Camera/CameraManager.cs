@@ -61,7 +61,6 @@ namespace TechC
 
         protected override void Init()
         {
-            CustomLogger.Info("CameraManager.Init() called", LOGTAG);
             base.Init();
 
             if (normalCameraSettingsOriginal == null || ultCameraSettingsOriginal == null)
@@ -75,7 +74,6 @@ namespace TechC
                 normalCameraSettings.ValidateSettings();
                 ultCameraSettings.ValidateSettings();
                 currentCameraSettings = normalCameraSettings;
-                CustomLogger.Info("Cloned camera settings and set current to normal.", LOGTAG);
             }
 
             DelayUtility.StartDelayedAction(this, 0.11f, () =>
@@ -95,7 +93,6 @@ namespace TechC
 
         protected override void OnRelease()
         {
-            CustomLogger.Info("CameraManager.OnRelease() called", LOGTAG);
             base.OnRelease();
             BattleJudge.I.OnUltStart.RemoveListener(SetUltCamera);
             ClearTargets();
@@ -103,7 +100,6 @@ namespace TechC
 
         void Update()
         {
-            CustomLogger.Info("CameraManager.Update() called", LOGTAG);
             UpdateCameraZoom();
             UpdateCameraShake();
             ValidatePlayers();
@@ -114,26 +110,16 @@ namespace TechC
         /// </summary>
         private void InitializeCamera()
         {
-            CustomLogger.Info("InitializeCamera() called", LOGTAG);
             if (vcam == null)
             {
                 CustomLogger.Error("CameraManager: VirtualCameraが設定されていません", LOGTAG);
                 return;
-            }
-            else
-            {
-                CustomLogger.Info("vcam is set: " + vcam.name, LOGTAG);
             }
 
             noiseComponent = vcam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
             if (noiseComponent == null && EnableCameraShake)
             {
                 noiseComponent = vcam.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-                CustomLogger.Info("noiseComponent was null, added new CinemachineBasicMultiChannelPerlin", LOGTAG);
-            }
-            else
-            {
-                CustomLogger.Info("noiseComponent is set", LOGTAG);
             }
             if (noiseComponent != null)
             {
@@ -149,11 +135,7 @@ namespace TechC
                 targetGroup.m_RotationMode = CinemachineTargetGroup.RotationMode.Manual;
                 targetGroup.m_UpdateMethod = CinemachineTargetGroup.UpdateMethod.LateUpdate;
             }
-            else
-            {
-                CustomLogger.Error("CameraManager: targetGroupが設定されていません", LOGTAG);
-            }
-            
+            SwitchCameraSettings(false);
             lastUpdateTime = Time.time;
         }
 
@@ -162,7 +144,6 @@ namespace TechC
         /// </summary>
         private void RegisterPlayers()
         {
-            CustomLogger.Info("RegisterPlayers() called", LOGTAG);
             if (BattleJudge.I?.Players == null)
             {
                 CustomLogger.Error("BattleJudge.I.Players is null", LOGTAG);
@@ -177,10 +158,6 @@ namespace TechC
                     CustomLogger.Info("Registering player: " + playerInfo.playerObject.name, LOGTAG);
                     AddPlayer(playerInfo.playerObject.transform);
                 }
-                else
-                {
-                    CustomLogger.Warning("playerInfo or playerObject is null", LOGTAG);
-                }
             }
         }
 
@@ -189,9 +166,7 @@ namespace TechC
         /// </summary>
         private void UpdateCameraZoom()
         {
-            CustomLogger.Info("UpdateCameraZoom() called", LOGTAG);
             var activePlayers = GetActivePlayers();
-            CustomLogger.Info($"ActivePlayers count: {activePlayers.Count}", LOGTAG);
             if (activePlayers.Count < 2)
             {
                 CustomLogger.Warning("ActivePlayers less than 2, skipping zoom update", LOGTAG);
@@ -199,13 +174,11 @@ namespace TechC
             }
 
             float maxDistanceBetweenPlayers = CalculateMaxDistance(activePlayers);
-            CustomLogger.Info($"maxDistanceBetweenPlayers: {maxDistanceBetweenPlayers}", LOGTAG);
 
             // 先読み機能：プレイヤーの移動速度を考慮
             if (AdaptToPlayerSpeed)
             {
                 float anticipatedDistance = CalculateAnticipatedDistance(activePlayers, maxDistanceBetweenPlayers);
-                CustomLogger.Info($"anticipatedDistance: {anticipatedDistance}", LOGTAG);
                 maxDistanceBetweenPlayers = Mathf.Max(maxDistanceBetweenPlayers, anticipatedDistance);
             }
 
@@ -219,14 +192,12 @@ namespace TechC
             float currentFOV = vcam.m_Lens.FieldOfView;
             float newFOV = Mathf.Lerp(currentFOV, targetFOV, Time.deltaTime * ZoomSpeed);
 
-            CustomLogger.Info($"currentFOV: {currentFOV}, targetFOV: {targetFOV}, newFOV: {newFOV}", LOGTAG);
 
             vcam.m_Lens.FieldOfView = newFOV;
 
             // ズーム変更イベント
             if (Mathf.Abs(newFOV - currentFOV) > 0.1f)
             {
-                CustomLogger.Info($"OnZoomChanged invoked: {newFOV}", LOGTAG);
                 OnZoomChanged?.Invoke(newFOV);
             }
         }
@@ -234,10 +205,7 @@ namespace TechC
         /// <summary>
         /// アクティブなプレイヤーのリストを取得
         /// </summary>
-        private List<Transform> GetActivePlayers()
-        {
-            return players.Where(p => p != null && p.gameObject.activeInHierarchy).ToList();
-        }
+        private List<Transform> GetActivePlayers()=> players.Where(p => p != null && p.gameObject.activeInHierarchy).ToList();
 
         /// <summary>
         /// プレイヤー間の最大距離を計算
@@ -322,12 +290,10 @@ namespace TechC
                 // シェイクの強度を時間とともに減衰
                 float normalizedTime = Mathf.Clamp01(shakeTimer / DefaultShakeDuration);
                 noiseComponent.m_AmplitudeGain = DefaultShakeIntensity * normalizedTime;
-                CustomLogger.Info($"Shake active: amplitude={noiseComponent.m_AmplitudeGain}, timer={shakeTimer}", LOGTAG);
             }
             else
             {
                 noiseComponent.m_AmplitudeGain = 0f;
-                CustomLogger.Info("Shake ended", LOGTAG);
             }
         }
 
@@ -336,7 +302,6 @@ namespace TechC
         /// </summary>
         private void ValidatePlayers()
         {
-            CustomLogger.Info("ValidatePlayers() called", LOGTAG);
             for (int i = players.Count - 1; i >= 0; i--)
             {
                 if (players[i] == null || !players[i].gameObject.activeInHierarchy)
@@ -394,19 +359,6 @@ namespace TechC
             OnPlayerRemoved?.Invoke(player);
             CustomLogger.Info($"CameraManager: プレイヤー {player?.name} を削除しました", LOGTAG);
         }
-        public void SetCameraDistance(float value)
-        {
-            var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
-            if (transposer == null)
-            {
-                CustomLogger.Warning("CameraManager: FramingTransposer が見つかりません", LOGTAG);
-                return;
-            }
-
-            transposer.m_CameraDistance = value;
-            CustomLogger.Info($"CameraManager: カメラ距離を {value} に設定しました", LOGTAG);
-        }
-
         /// <summary>
         /// 全プレイヤーとターゲットグループを初期化
         /// </summary>
@@ -465,61 +417,6 @@ namespace TechC
             if (noiseComponent != null)
             {
                 noiseComponent.m_AmplitudeGain = 0f;
-            }
-        }
-
-        /// <summary>
-        /// ズーム設定を動的に変更
-        /// </summary>
-        public void SetZoomSettings(float minFOV, float maxFOV, float minDist, float maxDist)
-        {
-            if (currentCameraSettings == null)
-            {
-                CustomLogger.Warning("CameraManager: currentCameraSettingsが設定されていません", LOGTAG);
-                return;
-            }
-
-            currentCameraSettings.minFOV = Mathf.Max(1f, minFOV);
-            currentCameraSettings.maxFOV = Mathf.Max(currentCameraSettings.minFOV, maxFOV);
-            currentCameraSettings.minDistance = Mathf.Max(0.1f, minDist);
-            currentCameraSettings.maxDistance = Mathf.Max(currentCameraSettings.minDistance, maxDist);
-
-            ApplyZoomSettings();
-        }
-        /// <summary>
-        /// カメラのオフセットを設定
-        /// </summary>
-        public void SetCameraOffset(Vector3 offset)
-        {
-            if (vcam == null)
-            {
-                CustomLogger.Warning("CameraManager: vcam が設定されていません", LOGTAG);
-                return;
-            }
-
-            var transposer = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
-            if (transposer == null)
-            {
-                CustomLogger.Warning("CameraManager: FramingTransposer が見つかりません", LOGTAG);
-                return;
-            }
-
-            transposer.m_ScreenX = Mathf.Clamp01(offset.x);
-            transposer.m_ScreenY = Mathf.Clamp01(offset.y);
-
-            CustomLogger.Info($"CameraManager: Screen位置を X={offset.x}, Y={offset.y} に設定しました", LOGTAG);
-        }
-
-        /// <summary>
-        /// デッドゾーンを設定
-        /// </summary>
-        public void SetDeadZone(float zone)
-        {
-            if (currentCameraSettings != null)
-            {
-                currentCameraSettings.deadZone = Mathf.Max(0f, zone);
-                ApplyZoomSettings(); 
-                CustomLogger.Info($"CameraManager: デッドゾーンを {zone} に設定しました", LOGTAG);
             }
         }
         /// <summary>

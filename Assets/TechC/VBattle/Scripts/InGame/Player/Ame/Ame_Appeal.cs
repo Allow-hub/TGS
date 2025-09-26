@@ -181,7 +181,6 @@ namespace TechC
                 WindowManager.I.ResetAllreasyPopup();
                 BattleJudge.I.ResumePlayers();
                 GameManager.I.SetActiveSceneRoot(true, "CutIn");
-                
             });
         }
 

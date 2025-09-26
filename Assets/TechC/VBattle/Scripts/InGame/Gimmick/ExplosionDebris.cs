@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TechC
+namespace TechC.Gimmicks
 {
     /// <summary>
     /// 壁にぶつかった時に破片を飛び散らかす処理

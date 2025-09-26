@@ -92,8 +92,8 @@ MonoBehaviour:
   - icon
   - window
   - camera
-  - state
   - npc
+  - audio
+  - state
   - comboClear
   - comboCheck
-  - audio

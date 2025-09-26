@@ -20,29 +20,37 @@ MonoBehaviour:
   prefabOffset: {x: 0, y: 0, z: 0}
   prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsRightWeakAttack
-  clip: {fileID: 7400000, guid: 642ce44fd8d255240ad5ca3b6d84d5ac, type: 2}
-  animationSpeed: 1.8
+  clip: {fileID: 7267547487708191090, guid: 7976ff9ea3d4fc2449a3845bc797040d, type: 3}
+  animationSpeed: 1.4
   attackDuration: 0.6
-  nextChain: {fileID: 0}
-  canChain: 0
-  chainThreshold: 0
-  damage: 0
-  knockback: 0
-  canRepeat: 1
-  repeatInterval: 0
-  repeatDuration: 0
-  radius: 0
+  hitDetectionMode: 2
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
-  hitDetectionMode: 1
+  radius: 0
   hitboxOffset: {x: 0, y: 1, z: 1}
   hitTiming: 0
+  hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+    type: 3}
+  damage: 0
+  knockback: 0
+  isCounter: 0
+  nextChain: {fileID: 0}
+  canChain: 0
+  isChainPos: 0
+  chainThreshold: 0
   hitStopDuration: 0.9
   hitStopTimeScale: 0.8
   knockbackDirection: {x: 0, y: 1, z: 1}
   shakeIntensity: 0.1
   shakeDuraion: 0.1
   noiseSettings: {fileID: 0}
+  canRepeat: 1
+  repeatInterval: 0
+  repeatDuration: 0
+  causesWallBounce: 0
+  wallBounceForce: 8
+  wallBounceVerticalBoost: 2
+  wallBounceTime: 0.5
   characterSEType: 0
   characterVoiceType: 0

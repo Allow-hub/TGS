@@ -15,44 +15,42 @@ MonoBehaviour:
   characterType: 1
   attackName: Right_S
   description: 
-  data:
-    attackType: 1
-    attackStrength: 1
   attackPrefab: {fileID: 7050212149494774861, guid: de5f91acb2e93ef4bb9d6b10077131e1,
     type: 3}
   prefabOffset: {x: 0, y: 0, z: 3}
   prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsRightStrongAttack
-  clip: {fileID: -4791504522942941401, guid: 915d9f4276401d44aa6094bb8c2c9e5f, type: 3}
-  animationSpeed: 1.5
+  clip: {fileID: -6846040849299452207, guid: 2dd0fa897f5e6454db08095d828e5021, type: 3}
+  animationSpeed: 1.2
   attackDuration: 1
-  nextChain: {fileID: 0}
-  canChain: 0
-  chainThreshold: 0
-  damage: 10
-  knockback: 10
-  canRepeat: 0
-  repeatInterval: 0
-  repeatDuration: 0
-  radius: 0
+  hitDetectionMode: 2
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
+  radius: 0
   hitboxOffset: {x: 0, y: 1, z: 1}
-  hitTiming: 0.3
+  hitTiming: 0.45
+  hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
+    type: 3}
+  damage: 10
+  knockback: 10
+  isCounter: 0
+  nextChain: {fileID: 0}
+  canChain: 0
+  isChainPos: 0
+  chainThreshold: 0
   hitStopDuration: 0.3
   hitStopTimeScale: 0.02
   knockbackDirection: {x: 0, y: 0, z: 1}
-  useCustomKnockbackDirection: 1
-  useSelfColliderForHitCheck: 0
   shakeIntensity: 0.1
   shakeDuraion: 0.1
   noiseSettings: {fileID: 0}
+  canRepeat: 0
+  repeatInterval: 0
+  repeatDuration: 0
+  causesWallBounce: 0
+  wallBounceForce: 8
+  wallBounceVerticalBoost: 2
+  wallBounceTime: 0.5
   characterSEType: 12
   characterVoiceType: 0
-  hitStunDuration: 0.5
-  hitStunLevel: 0
-  isLaunchAttack: 0
-  canTech: 1
-  canDI: 1
-  diInfluence: 0.3

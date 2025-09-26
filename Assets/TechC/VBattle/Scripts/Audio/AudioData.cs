@@ -31,6 +31,7 @@ namespace TechC
         CommentGet,
         Guard,
         Hit,
+        WallHit,
         TabNotification,
         Grass
     }

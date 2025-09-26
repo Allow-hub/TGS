@@ -9,6 +9,9 @@ namespace TechC.Player
     /// </summary>
     public partial class CharacterController
     {
+
+        // 予測着地地点を保持するフィールド
+        private Vector3 predictedLandingPoint;
         /// <summary>
         /// ステート側で読み込む移動処理
         /// </summary>
@@ -114,6 +117,28 @@ namespace TechC.Player
             {
                 rb.AddForce(Vector3.down * characterData.FastFallSpeed, ForceMode.Acceleration);
             }
+            ApplyCustomGravity();
+
+        }
+        private void ApplyCustomGravity()
+        {
+            if (rb.velocity.y > 0) // 上昇中
+            {
+                if (!playerInputManager.IsJumping)
+                {
+                    // 可変ジャンプ（短押しなら早く落ちる）
+                    rb.velocity += Vector3.down * shortHopGravityScale * Time.deltaTime;
+                }
+                else
+                {
+                    // 通常上昇
+                    rb.velocity += Vector3.down * gravityScale * Time.deltaTime;
+                }
+            }
+            else if (rb.velocity.y < 0) // 落下中
+            {
+                rb.velocity += Vector3.down * fallGravityScale * Time.deltaTime;
+            }
         }
 
         /// <summary>
@@ -124,8 +149,12 @@ namespace TechC.Player
             if (IsGrounded())
             {
                 AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Jump);
-                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-                rb.AddForce(Vector3.up * characterData.JumpForce, ForceMode.Impulse);
+
+                // 初速を即時反映
+                rb.velocity = new Vector3(rb.velocity.x, characterData.JumpForce, rb.velocity.z);
+
+                // 着地予測地点を計算して保存
+                CalculatePredictedLandingPoint();
             }
         }
 
@@ -137,10 +166,68 @@ namespace TechC.Player
             if (CanDoubleJump() && !IsGrounded())
             {
                 AudioManager.I.PlayCharacterSE(characterType, CharacterSEType.Jump);
-                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-                rb.AddForce(Vector3.up * characterData.DoubleJumpForce, ForceMode.Impulse);
+
+                // 今の上昇速度を残しつつ補強
+                float newY = Mathf.Max(rb.velocity.y * 0.5f, 0f) + characterData.DoubleJumpForce;
+                rb.velocity = new Vector3(rb.velocity.x, newY, rb.velocity.z);
+
                 UseDoubleJump();
+                CalculatePredictedLandingPoint();
             }
+        }
+
+
+
+        /// <summary>
+        /// ジャンプ開始時に予測着地地点を計算する
+        /// </summary>
+        private void CalculatePredictedLandingPoint()
+        {
+            Vector3 startPosition = transform.position;
+            Vector3 initialVelocity = rb.velocity; // ジャンプ直後の速度を使う
+            float gravity = Mathf.Abs(Physics.gravity.y); // 重力の絶対値
+            float y0 = startPosition.y;
+            float vy = initialVelocity.y;
+
+            // y(t) = y0 + vy * t - 0.5 * g * t^2 = 0 となるtを計算する（二次方程式）
+            // 0.5 * g * t^2 - vy * t - y0 = 0
+            float a = 0.5f * gravity;
+            float b = -vy;
+            float c = -y0;
+
+            float discriminant = b * b - 4 * a * c;
+            if (discriminant < 0)
+            {
+                // 解なし（何か異常？）は現在位置を設定しておく
+                predictedLandingPoint = startPosition;
+                return;
+            }
+
+            float sqrtDiscriminant = Mathf.Sqrt(discriminant);
+            float t1 = (b + sqrtDiscriminant) / (2 * a);
+            float t2 = (b - sqrtDiscriminant) / (2 * a);
+
+            // 正の解を選択
+            float timeToLand = Mathf.Max(t1, t2);
+            if (timeToLand < 0)
+            {
+                predictedLandingPoint = startPosition;
+                return;
+            }
+
+            // 水平方向の移動距離を計算（速度は一定と仮定）
+            float vx = initialVelocity.x;
+            float vz = initialVelocity.z;
+
+            float predictedX = startPosition.x + vx * timeToLand;
+            float predictedZ = startPosition.z + vz * timeToLand;
+
+            // Yは地面として0をセット（もしくは地形に合わせてRaycastなどで調整可能）
+            predictedLandingPoint = new Vector3(predictedX, 0f, predictedZ);
+
+            // デバッグ用に可視化（着地予測位置に青い球を表示）
+            Debug.DrawLine(startPosition, predictedLandingPoint, Color.blue, 2f);
+            Debug.DrawRay(predictedLandingPoint + Vector3.up * 2, Vector3.down * 2, Color.blue, 2f);
         }
 
         /// <summary>

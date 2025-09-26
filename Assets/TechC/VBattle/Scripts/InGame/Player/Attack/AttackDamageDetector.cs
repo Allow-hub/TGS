@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine;
 
 namespace TechC.Player.Attack
@@ -5,20 +6,37 @@ namespace TechC.Player.Attack
     public class AttackDamageDetector : IAttackBehaviour
     {
         [SerializeField] private AttackData attackData;
-        [SerializeField] private float colliderSize = 3f;
-        private Collider col;
+        [SerializeField] private Collider col;
         private float currnetTime;
         private GameObject ownerObj;
+        private GameObject character;
+        private CancellationTokenSource attackCTS;
+        private AttackObjectController attackObjectController;
+
         public void Initialize(GameObject owner)
         {
-            col = owner.GetComponent<Collider>();
             ownerObj = owner;
+            col.enabled = false;
+            attackObjectController = owner.GetComponent<AttackObjectController>();
+        }
+        public void Activate(GameObject character)
+        {
+            if (col == null) return;
+            col.enabled = false;
+            this.character = character;
+            currnetTime = 0f;
+            attackCTS = new CancellationTokenSource();
+
         }
 
         public void OnRelease()
         {
             if (col == null) return;
             col.enabled = false;
+            if (attackCTS == null) return;
+            attackCTS.Cancel();
+            attackCTS.Dispose();
+            attackCTS = null;
         }
 
         public void OnUpdate(float deltaTime)
@@ -32,10 +50,11 @@ namespace TechC.Player.Attack
         }
         public void OnTriggerEnter(Collider other)
         {
-            AttackProcessor_Refacta.ProcessAttack(attackData, ownerObj);
+            if (!other.gameObject.CompareTag(attackObjectController.PlayerTag)) return;
+            var characterController = other.transform.root.GetComponent<CharacterController>();
+            if (characterController == null) return;
+            if (characterController.PlayerID == attackObjectController.PlayerID) return;// 自分自身への接触は無視
+            AttackProcessor_Refacta.ProcessAttack(attackData, character.GetComponent<CharacterController>(), ownerObj, attackCTS.Token);
         }
-
-
-        public void OnTriggerExit(Collider other) { }
     }
 }

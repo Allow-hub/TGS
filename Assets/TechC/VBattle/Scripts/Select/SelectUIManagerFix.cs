@@ -17,7 +17,7 @@ namespace TechC.Select
         [SerializeField] private IconController iconController_2p;
 
         private CharacterPick[] currentPicks = new CharacterPick[2];
-
+        protected override bool UseDontDestroyOnLoad => false;
         protected override void Init()
         {
             base.Init();

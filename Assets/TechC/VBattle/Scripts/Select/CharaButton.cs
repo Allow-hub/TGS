@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System.Collections;
 
 namespace TechC.Select
 {
@@ -15,28 +16,34 @@ namespace TechC.Select
     {
         [SerializeField] private Image p1DisplayImage;
         [SerializeField] private Image p2DisplayImage;
+        [SerializeField] private SelectPickAnim p1SelectPickAnim;
+        [SerializeField] private SelectPickAnim p2SelectPickAnim;
 
         [SerializeField] private Sprite p1CharaSprite;       // このボタンで選べるキャラのサムネ
         [SerializeField] private Sprite p2CharaSprite;       // このボタンで選べるキャラのサムネ
-        [SerializeField] private GameObject pickCharaPrefab;// このボタンで選べるキャラ
+        [SerializeField] private GameObject pickCharaPrefab; // このボタンで選べるキャラ
+        [SerializeField] private float animCallTime = 1f;
+
+        [Header("爆散用マテリアル")]
+        [SerializeField] private Material explodeMaterial;   // ExplodeVoronoi.shader を割り当てる
 
         private void OnValidate()
         {
 #if UNITY_EDITOR
-            // 名前で自動割り当て
             if (p1DisplayImage == null)
             {
-                var obj = GameObject.Find("p1DisplayImage").GetComponent<Image>();
+                var obj = GameObject.Find("p1DisplayImage")?.GetComponent<Image>();
                 if (obj != null) p1DisplayImage = obj;
             }
 
             if (p2DisplayImage == null)
             {
-                var obj = GameObject.Find("p2DisplayImage").GetComponent<Image>();
+                var obj = GameObject.Find("p2DisplayImage")?.GetComponent<Image>();
                 if (obj != null) p2DisplayImage = obj;
             }
 #endif
         }
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             var (device, deviceName) = ResolveDevice(eventData);
@@ -66,9 +73,6 @@ namespace TechC.Select
             }
         }
 
-        /// <summary>
-        /// PointerEventData から InputDevice と名前を取り出す
-        /// </summary>
         private (InputDevice, string) ResolveDevice(PointerEventData eventData)
         {
             if (eventData is UnityEngine.InputSystem.UI.ExtendedPointerEventData extended)
@@ -76,7 +80,6 @@ namespace TechC.Select
                 var device = extended.device;
                 if (device is Mouse)
                 {
-                    // マウスはKeyboard扱いにする
                     return (Keyboard.current, "Keyboard");
                 }
                 else if (device != null)
@@ -91,20 +94,15 @@ namespace TechC.Select
             return (null, "旧InputSystem");
         }
 
-        /// <summary>
-        /// カーソルを合わせた時サムネイルを変更
-        /// </summary>
-        /// <param name="id"></param>
         private void ChangePickThumbnail(int id)
         {
-            if (id == 0) return; // 無効なID
+            if (id == 0) return;
 
-            if (id == 1) // 1P
+            if (id == 1)
             {
-                // p1DisplayImage に選んだキャラの画像を反映
                 p1DisplayImage.sprite = p1CharaSprite;
             }
-            else // 2P
+            else
             {
                 p2DisplayImage.sprite = p2CharaSprite;
             }
@@ -112,14 +110,44 @@ namespace TechC.Select
 
         private void DicidePick(int id)
         {
-            if (id == 0) return; // 無効なID
+            if (id == 0) return;
 
-            if (id == 1) // 1P
-            {
-            }
-            else // 2P
-            {
-            }
+            Image target = (id == 1) ? p1DisplayImage : p2DisplayImage;
+            if (target == null || explodeMaterial == null) return;
+
+            // 爆散アニメーションを開始
+            StartCoroutine(PlayExplodeAnimation(target,id));
         }
+
+        private IEnumerator PlayExplodeAnimation(Image target, int id)
+        {
+            var originalMat = target.material;
+            var instMat = new Material(explodeMaterial);
+            target.material = instMat;
+
+            float time = 0f;
+            float duration = 1.2f;
+            if (id == 1 && p1SelectPickAnim != null)
+            {
+                p1SelectPickAnim.PlayAnim(id);
+            }
+            else if (id == 2 && p2SelectPickAnim != null)
+            {
+                p2SelectPickAnim.PlayAnim(id);
+            }
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                float progress = Mathf.Clamp01(time / duration);
+
+                instMat.SetFloat("_Progress", progress);
+                yield return null;
+            }
+
+            target.enabled = false;
+            target.material = originalMat;
+        }
+
     }
 }

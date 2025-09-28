@@ -111,12 +111,24 @@ namespace TechC.Select
         private void DicidePick(int id)
         {
             if (id == 0) return;
+            if (SelectUIManagerFix.I.CheckPicked(id))
+            {
+                if (!SelectUIManagerFix.I.GetIsNpc()) return;
+                id = 2;
+                Image target = (id == 1) ? p1DisplayImage : p2DisplayImage;
+                if (target == null || explodeMaterial == null) return;
 
-            Image target = (id == 1) ? p1DisplayImage : p2DisplayImage;
-            if (target == null || explodeMaterial == null) return;
+                // 爆散アニメーションを開始
+                StartCoroutine(PlayExplodeAnimation(target, id));
+            }
+            else
+            {
+                Image target = (id == 1) ? p1DisplayImage : p2DisplayImage;
+                if (target == null || explodeMaterial == null) return;
 
-            // 爆散アニメーションを開始
-            StartCoroutine(PlayExplodeAnimation(target,id));
+                // 爆散アニメーションを開始
+                StartCoroutine(PlayExplodeAnimation(target, id));
+            }
         }
 
         private IEnumerator PlayExplodeAnimation(Image target, int id)
@@ -129,12 +141,13 @@ namespace TechC.Select
             float duration = 1.2f;
             if (id == 1 && p1SelectPickAnim != null)
             {
-                p1SelectPickAnim.PlayAnim(id);
+                p1SelectPickAnim.PlayAnim(pickCharaPrefab);
             }
             else if (id == 2 && p2SelectPickAnim != null)
             {
-                p2SelectPickAnim.PlayAnim(id);
+                p2SelectPickAnim.PlayAnim(pickCharaPrefab);
             }
+            SelectUIManagerFix.I.SetPicked(id, true);
 
             while (time < duration)
             {

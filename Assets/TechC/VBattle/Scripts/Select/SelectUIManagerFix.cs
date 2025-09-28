@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace TechC.Select
 {
@@ -13,14 +12,40 @@ namespace TechC.Select
             public GameObject characterObject;
             public InputDevice inputDevice;
         }
+
+        // ==============================
+        // Inspector設定用
+        // ==============================
+        [SerializeField] private GameObject startObj;
+        [SerializeField] private Button cancelButton;
+        [SerializeField] private Button startButton;
         [SerializeField] private IconController iconController_1p;
         [SerializeField] private IconController iconController_2p;
+        [SerializeField] private GameObject npcAmePrefab;
+        [SerializeField] private GameObject npcTeramiPrefab;
 
+        // ==============================
+        // 公開プロパティ / コールバック
+        // ==============================
+        public System.Action OnStartGamePicked;
+        public bool[] HasPicked => hasPicked;
+        public CharacterPick[] CurrentPicks => currentPicks;
+
+        // ==============================
+        // 内部状態管理
+        // ==============================
+        private bool[] hasPicked = new bool[2];
         private CharacterPick[] currentPicks = new CharacterPick[2];
         protected override bool UseDontDestroyOnLoad => false;
         protected override void Init()
         {
             base.Init();
+        }
+
+        private void Start()
+        {
+            startButton.onClick.AddListener(StartGame);
+            startObj.SetActive(false);
             currentPicks[0].playerId = 0;
             currentPicks[1].playerId = 1;
         }
@@ -33,17 +58,65 @@ namespace TechC.Select
         /// <returns>1->1p,2->2p,0->無効なデバイス</returns>
         public int SetCharacterPick(InputDevice inputDevice, GameObject pickChara)
         {
+            // --- 1Pがこのデバイスを持っている場合
             if (iconController_1p.GetCurrentDevice() == inputDevice)
             {
                 currentPicks[0].characterObject = pickChara;
+                currentPicks[0].inputDevice = inputDevice;
                 return 1;
             }
-            else if (iconController_2p.GetCurrentDevice() == inputDevice)
+
+            // --- 2Pがこのデバイスを持っている場合
+            if (iconController_2p.GetCurrentDevice() == inputDevice)
             {
                 currentPicks[1].characterObject = pickChara;
+                currentPicks[1].inputDevice = inputDevice;
                 return 2;
             }
+
+            // --- 特別処理: 2PがNPCなら1Pのデバイスで2Pのキャラを選べる
+            if (iconController_2p.GetCurrentDevice() == null)
+            {
+                // 1Pがもうキャラを決定済みか確認
+                if (CheckPicked(1))
+                {
+                    if (pickChara.name.Contains("Ame"))
+                        currentPicks[1].characterObject = npcAmePrefab;
+                    else if (pickChara.name.Contains("Terami"))
+                        currentPicks[1].characterObject = npcTeramiPrefab;
+                    else
+                        currentPicks[1].characterObject = pickChara;
+
+                    currentPicks[1].inputDevice = null;
+                    return 2;
+                }
+            }
+
+            // --- どこにも割り当てできない場合は無効
             return 0;
+        }
+
+        public void SetPicked(int id, bool b)
+        {
+            id--;
+            hasPicked[id] = b;
+            if (hasPicked[0] && hasPicked[1])
+            {
+                DelayUtility.StartDelayedAction(this, 2f, () =>
+                {
+                    startObj.SetActive(true);
+                });
+                // StartWindow.I.ShowStartWindow();
+            }
+        }
+
+        public bool GetIsNpc() => iconController_2p.GetCurrentDevice() == null;
+        public bool CheckPicked(int id) => hasPicked[--id];
+
+        private void StartGame()
+        {
+            AudioManager.I.PlaySE(SEID.ButtonClick);
+            OnStartGamePicked?.Invoke();
         }
     }
 }

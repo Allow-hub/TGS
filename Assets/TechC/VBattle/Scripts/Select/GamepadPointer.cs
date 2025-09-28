@@ -32,6 +32,10 @@ namespace TechC.Select
         private void OnDisable()
         {
             StopAllCoroutines();
+            foreach (var w in nativeWindows)
+            {
+                WindowFactory.I.ReturnWindow(w.Value);
+            }
             currentListener?.Dispose();
             currentListener = null;
 

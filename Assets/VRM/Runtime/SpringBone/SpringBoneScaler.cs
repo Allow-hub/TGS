@@ -15,7 +15,5 @@ public class SpringBoneScaler : MonoBehaviour
                 bone.UseRuntimeScalingSupport = true;
             }
         }
-
-        Debug.Log($"VRMSpringBone count: {springBones.Length}, all UseRuntimeScalingSupport enabled.");
     }
 }

@@ -7,9 +7,7 @@ namespace TechC.Select
 {
     public class CharacterSelectManagerFix : Singleton<CharacterSelectManagerFix>
     {
-        
-
-        private const float initializeDelay = 0.1f;
+        private const float initializeDelay = 0.5f;
         protected override bool UseDontDestroyOnLoad => false;
 
 
@@ -28,12 +26,30 @@ namespace TechC.Select
                     GameManager.I.RemovePlayerById(info.playerId);
                 }
 
-                if (SelectUIManager.I == null)
+                if (SelectUIManagerFix.I == null)
                 {
                     Debug.Log("SelectUIManagerの初期化が済んでいません");
                     return;
                 }
+                SelectUIManagerFix.I.OnStartGamePicked += DicidePick;
             });
+        }
+        private void DicidePick()
+        {
+            if (!SelectUIManagerFix.I.HasPicked[0] || !SelectUIManagerFix.I.HasPicked[1])
+            {
+                Debug.Log("まだ全プレイヤーがピックしていません");
+                return;
+            }
+            bool isNpc = false;
+            foreach (var pick in SelectUIManagerFix.I.CurrentPicks)
+            {
+                GameManager.I.RegisterPlayer(pick.characterObject, pick.playerId, pick.inputDevice);
+                if (pick.inputDevice == null)
+                    isNpc = true;
+            }
+            GameManager.I.SetIsNpc(isNpc);//NPCかどうかを設定
+            GameManager.I.ChangeBattleState();
         }
     }
 }

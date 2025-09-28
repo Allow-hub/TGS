@@ -11,22 +11,22 @@ namespace TechC
         [SerializeField] private GameObject ameObj;
         [SerializeField] private GameObject teramiObj;
         private int animName = Animator.StringToHash("IsShowingPannel");
-        public void PlayAnim(int id)
+        public void PlayAnim(GameObject prefab)
         {
-            if (id == 0) return;
-            GameObject obj = ameObj;
-            if (id == 1)
-            {
-                obj = ameObj;
-            }
-            else if (id ==2)
-            {
-                obj = teramiObj;
-            }
+            GameObject obj = NameToObj(prefab.name);
             var anim = obj?.GetComponentInChildren<Animator>();
             DelayUtility.StartDelayedAction(this, appearDelay, () => obj?.SetActive(true));
 
             DelayUtility.StartDelayedAction(this, appearDelay + animDelay, () => anim?.SetBool(animName, true));
+        }
+
+        private GameObject NameToObj(string name)
+        {
+            if (name.Contains("Ame"))
+                return ameObj;
+            else if (name.Contains("Terami"))
+                return teramiObj;
+            return ameObj;
         }
     }
 }

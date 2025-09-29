@@ -643,7 +643,7 @@ Material:
     - _SpecularBorder: 0.5
     - _SpecularNormalStrength: 1
     - _SpecularToon: 1
-    - _SrcBlend: 5
+    - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _SrcBlendAlphaFA: 0
     - _SrcBlendFA: 1

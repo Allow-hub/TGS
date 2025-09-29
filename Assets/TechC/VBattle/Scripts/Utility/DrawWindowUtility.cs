@@ -100,6 +100,105 @@ namespace TechC
                 PInvoke.ReleaseDC(hwnd, hdc);
             }
         }
+        public static void SetLayeredTexture(HWND hwnd, Texture2D tex)
+        {
+            int texWidth = tex.width;
+            int texHeight = tex.height;
+
+            var pixels = tex.GetPixels32();
+            var buffer = new byte[texWidth * texHeight * 4];
+
+            // Unity の RGBA32 → BGRA32
+            for (int y = 0; y < texHeight; y++)
+            {
+                for (int x = 0; x < texWidth; x++)
+                {
+                    var px = pixels[y * texWidth + x];
+                    int idx = (y * texWidth + x) * 4;
+                    buffer[idx] = px.b;
+                    buffer[idx + 1] = px.g;
+                    buffer[idx + 2] = px.r;
+                    buffer[idx + 3] = px.a;
+                }
+            }
+
+            unsafe
+            {
+                fixed (byte* p = buffer)
+                {
+                    BITMAPINFO bmi = new BITMAPINFO();
+                    bmi.bmiHeader.biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
+                    bmi.bmiHeader.biWidth = texWidth;
+                    bmi.bmiHeader.biHeight = texHeight;
+                    bmi.bmiHeader.biPlanes = 1;
+                    bmi.bmiHeader.biBitCount = 32;
+                    bmi.bmiHeader.biCompression = BI_RGB;
+
+                    HDC hdcScreen = PInvoke.GetDC(HWND.Null);
+
+                    // ソースDC
+                    HDC hdcSrc = PInvoke.CreateCompatibleDC(hdcScreen);
+                    void* ppvBits;
+                    HBITMAP hBitmapSrc = PInvoke.CreateDIBSection(
+                        hdcScreen, &bmi, DIB_RGB_COLORS, &ppvBits, HANDLE.Null, 0);
+                    Buffer.MemoryCopy(p, ppvBits, buffer.Length, buffer.Length);
+                    HGDIOBJ oldSrc = PInvoke.SelectObject(hdcSrc, hBitmapSrc);
+
+                    // ウィンドウサイズ取得
+                    RECT rect;
+                    PInvoke.GetClientRect(hwnd, out rect);
+                    int wndWidth = rect.right - rect.left;
+                    int wndHeight = rect.bottom - rect.top;
+                    SIZE wndSize = new SIZE(wndWidth, wndHeight);
+
+                    // 転送先DC（ウィンドウサイズにリサイズ）
+                    HDC hdcDst = PInvoke.CreateCompatibleDC(hdcScreen);
+                    HBITMAP hBitmapDst = PInvoke.CreateCompatibleBitmap(hdcScreen, wndWidth, wndHeight);
+                    HGDIOBJ oldDst = PInvoke.SelectObject(hdcDst, hBitmapDst);
+
+                    // ストレッチ転送（テクスチャサイズ → ウィンドウサイズ）
+                    PInvoke.StretchBlt(
+                        hdcDst,
+                        0, 0, wndWidth, wndHeight,   // 転送先サイズ
+                        hdcSrc,
+                        0, 0, texWidth, texHeight,   // 転送元サイズ
+                        ROP_CODE.SRCCOPY
+                    );
+
+                    // ブレンド設定
+                    BLENDFUNCTION blend = new BLENDFUNCTION
+                    {
+                        BlendOp = (byte)PInvoke.AC_SRC_OVER,
+                        BlendFlags = 0,
+                        SourceConstantAlpha = 255,
+                        AlphaFormat = (byte)PInvoke.AC_SRC_ALPHA
+                    };
+
+                    // リサイズ済みの hdcDst を使って更新
+                    PInvoke.UpdateLayeredWindow(
+                        hwnd,
+                        hdcScreen,
+                        new System.Drawing.Point(0, 0),
+                        wndSize,
+                        hdcDst,
+                        new System.Drawing.Point(0, 0),
+                        new COLORREF(0),
+                        blend,
+                        Windows.Win32.UI.WindowsAndMessaging.UPDATE_LAYERED_WINDOW_FLAGS.ULW_ALPHA
+                    );
+
+                    // 後始末
+                    PInvoke.SelectObject(hdcSrc, oldSrc);
+                    PInvoke.SelectObject(hdcDst, oldDst);
+                    PInvoke.DeleteObject(hBitmapSrc);
+                    PInvoke.DeleteObject(hBitmapDst);
+                    PInvoke.DeleteDC(hdcSrc);
+                    PInvoke.DeleteDC(hdcDst);
+                    PInvoke.ReleaseDC(HWND.Null, hdcScreen);
+                }
+            }
+        }
+
     }
 
     /// <summary>

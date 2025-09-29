@@ -9,7 +9,7 @@ namespace TechC.Select
     /// <summary>
     /// セレクト画面で2キャラ選択したときにStart？をウィンドウを使ったデザインをだす
     /// </summary>
-    public class StartWindow : MonoBehaviour
+    public class StartWindow : Singleton<StartWindow>
     {
         [SerializeField, ReadOnly] private string appearChars = "Start?";
         private string[] chars;//appearCharsが一文字づつ入る
@@ -25,9 +25,7 @@ namespace TechC.Select
         private List<(NativeWindow,string, Vector2, int, int, Sprite)> windowSettings=new List<(NativeWindow, string, Vector2, int, int, Sprite)>();
         #endregion
 
-        private void Awake()
-        {
-        }
+        protected override bool UseDontDestroyOnLoad => false;
 
         private void Start()
         {
@@ -44,7 +42,7 @@ namespace TechC.Select
                 var setting = (window, chars[i], windowTop[i], windowHeight[i], windowWidth[i], windowImage[i]);
                 windowSettings.Add(setting);
             }
-            ShowStartWindow();
+            // ShowStartWindow();
         }
 
         private void Update()

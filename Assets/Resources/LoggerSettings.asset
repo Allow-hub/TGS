@@ -90,10 +90,10 @@ MonoBehaviour:
   _disabledCategoryIds:
   - stage
   - icon
-  - window
   - camera
   - npc
   - audio
   - state
   - comboClear
   - comboCheck
+  - window

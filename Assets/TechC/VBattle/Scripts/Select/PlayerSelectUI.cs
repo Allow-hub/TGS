@@ -20,4 +20,15 @@ namespace TechC
         public Button pickButton;
         public int currentCharacterIndex = 0;
     }
+
+    [System.Serializable]
+    public class PlayerSelectUIFix
+    {
+        public TMP_Dropdown inputDeviceDropdown;
+        public GameObject nameImage;//名前のイメージ、Spriteを切り替える
+        public GameObject teramiTextImage;//teramiのテキストイメージ
+        public GameObject ameObj;//シーン上で表示するameのモデル
+        public GameObject teramiObj;//シーン上で表示するteramiのモデル
+        public int currentCharacterIndex = 0;
+    }
 }

@@ -15,14 +15,17 @@ namespace TechC.Select
         IPointerClickHandler
     {
         [SerializeField] private Image p1DisplayImage;
-        [SerializeField] private Image p2DisplayImage;
+        [SerializeField] private Image p2DisplayImage;      
+          [SerializeField] private Image p1NameImage;
+        [SerializeField] private Image p2NameImage;
         [SerializeField] private SelectPickAnim p1SelectPickAnim;
         [SerializeField] private SelectPickAnim p2SelectPickAnim;
+        [SerializeField] private Sprite p1CharaName;
+        [SerializeField] private Sprite p2CharaName;
 
         [SerializeField] private Sprite p1CharaSprite;       // このボタンで選べるキャラのサムネ
         [SerializeField] private Sprite p2CharaSprite;       // このボタンで選べるキャラのサムネ
         [SerializeField] private GameObject pickCharaPrefab; // このボタンで選べるキャラ
-        [SerializeField] private float animCallTime = 1f;
 
         [Header("爆散用マテリアル")]
         [SerializeField] private Material explodeMaterial;
@@ -30,16 +33,14 @@ namespace TechC.Select
         {
 #if UNITY_EDITOR
             if (p1DisplayImage == null)
-            {
-                var obj = GameObject.Find("p1DisplayImage")?.GetComponent<Image>();
-                if (obj != null) p1DisplayImage = obj;
-            }
+                p1DisplayImage = GameObject.Find("p1DisplayImage")?.GetComponent<Image>();
+            if (p1CharaName == null)
+                p1NameImage = GameObject.Find("p1CharaName")?.GetComponent<Image>();
 
             if (p2DisplayImage == null)
-            {
-                var obj = GameObject.Find("p2DisplayImage")?.GetComponent<Image>();
-                if (obj != null) p2DisplayImage = obj;
-            }
+                p2DisplayImage = GameObject.Find("p2DisplayImage")?.GetComponent<Image>();
+            if (p2CharaName == null)
+                p1NameImage = GameObject.Find("p2CharaName")?.GetComponent<Image>();
 #endif
         }
 
@@ -64,7 +65,7 @@ namespace TechC.Select
                 int id = SelectUIManagerFix.I.SetCharacterPick(device, pickCharaPrefab);
                 DicidePick(id);
 
-                Debug.Log($"クリック - デバイス: {deviceName}");
+                // Debug.Log($"クリック - デバイス: {deviceName}");
             }
             else
             {
@@ -99,21 +100,36 @@ namespace TechC.Select
 
             if (id == 1)
             {
-                p1DisplayImage.sprite = p1CharaSprite;
+                if (SelectUIManagerFix.I.CheckPicked(id))//1pが選択済みで2pがNPCのとき1pが2pのキャラを選択できるように
+                {
+                    if (!SelectUIManagerFix.I.GetIsNpc()) return;
+                    p2DisplayImage.sprite = p2CharaSprite;
+                    if (!SelectUIManagerFix.I.CheckPicked(++id))
+                        p2NameImage.sprite = p2CharaName;
+                }
+                else
+                {
+                    p1DisplayImage.sprite = p1CharaSprite;
+                    if (!SelectUIManagerFix.I.CheckPicked(id))
+                        p1NameImage.sprite = p1CharaName;
+                }
             }
             else
             {
                 p2DisplayImage.sprite = p2CharaSprite;
+                if (!SelectUIManagerFix.I.CheckPicked(id))
+                    p2NameImage.sprite = p2CharaName;
             }
         }
 
         private void DicidePick(int id)
         {
             if (id == 0) return;
-            if (SelectUIManagerFix.I.CheckPicked(id))
+            if (SelectUIManagerFix.I.CheckPicked(id))//1pが選択済みで2pがNPCのとき1pが2pのキャラを選択できるように
             {
                 if (!SelectUIManagerFix.I.GetIsNpc()) return;
                 id = 2;
+                if (SelectUIManagerFix.I.CheckPicked(id)) return;
                 Image target = (id == 1) ? p1DisplayImage : p2DisplayImage;
                 if (target == null || explodeMaterial == null) return;
 

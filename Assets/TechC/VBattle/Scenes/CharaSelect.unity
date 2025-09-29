@@ -461,7 +461,7 @@ GameObject:
   - component: {fileID: 89058121}
   - component: {fileID: 89058120}
   m_Layer: 5
-  m_Name: CharaName
+  m_Name: p2CharaName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -498,7 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 92f9e12f084b01e4baf23c24048057b7, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -3274,13 +3274,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   p1DisplayImage: {fileID: 737022350}
   p2DisplayImage: {fileID: 363475592}
+  p1NameImage: {fileID: 1988710920}
+  p2NameImage: {fileID: 89058120}
   p1SelectPickAnim: {fileID: 408949472}
   p2SelectPickAnim: {fileID: 1327414929}
+  p1CharaName: {fileID: 21300000, guid: a6363c6642c6d2748a748cd1729c25c3, type: 3}
+  p2CharaName: {fileID: 21300000, guid: b86fc7c94e06b27459f722ad09e34085, type: 3}
   p1CharaSprite: {fileID: 21300000, guid: 8d260fa1e522440479cfa56efdf16b2e, type: 3}
   p2CharaSprite: {fileID: 21300000, guid: 0bc873de21e264648acc9b7aa0d9cfb7, type: 3}
   pickCharaPrefab: {fileID: 7627828736903395385, guid: 10f0ab4c65588784091056c4bbc13ba4,
     type: 3}
-  animCallTime: 1
   explodeMaterial: {fileID: 2100000, guid: 52ccb27224f58004ea38b94f9ebc8b82, type: 2}
 --- !u!1001 &816494431
 PrefabInstance:
@@ -8438,7 +8441,7 @@ GameObject:
   - component: {fileID: 1988710921}
   - component: {fileID: 1988710920}
   m_Layer: 5
-  m_Name: CharaName
+  m_Name: p1CharaName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8475,7 +8478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 92f9e12f084b01e4baf23c24048057b7, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -8828,13 +8831,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   p1DisplayImage: {fileID: 737022350}
   p2DisplayImage: {fileID: 363475592}
+  p1NameImage: {fileID: 1988710920}
+  p2NameImage: {fileID: 89058120}
   p1SelectPickAnim: {fileID: 408949472}
   p2SelectPickAnim: {fileID: 1327414929}
+  p1CharaName: {fileID: 21300000, guid: e97c51ee49f2f40459749b99bb3f0e1b, type: 3}
+  p2CharaName: {fileID: 21300000, guid: 3e224d8358cce60488aa6499c1fe0511, type: 3}
   p1CharaSprite: {fileID: 21300000, guid: 85cb781d8bab26d46a1a3caa971ad8b1, type: 3}
   p2CharaSprite: {fileID: 21300000, guid: 884a464a6f8752b43b0594fd49ab10e8, type: 3}
   pickCharaPrefab: {fileID: 7627828736903395385, guid: 79a465377545c1648bbef77b5a111683,
     type: 3}
-  animCallTime: 1
   explodeMaterial: {fileID: 2100000, guid: 52ccb27224f58004ea38b94f9ebc8b82, type: 2}
 --- !u!1 &2119624848
 GameObject:

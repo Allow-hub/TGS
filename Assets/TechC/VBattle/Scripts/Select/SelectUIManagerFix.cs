@@ -16,11 +16,16 @@ namespace TechC.Select
         // ==============================
         // Inspector設定用
         // ==============================
+        [SerializeField] private float startDelay = 6f;
         [SerializeField] private GameObject startObj;
         [SerializeField] private Button cancelButton;
         [SerializeField] private Button startButton;
         [SerializeField] private IconController iconController_1p;
         [SerializeField] private IconController iconController_2p;
+        [SerializeField] private SelectPickAnim selectPickAnim_1p;
+        [SerializeField] private SelectPickAnim selectPickAnim_2p;
+        [SerializeField] private Image p1DisplayImage;
+        [SerializeField] private Image p2DisplayImage;
         [SerializeField] private GameObject npcAmePrefab;
         [SerializeField] private GameObject npcTeramiPrefab;
 
@@ -45,6 +50,7 @@ namespace TechC.Select
         private void Start()
         {
             startButton.onClick.AddListener(StartGame);
+            cancelButton.onClick.AddListener(ResetSelect);
             startObj.SetActive(false);
             currentPicks[0].playerId = 0;
             currentPicks[1].playerId = 1;
@@ -102,7 +108,7 @@ namespace TechC.Select
             hasPicked[id] = b;
             if (hasPicked[0] && hasPicked[1])
             {
-                DelayUtility.StartDelayedAction(this, 2f, () =>
+                DelayUtility.StartDelayedAction(this, startDelay, () =>
                 {
                     startObj.SetActive(true);
                 });
@@ -117,6 +123,21 @@ namespace TechC.Select
         {
             AudioManager.I.PlaySE(SEID.ButtonClick);
             OnStartGamePicked?.Invoke();
+        }
+
+        private void ResetSelect()
+        {
+            startObj.SetActive(false);
+            hasPicked[0] = false;
+            hasPicked[1] = false;
+            currentPicks[0].characterObject = null;
+            currentPicks[1].characterObject = null;
+            iconController_1p.InitIcon();
+            iconController_2p.InitIcon();
+            selectPickAnim_1p.ResetAnim();
+            selectPickAnim_2p.ResetAnim();
+            p1DisplayImage.enabled = true;
+            p2DisplayImage.enabled = true;
         }
     }
 }

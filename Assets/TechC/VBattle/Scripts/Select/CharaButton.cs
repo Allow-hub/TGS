@@ -25,8 +25,7 @@ namespace TechC.Select
         [SerializeField] private float animCallTime = 1f;
 
         [Header("爆散用マテリアル")]
-        [SerializeField] private Material explodeMaterial;   // ExplodeVoronoi.shader を割り当てる
-
+        [SerializeField] private Material explodeMaterial;
         private void OnValidate()
         {
 #if UNITY_EDITOR

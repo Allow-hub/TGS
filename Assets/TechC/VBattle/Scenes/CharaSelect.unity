@@ -2860,11 +2860,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795fad9a244c2084196eb91d7d2beb7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startDelay: 8
   startObj: {fileID: 618351913}
   cancelButton: {fileID: 408005764}
   startButton: {fileID: 213470002}
   iconController_1p: {fileID: 82809679}
   iconController_2p: {fileID: 1106077319}
+  selectPickAnim_1p: {fileID: 408949472}
+  selectPickAnim_2p: {fileID: 1327414929}
+  p1DisplayImage: {fileID: 737022350}
+  p2DisplayImage: {fileID: 363475592}
   npcAmePrefab: {fileID: 7627828736903395385, guid: e380d83f8c899224e9add7ac33924e01,
     type: 3}
   npcTeramiPrefab: {fileID: 7627828736903395385, guid: e380d83f8c899224e9add7ac33924e01,

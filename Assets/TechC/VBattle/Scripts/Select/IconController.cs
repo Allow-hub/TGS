@@ -50,33 +50,7 @@ namespace TechC.Select
 
             var canvas = GetComponentInParent<Canvas>();
             cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
-
-            // 初期表示で currentIconData を設定
-            if (isP1)
-            {
-                iconImage.sprite = keyboardSprite;
-                currentIconData = new IconData { iconSprite = keyboardSprite, device = Keyboard.current };
-            }
-            else
-            {
-                bool existDevice = false;
-                foreach (var device in InputSystem.devices)
-                {
-                    if (device is Keyboard) continue;
-                    if (device is Gamepad)
-                    {
-                        iconImage.sprite = gamepadSprite;
-                        currentIconData = new IconData { iconSprite = gamepadSprite, device = device };
-                        existDevice = true;
-                        break;
-                    }
-                }
-                if (!existDevice)
-                {
-                    iconImage.sprite = npcSprite;
-                    currentIconData = new IconData { iconSprite = npcSprite, device = null };
-                }
-            }
+            InitIcon();
         }
 
         private void Update()
@@ -236,5 +210,40 @@ namespace TechC.Select
         /// </summary>
         public InputDevice GetCurrentDevice() => currentIconData.device;
 
+        /// <summary>
+        /// 初期状態に戻す（外部から呼び出し可能）
+        /// </summary>
+        public void InitIcon()
+        {
+            if (iconImage == null)
+                iconImage = GetComponent<Image>();
+
+            if (isP1)
+            {
+                iconImage.sprite = keyboardSprite;
+                currentIconData = new IconData { iconSprite = keyboardSprite, device = Keyboard.current };
+            }
+            else
+            {
+                bool existDevice = false;
+                foreach (var device in InputSystem.devices)
+                {
+                    if (device is Keyboard) continue;
+                    if (device is Gamepad)
+                    {
+                        iconImage.sprite = gamepadSprite;
+                        currentIconData = new IconData { iconSprite = gamepadSprite, device = device };
+                        existDevice = true;
+                        break;
+                    }
+                }
+
+                if (!existDevice)
+                {
+                    iconImage.sprite = npcSprite;
+                    currentIconData = new IconData { iconSprite = npcSprite, device = null };
+                }
+            }
+        }
     }
 }

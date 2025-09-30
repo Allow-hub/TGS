@@ -13,16 +13,10 @@ namespace TechC.CommentSystem
 
         private void Awake()
         {
-            // abilitiesの各要素にInitを呼ぶ
+            // 各アビリティを初期化
             foreach (var ability in abilities)
             {
                 ability?.Init(this);
-                if (ability is HoldAbility hold)
-                {
-                    hold.Init(this);
-                }
-                var hold2 = ability as HoldAbility;
-                hold2.Init(this);
             }
         }
 

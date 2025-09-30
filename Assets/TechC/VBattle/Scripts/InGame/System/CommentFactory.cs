@@ -22,10 +22,40 @@ namespace TechC.CommentSystem
         /// <returns></returns>
         public GameObject GetComment(CommentData commentData, GameObject commentPrefab)
         {
-            GameObject obj = commentPool.GetObject(commentPrefab);
+            // デバッグログ追加
+            if (commentPool == null)
+            {
+                Debug.LogError("[CommentFactory] commentPool is null!");
+            }
+            if (commentPrefab == null)
+            {
+                Debug.LogError("[CommentFactory] commentPrefab is null!");
+            }
+
+            GameObject obj = null;
+            try
+            {
+                obj = commentPool.GetObject(commentPrefab);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[CommentFactory] commentPool.GetObject threw exception: {e.Message}");
+            }
+
+            if (obj == null)
+            {
+                Debug.LogError("[CommentFactory] obj is null after GetObject!");
+                return null;
+            }
+
             obj.transform.localScale = COMMENT_OBJ_SCALE;
 
-            if (commentData.type == CommentType.Grass || commentData.type == CommentType.Freeze)
+            if (commentData == null)
+            {
+                Debug.LogError("[CommentFactory] commentData is null!");
+            }
+
+            if (commentData != null && (commentData.type == CommentType.Grass || commentData.type == CommentType.Freeze))
             {
                 var specialCommentTrigger = obj.GetComponent<SpecialCommentTrigger>();
                 if (specialCommentTrigger == null)
@@ -36,14 +66,18 @@ namespace TechC.CommentSystem
             else
             {
                 var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
-                commentTrigger?.Init(commentPool);
-                if (commentTrigger != null)
+                if (commentTrigger == null)
                 {
-                    commentTrigger.commentText = commentData.text;
+                    Debug.LogError("BuffCommentTriggerがPrefabにアタッチされていません。PrefabのInspectorで必ず追加してください。");
                 }
-                if (commentData.buffType.HasValue)
+                else
                 {
-                    commentTrigger.buffType = commentData.buffType.Value;
+                    commentTrigger.Init(commentPool);
+                    commentTrigger.commentText = commentData?.text;
+                    if (commentData != null && commentData.buffType.HasValue)
+                    {
+                        commentTrigger.buffType = commentData.buffType.Value;
+                    }
                 }
             }
             return obj;

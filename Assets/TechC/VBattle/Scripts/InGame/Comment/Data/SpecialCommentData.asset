@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comments:
   - comment: "\u56FA\u5B9A\u3057\u307E\u3057\u305F"
-    prefab: {fileID: 4406060062429152804, guid: 94ad541d6d3b5b24b90516fe563af157,
+    prefab: {fileID: 4406060062429152804, guid: 49d9e5b40ddd5d541a882a3cc67e59ec,
       type: 3}
   - comment: "\u8349"
-    prefab: {fileID: 4406060062429152804, guid: cd375443db1dad346a1878fce312458a,
+    prefab: {fileID: 4406060062429152804, guid: eead0fe766d640b459a976c5e85274c4,
       type: 3}

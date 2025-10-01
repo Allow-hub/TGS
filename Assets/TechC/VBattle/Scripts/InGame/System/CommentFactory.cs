@@ -55,6 +55,8 @@ namespace TechC.CommentSystem
                 Debug.LogError("[CommentFactory] commentData is null!");
             }
 
+            if (commentData.type == CommentType.Normal) return obj; // NormalはBuffCommentTriggerがついていないため早期reture
+
             if (commentData != null && (commentData.type == CommentType.Grass || commentData.type == CommentType.Freeze))
             {
                 var specialCommentTrigger = obj.GetComponent<SpecialCommentTrigger>();
@@ -66,6 +68,11 @@ namespace TechC.CommentSystem
             else
             {
                 var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
+                if (commentTrigger == null)
+                {
+                    Debug.Log("Null");
+                }
+
                 commentTrigger.Init(commentPool);
                 commentTrigger.commentText = commentData?.text;
                 if (commentData != null && commentData.buffType.HasValue)

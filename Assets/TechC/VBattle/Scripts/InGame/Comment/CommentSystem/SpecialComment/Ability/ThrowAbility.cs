@@ -3,18 +3,18 @@ using System;
 
 namespace TechC.CommentSystem
 {
+    /// <summary>
+    /// オブジェクトを投げるアビリティ
+    /// </summary>
     [Serializable]
+
     public class ThrowAbility : ICommentAbility
     {
         [SerializeField] private float throwPower = 10f;
         [SerializeField] private Vector2 throwUpwardPower = new Vector2(0.5f, 1.0f);
 
-        private Rigidbody rb;
-        private Transform commentTransform;
         public void Init(SpecialCommentTrigger trigger)
         {
-            rb = trigger.GetComponent<Rigidbody>();
-            commentTransform = trigger.transform;
         }
 
         public void Release() { }
@@ -23,47 +23,22 @@ namespace TechC.CommentSystem
         {
             if (CommentDisplay.I.IsCommentFrozen) return;
 
-            var characterController = collider.GetComponentInParent<Player.CharacterController>();
-            if (characterController != null)
-            {
-                GameObject grassInstance = CreateAndAttachGrass(characterController);
-                RegisterThrowEvent(characterController, grassInstance);
-            }
-        }
+            var characterController = collider.transform.root.GetComponent<Player.CharacterController>();
+            if (characterController == null) return;
+            if (characterController.HoldItem == null) return;
 
-        /// <summary>
-        /// 草オブジェクトを生成し、キャラクターの手に装着する
-        /// </summary>
-        private GameObject CreateAndAttachGrass(Player.CharacterController characterController)
-        {
-            GameObject grassInstance = EffectFactory.I.GetEffectObj(
-                characterController.GrassPrefab, 
-                characterController.HandPos.position, 
-                Quaternion.identity
-            );
-            
-            AttachToHand(grassInstance, characterController.HandPos);
-            return grassInstance;
-        }
+            RegisterThrowEvent(characterController);
 
-        /// <summary>
-        /// オブジェクトを手に装着する
-        /// </summary>
-        private void AttachToHand(GameObject obj, Transform handTransform)
-        {
-            obj.transform.SetParent(handTransform);
-            obj.transform.localPosition = Vector3.zero;
-            obj.transform.localRotation = Quaternion.identity;
         }
 
         /// <summary>
         /// 投げるイベントを登録する
         /// </summary>
-        private void RegisterThrowEvent(Player.CharacterController characterController, GameObject grassInstance)
+        private void RegisterThrowEvent(Player.CharacterController characterController)
         {
-            characterController.RegisterCommentEvent(() => 
+            characterController.RegisterCommentEvent(() =>
             {
-                Throw(grassInstance.GetComponent<Rigidbody>(), grassInstance);
+                Throw(characterController.HoldItem.GetComponent<Rigidbody>(), characterController.HoldItem);
             });
         }
 
@@ -79,6 +54,11 @@ namespace TechC.CommentSystem
             rb.AddForce(throwDirection * throwPower, ForceMode.Impulse);
             commentObj.transform.SetParent(null);
             rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+
+            var characterController = character.GetComponent<Player.CharacterController>();
+            if (characterController == null) return;
+            characterController.SetHoldItem(null);
+
         }
     }
 }

@@ -83,10 +83,11 @@ namespace TechC.Player
         [Header("文字のPrefab")]
         [SerializeField] private GameObject grass;
 
-        [Header("コメント")]
+        [Header("アイテム")]
         [SerializeField] public Transform handPos;
         public Transform HandPos => handPos;
-        public GameObject GrassPrefab => grass;
+        [SerializeField] private GameObject holdItem;
+        public GameObject HoldItem => holdItem;
         public bool hasComment;
         #endregion
 
@@ -233,7 +234,7 @@ namespace TechC.Player
             hitCollider.center = targetCenter;
         }
 
-        #region コメント関連メソッド        
+        #region コメント・アイテム関連メソッド        
 
         /// <summary>
         /// 特殊コメントのイベントを登録する
@@ -257,6 +258,7 @@ namespace TechC.Player
             hasComment = false;
         }
 
+        public void SetHoldItem(GameObject item) => holdItem = item;
 
         #endregion
 

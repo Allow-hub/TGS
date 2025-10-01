@@ -2,31 +2,35 @@ using UnityEngine;
 
 namespace TechC.CommentSystem
 {
+    /// <summary>
+    /// オブジェクトを手に持つアビリティ
+    /// </summary>
     public class HoldAbility : ICommentAbility
     {
-        private Transform commentTransform;
+        [SerializeField] private GameObject gameObject;
 
-        public void Init(SpecialCommentTrigger trigger)
-        {
-            commentTransform = trigger.transform;
-        }
+        public void Init(SpecialCommentTrigger trigger) { }
 
         public void Release() { }
 
         public void OnTriggerEnter(Collider collider)
         {
-            // Hold専用の機能：コメントを固定位置に保持する
-            if (commentTransform != null)
-            {
-                commentTransform.localPosition = Vector3.zero;
-                commentTransform.localRotation = Quaternion.identity;
-            }
+            var characterController = collider.GetComponentInParent<Player.CharacterController>();
+            if (characterController.HoldItem != null) return;
+
+            GameObject obj = EffectFactory.I.GetEffectObj(
+                gameObject,
+                characterController.HandPos.position,
+                Quaternion.identity
+            );
+            characterController.SetHoldItem(obj);
+            AttachToHand(obj, characterController.HandPos);
         }
 
         /// <summary>
         /// オブジェクトを手に装着する
         /// </summary>
-        public void AttachToHand(GameObject obj, Transform handTransform)
+        private void AttachToHand(GameObject obj, Transform handTransform)
         {
             obj.transform.SetParent(handTransform);
             obj.transform.localPosition = Vector3.zero;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     public class CommentFactory : Singleton<CommentFactory>
     {
@@ -22,38 +22,59 @@ namespace TechC
         /// <returns></returns>
         public GameObject GetComment(CommentData commentData, GameObject commentPrefab)
         {
-            GameObject obj = commentPool.GetObject(commentPrefab);
+            // デバッグログ追加
+            if (commentPool == null)
+            {
+                Debug.LogError("[CommentFactory] commentPool is null!");
+            }
+            if (commentPrefab == null)
+            {
+                Debug.LogError("[CommentFactory] commentPrefab is null!");
+            }
+
+            GameObject obj = null;
+            try
+            {
+                obj = commentPool.GetObject(commentPrefab);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[CommentFactory] commentPool.GetObject threw exception: {e.Message}");
+            }
+
+            if (obj == null)
+            {
+                Debug.LogError("[CommentFactory] obj is null after GetObject!");
+                return null;
+            }
+
             obj.transform.localScale = COMMENT_OBJ_SCALE;
 
-            if (commentData.type == CommentType.Normal)
+            if (commentData == null)
             {
-                var freezeCommentTrigger = obj.GetComponent<FreezeCommentTrigger>();
-                if (freezeCommentTrigger == null)
-                {
-                    freezeCommentTrigger = obj.AddComponent<FreezeCommentTrigger>();
-                }
+                Debug.LogError("[CommentFactory] commentData is null!");
+            }
 
-                // 明示的にメソッドで設定
-                var specialType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
-                freezeCommentTrigger.SetSpecialType(specialType); // ここでコメントタイプを設定する
+            if (commentData != null && (commentData.type == CommentType.Grass || commentData.type == CommentType.Freeze))
+            {
+                var specialCommentTrigger = obj.GetComponent<SpecialCommentTrigger>();
+                if (specialCommentTrigger == null)
+                {
+                    Debug.LogError("SpecialCommentTriggerがPrefabにアタッチされていません。PrefabのInspectorで必ず追加してください。");
+                }
             }
             else
             {
                 var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
-                commentTrigger?.Init(commentPool);
-                if (commentTrigger != null)
-                {
-                    commentTrigger.specialCommentType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
-                    commentTrigger.commentText = commentData.text;
-                }
-                if (commentData.buffType.HasValue)
+                commentTrigger.Init(commentPool);
+                commentTrigger.commentText = commentData?.text;
+                if (commentData != null && commentData.buffType.HasValue)
                 {
                     commentTrigger.buffType = commentData.buffType.Value;
                 }
             }
             return obj;
         }
-
 
         public void ReturnComment(GameObject comment)
         {

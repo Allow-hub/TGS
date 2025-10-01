@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// Playerの移動速度を上昇させるバフ

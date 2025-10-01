@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// コメントの表示管理とフリーズ機能を担当
@@ -20,10 +20,12 @@ namespace TechC
 
         [Header("特殊コメントの設定")]
         [SerializeField] private float freezeTime = 3f;
-        
+
         public bool IsCommentFrozen { get; private set; } = false;
 
         private bool isSpawning = false;
+        private Func<bool> isPausedFunc;
+
         private List<CommentInfo> activeComments = new List<CommentInfo>();
 
         /// <summary>
@@ -50,6 +52,7 @@ namespace TechC
         protected override void Init()
         {
             base.Init();
+            isPausedFunc = () => BattleJudge.I.IsPaused;
             commentSpawner.Init();
             commentMover.Init();
             commentMaterialApplier.Init();
@@ -73,8 +76,6 @@ namespace TechC
         private IEnumerator SpawnCommentWithInterval()
         {
             if (IsCommentFrozen) yield break;
-
-            Func<bool> isPausedFunc = () => IsCommentFrozen || BattleJudge.I.IsPaused;
 
             DelayUtility.StartRepeatedActionWhileWithPause(
                 this,
@@ -100,12 +101,9 @@ namespace TechC
 
             var commentData = commentSpawner.GetLastCommentData();
             var characters = commentSpawner.GetLastCharacters();
-            var freezeCommentTrigger = comment.GetComponent<FreezeCommentTrigger>();
-            var spType = SpecialCommentChecker.GetSpecialCommentType(commentData.text);
-            
-            Material targetMaterial = (spType != SpecialCommentType.None && freezeCommentTrigger != null)
-                ? commentMaterialApplier.GetCommentMaterial(null, spType)
-                : commentMaterialApplier.GetCommentMaterial(commentData.type);
+            var specialCommentTrigger = comment.GetComponent<SpecialCommentTrigger>();
+
+            Material targetMaterial = commentMaterialApplier.GetCommentMaterial(commentData.type);
 
             activeComments.Add(new CommentInfo
             {
@@ -115,7 +113,7 @@ namespace TechC
             });
 
             commentMaterialApplier.ApplyMaterialToCharacters(characters, targetMaterial);
-            commentMover.StartMoving(comment.transform, characters, freezeCommentTrigger, targetMaterial);
+            commentMover.StartMoving(comment.transform, characters, specialCommentTrigger, targetMaterial);
         }
 
         /// <summary>
@@ -125,19 +123,18 @@ namespace TechC
         {
             if (!IsCommentFrozen)
             {
-                StartCoroutine(FreezeAllCommentsCoroutine());
+                IsCommentFrozen = true;
+                ApplyFreezeEffectToAllComments();
+                DelayUtility.StartDelayedActionWithPause(
+                    this,
+                    freezeTime,
+                    () => BattleJudge.I.IsPaused,
+                    () =>
+                    {
+                        IsCommentFrozen = false;
+                        RestoreOriginalMaterials();
+                    });
             }
-        }
-
-        private IEnumerator FreezeAllCommentsCoroutine()
-        {
-            IsCommentFrozen = true;
-            ApplyFreezeEffectToAllComments();
-
-            yield return new WaitForSeconds(freezeTime);
-
-            IsCommentFrozen = false;
-            RestoreOriginalMaterials();
         }
 
         private void ApplyFreezeEffectToAllComments()
@@ -165,7 +162,7 @@ namespace TechC
         {
             for (int i = activeComments.Count - 1; i >= 0; i--)
             {
-                if (activeComments[i].commentObject == null || 
+                if (activeComments[i].commentObject == null ||
                     !activeComments[i].commentObject.activeInHierarchy)
                 {
                     activeComments.RemoveAt(i);

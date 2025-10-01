@@ -6,6 +6,7 @@ using TechC.Gimmicks;
 using TechC.UIs;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TechC.CommentSystem;
 
 namespace TechC.Player
 {
@@ -82,8 +83,11 @@ namespace TechC.Player
         [Header("文字のPrefab")]
         [SerializeField] private GameObject grass;
 
-        [Header("コメント")]
-        [SerializeField] private Transform handPos;
+        [Header("アイテム")]
+        [SerializeField] public Transform handPos;
+        public Transform HandPos => handPos;
+        [SerializeField] private GameObject holdItem;
+        public GameObject HoldItem => holdItem;
         public bool hasComment;
         #endregion
 
@@ -230,53 +234,31 @@ namespace TechC.Player
             hitCollider.center = targetCenter;
         }
 
-        #region コメント関連メソッド
+        #region コメント・アイテム関連メソッド        
 
         /// <summary>
-        /// 草のモデルをプレイヤーに持たせる
+        /// 特殊コメントのイベントを登録する
         /// </summary>
-        public void SpawnGrassEffect()
+        public void RegisterCommentEvent(Action action)
         {
             if (hasComment) return;
             hasComment = true;
 
-            if (grass == null)
-            {
-                Debug.LogError("grassプレハブがCharacterControllerにセットされていません");
-                return;
-            }
-
-            GameObject grassInstance = EffectFactory.I.GetEffectObj(grass, handPos.position, Quaternion.identity);
-            if (grassInstance == null)
-            {
-                Debug.LogError("grassInstanceが取得できませんでした。ObjectPool/EffectFactoryの設定を確認してください");
-                return;
-            }
-
-            var grassController = grassInstance.GetComponent<GrassController>();
-            if (grassController == null)
-            {
-                Debug.LogError("grassInstanceにGrassControllerがアタッチされていません");
-                return;
-            }
-
-            grassController.Init();
             OnCommentEvent = null;
-            OnCommentEvent += grassController.Throw;
-            grassInstance.transform.SetParent(handPos);
-            grassInstance.transform.localPosition = Vector3.zero;
-            grassInstance.transform.localRotation = Quaternion.identity;
+            OnCommentEvent += action;
         }
 
         /// <summary>
-        /// TODO:要修正、草コメント以外の対応ができない
+        /// コメントイベントを実行し、イベントと状態をリセットする
         /// </summary>
         public void InvokeCommentEvent()
         {
             OnCommentEvent?.Invoke();
+            OnCommentEvent = null;
             hasComment = false;
         }
 
+        public void SetHoldItem(GameObject item) => holdItem = item;
 
         #endregion
 

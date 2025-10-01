@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// コメントのマテリアル適用処理を担当
@@ -65,7 +65,7 @@ namespace TechC
         /// <summary>
         /// コメントタイプに応じたMaterialを取得
         /// </summary>
-        public Material GetCommentMaterial(CommentType? commentType, SpecialCommentType? specialCommentType = SpecialCommentType.None)
+        public Material GetCommentMaterial(CommentType? commentType)
         {
             if (commentType != null)
             {
@@ -77,14 +77,12 @@ namespace TechC
                         return speedBuffCommentMaterial;
                     case CommentType.MapChange:
                         return mapChangeCommentMaterial;
+                    case CommentType.Freeze:
+                        return freezeCommentMaterial;
                     case CommentType.Normal:
                     default:
                         return normalCommentMaterial;
                 }
-            }
-            else if (specialCommentType == SpecialCommentType.Freeze)
-            {
-                return freezeCommentMaterial;
             }
             return normalCommentMaterial;
         }

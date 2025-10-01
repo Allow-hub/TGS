@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     [Serializable]
     public class CommentSpawner
@@ -14,6 +14,8 @@ namespace TechC
         [SerializeField] private GameObject speedBuffPrefab;
         [SerializeField] private GameObject attackBuffPrefab;
         [SerializeField] private GameObject mapChangePrefab;
+        [SerializeField] private GameObject grassPrefab;
+        [SerializeField] private GameObject freezePrefab;
 
         [Header("コメントが出現する場所")]
         [SerializeField] private Transform topRightSpawnPos;
@@ -47,13 +49,15 @@ namespace TechC
             {
                 Init();
             }
+            
+            if (CommentDisplay.I != null && CommentDisplay.I.IsCommentFrozen) return null;
 
             var commentData = commentProvider.GetRandomComment();
             GameObject comment = CommentFactory.I.GetComment(commentData, GetCommentPrefab(commentData));
 
             // 文字オブジェクトを生成
             List<GameObject> spawnedChars = AllCharacterHelper.ProcessCommentText(commentData.text, comment.transform, Color.white);
-            
+
             // 位置を設定
             float randomY = UnityEngine.Random.Range(bottomRightSpawnPosY, topRightSpawnPosY);
             comment.transform.position = new Vector3(spawnPosX, randomY, PLAYER_TOP_OFFSET);
@@ -93,6 +97,10 @@ namespace TechC
                     return mapChangePrefab;
                 case CommentType.SpeedBuff:
                     return speedBuffPrefab;
+                case CommentType.Grass:
+                    return grassPrefab;
+                case CommentType.Freeze:
+                    return freezePrefab;
                 default:
                     return commentPrefab;
             }

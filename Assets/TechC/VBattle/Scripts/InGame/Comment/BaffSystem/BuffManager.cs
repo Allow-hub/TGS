@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// プレイヤーに適用されているバフを管理

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// バフコメントがプレイヤーと衝突した際にバフを適用するトリガークラス
@@ -8,7 +8,6 @@ namespace TechC
     public class BuffCommentTrigger : MonoBehaviour
     {
         public BuffType buffType;
-        [HideInInspector] public SpecialCommentType specialCommentType;
         [HideInInspector] public string commentText;
         private bool alreadyApplied = false;
 
@@ -36,17 +35,6 @@ namespace TechC
 
             if (other.CompareTag("Player"))
             {
-                // 特殊コメントの処理
-                if (specialCommentType == SpecialCommentType.Grass)
-                {
-                    var characterController = other.transform.parent.GetComponent<Player.CharacterController>();
-                    if (characterController != null)
-                    {
-                        characterController.SpawnGrassEffect();
-                        return;
-                    }
-                }
-
                 BuffBase buff = BuffFactory.CreateBuff(buffType);
 
                 if (buff != null)

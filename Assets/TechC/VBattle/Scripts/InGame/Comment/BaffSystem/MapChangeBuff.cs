@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TechC
+namespace TechC.CommentSystem
 {
     /// <summary>
     /// マップ変更バフ。適用されたターゲットのマップをランダムに変更する。
     /// </summary>
     public class MapChangeBuff : BuffBase
     {
-        private int currentMapIndex = -1;
-
         public MapChangeBuff()
         {
             buffName = "MapChangeBuff";

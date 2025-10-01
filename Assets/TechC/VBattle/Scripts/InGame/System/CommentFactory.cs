@@ -66,23 +66,15 @@ namespace TechC.CommentSystem
             else
             {
                 var commentTrigger = obj.GetComponent<BuffCommentTrigger>();
-                if (commentTrigger == null)
+                commentTrigger.Init(commentPool);
+                commentTrigger.commentText = commentData?.text;
+                if (commentData != null && commentData.buffType.HasValue)
                 {
-                    Debug.LogError("BuffCommentTriggerがPrefabにアタッチされていません。PrefabのInspectorで必ず追加してください。");
-                }
-                else
-                {
-                    commentTrigger.Init(commentPool);
-                    commentTrigger.commentText = commentData?.text;
-                    if (commentData != null && commentData.buffType.HasValue)
-                    {
-                        commentTrigger.buffType = commentData.buffType.Value;
-                    }
+                    commentTrigger.buffType = commentData.buffType.Value;
                 }
             }
             return obj;
         }
-
 
         public void ReturnComment(GameObject comment)
         {

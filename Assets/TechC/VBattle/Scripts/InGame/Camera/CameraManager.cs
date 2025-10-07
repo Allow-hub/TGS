@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -43,21 +42,21 @@ namespace TechC
         public System.Action<Transform> OnPlayerRemoved;
         public System.Action<float> OnZoomChanged;
 
-        private float MinDistance => currentCameraSettings != null ? currentCameraSettings.minDistance : 5f;
-        private float MaxDistance => currentCameraSettings != null ? currentCameraSettings.maxDistance : 20f;
-        private float MinFOV => currentCameraSettings != null ? currentCameraSettings.minFOV : 30f;
-        private float MaxFOV => currentCameraSettings != null ? currentCameraSettings.maxFOV : 60f;
-        private float ZoomSpeed => currentCameraSettings != null ? currentCameraSettings.zoomSpeed : 5f;
-        private float ZoomMargin => currentCameraSettings != null ? currentCameraSettings.zoomMargin : 2f;
-        private bool EnableYAxisFollow => currentCameraSettings != null ? currentCameraSettings.enableYAxisFollow : true;
-        private bool EnableCameraShake => currentCameraSettings != null ? currentCameraSettings.enableCameraShake : true;
-        private float DefaultShakeIntensity => currentCameraSettings != null ? currentCameraSettings.defaultShakeIntensity : 1f;
-        private float DefaultShakeDuration => currentCameraSettings != null ? currentCameraSettings.defaultShakeDuration : 0.2f;
-        private NoiseSettings DefaultShakeProfile => currentCameraSettings != null ? currentCameraSettings.defaultShakeProfile : null;
-        private bool AdaptToPlayerSpeed => currentCameraSettings != null ? currentCameraSettings.adaptToPlayerSpeed : true;
-        private float AnticipationFactor => currentCameraSettings != null ? currentCameraSettings.anticipationFactor : 0.5f;
-        private float DefaultPlayerWeight => currentCameraSettings != null ? currentCameraSettings.defaultPlayerWeight : 1f;
-        private float DefaultPlayerRadius => currentCameraSettings != null ? currentCameraSettings.defaultPlayerRadius : 1f;
+        private float MinDistance => currentCameraSettings != null ? currentCameraSettings.MinDistance : 5f;
+        private float MaxDistance => currentCameraSettings != null ? currentCameraSettings.MaxDistance : 20f;
+        private float MinFOV => currentCameraSettings != null ? currentCameraSettings.MinFOV : 30f;
+        private float MaxFOV => currentCameraSettings != null ? currentCameraSettings.MaxFOV : 60f;
+        private float ZoomSpeed => currentCameraSettings != null ? currentCameraSettings.ZoomSpeed : 5f;
+        private float ZoomMargin => currentCameraSettings != null ? currentCameraSettings.ZoomMargin : 2f;
+        private bool EnableYAxisFollow => currentCameraSettings != null ? currentCameraSettings.EnableYAxisFollow : true;
+        private bool EnableCameraShake => currentCameraSettings != null ? currentCameraSettings.EnableCameraShake : true;
+        private float DefaultShakeIntensity => currentCameraSettings != null ? currentCameraSettings.DefaultShakeIntensity : 1f;
+        private float DefaultShakeDuration => currentCameraSettings != null ? currentCameraSettings.DefaultShakeDuration : 0.2f;
+        private NoiseSettings DefaultShakeProfile => currentCameraSettings != null ? currentCameraSettings.DefaultShakeProfile : null;
+        private bool AdaptToPlayerSpeed => currentCameraSettings != null ? currentCameraSettings.AdaptToPlayerSpeed : true;
+        private float AnticipationFactor => currentCameraSettings != null ? currentCameraSettings.AnticipationFactor : 0.5f;
+        private float DefaultPlayerWeight => currentCameraSettings != null ? currentCameraSettings.DefaultPlayerWeight : 1f;
+        private float DefaultPlayerRadius => currentCameraSettings != null ? currentCameraSettings.DefaultPlayerRadius : 1f;
 
         protected override void Init()
         {
@@ -425,8 +424,8 @@ namespace TechC
         public void SwitchCameraSettings(bool useUlt)
         {
             currentCameraSettings = useUlt ? ultCameraSettings : normalCameraSettings;
-            camCol.center = currentCameraSettings.camColliderPos;
-            camObj.transform.eulerAngles = currentCameraSettings.camRot;
+            camCol.center = currentCameraSettings.CamColliderPos;
+            camObj.transform.eulerAngles = currentCameraSettings.CamRot;
             ApplyZoomSettings();
             CustomLogger.Info($"CameraManager: Switched camera settings to {(useUlt ? "ULT" : "NORMAL")}", LOGTAG);
         }
@@ -444,11 +443,11 @@ namespace TechC
                 transposer.m_MinimumFOV = MinFOV;
                 transposer.m_MaximumFOV = MaxFOV;
 
-                transposer.m_CameraDistance = currentCameraSettings.cameraDistance;
-                transposer.m_ScreenX = Mathf.Clamp01(currentCameraSettings.screenOffset.x);
-                transposer.m_ScreenY = Mathf.Clamp01(currentCameraSettings.screenOffset.y);
-                transposer.m_DeadZoneWidth = currentCameraSettings.deadZone;
-                transposer.m_DeadZoneHeight = currentCameraSettings.deadZone;
+                transposer.m_CameraDistance = currentCameraSettings.CameraDistance;
+                transposer.m_ScreenX = Mathf.Clamp01(currentCameraSettings.ScreenOffset.x);
+                transposer.m_ScreenY = Mathf.Clamp01(currentCameraSettings.ScreenOffset.y);
+                transposer.m_DeadZoneWidth = currentCameraSettings.DeadZone;
+                transposer.m_DeadZoneHeight = currentCameraSettings.DeadZone;
 
             }
         }

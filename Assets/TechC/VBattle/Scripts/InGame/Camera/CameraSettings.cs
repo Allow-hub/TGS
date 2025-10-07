@@ -9,37 +9,59 @@ namespace TechC
     [CreateAssetMenu(fileName = "CameraSettings", menuName = "TechC/Camera Settings")]
     public class CameraSettings : ScriptableObject
     {
-        [Header("CameraSettings")]
-        [SerializeField] public Vector3 camRot;
-        [SerializeField] public Vector3 camColliderPos;
+        [Header("カメラ設定")]
+        [SerializeField] private Vector3 camRot;
+        [SerializeField] private Vector3 camColliderPos;
 
-        [Header("Zoom Settings")]
-        [SerializeField] public float minDistance = 5f;
-        [SerializeField] public float maxDistance = 20f;
-        [SerializeField] public float minFOV = 30f;
-        [SerializeField] public float maxFOV = 60f;
-        [SerializeField] public float zoomSpeed = 5f;
-        [SerializeField] public float zoomMargin = 2f; // ズーム時の余白
+        [Header("ズーム設定")]
+        [SerializeField] private float minDistance = 5f;
+        [SerializeField] private float maxDistance = 20f;
+        [SerializeField] private float minFOV = 30f;
+        [SerializeField] private float maxFOV = 60f;
+        [SerializeField] private float zoomSpeed = 5f;
+        [SerializeField] private float zoomMargin = 2f;
 
-        [Header("Follow Settings")]
-        [SerializeField] public bool enableYAxisFollow = true;
+        [Header("追従設定")]
+        [SerializeField] private bool enableYAxisFollow = true;
 
-        [Header("Camera Effects")]
-        [SerializeField] public bool enableCameraShake = true;
-        [SerializeField] public float defaultShakeIntensity = 1f;
-        [SerializeField] public float defaultShakeDuration = 0.2f;
-        [SerializeField] public NoiseSettings defaultShakeProfile;
+        [Header("カメラエフェクト")]
+        [SerializeField] private bool enableCameraShake = true;
+        [SerializeField] private float defaultShakeIntensity = 1f;
+        [SerializeField] private float defaultShakeDuration = 0.2f;
+        [SerializeField] private NoiseSettings defaultShakeProfile;
 
-        [Header("Advanced Settings")]
-        public float cameraDistance = 10f;
-        public Vector2 screenOffset = new Vector2(0.5f, 0.5f);
-        [SerializeField] public float deadZone = 2f; // プレイヤーがこの範囲内にいる時はカメラを動かさない
-        [SerializeField] public bool adaptToPlayerSpeed = true; // プレイヤーの速度に応じてカメラを先読み
-        [SerializeField] public float anticipationFactor = 0.5f;
+        [Header("高度な設定")]
+        [SerializeField] private float cameraDistance = 10f;
+        [SerializeField] private Vector2 screenOffset = new Vector2(0.5f, 0.5f);
+        [SerializeField] private float deadZone = 2f;
+        [SerializeField] private bool adaptToPlayerSpeed = true;
+        [SerializeField] private float anticipationFactor = 0.5f;
 
-        [Header("Target Group Settings")]
-        [SerializeField] public float defaultPlayerWeight = 1f;
-        [SerializeField] public float defaultPlayerRadius = 1f;
+        [Header("ターゲットグループ設定")]
+        [SerializeField] private float defaultPlayerWeight = 1f;
+        [SerializeField] private float defaultPlayerRadius = 1f;
+
+        // プロパティで外部参照
+        public Vector3 CamRot => camRot;
+        public Vector3 CamColliderPos => camColliderPos;
+        public float MinDistance => minDistance;
+        public float MaxDistance => maxDistance;
+        public float MinFOV => minFOV;
+        public float MaxFOV => maxFOV;
+        public float ZoomSpeed => zoomSpeed;
+        public float ZoomMargin => zoomMargin;
+        public bool EnableYAxisFollow => enableYAxisFollow;
+        public bool EnableCameraShake => enableCameraShake;
+        public float DefaultShakeIntensity => defaultShakeIntensity;
+        public float DefaultShakeDuration => defaultShakeDuration;
+        public NoiseSettings DefaultShakeProfile => defaultShakeProfile;
+        public float CameraDistance => cameraDistance;
+        public Vector2 ScreenOffset => screenOffset;
+        public float DeadZone => deadZone;
+        public bool AdaptToPlayerSpeed => adaptToPlayerSpeed;
+        public float AnticipationFactor => anticipationFactor;
+        public float DefaultPlayerWeight => defaultPlayerWeight;
+        public float DefaultPlayerRadius => defaultPlayerRadius;
 
         /// <summary>
         /// 設定値を検証して有効な範囲に調整

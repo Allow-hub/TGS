@@ -29,31 +29,25 @@ namespace TechC
             foreach (var comp in allComponents)
             {
                 if (comp == null) continue;
-                var visited = new HashSet<Type>();
-                ScanFieldsRecursive(comp.GetType(), comp, deps, visited);
-            }
-
-            var assembly = Assembly.GetExecutingAssembly();
-            foreach (var type in assembly.GetTypes())
-            {
-                if (type.IsSubclassOf(typeof(MonoBehaviour)) || type.IsSubclassOf(typeof(ScriptableObject)))
-                    continue;
-
-                var visited = new HashSet<Type>();
-                ScanFieldsRecursive(type, null, deps, visited);
+                var visited = new HashSet<object>();
+                ScanFieldsRecursive(comp, deps, visited);
             }
 
             return deps;
         }
 
-        private static void ScanFieldsRecursive(Type type, object instance, List<DependencyInfo> deps, HashSet<Type> visited)
+        // instanceベースで再帰的に参照をたどる
+        private static void ScanFieldsRecursive(object instance, List<DependencyInfo> deps, HashSet<object> visited)
         {
-            if (visited.Contains(type)) return;
-            visited.Add(type);
+            if (instance == null) return;
+            if (visited.Contains(instance)) return;
+            visited.Add(instance);
 
+            var type = instance.GetType();
+
+            // UnityEngine系や匿名型は除外
             if (!string.IsNullOrEmpty(type.Namespace) && type.Namespace.StartsWith("UnityEngine"))
                 return;
-
             if (type.Name.Contains("d__") || type.Name.Contains("c__DisplayClass"))
                 return;
 
@@ -62,15 +56,20 @@ namespace TechC
             {
                 var fieldType = field.FieldType;
 
+                // UnityEngine系や匿名型は除外
                 if (!string.IsNullOrEmpty(fieldType.Namespace) && fieldType.Namespace.StartsWith("UnityEngine"))
                     continue;
-
                 if (fieldType.Name.Contains("d__") || fieldType.Name.Contains("c__DisplayClass"))
                     continue;
 
-                if (typeof(MonoBehaviour).IsAssignableFrom(fieldType) ||
-                    typeof(ScriptableObject).IsAssignableFrom(fieldType) ||
-                    (!fieldType.IsPrimitive && fieldType != typeof(string)))
+                // プリミティブ型・列挙型・string・sealed型は除外
+                if (fieldType.IsPrimitive || fieldType.IsEnum || fieldType == typeof(string) || fieldType.IsSealed)
+                    continue;
+
+                object fieldValue = null;
+                try { fieldValue = field.GetValue(instance); } catch { }
+
+                if (fieldValue != null)
                 {
                     deps.Add(new DependencyInfo
                     {
@@ -79,7 +78,8 @@ namespace TechC
                         FieldName = field.Name
                     });
 
-                    ScanFieldsRecursive(fieldType, null, deps, visited);
+                    // 参照先も再帰的に走査
+                    ScanFieldsRecursive(fieldValue, deps, visited);
                 }
             }
         }
@@ -210,35 +210,18 @@ namespace TechC
                 }
             }
 
-            // エッジ描画（レイヤー間の接続のみ表示して軽量化）
-            var layerConnections = new HashSet<string>();
+            // エッジ描画（直接依存しているノード同士を線でつなぐ）
             foreach (var dep in deps)
             {
                 if (!nodeIds.ContainsKey(dep.Owner) || !nodeIds.ContainsKey(dep.Referenced))
                     continue;
 
-                int fromDepth = depths.ContainsKey(dep.Owner) ? depths[dep.Owner] : 0;
-                int toDepth = depths.ContainsKey(dep.Referenced) ? depths[dep.Referenced] : 0;
-                
-                // 異なるレイヤー間の接続のみ（同一レイヤー内は省略）
-                if (fromDepth != toDepth)
-                {
-                    string connectionKey = $"{fromDepth}-{toDepth}";
-                    if (!layerConnections.Contains(connectionKey))
-                    {
-                        layerConnections.Add(connectionKey);
-                        
-                        int fromLayerId = layerCells.ContainsKey(fromDepth) ? layerCells[fromDepth] : -1;
-                        int toLayerId = layerCells.ContainsKey(toDepth) ? layerCells[toDepth] : -1;
+                int fromId = nodeIds[dep.Owner];
+                int toId = nodeIds[dep.Referenced];
 
-                        if (fromLayerId > 0 && toLayerId > 0)
-                        {
-                            sb.AppendLine($"        <mxCell id=\"{layerIdCounter++}\" value=\"dependencies\" style=\"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=2;fontSize=10;labelBackgroundColor=#ffffff;dashed=1;\" edge=\"1\" source=\"{fromLayerId}\" target=\"{toLayerId}\" parent=\"1\">");
-                            sb.AppendLine("          <mxGeometry relative=\"1\" as=\"geometry\"/>");
-                            sb.AppendLine("        </mxCell>");
-                        }
-                    }
-                }
+                sb.AppendLine($"        <mxCell id=\"{layerIdCounter++}\" value=\"{EscapeXml(dep.FieldName)}\" style=\"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=2;fontSize=10;labelBackgroundColor=#ffffff;dashed=0;\" edge=\"1\" source=\"{fromId}\" target=\"{toId}\" parent=\"1\">");
+                sb.AppendLine("          <mxGeometry relative=\"1\" as=\"geometry\"/>");
+                sb.AppendLine("        </mxCell>");
             }
 
             sb.AppendLine("      </root>");

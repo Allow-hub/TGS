@@ -14,15 +14,28 @@ namespace TechC
         [SerializeField] private Vector3 camColliderPos;
 
         [Header("ズーム設定")]
-        [SerializeField] private float minDistance = 5f;
-        [SerializeField] private float maxDistance = 20f;
-        [SerializeField] private float minFOV = 30f;
-        [SerializeField] private float maxFOV = 60f;
+        [SerializeField] private float minDistance = 3f;
+        [SerializeField] private float maxDistance = 15f;
+        [SerializeField] private float minFOV = 35f;
+        [SerializeField] private float maxFOV = 65f;
         [SerializeField] private float zoomSpeed = 5f;
         [SerializeField] private float zoomMargin = 2f;
 
         [Header("追従設定")]
         [SerializeField] private bool enableYAxisFollow = true;
+
+        [Header("BLEACH風立体カメラ設定")]
+        [SerializeField] private float cameraHeight = 1f; // カメラの基準高度（低い視点）
+        [SerializeField] private float heightDampening = 3f; // 高度変化のスムージング
+        [SerializeField] private float maxHeightOffset = 8f; // 最大高度オフセット
+        [SerializeField] private Vector3 cameraOffset = new Vector3(0, 0, -10f); // カメラオフセット
+        
+        [Header("動的カメラアングル")]
+        [SerializeField] private bool enableDynamicAngle = true; // 動的角度調整
+        [SerializeField] private float baseCameraAngle = 10f; // 基本俯角（見上げる角度）
+        [SerializeField] private float maxCameraAngle = 30f; // 最大俯角
+        [SerializeField] private float angleAdjustmentSpeed = 2f; // カメラ角度調整速度
+        [SerializeField] private float depthAdjustmentFactor = 0.3f; // 奥行き調整係数
 
         [Header("カメラエフェクト")]
         [SerializeField] private bool enableCameraShake = true;
@@ -51,6 +64,17 @@ namespace TechC
         public float ZoomSpeed => zoomSpeed;
         public float ZoomMargin => zoomMargin;
         public bool EnableYAxisFollow => enableYAxisFollow;
+        
+        // BLEACH風立体カメラプロパティ
+        public float CameraHeight => cameraHeight;
+        public float HeightDampening => heightDampening;
+        public float MaxHeightOffset => maxHeightOffset;
+        public Vector3 CameraOffset => cameraOffset;
+        public bool EnableDynamicAngle => enableDynamicAngle;
+        public float BaseCameraAngle => baseCameraAngle;
+        public float MaxCameraAngle => maxCameraAngle;
+        public float AngleAdjustmentSpeed => angleAdjustmentSpeed;
+        public float DepthAdjustmentFactor => depthAdjustmentFactor;
         public bool EnableCameraShake => enableCameraShake;
         public float DefaultShakeIntensity => defaultShakeIntensity;
         public float DefaultShakeDuration => defaultShakeDuration;
@@ -74,6 +98,13 @@ namespace TechC
             maxFOV = Mathf.Clamp(maxFOV, minFOV, 179f);
             zoomSpeed = Mathf.Max(0.1f, zoomSpeed);
             zoomMargin = Mathf.Max(0f, zoomMargin);
+            cameraHeight = Mathf.Max(0f, cameraHeight);
+            heightDampening = Mathf.Max(0.1f, heightDampening);
+            maxHeightOffset = Mathf.Max(0f, maxHeightOffset);
+            baseCameraAngle = Mathf.Clamp(baseCameraAngle, -90f, 90f);
+            maxCameraAngle = Mathf.Clamp(maxCameraAngle, baseCameraAngle, 90f);
+            angleAdjustmentSpeed = Mathf.Max(0.1f, angleAdjustmentSpeed);
+            depthAdjustmentFactor = Mathf.Max(0f, depthAdjustmentFactor);
             defaultShakeIntensity = Mathf.Max(0f, defaultShakeIntensity);
             defaultShakeDuration = Mathf.Max(0.01f, defaultShakeDuration);
             deadZone = Mathf.Max(0f, deadZone);

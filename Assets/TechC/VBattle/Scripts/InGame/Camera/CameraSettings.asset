@@ -21,6 +21,15 @@ MonoBehaviour:
   zoomSpeed: 10
   zoomMargin: 0
   enableYAxisFollow: 0
+  cameraHeight: 2
+  heightDampening: 3
+  maxHeightOffset: 10
+  cameraOffset: {x: 0, y: 0, z: -10}
+  enableDynamicAngle: 1
+  baseCameraAngle: 10
+  maxCameraAngle: 30
+  angleAdjustmentSpeed: 2
+  depthAdjustmentFactor: 0.3
   enableCameraShake: 1
   defaultShakeIntensity: 1
   defaultShakeDuration: 0.2

@@ -35,6 +35,11 @@ namespace TechC
         private Dictionary<Transform, PlayerCameraData> playerDataMap = new Dictionary<Transform, PlayerCameraData>();
         private CinemachineBasicMultiChannelPerlin noiseComponent;
 
+        // BLEACH風追従カメラ用の状態管理
+        private float currentOrbitAngle = 0f; // 現在の軌道角度
+        private Vector3 lastCenterPosition; // 前フレームの中心位置
+        private Vector3 currentCameraTargetPosition; // カメラの目標位置
+
         private float shakeTimer;
         private float lastUpdateTime;
 
@@ -101,6 +106,7 @@ namespace TechC
         {
             UpdateCameraZoom();
             UpdateCameraShake();
+            UpdateBleachStyleCamera(); // BLEACH風立体カメラ更新
             ValidatePlayers();
         }
 
@@ -294,6 +300,112 @@ namespace TechC
             {
                 noiseComponent.m_AmplitudeGain = 0f;
             }
+        }
+
+        /// <summary>
+        /// BLEACH風立体カメラワークの更新
+        /// </summary>
+        private void UpdateBleachStyleCamera()
+        {
+            var activePlayers = GetActivePlayers();
+            if (activePlayers.Count < 2 || vcam == null) return;
+
+            // 立体的な高さ追従
+            Update3DCameraHeight(activePlayers);
+            
+            // 動的な角度調整（低い視点から見上げる）
+            Update3DCameraAngle(activePlayers);
+            
+            // 横方向の立体的な位置調整
+            Update3DCameraPosition(activePlayers);
+        }
+
+        /// <summary>
+        /// プレイヤーの高さに応じたカメラ高度調整
+        /// </summary>
+        private void Update3DCameraHeight(List<Transform> players)
+        {
+            if (!currentCameraSettings.EnableYAxisFollow) return;
+
+            // プレイヤーの平均高度を計算
+            float averagePlayerHeight = 0f;
+            foreach (var player in players)
+            {
+                averagePlayerHeight += player.position.y;
+            }
+            averagePlayerHeight /= players.Count;
+
+            // カメラの目標高度（基準高度 + プレイヤー平均高度）
+            float targetHeight = currentCameraSettings.CameraHeight + averagePlayerHeight;
+            
+            // 高度制限を適用
+            targetHeight = Mathf.Clamp(targetHeight, 
+                averagePlayerHeight - currentCameraSettings.MaxHeightOffset, 
+                averagePlayerHeight + currentCameraSettings.MaxHeightOffset);
+
+            // スムーズに高度調整
+            Vector3 currentPos = vcam.transform.position;
+            float newY = Mathf.Lerp(currentPos.y, targetHeight, 
+                Time.deltaTime * currentCameraSettings.HeightDampening);
+            
+            vcam.transform.position = new Vector3(currentPos.x, newY, currentPos.z);
+        }
+
+        /// <summary>
+        /// 立体的なカメラ角度調整（BLEACH風の見上げる角度）
+        /// </summary>
+        private void Update3DCameraAngle(List<Transform> players)
+        {
+            if (!currentCameraSettings.EnableDynamicAngle) return;
+
+            // プレイヤー間の距離に基づいて俯角を調整
+            float distance = CalculateMaxDistance(players);
+            float normalizedDistance = Mathf.InverseLerp(MinDistance, MaxDistance, distance);
+            
+            // 距離が近いほど基本角度、遠いほど最大角度
+            float targetAngle = Mathf.Lerp(currentCameraSettings.BaseCameraAngle, 
+                                         currentCameraSettings.MaxCameraAngle, normalizedDistance);
+            
+            // 現在の角度から目標角度へスムーズに調整
+            Vector3 currentRotation = vcam.transform.eulerAngles;
+            float currentXAngle = currentRotation.x > 180f ? currentRotation.x - 360f : currentRotation.x;
+            
+            float newXAngle = Mathf.LerpAngle(currentXAngle, targetAngle, 
+                Time.deltaTime * currentCameraSettings.AngleAdjustmentSpeed);
+            
+            vcam.transform.rotation = Quaternion.Euler(newXAngle, currentRotation.y, currentRotation.z);
+        }
+
+        /// <summary>
+        /// 立体的なカメラ位置調整
+        /// </summary>
+        private void Update3DCameraPosition(List<Transform> players)
+        {
+            // プレイヤーの中心位置を計算
+            Vector3 centerPosition = Vector3.zero;
+            foreach (var player in players)
+            {
+                centerPosition += player.position;
+            }
+            centerPosition /= players.Count;
+
+            // カメラオフセットを適用した目標位置
+            Vector3 targetPosition = centerPosition + currentCameraSettings.CameraOffset;
+            
+            // 奥行き調整（プレイヤー間の距離に応じて）
+            float distance = CalculateMaxDistance(players);
+            float depthAdjustment = distance * currentCameraSettings.DepthAdjustmentFactor;
+            targetPosition.z -= depthAdjustment;
+
+            // スムーズに位置調整（Y軸は別途処理）
+            Vector3 currentPos = vcam.transform.position;
+            Vector3 newPosition = Vector3.Lerp(
+                new Vector3(currentPos.x, currentPos.y, currentPos.z),
+                new Vector3(targetPosition.x, currentPos.y, targetPosition.z),
+                Time.deltaTime * currentCameraSettings.HeightDampening
+            );
+            
+            vcam.transform.position = newPosition;
         }
 
         /// <summary>

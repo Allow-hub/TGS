@@ -24,8 +24,8 @@ MonoBehaviour:
   DashMultipiler: 9
   MaxGroundSpeed: 8
   Deceleration: 80
-  JumpForce: 8
-  DoubleJumpForce: 10
+  JumpForce: 5
+  DoubleJumpForce: 7
   AirControlMultiplier: 4
   AirAcceleration: 10
   FastFallSpeed: 25

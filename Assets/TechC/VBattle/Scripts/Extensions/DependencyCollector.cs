@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace TechC
 {
+#if UNITY_EDITOR
     #region データ構造
     public class DependencyInfo
     {
@@ -102,7 +103,7 @@ namespace TechC
             int GetDepth(string name)
             {
                 if (depth.ContainsKey(name)) return depth[name];
-                
+
                 // 循環参照を検出
                 if (visiting.Contains(name))
                 {
@@ -112,7 +113,7 @@ namespace TechC
                 }
 
                 visiting.Add(name);
-                
+
                 int d = 0;
                 foreach (var dep in deps)
                 {
@@ -122,7 +123,7 @@ namespace TechC
                         if (childDepth > d) d = childDepth;
                     }
                 }
-                
+
                 visiting.Remove(name);
                 depth[name] = d;
                 return d;
@@ -167,7 +168,7 @@ namespace TechC
 
             var depths = CalculateDepths(deps);
             var layers = new Dictionary<int, List<string>>();
-            
+
             foreach (var node in uniqueNodes)
             {
                 int d = depths.ContainsKey(node) ? depths[node] : 0;
@@ -181,7 +182,7 @@ namespace TechC
             int ySpacing = 50;
             int layerIdCounter = idCounter;
             var layerCells = new Dictionary<int, int>();
-            
+
             // 各レイヤーを折りたたまれた状態で作成
             foreach (var layer in layers.OrderBy(l => l.Key))
             {
@@ -253,4 +254,5 @@ namespace TechC
         }
     }
     #endregion
+#endif
 }

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d62277a4cf745c43bcaa0408b92a2f2, type: 3}
-  m_Name: Left_W
+  m_Name: Left_W 1
   m_EditorClassIdentifier: 
   characterType: 2
   attackName: Left_W
@@ -32,7 +32,7 @@ MonoBehaviour:
   hitTiming: 0.5
   hitEffectPrefab: {fileID: 0}
   damage: 10
-  knockback: 5
+  knockback: 20
   isCounter: 0
   nextChain: {fileID: 0}
   canChain: 0
@@ -40,7 +40,7 @@ MonoBehaviour:
   chainThreshold: 0
   hitStopDuration: 0.1
   hitStopTimeScale: 0.1
-  knockbackDirection: {x: -0.75, y: 0.5, z: 0}
+  knockbackDirection: {x: -1, y: 1, z: 0}
   shakeIntensity: 0.1
   shakeDuraion: 0.1
   noiseSettings: {fileID: 0}

@@ -1,262 +1,181 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace TechC.Player.Attack
 {
     /// <summary>
-    /// 投げ攻撃：攻撃者を固定し、コライダーを無効化する
+    /// 投げ攻撃：攻撃者のみを一時固定し、床にスナップ & コライダー無効化。
+    /// 解除タイミングは DelayUtility（ポーズ停止対応）で管理。
+    /// ノックバック等は他システムに委ね、ここでは一切行わない。
     /// </summary>
     [Serializable]
     public class AttackTeramiThrow : IAttackBehaviour
     {
+        [Header("Config")]
         [SerializeField] private AttackData attackData;
         [SerializeField] private LayerMask groundMask = default;
+        [SerializeField] private float pinSeconds = 0.5f;        // 固定時間
+        [SerializeField] private bool pinOnActivate = false;     // 攻撃開始直後に固定するか（通常はfalse）
+        [SerializeField] private bool pinOnHit = true;           // ヒット時のみ固定するか（通常はtrue）
+        [SerializeField] private bool preventReentryWhilePinned = true; // 固定中の再入防止
 
-        private GameObject attackerRoot; // 攻撃者のルートオブジェクト
-        private MonoBehaviour runner; // コルーチン実行用
-        private const float PinSecs = 0.5f; // 固定時間
-        private bool isPinned = false; // 現在固定中かどうか
-        private Coroutine currentCoroutine = null; // 実行中のコルーチン
-        private List<Collider> disabledColliders = new List<Collider>(); // 無効化したコライダーリスト
+        // 実行基盤
+        private GameObject attackerRoot;
+        private MonoBehaviour runner; // AttackObjectController を想定
+        private bool isPinned = false;
+        private Coroutine delayHandle = null;
 
-        /// <summary>
-        /// 攻撃オブジェクトの初期化
-        /// </summary>
-        /// <param name="ownerAttackObject">攻撃オブジェクト</param>
+        // 復帰用
+        private readonly List<Collider> disabledColliders = new();
+        private Rigidbody pinnedRb = null;
+        private RigidbodyConstraints originalConstraints = RigidbodyConstraints.None;
+
+        // ===== IAttackBehaviour =====
         public void Initialize(GameObject ownerAttackObject)
         {
-            // コルーチン実行用のコンポーネントを取得
             runner = ownerAttackObject.GetComponent<AttackObjectController>();
-            
-            // 地面マスクが未設定の場合はデフォルト設定
-            if (groundMask.value == 0) groundMask = LayerMask.GetMask("Ground");
+            if (!runner) runner = ownerAttackObject.GetComponent<MonoBehaviour>(); // 最低限の保険
+
+            if (groundMask.value == 0)
+                groundMask = LayerMask.GetMask("Ground");
         }
 
-        /// <summary>
-        /// オブジェクト解放時の処理
-        /// </summary>
-        public void OnRelease() 
-        { 
-            // 実行中の処理を停止し、状態を復元
-            StopCurrentAction();
+        public void OnRelease()
+        {
+            StopCurrentAction(); // 無効化時などに必ず完全復帰
         }
-        
-        /// <summary>
-        /// 毎フレーム更新（未使用）
-        /// </summary>
-        /// <param name="dt">デルタタイム</param>
+
         public void OnUpdate(float dt) { }
 
-        /// <summary>
-        /// 攻撃開始時の処理
-        /// </summary>
-        /// <param name="character">攻撃者キャラクター</param>
         public void Activate(GameObject character)
         {
             attackerRoot = character;
-            if (runner != null && attackerRoot != null)
+            if (!runner || !attackerRoot) return;
+
+            if (pinOnActivate)
             {
-                // 既存の処理があれば停止
                 StopCurrentAction();
-                
-                // 固定状態を開始
-                isPinned = true;
-                currentCoroutine = runner.StartCoroutine(PinAndDisable(attackerRoot, PinSecs));
+                BeginPin(attackerRoot, pinSeconds);
             }
         }
 
-        /// <summary>
-        /// 他オブジェクトとの衝突判定
-        /// </summary>
-        /// <param name="other">衝突したコライダー</param>
         public void OnTriggerEnter(Collider other)
         {
-            // 無効状態や固定中は処理しない
-            if (attackerRoot == null || other == null || runner == null || isPinned) return;
+            if (!pinOnHit) return;
+            if (!runner || !attackerRoot || !other) return;
+            if (isPinned && preventReentryWhilePinned) return;
 
-            // 衝突相手のルートオブジェクトを取得
-            var victimRoot = other.attachedRigidbody?.gameObject ?? other.transform.root.gameObject;
-            
-            // 無効オブジェクトや自分自身は除外
+            // 自分自身は無視
+            var victimRoot = other.attachedRigidbody ? other.attachedRigidbody.gameObject : other.transform.root.gameObject;
             if (!victimRoot || victimRoot == attackerRoot) return;
 
-            // 新しい攻撃として処理開始
+            // ここでは victim には一切触れない（ノックバック等は別システムに任せる）
             StopCurrentAction();
-            isPinned = true;
-            currentCoroutine = runner.StartCoroutine(PinAndDisable(attackerRoot, PinSecs));
+            BeginPin(attackerRoot, pinSeconds);
         }
 
-        /// <summary>
-        /// 現在の処理を停止し、状態を復元する
-        /// </summary>
+        // ===== 実装詳細 =====
+        private void BeginPin(GameObject attacker, float duration)
+        {
+            if (!attacker) return;
+            if (preventReentryWhilePinned && isPinned) return;
+
+            isPinned = true;
+
+            // Rigidbody 先処理（床スナップ→完全固定）
+            pinnedRb = attacker.GetComponent<Rigidbody>();
+            if (pinnedRb != null)
+            {
+                originalConstraints = pinnedRb.constraints;
+
+                // 床にスフィアキャストでスナップ（精度重視）
+                if (Physics.SphereCast(attacker.transform.position + Vector3.up * 0.5f, 0.2f,
+                                       Vector3.down, out var hit, 5f, groundMask))
+                {
+                    var pos = attacker.transform.position;
+                    pos.y = hit.point.y;
+                    attacker.transform.position = pos;
+                }
+
+                // 完全固定
+                pinnedRb.velocity = Vector3.zero;
+                pinnedRb.angularVelocity = Vector3.zero;
+                pinnedRb.useGravity = false;
+                pinnedRb.constraints = RigidbodyConstraints.FreezeAll;
+            }
+
+            // 次にコライダー全OFF（必要なら除外リストを設けて調整）
+            DisableAllColliders(attacker);
+
+            delayHandle = TechC.DelayUtility.StartDelayedActionWithPause(
+                runner,
+                duration,
+                // ポーズ判定はプロジェクト都合で差し替え
+                () => Time.timeScale == 0f,
+                OnDelayFinishedRestore
+            );
+        }
+
+        private void OnDelayFinishedRestore()
+        {
+            RestoreColliders();
+
+            if (pinnedRb != null)
+            {
+                pinnedRb.useGravity = true;
+                pinnedRb.constraints = originalConstraints; // 完全復元
+                pinnedRb = null;
+            }
+
+            isPinned = false;
+            delayHandle = null;
+        }
+
         private void StopCurrentAction()
         {
-            // 実行中のコルーチンを停止
-            if (currentCoroutine != null && runner != null)
+            // 遅延解除のキャンセル
+            if (delayHandle != null && runner)
             {
-                runner.StopCoroutine(currentCoroutine);
-                currentCoroutine = null;
+                runner.StopCoroutine(delayHandle);
+                delayHandle = null;
             }
-            
-            // コライダーを復元し、固定状態を解除
+
+            // 復帰（未復帰ならここで戻す）
             RestoreColliders();
+
+            if (pinnedRb != null)
+            {
+                pinnedRb.useGravity = true;
+                pinnedRb.constraints = originalConstraints;
+                pinnedRb = null;
+            }
+
             isPinned = false;
         }
 
-        /// <summary>
-        /// 無効化したコライダーを全て復元する
-        /// </summary>
+        private void DisableAllColliders(GameObject target)
+        {
+            disabledColliders.Clear();
+            var cols = target.GetComponentsInChildren<Collider>(true);
+            foreach (var col in cols)
+            {
+                if (col && col.enabled)
+                {
+                    col.enabled = false;
+                    disabledColliders.Add(col);
+                }
+            }
+        }
+
         private void RestoreColliders()
         {
-            // 無効化したコライダーを有効に戻す
-            foreach (var collider in disabledColliders)
+            if (disabledColliders.Count == 0) return;
+            foreach (var col in disabledColliders)
             {
-                if (collider) collider.enabled = true;
+                if (col) col.enabled = true;
             }
-            // リストをクリア
             disabledColliders.Clear();
-        }
-
-        public IEnumerable PinAndDisableNew(GameObject attacker, float duration)
-        {
-            // 攻撃者が無効なら終了
-            if (!attacker) yield break;
-
-            // 攻撃者のコライダーを無効化
-            var colliders = attacker.GetComponentsInChildren<Collider>(true);
-            foreach (var col in colliders)
-            {
-                if (col && col.enabled)
-                {
-                    col.enabled = false; // コライダーを無効化
-                    disabledColliders.Add(col); // 復元用リストに追加
-                }
-            }
-
-            // 攻撃者のRigidbodyを取得して固定処理
-            var rb = attacker.GetComponent<Rigidbody>();
-            RigidbodyConstraints originalConstraints = RigidbodyConstraints.None;
-
-            if (!rb)
-            {
-                // 元の制約を保存
-                originalConstraints = rb.constraints;
-
-                // 地面にスナップ（床に吸着）
-                if (Physics.Raycast(attacker.transform.position + Vector3.up * 0.5f, Vector3.down, out var hit, 5f, groundMask))
-                {
-                    var pos = attacker.transform.position;
-                    pos.y = hit.point.y; // Y座標を地面に合わせる
-                    attacker.transform.position = pos;
-                }
-
-                // 物理状態を完全固定
-                rb.velocity = Vector3.zero; // 速度をゼロに
-                rb.angularVelocity = Vector3.zero; // 角速度をゼロに
-                rb.useGravity = false; // 重力を無効化
-                rb.constraints = RigidbodyConstraints.FreezeAll; // 全軸固定
-            }
-
-            yield return PinAndDisableCo(rb,attacker, duration);
-        }
-
-        private IEnumerator PinAndDisableCo(Rigidbody rb, GameObject attacker, float duration)
-        {
-           // 指定時間待機
-            yield return new WaitForSeconds(duration);
-
-            // --- 復元処理 ---
-            // コライダーを復元
-            RestoreColliders();
-
-            // Rigidbodyの物理状態を復元
-            if (rb)
-            {
-                rb.useGravity = true; // 重力を有効化
-                // 通常の制約に戻す（Z軸移動とX,Y軸回転を禁止）
-                rb.constraints = RigidbodyConstraints.FreezePositionZ |
-                                RigidbodyConstraints.FreezeRotationX |
-                                RigidbodyConstraints.FreezeRotationY |
-                                RigidbodyConstraints.FreezeRotationZ;
-
-            }
-
-            // 状態をリセット
-            isPinned = false;
- 
-        }
-
-        /// <summary>
-        /// 攻撃者を固定し、コライダーを無効化するコルーチン
-        /// </summary>
-        /// <param name="attacker">攻撃者オブジェクト</param>
-        /// <param name="duration">固定時間</param>
-        /// <returns>コルーチン</returns>
-        private IEnumerator PinAndDisable(GameObject attacker, float duration)
-        {
-            // 攻撃者が無効なら終了
-            if (!attacker) yield break;
-
-            // 攻撃者のコライダーを無効化
-            var colliders = attacker.GetComponentsInChildren<Collider>(true);
-            foreach (var col in colliders)
-            {
-                if (col && col.enabled)
-                {
-                    col.enabled = false; // コライダーを無効化
-                    disabledColliders.Add(col); // 復元用リストに追加
-                }
-            }
-
-            // 攻撃者のRigidbodyを取得して固定処理
-            var rb = attacker.GetComponent<Rigidbody>();
-            RigidbodyConstraints originalConstraints = RigidbodyConstraints.None;
-
-            if (rb)
-            {
-                // 元の制約を保存
-                originalConstraints = rb.constraints;
-
-                // 地面にスナップ（床に吸着）
-                if (Physics.Raycast(attacker.transform.position + Vector3.up * 0.5f, Vector3.down, out var hit, 5f, groundMask))
-                {
-                    var pos = attacker.transform.position;
-                    pos.y = hit.point.y; // Y座標を地面に合わせる
-                    attacker.transform.position = pos;
-                }
-
-                // 物理状態を完全固定
-                rb.velocity = Vector3.zero; // 速度をゼロに
-                rb.angularVelocity = Vector3.zero; // 角速度をゼロに
-                rb.useGravity = false; // 重力を無効化
-                rb.constraints = RigidbodyConstraints.FreezeAll; // 全軸固定
-            }
-
-            // 指定時間待機
-            yield return new WaitForSeconds(duration);
-
-            // --- 復元処理 ---
-            // コライダーを復元
-            RestoreColliders();
-
-            // Rigidbodyの物理状態を復元
-            if (rb)
-            {
-                rb.useGravity = true; // 重力を有効化
-                // 通常の制約に戻す（Z軸移動とX,Y軸回転を禁止）
-                rb.constraints = RigidbodyConstraints.FreezePositionZ |
-                                RigidbodyConstraints.FreezeRotationX |
-                                RigidbodyConstraints.FreezeRotationY |
-                                RigidbodyConstraints.FreezeRotationZ;
-
-            }
-
-            // 状態をリセット
-            isPinned = false;
-            currentCoroutine = null;
         }
     }
 }

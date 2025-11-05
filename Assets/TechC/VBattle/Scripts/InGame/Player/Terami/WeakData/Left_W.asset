@@ -32,7 +32,7 @@ MonoBehaviour:
   hitTiming: 0.5
   hitEffectPrefab: {fileID: 0}
   damage: 10
-  knockback: 5
+  knockback: 6
   isCounter: 0
   nextChain: {fileID: 0}
   canChain: 0

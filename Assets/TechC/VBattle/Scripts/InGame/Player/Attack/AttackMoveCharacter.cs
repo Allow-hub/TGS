@@ -33,7 +33,7 @@ namespace TechC.Player.Attack
                 
         public void Activate(GameObject character)
         {
-            charRb = character.GetComponent<Rigidbody>();
+            charRb = character.transform.root.GetComponent<Rigidbody>();
             if (charRb == null) return;
             currentMoveDir = new Vector3(moveDir.x * character.transform.forward.x, moveDir.y, moveDir.z);
         }

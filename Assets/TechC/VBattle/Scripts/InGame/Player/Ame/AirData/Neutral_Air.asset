@@ -21,19 +21,19 @@ MonoBehaviour:
   prefabRotation: {x: 0, y: 0, z: 0}
   animationTrigger: IsNormalAir
   clip: {fileID: 7400000, guid: 0492c2519e4041d47a1cd3e3f41b3635, type: 2}
-  animationSpeed: 1
-  attackDuration: 1.2
-  hitDetectionMode: 2
+  animationSpeed: 1.3
+  attackDuration: 0.7
+  hitDetectionMode: 1
   targetLayers:
     serializedVersion: 2
     m_Bits: 1
-  radius: 0
+  radius: 1.2
   hitboxOffset: {x: 0, y: 1, z: 1}
-  hitTiming: 0.1
+  hitTiming: 0.5
   hitEffectPrefab: {fileID: 6232109079735096711, guid: ac8f7f2b2e8532a41bb356f4a1d9056c,
     type: 3}
-  damage: 100
-  knockback: 0
+  damage: 15
+  knockback: 20
   isCounter: 0
   nextChain: {fileID: 0}
   canChain: 0
@@ -41,7 +41,7 @@ MonoBehaviour:
   chainThreshold: 0
   hitStopDuration: 0.3
   hitStopTimeScale: 0.8
-  knockbackDirection: {x: 0, y: 2, z: 5}
+  knockbackDirection: {x: 2, y: -1, z: 0}
   shakeIntensity: 0.1
   shakeDuraion: 0.1
   noiseSettings: {fileID: 0}
@@ -50,7 +50,7 @@ MonoBehaviour:
   repeatDuration: 0
   isAppeal: 0
   chargeDuration: 5
-  causesWallBounce: 0
+  causesWallBounce: 1
   wallBounceForce: 8
   wallBounceVerticalBoost: 2
   wallBounceTime: 0.5

@@ -15,8 +15,8 @@ namespace TechC.Select
         IPointerClickHandler
     {
         [SerializeField] private Image p1DisplayImage;
-        [SerializeField] private Image p2DisplayImage;      
-          [SerializeField] private Image p1NameImage;
+        [SerializeField] private Image p2DisplayImage;
+        [SerializeField] private Image p1NameImage;
         [SerializeField] private Image p2NameImage;
         [SerializeField] private SelectPickAnim p1SelectPickAnim;
         [SerializeField] private SelectPickAnim p2SelectPickAnim;

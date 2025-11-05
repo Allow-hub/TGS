@@ -196,6 +196,7 @@ namespace TechC
         public override void DownAttack()
         {
             base.DownAttack();
+            Debug.Log("AA");
 
             var cookieObjPos = transform.position;
 
